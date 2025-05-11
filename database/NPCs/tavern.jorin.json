@@ -5,11 +5,11 @@
   "motivation": "Stay informed and safe.",
   "goal": "Collect secrets as currency.",
   "needed_object": "Rare Coin",
-  "treasure": "Secret Message",
-  "playerhint": "Jorin, the Tavern Keeper, values secrets above all. Presenting him with a Rare Coin might persuade him to share some valuable information.\nDialogue Hooks:",
-  "dialogue_hooks": "\"You can learn more from a drunk’s mumble than a priest’s sermon.\"\n\"Funny thing, someone matching your look passed through here last night… paid in foreign coin.\"",
+  "treasure": "Mystic Token",
+  "playerhint": "Jorin seems to have a 'Mystic Token' he might give away if you show interest or ask about unusual findings. He still values rare coins for secrets.",
+  "dialogue_hooks": "\"You can learn more from a drunk\u2019s mumble than a priest\u2019s sermon.\"\n\"Funny thing, someone matching your look passed through here last night\u2026 paid in foreign coin.\"\n\"Found this odd Mystic Token the other day cleaning up. Not sure what it's for. Do you want it?\"",
   "veil_connection": "Tracks dreams from travelers that are eerily identical; keeps a book of them.",
   "code": "tavern.jorin",
   "storyboard_id": 1,
-  "created_at": "2025-05-11T15:27:01.930533"
+  "created_at": "2025-05-11T16:22:10.816874"
 }

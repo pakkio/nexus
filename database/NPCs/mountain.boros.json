@@ -6,10 +6,10 @@
   "goal": "Teach a worthy soul before he dies.",
   "needed_object": "Lost Goat Bell",
   "treasure": "Warrior's Keepsake",
-  "playerhint": "Boros, the old goatherd on the Mountain, seeks a worthy student. Retrieving his Lost Goat Bell could be the test he's looking for.\nDialogue Hooks:",
-  "dialogue_hooks": "\"The wind up here doesn’t lie. Listen to it next time.\"\n\"I buried my sword beneath the oldest goat. Don’t ask how I know which one.\"",
+  "playerhint": "Boros, the old goatherd on the Mountain, seeks a worthy student. Retrieving his Lost Goat Bell could be the test he's looking for.",
+  "dialogue_hooks": "\"The wind up here doesn\u2019t lie. Listen to it next time.\"\n\"I buried my sword beneath the oldest goat. Don\u2019t ask how I know which one.\"",
   "veil_connection": "Survived a Veil breach; remembers truths no one else dares speak.",
   "code": "mountain.boros",
   "storyboard_id": 1,
-  "created_at": "2025-05-11T15:27:01.930663"
+  "created_at": "2025-05-11T16:22:10.816977"
 }

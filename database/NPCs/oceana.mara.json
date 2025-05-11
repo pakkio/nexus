@@ -6,10 +6,10 @@
   "goal": "Ricreare un elisir di guarigione leggendario",
   "needed_object": "Seme Blueleaf",
   "treasure": "Bozza Elisir Curativo",
-  "playerhint": "Mara the herbalist in Oceana Village is trying to recreate a legendary healing elixir. A Blueleaf Seed is essential for her work.\nDialogue Hooks:",
+  "playerhint": "Mara the herbalist in Oceana Village is trying to recreate a legendary healing elixir. A Blueleaf Seed is essential for her work.",
   "dialogue_hooks": "\"Hai mai visto una fioritura di blueleaf sotto la luce della luna?\"\n\"Mia nonna diceva: 'Ogni ferita insegna quale radice usare la prossima volta.'\"",
   "veil_connection": "",
   "code": "oceana.mara",
   "storyboard_id": 1,
-  "created_at": "2025-05-11T15:27:01.930730"
+  "created_at": "2025-05-11T16:22:10.817035"
 }

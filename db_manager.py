@@ -347,7 +347,7 @@ class DbManager:
     # --- NEW: remove_item_from_inventory ---
     def remove_item_from_inventory(self, player_id: str, item_name: str, state: Optional[Dict[str, Any]] = None) -> bool:
         """Removes an item from the player's inventory."""
-        TF = TerminalFormatter
+        TF = TerminalFormatter # Assume available globally or via import
         if state and 'TerminalFormatter' in state: TF = state['TerminalFormatter']
 
         if not item_name or not isinstance(item_name, str) or not player_id:
@@ -365,7 +365,7 @@ class DbManager:
         if item_name_cleaned in current_inventory:
             current_inventory.remove(item_name_cleaned) # Removes the first occurrence
             self.save_inventory(player_id, current_inventory) # save_inventory will re-sort
-            # Message moved to command_processor for better context
+            # Message moved to command_processor for better context during /give
             # print(f"{TF.BRIGHT_YELLOW}[Game System]: '{item_name_cleaned}' removed from your inventory.{TF.RESET}")
             if state and 'player_inventory' in state: # Update cache if used
                 state['player_inventory'] = current_inventory 
@@ -562,8 +562,8 @@ if __name__ == "__main__":
     if not os.path.exists(test_mockup_dir): os.makedirs(test_mockup_dir)
     
     # Ensure subdirectories for mockup are created if they don't exist
-    for subdir in ["PlayerProfiles", "ConversationHistory", "PlayerState"]:
-        os.makedirs(os.path.join(test_mockup_dir, subdir), exist_ok=True)
+    for subdir_base_name in ["PlayerProfiles", "ConversationHistory", "PlayerState"]:
+        os.makedirs(os.path.join(test_mockup_dir, subdir_base_name), exist_ok=True)
 
 
     db_mock = DbManager(use_mockup=True, mockup_dir=test_mockup_dir)

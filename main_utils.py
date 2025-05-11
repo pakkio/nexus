@@ -49,9 +49,9 @@ def get_help_text() -> str:
  {TF.DIM}/clear{TF.RESET}               - Clear the conversation history with the current NPC (in memory).
  {TF.DIM}/history{TF.RESET}             - Show the raw JSON history for the current conversation.
  {TF.DIM}/hint{TF.RESET}                - Get a hint related to your current conversation/NPC.
- {TF.DIM}/inventory{TF.RESET}           - Display your current inventory. (NEW)
- {TF.DIM}/inv{TF.RESET}                 - Alias for /inventory. (NEW)
- {TF.DIM}/give <item_name>{TF.RESET}    - Give an item from your inventory to the current NPC. (NEW) 
+ {TF.DIM}/inventory{TF.RESET}           - Display your current inventory.
+ {TF.DIM}/inv{TF.RESET}                 - Alias for /inventory.
+ {TF.DIM}/give <item_name>{TF.RESET}    - Give an item from your inventory to the current NPC. 
                         (e.g., /give Rival's Ledger) 
 """
 # {TF.DIM}/profile{TF.RESET}             - View your player profile and known rumors. (Future)
