@@ -3,10 +3,13 @@
   "area": "Caelus - Montagna",
   "role": "Retired Warrior / Pastore di capre",
   "motivation": "Vivere in pace e passare la saggezza",
-  "goal": "Insegnare a un'anima degna prima di morire\nNeeded Object: Campanella Capra Perduta\nTreasure: Ricordo del Guerriero\nDialogue Hooks:",
+  "goal": "Insegnare a un'anima degna prima di morire",
+  "needed_object": "Campanella Capra Perduta",
+  "treasure": "Ricordo del Guerriero",
+  "playerhint": "Boros, the retired warrior on Caelus Mountain, wishes to pass on his wisdom. Finding his Lost Goat Bell could prove your worthiness to him.\nDialogue Hooks:",
   "dialogue_hooks": "\"Il vento lassù non dice bugie. Ascoltalo la prossima volta.\"\n\"Ho seppellito la mia spada sotto la capra più vecchia. Non chiedermi come so quale sia.\"",
   "veil_connection": "",
   "code": "caelus.boros",
   "storyboard_id": 1,
-  "created_at": "2025-05-11T14:05:32.015396"
+  "created_at": "2025-05-11T15:27:01.931060"
 }

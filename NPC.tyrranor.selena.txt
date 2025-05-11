@@ -5,6 +5,7 @@ Motivation: Analizza tecnologie avanzate e recupera informazioni
 Goal: Recupera il chip rubato e analizza le sue implicazioni
 Needed Object: Chip Criptato Rubato
 Treasure: Chiave Decrittazione
+PlayerHint: Selena, the Corpo-Tech in Tyrranor City, is after a Stolen Encrypted Chip. Retrieving it for her would help her analysis of advanced tech.
 Dialogue Hooks:
 - "Il chip è solo l'inizio. Ci sono altre informazioni più importanti."
 - "Non credo che tu capisca cosa significa essere un corpo-tech."

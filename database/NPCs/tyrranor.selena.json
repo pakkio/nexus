@@ -3,10 +3,13 @@
   "area": "Tyrranor - City",
   "role": "Corpo-Tech",
   "motivation": "Analizza tecnologie avanzate e recupera informazioni",
-  "goal": "Recupera il chip rubato e analizza le sue implicazioni\nNeeded Object: Chip Criptato Rubato\nTreasure: Chiave Decrittazione\nDialogue Hooks:",
+  "goal": "Recupera il chip rubato e analizza le sue implicazioni",
+  "needed_object": "Chip Criptato Rubato",
+  "treasure": "Chiave Decrittazione",
+  "playerhint": "Selena, the Corpo-Tech in Tyrranor City, is after a Stolen Encrypted Chip. Retrieving it for her would help her analysis of advanced tech.\nDialogue Hooks:",
   "dialogue_hooks": "\"Il chip è solo l'inizio. Ci sono altre informazioni più importanti.\"\n\"Non credo che tu capisca cosa significa essere un corpo-tech.\"",
   "veil_connection": "",
   "code": "tyrranor.selena",
   "storyboard_id": 1,
-  "created_at": "2025-05-11T14:05:32.014814"
+  "created_at": "2025-05-11T15:27:01.930219"
 }

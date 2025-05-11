@@ -5,6 +5,7 @@ Motivation: Maintain influence and power.
 Goal: Engineer a rival's downfall.
 Needed Object: Rival's Ledger
 Treasure: Forged Document
+PlayerHint: Cassian, the city bureaucrat, aims to take down a rival. He likely needs incriminating evidence, such as the Rival's Ledger.
 Dialogue Hooks:
 - "Policy is the art of slow poisoning… no offense, of course."
 - "I’d offer you a contract, but you’d better read the margins first."

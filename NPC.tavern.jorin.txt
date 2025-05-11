@@ -5,6 +5,7 @@ Motivation: Stay informed and safe.
 Goal: Collect secrets as currency.
 Needed Object: Rare Coin
 Treasure: Secret Message
+PlayerHint: Jorin, the Tavern Keeper, values secrets above all. Presenting him with a Rare Coin might persuade him to share some valuable information.
 Dialogue Hooks:
 - "You can learn more from a drunk’s mumble than a priest’s sermon."
 - "Funny thing, someone matching your look passed through here last night… paid in foreign coin."

@@ -5,6 +5,7 @@ Motivation: Protect the ruins from desecration.
 Goal: Guide a worthy soul and be freed.
 Needed Object: Offering of Light
 Treasure: Ancient Rune Fragment
+PlayerHint: Syra, guardian of the Ancient Ruins, wants to guide a worthy individual and find her freedom. An Offering of Light is likely what she requires.
 Dialogue Hooks:
 - "The stone remembers blood and betrayal."
 - "Only when the moon reflects the sun will the door remember how to open."

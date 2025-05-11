@@ -5,6 +5,7 @@ Motivation: Guard the balance of nature.
 Goal: Prevent a spreading blight.
 Needed Object: Blight Sample
 Treasure: Soothing Balm Recipe
+PlayerHint: Elira is dedicated to stopping a blight in the Forest. Providing her with a Blight Sample would allow her to study it and find a cure.
 Dialogue Hooks:
 - "The trees weep for what you’ve burned."
 - "This path is older than your maps. And far less forgiving."

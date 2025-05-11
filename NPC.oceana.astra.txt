@@ -5,6 +5,7 @@ Motivation: Recupera informazioni sull'artefatto e sulla Breccia
 Goal: Recupera informazioni sull'artefatto e sulla Breccia
 Needed Object: Chip Dati Alieno
 Treasure: Schema Stabilizzatore Breccia
+PlayerHint: Astra, the alien cultist in Oceana's depths, is gathering info on an artifact and a Breach. An Alien Data Chip would be invaluable to her research.
 Dialogue Hooks:
 - "L'artefatto è nascosto in un luogo inaccessibile. Devi essere coraggioso per trovarlo."
 - "La Breccia sta cambiando tutto. Dobbiamo essere pronti."

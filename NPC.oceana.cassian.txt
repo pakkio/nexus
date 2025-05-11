@@ -5,6 +5,7 @@ Motivation: Mantenere l'influenza e il potere
 Goal: Ingegnerizzare la caduta di un rivale
 Needed Object: Registro del Rivale
 Treasure: Documento Falsificato
+PlayerHint: Cassian in Oceana City is plotting against a rival. He's likely looking for something like the Rival's Ledger to expose them.
 Dialogue Hooks:
 - "La politica è l'arte di avvelenare lentamente... nessun'offesa, naturalmente."
 - "Ti offrierei un contratto, ma devi leggere i margini prima."

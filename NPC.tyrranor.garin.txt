@@ -5,6 +5,7 @@ Motivation: Proteggere il villaggio e redenimere il suo passato
 Goal: Reforgiare la sua spada rotta
 Needed Object: Frammento Stemma Leone
 Treasure: Elsa Riforgiata
+PlayerHint: Garin, the blacksmith in Tyrranor Village, is trying to reforge his broken sword. He needs a Lion Crest Fragment to complete it.
 Dialogue Hooks:
 - "L'acciaio ricorda ogni colpo. Ecco perché martello con cura."
 - "Se trovi pezzi con un crest di leone... portali a me, senza fare domande."

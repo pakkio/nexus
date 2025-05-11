@@ -5,6 +5,7 @@ Motivation: Live peacefully and pass on wisdom.
 Goal: Teach a worthy soul before he dies.
 Needed Object: Lost Goat Bell
 Treasure: Warrior's Keepsake
+PlayerHint: Boros, the old goatherd on the Mountain, seeks a worthy student. Retrieving his Lost Goat Bell could be the test he's looking for.
 Dialogue Hooks:
 - "The wind up here doesn’t lie. Listen to it next time."
 - "I buried my sword beneath the oldest goat. Don’t ask how I know which one."

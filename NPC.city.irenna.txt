@@ -5,7 +5,9 @@ Motivation: Protect the innocent and expose corruption.
 Goal: Unmask the high judge’s crimes.
 Needed Object: Puppet String Spool
 Treasure: Judge's Diary Page
+PlayerHint: Irenna uses her puppet shows to expose truths. To help her unmask the High Judge, she might require a Puppet String Spool for a special performance or to send a message.
 Dialogue Hooks:
 - "The little ones know more than you think — they just talk with string and wood."
 - "Every play I perform is a truth they can't imprison."
-Veil Connection: Her puppet shows move on their own; orphan children may be Veil-touched.
+Veil Connection: Her puppet shows move on their own;
+orphan children may be Veil-touched.

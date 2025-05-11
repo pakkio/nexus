@@ -5,6 +5,7 @@ Motivation: Protect the village and redeem his past.
 Goal: Reforge his broken family sword.
 Needed Object: Lion Crest Fragment
 Treasure: Reforged Hilt
+PlayerHint: Garin, the Village blacksmith, wishes to reforge his family's broken sword. A Lion Crest Fragment is the key component he's missing.
 Dialogue Hooks:
 - "Steel remembers every swing. That’s why I hammer with care."
 - "If you find any pieces with a lion crest… bring them to me, no questions."

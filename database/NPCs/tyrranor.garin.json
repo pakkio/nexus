@@ -3,10 +3,13 @@
   "area": "Tyrranor - Villaggio",
   "role": "Fabbro",
   "motivation": "Proteggere il villaggio e redenimere il suo passato",
-  "goal": "Reforgiare la sua spada rotta\nNeeded Object: Frammento Stemma Leone\nTreasure: Elsa Riforgiata\nDialogue Hooks:",
+  "goal": "Reforgiare la sua spada rotta",
+  "needed_object": "Frammento Stemma Leone",
+  "treasure": "Elsa Riforgiata",
+  "playerhint": "Garin, the blacksmith in Tyrranor Village, is trying to reforge his broken sword. He needs a Lion Crest Fragment to complete it.\nDialogue Hooks:",
   "dialogue_hooks": "\"L'acciaio ricorda ogni colpo. Ecco perché martello con cura.\"\n\"Se trovi pezzi con un crest di leone... portali a me, senza fare domande.\"",
   "veil_connection": "",
   "code": "tyrranor.garin",
   "storyboard_id": 1,
-  "created_at": "2025-05-11T14:05:32.015000"
+  "created_at": "2025-05-11T15:27:01.930438"
 }

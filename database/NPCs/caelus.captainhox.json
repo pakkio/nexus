@@ -3,10 +3,13 @@
   "area": "Caelus - Nimbus Prime",
   "role": "Mercante/Pirata",
   "motivation": "Proteggere i suoi interessi e navigare nei mari stellari",
-  "goal": "Proteggere i suoi interessi e recuperare informazioni preziose\nNeeded Object: Frammento Carta Stellare\nTreasure: Coordinate Posizione Reliquia\nDialogue Hooks:",
+  "goal": "Proteggere i suoi interessi e recuperare informazioni preziose",
+  "needed_object": "Frammento Carta Stellare",
+  "treasure": "Coordinate Posizione Reliquia",
+  "playerhint": "Captain Hox is looking to secure his interests and needs valuable information. A Star Chart Fragment could be key to earning his trust or a reward.\nDialogue Hooks:",
   "dialogue_hooks": "\"Il mare stellare è pieno di pericoli. Devi essere pronto a tutto.\"\n\"Ho informazioni su un pezzo di artefatto nascosto nel relitto di una nave.\"",
   "veil_connection": "",
   "code": "caelus.captainhox",
   "storyboard_id": 1,
-  "created_at": "2025-05-11T14:05:32.015833"
+  "created_at": "2025-05-11T15:27:01.931504"
 }

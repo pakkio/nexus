@@ -3,10 +3,13 @@
   "area": "Village",
   "role": "Herbalist",
   "motivation": "Preserve ancient plant knowledge.",
-  "goal": "Recreate a legendary healing elixir.\nNeeded Object: Blueleaf Seed\nTreasure: Healing Elixir Draft\nDialogue Hooks:",
+  "goal": "Recreate a legendary healing elixir.",
+  "needed_object": "Blueleaf Seed",
+  "treasure": "Healing Elixir Draft",
+  "playerhint": "Mara, the Village herbalist, is attempting to make a legendary healing elixir. She needs a Blueleaf Seed for her potion.\nDialogue Hooks:",
   "dialogue_hooks": "\"Have you ever seen a blueleaf flower bloom under moonlight?\"\n\"My gran used to say: ‘Every wound teaches you what root to use next time.’\"",
   "veil_connection": "",
   "code": "village.mara",
   "storyboard_id": 1,
-  "created_at": "2025-05-11T14:05:32.015509"
+  "created_at": "2025-05-11T15:27:01.931160"
 }

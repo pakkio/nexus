@@ -3,10 +3,13 @@
   "area": "Caelus - Taverna",
   "role": "Taverniere",
   "motivation": "Raccogliere segreti come valuta",
-  "goal": "Raccogliere informazioni e mantenere la sicurezza\nNeeded Object: Moneta Rara\nTreasure: Messaggio Segreto\nDialogue Hooks:",
+  "goal": "Raccogliere informazioni e mantenere la sicurezza",
+  "needed_object": "Moneta Rara",
+  "treasure": "Messaggio Segreto",
+  "playerhint": "Jorin, the tavern keeper in Caelus, trades in secrets. A Rare Coin might loosen his tongue or grant you access to valuable information.\nDialogue Hooks:",
   "dialogue_hooks": "\"Puoi imparare più da un ubriaco che da un prete.\"\n\"Strano, qualcuno che assomiglia a te è passato di qui la notte scorsa... pagato in moneta straniera.\"",
   "veil_connection": "",
   "code": "caelus.jorin",
   "storyboard_id": 1,
-  "created_at": "2025-05-11T14:05:32.015770"
+  "created_at": "2025-05-11T15:27:01.931449"
 }

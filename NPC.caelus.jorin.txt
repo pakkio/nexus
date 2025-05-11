@@ -5,6 +5,7 @@ Motivation: Raccogliere segreti come valuta
 Goal: Raccogliere informazioni e mantenere la sicurezza
 Needed Object: Moneta Rara
 Treasure: Messaggio Segreto
+PlayerHint: Jorin, the tavern keeper in Caelus, trades in secrets. A Rare Coin might loosen his tongue or grant you access to valuable information.
 Dialogue Hooks:
 - "Puoi imparare più da un ubriaco che da un prete."
 - "Strano, qualcuno che assomiglia a te è passato di qui la notte scorsa... pagato in moneta straniera."
