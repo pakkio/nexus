@@ -1,9 +1,9 @@
 # Path: main_core.py
-# Updated for robust NPC item giving via [GIVEN_ITEMS:] tag parsing
+# Updated for Credits system and case-insensitive inventory processing
 
 import sys
 import traceback 
-import re # For parsing the new tag
+import re 
 from typing import Dict, List, Any, Optional, Tuple
 
 try:
@@ -35,23 +35,28 @@ def run_interaction_loop(
         player_id: str
 ):
     """Runs the main user interaction loop."""
+    
+    # Initialize player_credits_cache by fetching from DB (handles new player default)
+    # This ensures load_player_state (which defaults credits) is called if player is new.
+    initial_player_credits = db.get_player_credits(player_id)
+
     game_session_state: Dict[str, Any] = {
         'db': db, 'story': story, 'current_area': None, 'current_npc': None, 
         'chat_session': None, 'model_name': model_name,
         'use_stream': use_stream, 'auto_show_stats': auto_show_stats,
-        'player_id': player_id, 'player_inventory': db.load_inventory(player_id),
+        'player_id': player_id, 
+        'player_inventory': db.load_inventory(player_id), # Initial load
+        'player_credits_cache': initial_player_credits, # Initial load
         'ChatSession': ChatSession, 'TerminalFormatter': TerminalFormatter, 
-        'format_stats': format_stats, 'npc_made_new_response_this_turn': False,
+        'format_stats': format_stats, 
+        'npc_made_new_response_this_turn': False,
     }
 
     all_known_npcs = session_utils.refresh_known_npcs_list(db, TerminalFormatter)
     known_areas = session_utils.get_known_areas_from_list(all_known_npcs)
     
-    # --- Initial Area and NPC Setup ---
     if initial_area:
-        # ... (Keep your existing initial area/NPC setup logic from previous correct version) ...
-        # This logic correctly calls session_utils.start_conversation_with_specific_npc
-        # or session_utils.auto_start_default_npc_conversation.
+        # ... (Keep existing initial area/NPC setup logic) ...
         print(f"{TerminalFormatter.DIM}Validating initial area '{initial_area}'...{TerminalFormatter.RESET}")
         initial_area_prefix = initial_area.lower()
         area_matches = [area for area in known_areas if area.lower().startswith(initial_area_prefix)]
@@ -79,7 +84,6 @@ def run_interaction_loop(
 
     while True:
         try:
-            # --- Build Prompt for Player Input ---
             current_npc_for_prompt = game_session_state.get('current_npc')
             current_area_for_prompt = game_session_state.get('current_area')
             prompt_prefix = f"\n{TerminalFormatter.BOLD}{TerminalFormatter.BRIGHT_MAGENTA}{player_id} (Nowhere) > {TerminalFormatter.RESET}"
@@ -89,30 +93,32 @@ def run_interaction_loop(
                 prompt_prefix = f"\n{TerminalFormatter.BOLD}{TerminalFormatter.CYAN}{player_id} ({current_area_for_prompt}) > {TerminalFormatter.RESET}"
             user_input = input(prompt_prefix).strip()
             
-            game_session_state['npc_made_new_response_this_turn'] = False # Reset for this turn
+            game_session_state['npc_made_new_response_this_turn'] = False 
             
-            # --- Process Player Input (Commands or Dialogue) ---
             game_session_state = command_processor.process_input_revised(user_input, game_session_state)
 
             if game_session_state.get('status') == 'exit': break 
 
-            # --- Process NPC Giving Items (Tag-Based) ---
+            # --- Process NPC Giving Items/Credits (Tag-Based) ---
             if game_session_state.get('npc_made_new_response_this_turn'):
-                chat_session = game_session_state.get('chat_session')
-                current_npc_data = game_session_state.get('current_npc') # Renamed for clarity
-                
+                chat_session = game_session_state.get('chat_session') # Use updated session
+                current_npc_data = game_session_state.get('current_npc')
+                db_instance = game_session_state.get('db')
+                player_id_curr = game_session_state.get('player_id')
+                TF = game_session_state.get('TerminalFormatter', TerminalFormatter)
+
                 raw_npc_response_text = None
                 if chat_session and chat_session.messages and \
                    chat_session.messages[-1].get("role") == "assistant":
                     raw_npc_response_text = chat_session.messages[-1].get("content")
 
-                if raw_npc_response_text and current_npc_data:
-                    items_to_add_to_inventory = []
+                if raw_npc_response_text and current_npc_data and db_instance and player_id_curr:
+                    items_given_by_npc_this_turn_names = []
+                    credits_given_by_npc_this_turn = 0
                     dialogue_to_persist = raw_npc_response_text 
                     
                     tag_marker_start = "[GIVEN_ITEMS:"
                     tag_marker_end = "]"
-                    
                     tag_start_idx = raw_npc_response_text.rfind(tag_marker_start)
                     
                     if tag_start_idx != -1:
@@ -121,61 +127,65 @@ def run_interaction_loop(
                         
                         if tag_end_idx != -1:
                             item_list_str = raw_npc_response_text[content_start_idx:tag_end_idx].strip()
-                            if item_list_str:
-                                items_to_add_to_inventory = [item.strip() for item in item_list_str.split(',') if item.strip()]
-                            
-                            # Clean the dialogue to be stored in history and potentially re-displayed if needed
-                            # This assumes tag is at the end. A more robust removal might be needed if tag can be mid-dialogue.
-                            dialogue_to_persist = raw_npc_response_text[:tag_start_idx].strip()
-                            
-                            # Update the last message in chat history with the cleaned dialogue
+                            dialogue_to_persist = raw_npc_response_text[:tag_start_idx].strip() # Cleaned dialogue
                             if chat_session.messages and chat_session.messages[-1].get("role") == "assistant":
-                                chat_session.messages[-1]["content"] = dialogue_to_persist
-                            
-                            print(f"{TerminalFormatter.DIM}[SYSTEM PARSED] NPC intends to give: {', '.join(items_to_add_to_inventory)}{TerminalFormatter.RESET}")
-                    
-                    if items_to_add_to_inventory:
-                        for item_name in items_to_add_to_inventory:
-                            if db.add_item_to_inventory(player_id, item_name, game_session_state):
-                                game_session_state['player_inventory'] = db.load_inventory(player_id) # Refresh cache
-                            # add_item_to_inventory prints its own messages
+                                chat_session.messages[-1]["content"] = dialogue_to_persist # Update history
 
-            # --- Process Consequences of Player Giving an Item ---
-            item_given_details = game_session_state.pop('item_given_to_npc_this_turn', None)
+                            if item_list_str:
+                                potential_items_or_credits = [item.strip() for item in item_list_str.split(',') if item.strip()]
+                                for poc_item_str in potential_items_or_credits:
+                                    credit_match = re.match(r"(\d+)\s+credits?", poc_item_str, re.IGNORECASE)
+                                    if credit_match:
+                                        credits_given_by_npc_this_turn += int(credit_match.group(1))
+                                    else:
+                                        items_given_by_npc_this_turn_names.append(poc_item_str)
+                            
+                            if items_given_by_npc_this_turn_names or credits_given_by_npc_this_turn > 0:
+                                print(f"{TF.DIM}[SYSTEM PARSED GIVEN_ITEMS] NPC offered: Items: {items_given_by_npc_this_turn_names}, Credits: {credits_given_by_npc_this_turn}{TF.RESET}")
+
+                    if items_given_by_npc_this_turn_names:
+                        for item_name in items_given_by_npc_this_turn_names:
+                            if db_instance.add_item_to_inventory(player_id_curr, item_name, game_session_state): # Pass full state
+                                game_session_state['player_inventory'] = db_instance.load_inventory(player_id_curr)
+                    
+                    if credits_given_by_npc_this_turn > 0:
+                        if db_instance.update_player_credits(player_id_curr, credits_given_by_npc_this_turn, game_session_state): # Pass full state
+                            game_session_state['player_credits_cache'] = db_instance.get_player_credits(player_id_curr)
+                            # update_player_credits prints its own message
+
+            # --- Process Consequences of Player Giving an Item/Credits ---
+            item_given_details = game_session_state.pop('item_given_to_npc_this_turn', None) 
             if item_given_details and isinstance(item_given_details, dict) and \
                game_session_state.get('current_npc') and \
                game_session_state.get('current_npc').get('code') == item_given_details.get('npc_code'):
                 
-                item_player_gave = item_given_details['item_name']
+                item_player_gave_name = item_given_details['item_name'] # This is what player gave (e.g. "50 Credits" or "cleaned_item_name")
+                item_type = item_given_details.get('type')
                 current_npc_for_consequence = game_session_state['current_npc']
                 chat_session_for_consequence = game_session_state.get('chat_session')
-                db_for_consequences = game_session_state['db'] # Use db from current state
+                db_for_consequences = game_session_state['db']
                 
-                print(f"{TerminalFormatter.DIM}[SYSTEM evaluating consequence of giving '{item_player_gave}']...{TerminalFormatter.RESET}")
+                print(f"{TerminalFormatter.DIM}[SYSTEM evaluating consequence of giving '{item_player_gave_name}']...{TerminalFormatter.RESET}")
                 
-                npc_needed_object = current_npc_for_consequence.get('needed_object')
-                npc_treasure_reward = current_npc_for_consequence.get('treasure') 
+                if item_type != 'currency': # Only check for Needed Object if it wasn't currency (bribes handled by LLM dialogue)
+                    npc_needed_object = current_npc_for_consequence.get('needed_object')
+                    npc_treasure_reward = current_npc_for_consequence.get('treasure') 
 
-                if npc_needed_object and item_player_gave.lower() == npc_needed_object.lower():
-                    print(f"{TerminalFormatter.BRIGHT_YELLOW}[Game System]: {current_npc_for_consequence['name']} received '{npc_needed_object}'!{TerminalFormatter.RESET}")
-                    if npc_treasure_reward and npc_treasure_reward.lower() != item_player_gave.lower(): 
-                        if not db_for_consequences.check_item_in_inventory(player_id, npc_treasure_reward):
-                            db_for_consequences.add_item_to_inventory(player_id, npc_treasure_reward, game_session_state)
-                            game_session_state['player_inventory'] = db_for_consequences.load_inventory(player_id)
-                            print(f"{TerminalFormatter.BRIGHT_CYAN}{current_npc_for_consequence['name']} gives you: {npc_treasure_reward}!{TerminalFormatter.RESET}")
-                            if chat_session_for_consequence: # Add to history for NPC context
-                                chat_session_for_consequence.add_message("assistant", f"*For the {npc_needed_object}, please accept this {npc_treasure_reward}. It is now yours.* [GIVEN_ITEMS: {npc_treasure_reward}]")
-                                # The above line manually adds GIVEN_ITEMS tag for consistency if NPC gives treasure this way
-                                # And then main_core loop for NPC giving would re-process it. This can be refined.
-                                # Better: LLM generates the [GIVEN_ITEMS] tag itself when it decides to give the treasure.
-                                # For now, let's assume add_item_to_inventory is sufficient player feedback.
-                        else:
-                            print(f"{TerminalFormatter.DIM}{current_npc_for_consequence['name']} would give '{npc_treasure_reward}', but you already have it.{TerminalFormatter.RESET}")
-                    if chat_session_for_consequence and hasattr(chat_session_for_consequence, 'set_player_hint'):
-                        new_hint = f"You helped {current_npc_for_consequence['name']} with the {npc_needed_object}."
-                        chat_session_for_consequence.set_player_hint(new_hint)
+                    if npc_needed_object and item_player_gave.lower() == db_for_consequences._clean_item_name(npc_needed_object): # Compare cleaned names
+                        print(f"{TerminalFormatter.BRIGHT_YELLOW}[Game System]: {current_npc_for_consequence['name']} received needed '{npc_needed_object}'!{TerminalFormatter.RESET}")
+                        if npc_treasure_reward and npc_treasure_reward.lower() != item_player_gave.lower(): 
+                            if not db_for_consequences.check_item_in_inventory(player_id, npc_treasure_reward):
+                                db_for_consequences.add_item_to_inventory(player_id, npc_treasure_reward, game_session_state)
+                                game_session_state['player_inventory'] = db_for_consequences.load_inventory(player_id)
+                                print(f"{TerminalFormatter.BRIGHT_CYAN}{current_npc_for_consequence['name']} gives you: {npc_treasure_reward}!{TerminalFormatter.RESET}")
+                                # LLM should ideally handle saying it gives the item + GIVEN_ITEMS tag
+                            else: print(f"{TerminalFormatter.DIM}{current_npc_for_consequence['name']} would give '{npc_treasure_reward}', but you have it.{TerminalFormatter.RESET}")
+                        if chat_session_for_consequence:
+                            new_hint = f"You helped {current_npc_for_consequence['name']} with {npc_needed_object}."
+                            chat_session_for_consequence.set_player_hint(new_hint)
+                # If it was currency, the consequence is handled by the NPC's dialogue reaction to the bribe/payment.
 
-        except KeyboardInterrupt: 
+        except KeyboardInterrupt: # ... (keep existing error handling) ...
             print(f"\n{TerminalFormatter.DIM}Interruption. Saving...{TerminalFormatter.RESET}")
             session_utils.save_current_conversation(db, player_id, game_session_state.get('current_npc'), game_session_state.get('chat_session'), TerminalFormatter)
             print(f"{TerminalFormatter.YELLOW}\nExiting.{TerminalFormatter.RESET}"); break
@@ -188,11 +198,8 @@ def run_interaction_loop(
             traceback.print_exc()
             print(f"{TerminalFormatter.YELLOW}Attempting to continue...{TerminalFormatter.RESET}")
 
+    # ... (keep existing cleanup) ...
     print(f"\n{TerminalFormatter.BRIGHT_CYAN}{'=' * 50}{TerminalFormatter.RESET}")
-    final_session = game_session_state.get('chat_session')
-    final_npc = game_session_state.get('current_npc')
-    if final_session and final_npc:
-        print(f"{TerminalFormatter.YELLOW}Session terminated. Stats ({final_npc.get('name', 'N/A')}):{TerminalFormatter.RESET}")
-        print(final_session.format_session_stats())
+    final_session = game_session_state.get('chat_session'); final_npc = game_session_state.get('current_npc')
+    if final_session and final_npc: print(f"{TerminalFormatter.YELLOW}Session terminated. Stats ({final_npc.get('name','N/A')}):{TerminalFormatter.RESET}\n{final_session.format_session_stats()}")
     else: print(f"{TerminalFormatter.YELLOW}Session terminated.{TerminalFormatter.RESET}")
-
