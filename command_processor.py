@@ -5,73 +5,96 @@ import random
 import traceback
 from typing import Dict, List, Any, Optional, Tuple
 
-# Import utilities from the new module
-import session_utils
+import session_utils # Import the session_utils module
 
-# Assume necessary classes/functions are passed or imported globally
-# from terminal_formatter import TerminalFormatter
-# from chat_manager import ChatSession, format_stats
-# from db_manager import DbManager
-# from main_utils import get_help_text, format_npcs_list
+# Assume necessary classes/functions are passed in 'state' or imported globally if shared
+# from terminal_formatter import TerminalFormatter (from state)
+# from chat_manager import ChatSession (class from state)
+# from db_manager import DbManager (from state)
+# from main_utils import get_help_text, format_npcs_list (from state or direct import)
 
-# Define constants
-RANDOM_TALK_SYNTAX = '.' # source [48]
-# Return type hints for state updates can be more specific if using TypedDict or a State class
-HandlerResult = Dict[str, Any] # Example: {'status': 'ok', 'new_area': 'Tavern', ... 'exit': False}
+RANDOM_TALK_SYNTAX = '.'
+HandlerResult = Dict[str, Any]
 
 def handle_exit(state: Dict[str, Any]) -> HandlerResult:
     """Handles the /exit command."""
     TerminalFormatter = state['TerminalFormatter']
-    player_id = state['player_id'] # Get player_id
+    player_id = state['player_id']
     print(f"\n{TerminalFormatter.DIM}Saving last conversation (if active)...{TerminalFormatter.RESET}")
     session_utils.save_current_conversation(
-        state['db'], player_id, state['current_npc'], state['chat_session'], TerminalFormatter # MODIFIED
+        state['db'], player_id, state['current_npc'], state['chat_session'], TerminalFormatter
     )
     print(f"{TerminalFormatter.YELLOW}Arrivederci! Leaving Eldoria... for now.{TerminalFormatter.RESET}")
-    return {'status': 'exit'} # Signal to main loop to exit
+    return {'status': 'exit'}
 
-def handle_help(state: Dict[str, Any]) -> HandlerResult: # source [49]
+def handle_help(state: Dict[str, Any]) -> HandlerResult:
     """Handles the /help command."""
-    from main_utils import get_help_text # Import here or pass if preferred
-    print(get_help_text())
-    return {'status': 'ok', 'continue_loop': True} # Continue loop normally
+    # Assuming get_help_text is available, e.g., from main_utils
+    try:
+        from main_utils import get_help_text
+        print(get_help_text())
+    except ImportError:
+        print("Help text unavailable.")
+    return {'status': 'ok', 'continue_loop': True}
 
 def handle_go(args: str, state: Dict[str, Any]) -> HandlerResult:
-    """Handles the /go command with partial matching."""
+    """Handles the /go command with partial matching and auto-talk to default NPC."""
     TerminalFormatter = state['TerminalFormatter']
     db = state['db']
-    player_id = state['player_id'] # Get player_id
-    current_npc = state['current_npc']
-    chat_session = state['chat_session']
+    player_id = state['player_id']
+    current_npc_old = state['current_npc'] # NPC before moving
+    chat_session_old = state['chat_session'] # Session before moving
 
     if not args:
         print(f"{TerminalFormatter.YELLOW}Usage: /go <area_name_or_prefix>{TerminalFormatter.RESET}")
-        return {'status': 'ok', 'continue_loop': True} # source [50]
+        return {'status': 'ok', 'continue_loop': True}
 
     target_area_prefix = args.lower()
-    # Refresh NPC list to get current areas
-    all_known_npcs = session_utils.refresh_known_npcs_list(db, TerminalFormatter)
+    all_known_npcs = session_utils.refresh_known_npcs_list(db, TerminalFormatter) # Refresh for current data
     known_areas = session_utils.get_known_areas_from_list(all_known_npcs)
     matches = [area for area in known_areas if area.lower().startswith(target_area_prefix)]
 
-    new_state = {'status': 'ok', 'continue_loop': True} # Default return
+    new_state = {'status': 'ok', 'continue_loop': True}
 
     if len(matches) == 1:
         matched_area = matches[0]
-        print(f"{TerminalFormatter.DIM}Unique match found: {matched_area}{TerminalFormatter.RESET}")
-        print(f"\n{TerminalFormatter.DIM}Saving previous conversation (if active)...{TerminalFormatter.RESET}") # source [51]
-        session_utils.save_current_conversation(db, player_id, current_npc, chat_session, TerminalFormatter) # MODIFIED
+        print(f"{TerminalFormatter.DIM}Unique area match found: {matched_area}{TerminalFormatter.RESET}")
+        print(f"\n{TerminalFormatter.DIM}Saving previous conversation (if active)...{TerminalFormatter.RESET}")
+        session_utils.save_current_conversation(db, player_id, current_npc_old, chat_session_old, TerminalFormatter)
         print(f"{TerminalFormatter.CYAN}Moving to area: {matched_area}...{TerminalFormatter.RESET}")
-        print(f"{TerminalFormatter.YELLOW}You are now in {matched_area}. Use {TerminalFormatter.BOLD}/talk <npc_name_or_prefix|.>{TerminalFormatter.YELLOW} or {TerminalFormatter.BOLD}/who{TerminalFormatter.YELLOW}.") # source [52]
-        # Update state to be returned
+
+        # Base state update for moving
         new_state.update({
             'current_area': matched_area,
             'current_npc': None,
             'chat_session': None
         })
+
+        # --- MODIFIED: Attempt to auto-start conversation with default NPC ---
+        default_npc_data, default_session = session_utils.auto_start_default_npc_conversation(
+            db,
+            player_id,
+            matched_area,
+            state['model_name'],
+            state['story'],
+            state['ChatSession'], # Pass ChatSession class from state
+            TerminalFormatter
+        )
+
+        if default_npc_data and default_session:
+            new_state['current_npc'] = default_npc_data
+            new_state['chat_session'] = default_session
+            # auto_start_default_npc_conversation handles printing its intro messages
+        else:
+            # No default NPC found or error during auto-start.
+            # auto_start_default_npc_conversation prints "No default NPC found..."
+            # So, if no conversation was started, provide general guidance.
+            if not (default_npc_data and default_session) :
+                print(f"{TerminalFormatter.YELLOW}You are now in {matched_area}. Use {TerminalFormatter.BOLD}/talk <npc_name_or_prefix|.>{TerminalFormatter.YELLOW} or {TerminalFormatter.BOLD}/who{TerminalFormatter.YELLOW} to interact.")
+
     elif len(matches) > 1:
         print(f"{TerminalFormatter.YELLOW}⚠️ Ambiguous area prefix '{args}'. Matches:{TerminalFormatter.RESET}")
-        for area_match in sorted(matches): # source [53]
+        for area_match in sorted(matches):
             print(f"  {TerminalFormatter.DIM}- {area_match}{TerminalFormatter.RESET}")
         print(f"{TerminalFormatter.YELLOW}Please be more specific using /go <full_area_name>.{TerminalFormatter.RESET}")
     else:
@@ -83,17 +106,18 @@ def handle_go(args: str, state: Dict[str, Any]) -> HandlerResult:
 def handle_talk(args: str, state: Dict[str, Any]) -> HandlerResult:
     """Handles the /talk command with partial matching and random selection."""
     TerminalFormatter = state['TerminalFormatter']
-    db = state['db'] # source [54]
-    player_id = state['player_id'] # Get player_id
+    db = state['db']
+    player_id = state['player_id']
     current_area = state['current_area']
-    current_npc = state['current_npc']
-    chat_session = state['chat_session']
-    model_name = state['model_name']
-    story = state['story']
-    ChatSession = state['ChatSession'] # Pass class reference
+    current_npc_old = state['current_npc']
+    chat_session_old = state['chat_session']
+    # Get necessary items from state for starting a new session
+    model_name_for_session = state['model_name']
+    story_for_session = state['story']
+    ChatSession_class = state['ChatSession']
 
     if not current_area:
-        print(f"{TerminalFormatter.YELLOW}You need to be in an area first. Use {TerminalFormatter.BOLD}/go <area_name_or_prefix>{TerminalFormatter.RESET}") # source [55]
+        print(f"{TerminalFormatter.YELLOW}You need to be in an area first. Use {TerminalFormatter.BOLD}/go <area_name_or_prefix>{TerminalFormatter.RESET}")
         return {'status': 'ok', 'continue_loop': True}
     if not args:
         print(f"{TerminalFormatter.YELLOW}Usage: /talk <npc_name_or_prefix | . > ({TerminalFormatter.BOLD}.{TerminalFormatter.YELLOW} for random){TerminalFormatter.RESET}")
@@ -101,74 +125,55 @@ def handle_talk(args: str, state: Dict[str, Any]) -> HandlerResult:
 
     target_npc_info = None
     initiate_talk = False
-    new_state = {'status': 'ok', 'continue_loop': True} # Default updates
+    new_state = {'status': 'ok', 'continue_loop': True}
 
-    # Refresh NPC list for current operations
     all_known_npcs = session_utils.refresh_known_npcs_list(db, TerminalFormatter)
-    npcs_in_current_area = [n for n in all_known_npcs if n.get('area','').lower() == current_area.lower()] # source [56]
+    npcs_in_current_area = [n for n in all_known_npcs if n.get('area','').lower() == current_area.lower()]
 
     if args == RANDOM_TALK_SYNTAX:
-        print(f"{TerminalFormatter.DIM}Attempting to talk to a random NPC in '{current_area}'...{TerminalFormatter.RESET}")
         if not npcs_in_current_area:
             print(f"{TerminalFormatter.YELLOW}⚠️ No NPCs found in {current_area} to talk to randomly.{TerminalFormatter.RESET}")
         else:
             target_npc_info = random.choice(npcs_in_current_area)
-            print(f"{TerminalFormatter.DIM}Randomly selected: {target_npc_info['name']}{TerminalFormatter.RESET}")
-            initiate_talk = True # source [57]
+            initiate_talk = True
     else:
-        # Partial/Full Name Matching
         target_npc_prefix = args.lower()
-        print(f"{TerminalFormatter.DIM}Looking for NPCs starting with '{args}' in '{current_area}'...{TerminalFormatter.RESET}")
         matches = [n for n in npcs_in_current_area if n.get('name','').lower().startswith(target_npc_prefix)]
-
         if len(matches) == 1:
             target_npc_info = matches[0]
-            print(f"{TerminalFormatter.DIM}Unique match found: {target_npc_info['name']}{TerminalFormatter.RESET}") # source [58]
             initiate_talk = True
         elif len(matches) > 1:
-            print(f"{TerminalFormatter.YELLOW}⚠️ Ambiguous NPC prefix '{args}'. Matches in {current_area}:{TerminalFormatter.RESET}") # source [59]
+            print(f"{TerminalFormatter.YELLOW}⚠️ Ambiguous NPC prefix '{args}'. Matches in {current_area}:{TerminalFormatter.RESET}")
             for npc_match in sorted(matches, key=lambda x: x['name']):
                 print(f"  {TerminalFormatter.DIM}- {npc_match.get('name')} ({npc_match.get('role', '???')}){TerminalFormatter.RESET}")
-            print(f"{TerminalFormatter.YELLOW}Please be more specific using /talk <full_npc_name>.{TerminalFormatter.RESET}")
+            print(f"{TerminalFormatter.YELLOW}Please be more specific.{TerminalFormatter.RESET}")
         else:
             print(f"{TerminalFormatter.YELLOW}⚠️ NPC starting with '{args}' not found in {current_area}.{TerminalFormatter.RESET}")
-            if npcs_in_current_area: print(f"{TerminalFormatter.DIM}NPCs here: {', '.join(sorted(n['name'] for n in npcs_in_current_area))}{TerminalFormatter.RESET}") # source [60]
+            if npcs_in_current_area: print(f"{TerminalFormatter.DIM}NPCs here: {', '.join(sorted(n['name'] for n in npcs_in_current_area))}{TerminalFormatter.RESET}")
 
-    # --- Initiate conversation if a unique/random NPC was selected ---
     if initiate_talk and target_npc_info:
-        if current_npc and current_npc.get('code') == target_npc_info.get('code'):
+        if current_npc_old and current_npc_old.get('code') == target_npc_info.get('code'):
             print(f"{TerminalFormatter.DIM}You are already talking to {target_npc_info['name']}.{TerminalFormatter.RESET}")
         else:
-            print(f"{TerminalFormatter.DIM}Saving previous conversation (if active)...{TerminalFormatter.RESET}")
-            session_utils.save_current_conversation(db, player_id, current_npc, chat_session, TerminalFormatter) # MODIFIED
-            correct_npc_name = target_npc_info['name'] # source [61]
-            print(f"{TerminalFormatter.DIM}Starting conversation with '{correct_npc_name}'...{TerminalFormatter.RESET}")
+            print(f"\n{TerminalFormatter.DIM}Saving previous conversation (if active)...{TerminalFormatter.RESET}")
+            session_utils.save_current_conversation(db, player_id, current_npc_old, chat_session_old, TerminalFormatter)
 
-            # Call the session utility to load/prepare
-            npc_data, new_session = session_utils.load_and_prepare_conversation(
-                db, player_id, current_area, correct_npc_name, model_name, story, ChatSession, TerminalFormatter # MODIFIED # source [62]
+            correct_npc_name = target_npc_info['name']
+            # --- MODIFIED: Use new session_utils.start_conversation_with_specific_npc ---
+            npc_data, new_chat_session = session_utils.start_conversation_with_specific_npc(
+                db, player_id, current_area, correct_npc_name, model_name_for_session, story_for_session, ChatSession_class, TerminalFormatter
             )
 
-            if npc_data and new_session:
-                # Update state to be returned
+            if npc_data and new_chat_session:
                 new_state.update({
                     'current_npc': npc_data,
-                    'chat_session': new_session
-                }) # source [63]
-                # Print intro messages (part of the handler's responsibility)
-                print(f"\n{TerminalFormatter.BG_GREEN}{TerminalFormatter.BLACK}{TerminalFormatter.BOLD} NOW TALKING TO {npc_data.get('name', 'NPC').upper()} IN {current_area.upper()} {TerminalFormatter.RESET}")
-                print(f"{TerminalFormatter.DIM}Type '/exit' to leave, '/help' for commands.{TerminalFormatter.RESET}")
-                print(f"{TerminalFormatter.BRIGHT_CYAN}{'=' * 50}{TerminalFormatter.RESET}\n")
-                print(f"{TerminalFormatter.BOLD}{TerminalFormatter.MAGENTA}{npc_data['name']} > {TerminalFormatter.RESET}") # source [64]
-                opening_line = session_utils.get_npc_opening_line(npc_data, TerminalFormatter)
-                print(TerminalFormatter.format_terminal_text(opening_line, width=TerminalFormatter.get_terminal_width()))
-                print()
+                    'chat_session': new_chat_session
+                })
+                # Intro printing is now handled by start_conversation_with_specific_npc
             else:
-                print(f"{TerminalFormatter.RED}❌ Failed to start conversation with {correct_npc_name}. Check logs.{TerminalFormatter.RESET}") # source [65]
-                # Reset state if loading failed
+                # Error messages are handled within the called function
                 new_state.update({'current_npc': None, 'chat_session': None})
-
-    return new_state # Return potentially updated state
+    return new_state
 
 def handle_who(state: Dict[str, Any]) -> HandlerResult:
     """Handles the /who command."""
@@ -177,7 +182,7 @@ def handle_who(state: Dict[str, Any]) -> HandlerResult:
     current_area = state['current_area']
 
     if not current_area:
-        print(f"{TerminalFormatter.YELLOW}You are not in any specific area. Use /go <area> first.{TerminalFormatter.RESET}") # source [66]
+        print(f"{TerminalFormatter.YELLOW}You are not in any specific area. Use /go <area> first.{TerminalFormatter.RESET}")
     else:
         all_known_npcs = session_utils.refresh_known_npcs_list(db, TerminalFormatter)
         npcs_in_current_area = [npc for npc in all_known_npcs if npc.get('area', '').lower() == current_area.lower()]
@@ -185,7 +190,7 @@ def handle_who(state: Dict[str, Any]) -> HandlerResult:
             print(f"\n{TerminalFormatter.YELLOW}No known NPCs found in {current_area}.{TerminalFormatter.RESET}")
         else:
             print(f"\n{TerminalFormatter.YELLOW}NPCs in '{current_area}':{TerminalFormatter.RESET}")
-            for npc_info in sorted(npcs_in_current_area, key=lambda x: x.get('name','').lower()): # source [67]
+            for npc_info in sorted(npcs_in_current_area, key=lambda x: x.get('name','').lower()):
                 print(f"  {TerminalFormatter.DIM}- {npc_info.get('name', '???')} ({npc_info.get('role', '???')}){TerminalFormatter.RESET}")
     return {'status': 'ok', 'continue_loop': True}
 
@@ -195,38 +200,41 @@ def handle_whereami(state: Dict[str, Any]) -> HandlerResult:
     current_area = state['current_area']
     current_npc = state['current_npc']
     loc_msg = f"Location: {TerminalFormatter.BOLD}{current_area or 'Nowhere (Use /go)'}{TerminalFormatter.RESET}"
-    npc_msg = f"Talking to: {TerminalFormatter.BOLD}{current_npc['name'] if current_npc else 'Nobody (Use /talk)'}{TerminalFormatter.RESET}"
+    npc_name_display = current_npc['name'] if current_npc and 'name' in current_npc else 'Nobody (Use /talk or /go)'
+    npc_msg = f"Talking to: {TerminalFormatter.BOLD}{npc_name_display}{TerminalFormatter.RESET}"
     print(f"\n{TerminalFormatter.CYAN}{loc_msg}\n{npc_msg}{TerminalFormatter.RESET}")
-    return {'status': 'ok', 'continue_loop': True} # source [68]
+    return {'status': 'ok', 'continue_loop': True}
 
 def handle_npcs(state: Dict[str, Any]) -> HandlerResult:
     """Handles the /npcs command."""
     TerminalFormatter = state['TerminalFormatter']
     db = state['db']
-    from main_utils import format_npcs_list # Import here or pass
-
-    print(f"\n{TerminalFormatter.DIM}Fetching list of all known NPCs...{TerminalFormatter.RESET}")
-    all_npcs_list = session_utils.refresh_known_npcs_list(db, TerminalFormatter)
-    if not all_npcs_list:
-        print(f"{TerminalFormatter.YELLOW}No NPC data could be loaded.{TerminalFormatter.RESET}")
-    else:
-        print(format_npcs_list(all_npcs_list))
+    try:
+        from main_utils import format_npcs_list # Assuming format_npcs_list is in main_utils
+        print(f"\n{TerminalFormatter.DIM}Fetching list of all known NPCs...{TerminalFormatter.RESET}")
+        all_npcs_list = session_utils.refresh_known_npcs_list(db, TerminalFormatter)
+        if not all_npcs_list:
+            print(f"{TerminalFormatter.YELLOW}No NPC data could be loaded.{TerminalFormatter.RESET}")
+        else:
+            print(format_npcs_list(all_npcs_list))
+    except ImportError:
+        print(f"{TerminalFormatter.RED}Error: main_utils.format_npcs_list not found.{TerminalFormatter.RESET}")
     return {'status': 'ok', 'continue_loop': True}
 
-def handle_stats(state: Dict[str, Any]) -> HandlerResult: # source [69]
+def handle_stats(state: Dict[str, Any]) -> HandlerResult:
     """Handles the /stats command."""
     TerminalFormatter = state['TerminalFormatter']
     chat_session = state['chat_session']
     current_npc = state['current_npc']
-    format_stats = state['format_stats'] # Pass function reference
+    format_stats_func = state['format_stats'] # Get from state
 
     if not chat_session or not current_npc:
         print(f"{TerminalFormatter.YELLOW}You need to be actively talking to an NPC for this command.{TerminalFormatter.RESET}")
     else:
         last_stats = chat_session.get_last_stats()
         if last_stats:
-            print(f"\n{TerminalFormatter.DIM}{'-'*20} Last Turn Stats {'-'*20}{TerminalFormatter.RESET}") # source [70]
-            print(format_stats(last_stats))
+            print(f"\n{TerminalFormatter.DIM}{'-'*20} Last Turn Stats {'-'*20}{TerminalFormatter.RESET}")
+            print(format_stats_func(last_stats))
         else:
             print(f"{TerminalFormatter.YELLOW}No stats available for the last interaction.{TerminalFormatter.RESET}")
     return {'status': 'ok', 'continue_loop': True}
@@ -238,7 +246,7 @@ def handle_session_stats(state: Dict[str, Any]) -> HandlerResult:
     current_npc = state['current_npc']
 
     if not chat_session or not current_npc:
-        print(f"{TerminalFormatter.YELLOW}You need to be actively talking to an NPC for this command.{TerminalFormatter.RESET}") # source [71]
+        print(f"{TerminalFormatter.YELLOW}You need to be actively talking to an NPC for this command.{TerminalFormatter.RESET}")
     else:
         print(f"\n{TerminalFormatter.DIM}{'-'*20} Current Session Stats {'-'*20}{TerminalFormatter.RESET}")
         print(chat_session.format_session_stats())
@@ -248,107 +256,78 @@ def handle_clear(state: Dict[str, Any]) -> HandlerResult:
     """Handles the /clear command."""
     TerminalFormatter = state['TerminalFormatter']
     chat_session = state['chat_session']
-    # Added logic from original handle_clear
     if not chat_session:
         print(f"{TerminalFormatter.YELLOW}You are not in an active conversation to clear.{TerminalFormatter.RESET}")
     else:
-        chat_session.clear_memory() # clear_memory() prints its own confirmation
-        # No need to print additional confirmation here if clear_memory handles it
+        chat_session.clear_memory() # clear_memory() in ChatSession prints its own confirmation
     return {'status': 'ok', 'continue_loop': True}
 
 
 def process_input_revised(user_input: str, state: Dict[str, Any]) -> HandlerResult:
     """
     Process user input and dispatch to appropriate handler functions.
-    Args: # source [72]
-        user_input: The raw user input string
-        state: Current application state dictionary
-
-    Returns:
-        HandlerResult: Dictionary with updated state information
     """
-    # Default result (continue normally)
     result = {'status': 'ok', 'continue_loop': True}
-
-    # Empty input
     if not user_input.strip():
         return result
 
     TerminalFormatter = state.get('TerminalFormatter')
     chat_session = state.get('chat_session')
-    current_npc = state.get('current_npc') # source [73]
+    current_npc = state.get('current_npc')
+    format_stats_func = state.get('format_stats') # For auto-showing stats after LLM call
 
-    # Handle commands (starting with /)
     if user_input.startswith('/'):
-        parts = user_input[1:].split(None, 1)  # Split into command and args
+        parts = user_input[1:].split(None, 1)
         command = parts[0].lower() if parts else ""
         args = parts[1] if len(parts) > 1 else ""
 
+        command_handlers = {
+            'exit': handle_exit, 'quit': handle_exit,
+            'help': handle_help,
+            'go': handle_go,
+            'talk': handle_talk,
+            'who': handle_who,
+            'whereami': handle_whereami,
+            'npcs': handle_npcs,
+            'stats': handle_stats,
+            'session_stats': handle_session_stats,
+            'clear': handle_clear,
+        }
+
         try:
-            # Dispatch to appropriate handler based on command
-            if command == 'exit' or command == 'quit': # source [74]
-                return handle_exit(state)
-            elif command == 'help':
-                return handle_help(state)
-            elif command == 'go':
-                return handle_go(args, state)
-            elif command == 'talk': # source [75]
-                return handle_talk(args, state)
-            elif command == 'who':
-                return handle_who(state)
-            elif command == 'whereami':
-                return handle_whereami(state)
-            elif command == 'npcs': # source [76]
-                return handle_npcs(state)
-            elif command == 'stats':
-                return handle_stats(state)
-            elif command == 'session_stats':
-                return handle_session_stats(state)
-            elif command == 'clear': # source [77]
-                return handle_clear(state)
-            # ADDED /history command from original main_core
-            elif command == 'history':
+            if command in command_handlers:
+                return command_handlers[command](state) if command in ['exit', 'help', 'who', 'whereami', 'npcs', 'stats', 'session_stats', 'clear'] else command_handlers[command](args, state)
+            elif command == 'history': # Special case not requiring args in the same way
                 if chat_session:
                     print(f"\n{TerminalFormatter.DIM}--- Conversation History (JSON) ---{TerminalFormatter.RESET}")
-                    # Assuming get_history() returns List[Dict[str, str]]
                     history_json = json.dumps(chat_session.get_history(), indent=2, ensure_ascii=False)
                     print(history_json)
                 else:
                     print(f"{TerminalFormatter.YELLOW}No active conversation to show history for.{TerminalFormatter.RESET}")
                 return {'status': 'ok', 'continue_loop': True}
             else:
-                # Unknown command
-                print(f"{TerminalFormatter.YELLOW}Unknown command '/{command}'. Type /help for available commands.{TerminalFormatter.RESET}") # source [78]
+                print(f"{TerminalFormatter.YELLOW}Unknown command '/{command}'. Type /help for available commands.{TerminalFormatter.RESET}")
         except Exception as e:
             print(f"{TerminalFormatter.RED}Error processing command '/{command}': {e}{TerminalFormatter.RESET}")
-            traceback.print_exc()
+            # traceback.print_exc() # Uncomment for more detailed debug
 
-    # Handle normal dialogue (if in active conversation)
     elif current_npc and chat_session:
         try:
-            # Send the message to the current NPC via the chat session
-            print(f"{TerminalFormatter.DIM}Processing your message...{TerminalFormatter.RESET}") # source [79]
-            # MODIFIED to use chat_session.ask which aligns with ChatSession class structure
+            print(f"{TerminalFormatter.DIM}Processing your message...{TerminalFormatter.RESET}")
             response, stats = chat_session.ask(
                 user_input,
                 stream=state.get('use_stream', True),
-                collect_stats=True # Always collect, decision to show is separate
+                collect_stats=True
             )
+            print() # Spacing after LLM output
 
-            # Formatting and printing is handled by llm_wrapper via chat_session.ask
-            # if streaming is True. If streaming is False, llm_wrapper also prints.
-            # So, no explicit print(TerminalFormatter.format_terminal_text(response...)) here.
-            # An empty line for spacing after LLM output (which includes its own newline)
-            print()
-
-            if state.get('auto_show_stats', False) and stats:
-                print(format_stats(stats)) # Use the passed format_stats function reference
+            if state.get('auto_show_stats', False) and stats and format_stats_func:
+                print(format_stats_func(stats))
         except Exception as e:
-            print(f"{TerminalFormatter.RED}Error in conversation: {e}{TerminalFormatter.RESET}") # source [80]
-            traceback.print_exc()
+            print(f"{TerminalFormatter.RED}Error in conversation: {e}{TerminalFormatter.RESET}")
+            # traceback.print_exc() # Uncomment for more detailed debug
 
-    # Not in a conversation and not a command # source [81]
-    else:
-        print(f"{TerminalFormatter.YELLOW}You are not currently talking to anyone. Use /go to navigate to an area, then /talk to speak with an NPC.{TerminalFormatter.RESET}") # source [82]
+    else: # Not in a conversation and not a command
+        print(f"{TerminalFormatter.YELLOW}You are not currently talking to anyone. Use /go to navigate, then /talk or wait for a conversation to start.{TerminalFormatter.RESET}")
 
     return result
