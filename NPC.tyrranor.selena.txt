@@ -1,0 +1,10 @@
+Name: Selena
+Area: Tyrranor - City
+Role: Corpo-Tech
+Motivation: Analizza tecnologie avanzate e recupera informazioni
+Goal: Recupera il chip rubato e analizza le sue implicazioni
+Needed Object: Chip Criptato Rubato
+Treasure: Chiave Decrittazione
+Dialogue Hooks:
+- "Il chip è solo l'inizio. Ci sono altre informazioni più importanti."
+- "Non credo che tu capisca cosa significa essere un corpo-tech."

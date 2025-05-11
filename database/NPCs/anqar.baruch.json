@@ -1,0 +1,12 @@
+{
+  "name": "Baruch",
+  "area": "Anqar - Rifugio Hara",
+  "role": "Ribelle",
+  "motivation": "Aiuta i ribelli e sabotare i piani dei Corp",
+  "goal": "Rubare rifornimenti a Ferrovia e aiutare i ribelli\nNeeded Object: Tessera Accesso Corp\nTreasure: Chiave Nascondiglio Ribelle\nDialogue Hooks:",
+  "dialogue_hooks": "\"I Corp non si fermeranno davanti a nulla per mantenere il potere.\"\n\"Siamo stanchi di nasconderci. È ora di agire.\"",
+  "veil_connection": "",
+  "code": "anqar.baruch",
+  "storyboard_id": 1,
+  "created_at": "2025-05-11T13:03:55.562178"
+}

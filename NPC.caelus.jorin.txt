@@ -1,0 +1,10 @@
+Name: Jorin
+Area: Caelus - Taverna
+Role: Taverniere
+Motivation: Raccogliere segreti come valuta
+Goal: Raccogliere informazioni e mantenere la sicurezza
+Needed Object: Moneta Rara
+Treasure: Messaggio Segreto
+Dialogue Hooks:
+- "Puoi imparare più da un ubriaco che da un prete."
+- "Strano, qualcuno che assomiglia a te è passato di qui la notte scorsa... pagato in moneta straniera."

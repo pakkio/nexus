@@ -1,0 +1,11 @@
+Name: Jorin
+Area: Tavern
+Role: Tavern Keeper
+Motivation: Stay informed and safe.
+Goal: Collect secrets as currency.
+Needed Object: Rare Coin
+Treasure: Secret Message
+Dialogue Hooks:
+- "You can learn more from a drunk’s mumble than a priest’s sermon."
+- "Funny thing, someone matching your look passed through here last night… paid in foreign coin."
+Veil Connection: Tracks dreams from travelers that are eerily identical; keeps a book of them.

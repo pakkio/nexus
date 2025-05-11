@@ -1,0 +1,12 @@
+{
+  "name": "Syra",
+  "area": "Ancient Ruins",
+  "role": "Spirit Guardian",
+  "motivation": "Protect the ruins from desecration.",
+  "goal": "Guide a worthy soul and be freed.\nNeeded Object: Offering of Light\nTreasure: Ancient Rune Fragment\nDialogue Hooks:",
+  "dialogue_hooks": "\"The stone remembers blood and betrayal.\"\n\"Only when the moon reflects the sun will the door remember how to open.\"",
+  "veil_connection": "Was a Veil Warden bound to the ruins; her riddles are actually protective runes.",
+  "code": "ruins.syra",
+  "storyboard_id": 1,
+  "created_at": "2025-05-11T13:03:55.468598"
+}

@@ -1,0 +1,8 @@
+Name: The Shattered Veil
+Description:
+For centuries, the world of Eldoria has been protected by the Veil, a barrier of mystical energy separating the material realm from the chaotic magic beyond. Now the Veil is fraying, and strange anomalies ripple across the land. Each NPC holds a clue, a key, or a curse connected to this unraveling.
+
+Themes:
+- Forgotten truths
+- Leaking magic
+- Fractured dreams!

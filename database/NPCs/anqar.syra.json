@@ -1,0 +1,12 @@
+{
+  "name": "Syra",
+  "area": "Anqar - Rovine",
+  "role": "Spirito Guardiano",
+  "motivation": "Proteggere le rovine dalla profanazione",
+  "goal": "Guidare un'anima degna e essere liberata\nNeeded Object: Offerta di Luce\nTreasure: Frammento Runa Antica\nDialogue Hooks:",
+  "dialogue_hooks": "\"La pietra ricorda sangue e tradimento.\"\n\"Solo quando la luna riflette il sole la porta ricorderà come aprirsi.\"",
+  "veil_connection": "",
+  "code": "anqar.syra",
+  "storyboard_id": 1,
+  "created_at": "2025-05-11T13:03:55.362247"
+}

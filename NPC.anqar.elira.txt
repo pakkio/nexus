@@ -1,0 +1,11 @@
+Name: Eliara
+Area: Anqar - Foresta
+Role: Guardiana della natura
+Motivation: Proteggere l'equilibrio della natura e recuperare informazioni
+Goal: Prevenire la diffusione di una piaga
+Needed Object: Campione Acqua Pura
+Treasure: Bocciolo Petalo Lunare
+Dialogue Hooks:
+- "Gli alberi piangono per ciò che hai bruciato."
+- "Questo sentiero è più antico delle tue mappe. E molto meno tollerante."
+la

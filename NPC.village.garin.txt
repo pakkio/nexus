@@ -1,0 +1,11 @@
+Name: Garin
+Area: Village
+Role: Blacksmith
+Motivation: Protect the village and redeem his past.
+Goal: Reforge his broken family sword.
+Needed Object: Lion Crest Fragment
+Treasure: Reforged Hilt
+Dialogue Hooks:
+- "Steel remembers every swing. That’s why I hammer with care."
+- "If you find any pieces with a lion crest… bring them to me, no questions."
+Veil Connection: Inherited a blade forged in the Veil War; dreams of forging in divine fire.

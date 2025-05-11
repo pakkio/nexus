@@ -1,0 +1,10 @@
+Name: Garin
+Area: Tyrranor - Villaggio
+Role: Fabbro
+Motivation: Proteggere il villaggio e redenimere il suo passato
+Goal: Reforgiare la sua spada rotta
+Needed Object: Frammento Stemma Leone
+Treasure: Elsa Riforgiata
+Dialogue Hooks:
+- "L'acciaio ricorda ogni colpo. Ecco perché martello con cura."
+- "Se trovi pezzi con un crest di leone... portali a me, senza fare domande."

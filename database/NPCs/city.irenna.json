@@ -1,0 +1,12 @@
+{
+  "name": "Irenna",
+  "area": "City",
+  "role": "Resistance Leader / Puppeteer",
+  "motivation": "Protect the innocent and expose corruption.",
+  "goal": "Unmask the high judge’s crimes.\nNeeded Object: Puppet String Spool\nTreasure: Judge's Diary Page\nDialogue Hooks:",
+  "dialogue_hooks": "\"The little ones know more than you think — they just talk with string and wood.\"\n\"Every play I perform is a truth they can't imprison.\"",
+  "veil_connection": "Her puppet shows move on their own; orphan children may be Veil-touched.",
+  "code": "city.irenna",
+  "storyboard_id": 1,
+  "created_at": "2025-05-11T13:03:55.076199"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Eliara",
+  "area": "Anqar - Foresta",
+  "role": "Guardiana della natura",
+  "motivation": "Proteggere l'equilibrio della natura e recuperare informazioni",
+  "goal": "Prevenire la diffusione di una piaga\nNeeded Object: Campione Acqua Pura\nTreasure: Bocciolo Petalo Lunare\nDialogue Hooks:",
+  "dialogue_hooks": "\"Gli alberi piangono per ciò che hai bruciato.\"\n\"Questo sentiero è più antico delle tue mappe. E molto meno tollerante.\"\nla",
+  "veil_connection": "",
+  "code": "anqar.elira",
+  "storyboard_id": 1,
+  "created_at": "2025-05-11T13:03:55.932758"
+}

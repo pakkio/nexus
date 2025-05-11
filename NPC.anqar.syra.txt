@@ -1,0 +1,10 @@
+Name: Syra
+Area: Anqar - Rovine
+Role: Spirito Guardiano
+Motivation: Proteggere le rovine dalla profanazione
+Goal: Guidare un'anima degna e essere liberata
+Needed Object: Offerta di Luce
+Treasure: Frammento Runa Antica
+Dialogue Hooks:
+- "La pietra ricorda sangue e tradimento."
+- "Solo quando la luna riflette il sole la porta ricorderà come aprirsi."

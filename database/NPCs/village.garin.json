@@ -1,0 +1,12 @@
+{
+  "name": "Garin",
+  "area": "Village",
+  "role": "Blacksmith",
+  "motivation": "Protect the village and redeem his past.",
+  "goal": "Reforge his broken family sword.\nNeeded Object: Lion Crest Fragment\nTreasure: Reforged Hilt\nDialogue Hooks:",
+  "dialogue_hooks": "\"Steel remembers every swing. That’s why I hammer with care.\"\n\"If you find any pieces with a lion crest… bring them to me, no questions.\"",
+  "veil_connection": "Inherited a blade forged in the Veil War; dreams of forging in divine fire.",
+  "code": "village.garin",
+  "storyboard_id": 1,
+  "created_at": "2025-05-11T13:03:54.237701"
+}

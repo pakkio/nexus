@@ -1,0 +1,11 @@
+Name: Cassian
+Area: City
+Role: Bureaucrat
+Motivation: Maintain influence and power.
+Goal: Engineer a rival's downfall.
+Needed Object: Rival's Ledger
+Treasure: Forged Document
+Dialogue Hooks:
+- "Policy is the art of slow poisoning… no offense, of course."
+- "I’d offer you a contract, but you’d better read the margins first."
+Veil Connection: Controls hidden scrolls tied to Veil research; manipulating knowledge for power.

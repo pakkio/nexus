@@ -1,0 +1,11 @@
+Name: Elira
+Area: Forest
+Role: Forest Wanderer
+Motivation: Guard the balance of nature.
+Goal: Prevent a spreading blight.
+Needed Object: Blight Sample
+Treasure: Soothing Balm Recipe
+Dialogue Hooks:
+- "The trees weep for what you’ve burned."
+- "This path is older than your maps. And far less forgiving."
+Veil Connection: Trees and animals respond to her presence; she remembers before the Veil.

@@ -1,0 +1,10 @@
+Name: Cassian
+Area: Oceana - Città
+Role: Burocratico
+Motivation: Mantenere l'influenza e il potere
+Goal: Ingegnerizzare la caduta di un rivale
+Needed Object: Registro del Rivale
+Treasure: Documento Falsificato
+Dialogue Hooks:
+- "La politica è l'arte di avvelenare lentamente... nessun'offesa, naturalmente."
+- "Ti offrierei un contratto, ma devi leggere i margini prima."
