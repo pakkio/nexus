@@ -1,0 +1,13 @@
+Name: High Judge Theron
+Area: City (Tribunal or Fortress)
+Role: Corrupt High Judge (Antagonist)
+Motivation: Sfruttare l'energia del Velo infranto per ottenere potere personale o servire un'entità caotica.
+Goal: Accelerare il collasso del Velo. Impedire al giocatore di riparare i Sigilli.
+Needed Object: (From his perspective) Artifacts that destabilize the Veil, silence for his opponents.
+        Treasure: (If defeated/obstructed) Artefatto Corrotto (can be purified by Lyra?), or his defeat is a key step.
+Veil Connection: Has made a pact with entities beyond the Veil or learned to manipulate its raw, decaying energy. He sees the fracturing Veil not as a crisis, but an opportunity.
+PlayerHint: L'Alto Giudice Theron è una figura potente e corrotta. Le sue azioni stanno attivamente danneggiando il Velo. Smascherarlo e ostacolarlo sarà cruciale.
+Dialogue Hooks:
+- "L'ordine che io impongo sorgerà dal caos inevitabile. Il Velo è solo un vecchio tessuto logoro."
+- "Intralci i miei piani, piccolo eroe? Imparerai presto il vero significato del potere."
+- "Sciocchi! Cercate di rattoppare ciò che è destinato a crollare. Io cavalcherò l'onda della distruzione!"

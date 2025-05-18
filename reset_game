@@ -1,0 +1,5 @@
+rm -rf database/
+python load.py --mockup --storyboard ./Storyboard.TheShatteredVeil.txt
+python main.py --mockup --player TestSeeker \
+  --model google/gemma-3-27b-it:free \
+  --profile-analysis-model google/gemma-3-12b-it:free
