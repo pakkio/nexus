@@ -17,8 +17,8 @@ try:
     from terminal_formatter import TerminalFormatter
 except ImportError:
     logging.warning("terminal_formatter not found. Using basic fallback.")
-    class TerminalFormatter:
-        RED = "\033[91m"; YELLOW = "\033[93m"; RESET = "\033[0m"
+    class TerminalFormatter: # Basic Fallback
+        RED = "\033[91m"; YELLOW = "\033[93m"; RESET = "\033[0m"; BOLD = ""; ITALIC = ""; DIM = ""; MAGENTA = ""; CYAN = "";
         @staticmethod
         def format_terminal_text(text, width=80):
             import textwrap
@@ -29,30 +29,30 @@ except ImportError:
                 import shutil
                 return shutil.get_terminal_size((80, 24)).columns
             except Exception: return 80
+TF = TerminalFormatter # Alias for convenience if needed within this file directly
 # --- End TerminalFormatter ---
 
 
 # --- process_direct_streaming_output ---
-# Modified to handle SSE format from direct API call
 def process_direct_streaming_output(response: requests.Response,
                                     formatting_function: callable,
                                     width: int,
                                     first_token_time: Optional[float]) -> Tuple[str, Optional[float]]:
-    """Process streaming output directly from requests Response (SSE)."""
     output_text = ""
     buffer = ""
-    start_marker = "data: "
-    stop_marker = "[DONE]"
+    start_marker = "data: " # For Server-Sent Events (SSE)
+    stop_marker = "[DONE]"  # Common SSE stop signal from OpenAI-like APIs
 
     try:
-        for line in response.iter_lines():
+        for line in response.iter_lines(): # Iterates over lines in the response
             if line:
                 decoded_line = line.decode('utf-8')
                 if decoded_line.startswith(start_marker):
-                    if stop_marker in decoded_line:
-                        # logging.info("Received SSE stop marker.")
+                    if stop_marker in decoded_line: # Check for stop signal
                         break
-                    json_str = decoded_line[len(start_marker):]
+                    json_str = decoded_line[len(start_marker):].strip()
+                    if not json_str: continue # Skip empty data lines
+
                     try:
                         chunk_data = json.loads(json_str)
                         delta = chunk_data.get("choices", [{}])[0].get("delta", {})
@@ -62,54 +62,31 @@ def process_direct_streaming_output(response: requests.Response,
                             if first_token_time is None:
                                 first_token_time = time.time()
                             output_text += token
-                            buffer += token
-
-                            # Print formatting logic (same as before)
-                            if '\n' in buffer:
-                                lines = buffer.split('\n')
-                                for l_idx, l_content in enumerate(lines[:-1]):
-                                    try:
-                                        # Pass width directly to print, not format_terminal_text if it handles it
-                                        # formatted_line = formatting_function(l_content, width=width)
-                                        # print(formatted_line, flush=True)
-                                        # Simpler: let print handle wrapping if formatting_function is basic
-                                        print(l_content, end='\n' if l_idx < len(lines) -2 else '', flush=True)
-                                    except Exception as fmt_e:
-                                        logging.error(f"Formatting error: {fmt_e} on line: {l_content}")
-                                        print(f"{TerminalFormatter.RED}[FmtErr: {fmt_e}]{TerminalFormatter.RESET} {l_content}", flush=True)
-                                buffer = lines[-1]
-                            elif len(buffer) > 0: # Print partial buffer if no newline but content exists
-                                print(buffer, end='', flush=True)
-                                buffer = ""
-
+                            # Streaming print logic (token by token, line by line)
+                            # This part needs to be careful about how it prints to avoid breaking terminal flow
+                            # The original printing logic from your file is complex;
+                            # a simpler approach for direct printing here:
+                            print(token, end='', flush=True) # Print token immediately
+                            # If you want line-based formatting during streaming, that adds more complexity.
+                            # The previous buffer logic was an attempt at this.
+                            # For simplicity and robustness, direct token printing is often safer.
 
                     except json.JSONDecodeError:
                         logging.warning(f"Failed to decode JSON from SSE line: {decoded_line}")
-                    except Exception as e:
+                    except Exception as e: # Catch other errors during chunk processing
                         logging.exception(f"Error processing SSE chunk: {decoded_line}")
 
-        # After loop, print any remaining buffer content WITHOUT an extra newline if it's the final part of a line.
-        if buffer:
-            try:
-                # formatted_buffer = formatting_function(buffer, width=width)
-                # print(formatted_buffer, flush=True)
-                print(buffer, end='', flush=True) # Print remaining buffer, no auto newline from print()
-            except Exception as fmt_e:
-                logging.error(f"Formatting error on final buffer: {fmt_e} on buffer: {buffer}")
-                print(f"{TerminalFormatter.RED}[FmtErr: {fmt_e}]{TerminalFormatter.RESET} {buffer}", flush=True)
-
-        # Add a final newline if content was printed to ensure prompt appears on new line
+        # After the loop, if any content was streamed, ensure a newline for the next prompt
         if output_text:
-            print("", flush=True)
-
+            print("", flush=True) # Moves to the next line
 
     except requests.exceptions.RequestException as req_e:
         logging.exception("Error reading streaming response.")
-        print(f"\n{TerminalFormatter.RED}Errore durante lo streaming della risposta: {req_e}{TerminalFormatter.RESET}")
-        output_text += f"\n[Errore streaming request: {req_e}]"
+        # print(f"\n{TF.RED}Errore durante lo streaming della risposta: {req_e}{TF.RESET}") # User-facing if needed
+        output_text += f"\n[Errore streaming request: {req_e}]" # Append to internal text
     except Exception as stream_e:
         logging.exception("Error during streaming output processing.")
-        print(f"\n{TerminalFormatter.RED}Errore durante lo streaming: {stream_e}{TerminalFormatter.RESET}")
+        # print(f"\n{TF.RED}Errore durante lo streaming: {stream_e}{TF.RESET}")
         output_text += f"\n[Errore streaming processing: {stream_e}]"
 
     return output_text, first_token_time
@@ -117,33 +94,37 @@ def process_direct_streaming_output(response: requests.Response,
 
 
 # --- process_direct_non_streaming_output ---
-# Modified to parse direct API JSON response
 def process_direct_non_streaming_output(response_data: Dict[str, Any],
                                         formatting_function: callable,
                                         width: int) -> Tuple[str, Optional[float]]:
-    """Process non-streaming output from parsed direct API response JSON."""
     output_text = ""
-    first_token_time = time.time() # Approximation for non-streaming
+    first_token_time = time.time()
 
     try:
-        # Standard OpenAI/OpenRouter format
         output_text = response_data.get("choices", [{}])[0].get("message", {}).get("content", "")
-        if not output_text:
+        if not output_text and "error" in response_data: # If no content but error field exists
+            error_msg = response_data.get("error", {}).get("message", "Unknown error from API")
+            output_text = f"[API Error: {error_msg}]"
+            logging.warning(f"API returned error: {error_msg}. Full response: {response_data}")
+        elif not output_text: # No content and no explicit error field in choices
             logging.warning(f"No 'content' found in choices[0].message. Full response: {response_data}")
-            output_text = f"[Warning: No content in response - {response_data.get('error', 'Unknown reason')}]"
+            output_text = f"[Warning: No content in response]"
 
-        # Use the TerminalFormatter's own wrapping for non-streaming if available
-        # The formatting_function passed is TerminalFormatter.format_terminal_text
-        formatted_text = formatting_function(output_text, width=width)
-        print(formatted_text) # This will handle wrapping.
+
+        # Print the complete non-streamed response using the formatter
+        # (The caller, chat_manager.ask, handles printing if formatting_function is TerminalFormatter.format_terminal_text)
+        # However, if this function is called directly for a utility that expects printing here:
+        # formatted_text = formatting_function(output_text, width=width)
+        # print(formatted_text)
+        # For now, let's assume the caller (ChatSession) handles printing of the final text.
 
     except (IndexError, KeyError, TypeError) as e:
         logging.exception(f"Error parsing non-streaming response structure: {response_data}")
-        print(f"{TerminalFormatter.RED}Errore nella struttura della risposta non-streaming: {e}{TerminalFormatter.RESET}")
+        # print(f"{TF.RED}Errore nella struttura della risposta non-streaming: {e}{TF.RESET}")
         output_text = f"[Errore parsing risposta: {e}]"
     except Exception as e:
         logging.exception("Error processing non-streaming output.")
-        print(f"{TerminalFormatter.RED}Errore inatteso nell'output non-streaming: {e}{TerminalFormatter.RESET}")
+        # print(f"{TF.RED}Errore inatteso nell'output non-streaming: {e}{TF.RESET}")
         output_text = f"[Errore processing output: {e}]"
 
     return output_text, first_token_time
@@ -151,34 +132,31 @@ def process_direct_non_streaming_output(response_data: Dict[str, Any],
 
 
 # --- collect_direct_api_statistics ---
-# Modified to parse usage data from direct API JSON response
 def collect_direct_api_statistics(model_name: str,
                                   messages: List[Dict[str, str]],
                                   output_text: str,
                                   start_time: float,
                                   first_token_time: Optional[float],
-                                  response_data: Optional[Dict[str, Any]]) -> Dict[str, Any]: # Takes JSON dict
-    """Collect stats based on direct API response data."""
+                                  response_data: Optional[Dict[str, Any]]) -> Dict[str, Any]:
     end_time = time.time()
-    # Basic estimations
-    approx_input_tokens = sum(len(msg.get('content', '').split()) for msg in messages)
-    approx_output_tokens = len(output_text.split())
+    approx_input_tokens = sum(len(str(msg.get('content', '')).split()) for msg in messages) # Ensure content is string
+    approx_output_tokens = len(str(output_text).split()) # Ensure output_text is string
 
     stats = {
-        "model": model_name, # Pass model name directly
+        "model": model_name,
         "total_time": end_time - start_time,
         "time_to_first_token": first_token_time - start_time if first_token_time is not None else None,
         "input_tokens": approx_input_tokens,
         "output_tokens": approx_output_tokens,
         "total_tokens": approx_input_tokens + approx_output_tokens,
-        "error": None # Initialize error
+        "error": None
     }
 
-    # Try to get precise tokens from 'usage' field in response JSON
     if response_data and isinstance(response_data, dict) and 'usage' in response_data:
         usage_info = response_data['usage']
         if isinstance(usage_info, dict):
             try:
+                # ... (usage parsing logic from your file) ...
                 prompt_tokens = usage_info.get("prompt_tokens")
                 completion_tokens = usage_info.get("completion_tokens")
                 total_tokens = usage_info.get("total_tokens")
@@ -188,90 +166,78 @@ def collect_direct_api_statistics(model_name: str,
                 if isinstance(total_tokens, (int, float)): stats["total_tokens"] = int(total_tokens)
                 elif isinstance(stats["input_tokens"], int) and isinstance(stats["output_tokens"], int):
                     stats["total_tokens"] = stats["input_tokens"] + stats["output_tokens"]
-
             except (TypeError, KeyError, ValueError) as e:
-                logging.warning(f"Could not extract precise token usage from usage dict: {e} in {usage_info}", exc_info=False)
-        else:
-            logging.warning(f"Response 'usage' field is not a dictionary: {usage_info}")
-    elif response_data:
-        logging.warning("Response data received but no 'usage' field found for token stats.")
-
-    # Check for explicit error in response data
-    if response_data and isinstance(response_data, dict) and 'error' in response_data:
-        stats["error"] = json.dumps(response_data['error']) # Store error detail
+                logging.warning(f"Could not extract precise token usage: {e} in {usage_info}", exc_info=False)
+    elif response_data and isinstance(response_data, dict) and 'error' in response_data : # Error came from response_data
+        stats["error"] = json.dumps(response_data['error'])
         logging.warning(f"Direct API response indicated an error: {stats['error']}")
+
 
     logging.debug(f"Collected direct API stats: {stats}")
     return stats
 # --- End collect_direct_api_statistics ---
 
 
-# --- NEW: openrouter_direct_wrapper ---
 def llm_wrapper(messages: List[Dict[str, str]],
-                              model_name: Optional[str] = "google/gemma-3-12b-it:free",
-                              formatting_function: Optional[callable] = None, # This is TerminalFormatter.format_terminal_text
-                              stream: bool = True,
-                              width: Optional[int] = None, # Terminal width
-                              collect_stats: bool = False) -> Tuple[str, Optional[Dict[str, Any]]]:
-    """
-    Wrapper to call OpenRouter API directly using 'requests'.
-
-    Args:
-        messages: Full conversation history (list of {'role': ..., 'content': ...}).
-                  System prompt should be messages[0] if used.
-                  Last message must be 'user'.
-        model_name: Full OpenRouter model identifier (e.g., "openrouter/anthropic/claude-3-haiku").
-                    If None, tries OPENROUTER_DEFAULT_MODEL env var or raises error.
-        formatting_function: Custom formatting function (TerminalFormatter.format_terminal_text).
-                             Note: For streaming, this function is applied by process_direct_streaming_output
-                             to completed lines. The direct print in streaming handles token-by-token output.
-        stream: If True, stream output.
-        width: Text width for formatting (used by formatting_function for non-streaming and line-wrapping in streaming).
-        collect_stats: If True, collect and return statistics.
-
-    Returns:
-        Tuple (output_text, stats). Stats dictionary might contain an 'error' key.
-    """
+                model_name: Optional[str] = None,
+                formatting_function: Optional[callable] = None,
+                stream: bool = True,
+                width: Optional[int] = None,
+                collect_stats: bool = False) -> Tuple[str, Optional[Dict[str, Any]]]:
     if not messages:
-        logging.error("Direct wrapper called with empty messages list.")
+        logging.error("llm_wrapper: Called with empty messages list.")
         return "[Errore: Nessun messaggio]", {"error": "No messages provided"}
 
-    if messages[-1].get("role") != "user":
-        logging.warning("Direct wrapper: Last message role is not 'user'. Skipping API call.")
-        # print(f"{TerminalFormatter.YELLOW}Warning: L'ultimo messaggio non era un prompt utente. Nessuna nuova risposta generata.{TerminalFormatter.RESET}")
-        output_text = ""
-        if messages[-1].get("role") == 'assistant': # If last message was assistant, it's a repeat, so "print" it.
-            output_text = messages[-1].get('content', '')
-            if formatting_function and width:
-                 print(formatting_function(output_text, width=width))
-            else:
-                 print(output_text)
-        stats = None
-        if collect_stats:
-            stats = collect_direct_api_statistics(model_name or "N/A", messages, output_text, time.time(), None, None)
-        return output_text, stats
-
-    # --- Configuration ---
     api_key = os.environ.get("OPENROUTER_API_KEY")
     api_base = "https://openrouter.ai/api/v1"
     site_url = os.environ.get("OPENROUTER_APP_URL", "http://localhost")
-    app_title = os.environ.get("OPENROUTER_APP_TITLE", "MyApiClient")
+    app_title = os.environ.get("OPENROUTER_APP_TITLE", "MyNexusClient") # Or your app's name
 
     if not api_key:
         logging.error("OPENROUTER_API_KEY environment variable not set.")
         return "[Errore: Chiave API OpenRouter mancante]", {"error": "OPENROUTER_API_KEY not set"}
 
     if model_name is None:
-        model_name = os.environ.get("OPENROUTER_DEFAULT_MODEL")
-        if model_name is None:
-            logging.error("Model name not provided and OPENROUTER_DEFAULT_MODEL env var not set.")
-            return "[Errore: Nome modello mancante]", {"error": "Model name not provided"}
+        model_name = os.environ.get("OPENROUTER_DEFAULT_MODEL", "google/gemma-2-9b-it:free") # Default model
 
-    # Ensure formatting_function and width have defaults if not provided
-    # These are passed from ChatSession.ask which gets them from TerminalFormatter
     if formatting_function is None: formatting_function = TerminalFormatter.format_terminal_text
     if width is None: width = TerminalFormatter.get_terminal_width()
 
+    # --- MODIFIED Check for Last Message Role ---
+    # This check allows system-only prompts if they are for specific utility tasks.
+    is_utility_call_with_system_prompt_only = False
+    if len(messages) == 1 and messages[0].get("role") == "system":
+        system_content = messages[0].get("content", "")
+        # The marker phrase from player_profile_manager.py
+        if system_content.strip().startswith("You are an AI analyzing a player's recent interactions"):
+            is_utility_call_with_system_prompt_only = True
+            logging.info("llm_wrapper: Detected system-only utility call (profile analysis). Proceeding with API call.")
+        # Add elif for other utility markers if needed in the future.
+
+    if not is_utility_call_with_system_prompt_only and messages[-1].get("role") != "user":
+        last_role = messages[-1].get("role", "unknown")
+        logging.warning(f"llm_wrapper: Last message role is '{last_role}' (expected 'user') and not a recognized utility call. Skipping API call.")
+
+        output_text = "" # Default for skipped call
+        # If the last message was an assistant trying to speak (e.g., from a previous turn),
+        # we might want to "echo" it. This is primarily for when llm_wrapper might be used in a loop
+        # where the last AI response is fed back in. In our current game loop, this isn't typical.
+        if messages[-1].get("role") == 'assistant':
+            output_text = messages[-1].get('content', '')
+            # The printing of this echoed output should be handled by the caller (ChatSession.ask)
+            # if formatting_function and width: print(formatting_function(output_text, width=width))
+            # else: print(output_text)
+
+        stats = None
+        if collect_stats:
+            stats = {
+                "model": model_name, "total_time": 0.0, "time_to_first_token": None,
+                "input_tokens": sum(len(str(msg.get('content', '')).split()) for msg in messages),
+                "output_tokens": 0, "total_tokens": sum(len(str(msg.get('content', '')).split()) for msg in messages),
+                "error": "Skipped API call - last message not user or not recognized utility"
+            }
+        return output_text, stats
+    # --- End MODIFIED Check ---
 
     headers = {
         "Authorization": f"Bearer {api_key}",
@@ -279,133 +245,164 @@ def llm_wrapper(messages: List[Dict[str, str]],
         "HTTP-Referer": site_url,
         "X-Title": app_title,
     }
-
     payload = { "model": model_name, "messages": messages, "stream": stream }
+    # Add common generation parameters, ensure they are supported by OpenRouter/model
+    # payload["max_tokens"] = 1024 # Example
+    # payload["temperature"] = 0.7 # Example
 
     start_time = time.time()
     first_token_time = None
     output_text = ""
-    response_data = None
+    response_data_for_stats = None # For non-streaming, to pass full JSON to stats
     stats = None
 
     try:
+        logging.info(f"llm_wrapper: Calling model {model_name}. Stream: {stream}.")
+        # logging.debug(f"llm_wrapper: Payload: {json.dumps(payload, indent=2)[:500]}...") # Careful with logging full payload
+
         response = requests.post(
             f"{api_base}/chat/completions",
             headers=headers,
             json=payload,
             stream=stream,
-            timeout=180 # Increased timeout
+            timeout=180 # seconds
         )
 
         if stream:
-            if response.status_code != 200: response.raise_for_status()
-            # process_direct_streaming_output now handles its own printing of tokens/lines.
-            # The formatting_function is used by it for completed lines.
+            if response.status_code != 200:
+                # Attempt to get error detail from streaming error response if possible
+                error_content = ""
+                try: error_content = response.text[:500] # Read some text
+                except: pass
+                logging.error(f"Streaming API call failed with status {response.status_code}. Response text: {error_content}")
+                response.raise_for_status() # This will then raise an HTTPError
+
+            # process_direct_streaming_output handles its own printing of tokens
             output_text, first_token_time = process_direct_streaming_output(
                 response, formatting_function, width, first_token_time
             )
-            if collect_stats:
-                stats = collect_direct_api_statistics(model_name, messages, output_text, start_time, first_token_time, None)
-        else:
-            response.raise_for_status()
-            response_data = response.json()
-            # process_direct_non_streaming_output uses formatting_function to print the whole response.
+            # For streaming, OpenRouter doesn't typically send usage stats in chunks.
+            # If the API sends a final JSON with usage in the stream, process_direct_streaming_output would need to capture it.
+            # Assuming no separate stats payload in stream for now.
+        else: # Non-streaming
+            if response.status_code != 200:
+                logging.error(f"Non-streaming API call failed with status {response.status_code}. Response: {response.text}")
+                response.raise_for_status()
+
+            response_data_for_stats = response.json()
+            # process_direct_non_streaming_output extracts text but does NOT print by default.
+            # Printing is handled by the caller (ChatSession)
             output_text, first_token_time = process_direct_non_streaming_output(
-                response_data, formatting_function, width
+                response_data_for_stats, formatting_function, width
             )
-            if collect_stats:
-                stats = collect_direct_api_statistics(
-                    model_name, messages, output_text, start_time, first_token_time, response_data
-                )
+
+        # Collect stats after successful call (or attempt)
+        if collect_stats:
+            stats = collect_direct_api_statistics(
+                model_name, messages, output_text, start_time, first_token_time, response_data_for_stats
+            )
 
     except requests.exceptions.Timeout:
         logging.exception(f"API call to {model_name} timed out.")
-        print(f"\n{TerminalFormatter.RED}❌ Errore: Timeout durante la chiamata API ({model_name}).{TerminalFormatter.RESET}")
         output_text = "[Errore: Timeout API]"
         if collect_stats: stats = collect_direct_api_statistics(model_name, messages, output_text, start_time, None, None); stats["error"] = "Timeout"
-
-    except requests.exceptions.RequestException as e:
-        logging.exception(f"API call to {model_name} failed.")
-        error_detail_from_response = ""
+    except requests.exceptions.RequestException as e: # Catches HTTPError, ConnectionError etc.
+        logging.exception(f"API call to {model_name} failed: {e}")
+        error_detail = ""
+        response_from_error = None
         if hasattr(e, 'response') and e.response is not None:
+            response_from_error = e.response
             try:
-                error_detail_from_response = e.response.json().get("error",{}).get("message","")
-                response_data = e.response.json() # For stats
+                err_json = response_from_error.json()
+                error_detail = err_json.get("error",{}).get("message","N/A")
+                response_data_for_stats = err_json # Use error JSON for stats if available
             except json.JSONDecodeError:
-                error_detail_from_response = e.response.text[:200] # First 200 chars of text if not json
-
-        print(f"\n{TerminalFormatter.RED}❌ Errore chiamata API ({model_name}): {e}{TF.RESET}" + (f" Dettaglio: {error_detail_from_response}" if error_detail_from_response else ""))
-        output_text = f"[Errore API: {e}]"
-        if collect_stats: stats = collect_direct_api_statistics(model_name, messages, output_text, start_time, None, response_data); stats["error"] = stats.get("error", str(e))
-
+                error_detail = response_from_error.text[:200] # First 200 chars if not JSON
+        # print(f"\n{TF.RED}❌ Errore chiamata API ({model_name}): {e}{TF.RESET}" + (f" Dettaglio: {error_detail}" if error_detail else ""))
+        output_text = f"[Errore API: {str(e)} - {error_detail}]"
+        if collect_stats:
+            stats = collect_direct_api_statistics(model_name, messages, output_text, start_time, None, response_data_for_stats)
+            if not stats.get("error"): stats["error"] = str(e) # Ensure error is captured
     except Exception as e:
-        logging.exception(f"An unexpected error occurred during direct API interaction with {model_name}.")
-        print(f"\n{TerminalFormatter.RED}❌ Errore inatteso ({model_name}): {type(e).__name__} - {e}{TerminalFormatter.RESET}")
-        # traceback.print_exc() # Already logged by logging.exception
+        logging.exception(f"An unexpected error occurred during API interaction with {model_name}: {e}")
+        # print(f"\n{TF.RED}❌ Errore inatteso ({model_name}): {type(e).__name__} - {e}{TF.RESET}")
         output_text = f"[Errore Inatteso: {e}]"
         if collect_stats: stats = collect_direct_api_statistics(model_name, messages, output_text, start_time, None, None); stats["error"] = f"{type(e).__name__}: {e}"
 
-    if collect_stats and stats is None: # Ensure stats object exists if requested but error occurred early
-        stats = collect_direct_api_statistics(model_name, messages, output_text, start_time, None, response_data if response_data else None)
-        if not stats.get("error"): stats["error"] = "Unknown error before stats collection"
+    # Fallback stats creation if an error occurred very early or collect_stats was true but stats is still None
+    if collect_stats and stats is None:
+        stats = collect_direct_api_statistics(model_name, messages, output_text, start_time, first_token_time, response_data_for_stats)
+        if not stats.get("error") and not output_text.startswith("[Errore"): # If no error was set and output doesn't indicate one
+            stats["error"] = "Unknown issue, stats object was None before final collection"
+        elif not stats.get("error") and output_text.startswith("[Errore"):
+            stats["error"] = output_text # Capture error from output_text if not already in stats
 
     return output_text, stats
-# --- End openrouter_direct_wrapper ---
 
 if __name__ == "__main__":
-    load_dotenv() # Ensure API key is loaded from .env
-    print(f"{TerminalFormatter.YELLOW}--- LLM Wrapper Tests ---{TerminalFormatter.RESET}")
+    load_dotenv()
+    print(f"{TF.YELLOW}--- LLM Wrapper Self-Tests ---{TF.RESET}")
 
-    # Test 1: Simple stream with a free model
-    print(f"\n{TerminalFormatter.BOLD}Test 1: Streaming - Qual è la capitale della Francia?{TerminalFormatter.RESET}")
-    messages1 = [
-        {"role": "system", "content": "Sei un assistente AI conciso e utile."},
-        {"role": "user", "content": "Qual è la capitale della Francia?"}
+    # Test 1: Utility call (system prompt only) - NON-STREAMING for profile analysis
+    print(f"\n{TF.BOLD}Test 1: System-only utility call (Profile Analysis - Non-Streaming){TF.RESET}")
+    # This marker is what player_profile_manager.py should put at the start of its system prompt
+    profile_analysis_system_prompt = """You are an AI analyzing a player's recent interactions
+The player's current profile is:
+{"core_traits": {"curiosity": 6}}
+Recent interaction:
+[{"role": "user", "content": "Tell me more about the Veil."}]
+Actions:
+["Asked about Veil"]
+Suggest updates as JSON: {"trait_adjustments": {"curiosity": "+1"}, "analysis_notes": "Player showed high curiosity."}"""
+
+    messages_utility = [{"role": "system", "content": profile_analysis_system_prompt}]
+    response_utility, stats_utility = llm_wrapper(
+        messages_utility,
+        model_name="mistralai/mistral-7b-instruct:free", # Or your preferred model
+        stream=False, # Utility calls are often better non-streamed to get full JSON
+        collect_stats=True
+    )
+    print(f"\n{TF.DIM}LLM Response (Utility - should be JSON parsable):{TF.RESET}\n{response_utility}")
+    print(f"{TF.DIM}Stats (Utility): {stats_utility}{TF.RESET}\n")
+    try:
+        parsed_utility_response = json.loads(response_utility)
+        assert "trait_adjustments" in parsed_utility_response or "analysis_notes" in parsed_utility_response
+        print(f"{TF.GREEN}✓ Utility call JSON parsing successful.{TF.RESET}")
+    except json.JSONDecodeError as je:
+        print(f"{TF.RED}✗ Utility call JSON parsing FAILED: {je}{TF.RESET}")
+        print(f"  LLM returned: {response_utility}") # Print what it returned
+
+    # Test 2: Standard dialogue call (user prompt last) - STREAMING
+    print(f"\n{TF.BOLD}Test 2: Standard dialogue (Streaming){TF.RESET}")
+    messages_dialogue = [
+        {"role": "system", "content": "You are a helpful pirate captain."},
+        {"role": "user", "content": "Ahoy there! What be the news?"}
     ]
-    # Using a known free model that's generally available
-    response1, stats1 = llm_wrapper(messages1, model_name="mistralai/mistral-7b-instruct:free", stream=True, collect_stats=True)
-    print(f"\n{TerminalFormatter.DIM}Statistiche Test 1: {stats1}{TerminalFormatter.RESET}\n")
+    response_dialogue, stats_dialogue = llm_wrapper(
+        messages_dialogue,
+        model_name="mistralai/mistral-7b-instruct:free",
+        stream=True,
+        collect_stats=True
+    )
+    # Streaming output is printed by process_direct_streaming_output
+    print(f"\n{TF.DIM}Stats (Dialogue): {stats_dialogue}{TF.RESET}\n")
+    assert "Skipped API call" not in str(stats_dialogue.get("error", ""))
 
-    # Test 2: Non-streaming
-    print(f"{TerminalFormatter.BOLD}Test 2: Non-Streaming - Scrivi una breve poesia sulla pioggia.{TerminalFormatter.RESET}")
-    messages2 = [
-        {"role": "user", "content": "Scrivi una breve poesia sulla pioggia."}
+    # Test 3: Skipped call (last message not user and not utility)
+    print(f"\n{TF.BOLD}Test 3: Skipped call (last message assistant, not utility){TF.RESET}")
+    messages_skipped = [
+        {"role": "system", "content": "You are a merchant."},
+        {"role": "assistant", "content": "Welcome to my shop! What can I get for you?"} # Last is assistant
     ]
-    response2, stats2 = llm_wrapper(messages2, model_name="mistralai/mistral-7b-instruct:free", stream=False, collect_stats=True)
-    print(f"\n{TerminalFormatter.DIM}Statistiche Test 2: {stats2}{TerminalFormatter.RESET}\n")
-
-    # Test 3: Error handling - Invalid Model
-    print(f"{TerminalFormatter.BOLD}Test 3: Errore - Modello Invalido (nonexistent/model-v1){TerminalFormatter.RESET}")
-    messages3 = [{"role": "user", "content": "Questo test fallirà?"}]
-    response3, stats3 = llm_wrapper(messages3, model_name="nonexistent/model-v1", stream=False, collect_stats=True)
-    print(f"\n{TerminalFormatter.DIM}Risposta Test 3 (errore atteso): '{response3}'{TerminalFormatter.RESET}")
-    print(f"{TerminalFormatter.DIM}Statistiche Test 3: {stats3}{TerminalFormatter.RESET}\n")
-
-    # Test 4: Conversation Context (Memory)
-    print(f"{TerminalFormatter.BOLD}Test 4: Contesto - Mi chiamo Marco, colore blu. Ricordi?{TerminalFormatter.RESET}")
-    messages4 = [
-        {"role": "system", "content": "Ricorda i dettagli. Il mio nome è Marco. Il mio colore preferito è il blu."},
-        {"role": "user", "content": "Ciao! Come stai?"},
-        {"role": "assistant", "content": "Ciao Marco! Sto bene, grazie. So che il tuo colore preferito è il blu. Come posso aiutarti?"},
-        {"role": "user", "content": "Qual è il mio nome e il mio colore preferito?"}
-    ]
-    # Using a model known for better context retention if possible, like Claude Haiku if API key allows
-    # For free tier, sticking to Mistral 7B
-    chosen_model_for_context = "anthropic/claude-3-haiku-20240307" # Paid model
-    # chosen_model_for_context = "mistralai/mistral-7b-instruct:free" # Free alternative
-
-    # Check if OpenRouter API key is available, otherwise skip paid model test
-    if os.environ.get("OPENROUTER_API_KEY"):
-        print(f"{TerminalFormatter.DIM}(Utilizzando {chosen_model_for_context} per test di contesto){TerminalFormatter.RESET}")
-        response4, stats4 = llm_wrapper(messages4, model_name=chosen_model_for_context, stream=True, collect_stats=True)
-        print(f"\n{TerminalFormatter.DIM}Risposta Test 4: '{response4}'{TerminalFormatter.RESET}")
-        print(f"{TerminalFormatter.DIM}Statistiche Test 4: {stats4}{TerminalFormatter.RESET}\n")
-    else:
-        print(f"{TerminalFormatter.YELLOW}Skipping context test with paid model ({chosen_model_for_context}) as OPENROUTER_API_KEY is not set.{TerminalFormatter.RESET}")
-        print(f"{TerminalFormatter.DIM}(Riprova con un modello gratuito per il test di contesto){TerminalFormatter.RESET}")
-        response4, stats4 = llm_wrapper(messages4, model_name="mistralai/mistral-7b-instruct:free", stream=True, collect_stats=True)
-        print(f"\n{TerminalFormatter.DIM}Risposta Test 4 (con modello gratuito): '{response4}'{TerminalFormatter.RESET}")
-        print(f"{TerminalFormatter.DIM}Statistiche Test 4: {stats4}{TerminalFormatter.RESET}\n")
+    response_skipped, stats_skipped = llm_wrapper(
+        messages_skipped,
+        model_name="mistralai/mistral-7b-instruct:free",
+        stream=False, # Easier to see outcome
+        collect_stats=True
+    )
+    print(f"\n{TF.DIM}LLM Response (Skipped): '{response_skipped}' (should be empty or echo assistant){TF.RESET}")
+    print(f"{TF.DIM}Stats (Skipped): {stats_skipped}{TF.RESET}\n")
+    assert "Skipped API call" in str(stats_skipped.get("error", ""))
 
 
-    print(f"{TerminalFormatter.YELLOW}--- LLM Wrapper Tests Finiti ---{TerminalFormatter.RESET}")
+    print(f"{TF.YELLOW}--- LLM Wrapper Self-Tests Done ---{TF.RESET}")

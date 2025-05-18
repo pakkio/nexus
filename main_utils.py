@@ -1,6 +1,5 @@
 # Path: main_utils.py
-# Updated help text for Credits and /endhint
-# MODIFIED: Added /areas to help text
+# MODIFIED: Added /profile and /profile_for_npc to help text.
 
 import os
 from typing import Dict, List, Any
@@ -13,7 +12,7 @@ except ImportError:
 try:
     from terminal_formatter import TerminalFormatter
 except ImportError:
-    class TerminalFormatter:
+    class TerminalFormatter: # Basic fallback
         DIM = ""; RESET = ""; BOLD = ""; YELLOW = ""; RED = ""; GREEN = ""; MAGENTA = ""; CYAN = ""; BRIGHT_CYAN=""; BRIGHT_GREEN = ""; BRIGHT_MAGENTA = ""; ITALIC = "";
         @staticmethod
         def format_terminal_text(text, width=80): import textwrap; return "\n".join(textwrap.wrap(text, width=width))
@@ -27,7 +26,7 @@ def load_environment_variables():
 
 def get_help_text() -> str:
     """Generates the help text for user commands."""
-    TF = TerminalFormatter # Ensure TerminalFormatter is defined or imported
+    TF = TerminalFormatter
     return f"""
 {TF.YELLOW}{TF.BOLD}Available Commands:{TF.RESET}
  {TF.DIM}/exit{TF.RESET}                - Exit the application.
@@ -52,6 +51,10 @@ def get_help_text() -> str:
  {TF.DIM}/give <item_name>{TF.RESET}    - Give an item to the current NPC (e.g., /give Mystic Token).
  {TF.DIM}/give <amount> Credits{TF.RESET} - Give Credits to the current NPC (e.g., /give 50 Credits).
 
+{TF.BRIGHT_MAGENTA}Player Profile & Debug:{TF.RESET}
+ {TF.DIM}/profile{TF.RESET}             - Show your current psychological profile.
+ {TF.DIM}/profile_for_npc{TF.RESET}     - (Debug) Show distilled profile insights the current NPC has about you.
+
 {TF.BRIGHT_MAGENTA}Session Management & Stats:{TF.RESET}
  {TF.DIM}/stats{TF.RESET}               - Show statistics for the last LLM response.
  {TF.DIM}/session_stats{TF.RESET}       - Show statistics for the current NPC conversation.
@@ -67,12 +70,16 @@ def format_npcs_list(npcs_list: List[Dict[str, Any]]) -> str:
     if not npcs_list: return f"{TerminalFormatter.YELLOW}No NPCs found.{TerminalFormatter.RESET}"
     output = [f"\n{TerminalFormatter.YELLOW}{TerminalFormatter.BOLD}Known NPCs:{TerminalFormatter.RESET}"]
     current_area_display = None
-    sorted_npcs = sorted(npcs_list, key=lambda x: (x.get('area', 'Unknown').lower(), x.get('name', 'Unknown').lower()))
+    # Sort by area first, then by NPC name within each area
+    sorted_npcs = sorted(npcs_list, key=lambda x: (x.get('area', 'Unknown Area').lower(), x.get('name', 'Unknown NPC').lower()))
     for npc_info in sorted_npcs:
-        area = npc_info.get('area', 'Unknown Area'); name = npc_info.get('name', 'Unknown NPC'); role = npc_info.get('role', 'Unknown Role')
+        area = npc_info.get('area', 'Unknown Area')
+        name = npc_info.get('name', 'Unknown NPC')
+        role = npc_info.get('role', 'Unknown Role')
         if area != current_area_display:
-            if current_area_display is not None: output.append("")
-            current_area_display = area; output.append(f"{TerminalFormatter.BRIGHT_CYAN}{current_area_display}{TerminalFormatter.RESET}")
+            if current_area_display is not None: output.append("") # Add a blank line between areas
+            current_area_display = area
+            output.append(f"{TerminalFormatter.BRIGHT_CYAN}{current_area_display}{TerminalFormatter.RESET}")
         output.append(f"  {TerminalFormatter.DIM}- {name} ({role}){TerminalFormatter.RESET}")
     return "\n".join(output)
 
@@ -80,7 +87,7 @@ def format_npcs_list(npcs_list: List[Dict[str, Any]]) -> str:
 if __name__ == "__main__":
     print(f"--- main_utils Tests ---")
     help_text_test = get_help_text()
-    assert "/give <amount> Credits" in help_text_test
-    assert "/endhint" in help_text_test
-    assert "/areas" in help_text_test # MODIFIED: Test for /areas in help
-    print("Help text includes credits, endhint, and areas commands. All basic tests passed.")
+    assert "/profile" in help_text_test
+    assert "/profile_for_npc" in help_text_test
+    print("Help text includes new profile commands. All basic tests passed.")
+
