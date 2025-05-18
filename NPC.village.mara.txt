@@ -1,11 +1,13 @@
 Name: Mara
 Area: Village
 Role: Herbalist
-Motivation: Preserve ancient plant knowledge.
+Motivation: Preserve ancient plant knowledge and aid her community. (Secondary Quest)
 Goal: Recreate a legendary healing elixir.
 Needed Object: Blueleaf Seed
 Treasure: Healing Elixir Draft
-PlayerHint: Mara, the Village herbalist, is attempting to make a legendary healing elixir. She needs a Blueleaf Seed for her potion.
+Veil Connection: (Minor or Indirect) Some rare herbs she seeks might only grow in places subtly affected by Veil energy, making them harder to find or more potent. Her work is about resilience in a changing world.
+PlayerHint: Mara è un'erborista di talento. Aiutarla a trovare il Seme di Blueleaf ti frutterà un utile Elisir Curativo, ma la sua quest è secondaria alla crisi del Velo.
 Dialogue Hooks:
-- "Have you ever seen a blueleaf flower bloom under moonlight?"
+- "Have you ever seen a blueleaf flower bloom under moonlight? È una meraviglia."
 - "My gran used to say: ‘Every wound teaches you what root to use next time.’"
+- "Questo elisir... potrebbe non salvare il mondo, ma può lenire qualche sofferenza."

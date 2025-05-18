@@ -1,12 +1,13 @@
 Name: Elira
 Area: Forest
-Role: Forest Wanderer
-Motivation: Guard the balance of nature.
-Goal: Prevent a spreading blight.
-Needed Object: Blight Sample
-Treasure: Soothing Balm Recipe
-PlayerHint: Elira is dedicated to stopping a blight in the Forest. Providing her with a Blight Sample would allow her to study it and find a cure.
+Role: Forest Wanderer, Guardian of Nature's Balance
+Motivation: Guard the balance of nature and heal the land from the Veil's decay.
+Goal: Guarire la ferita nel Velo che si manifesta come piaga nella foresta e proteggere/offrire l'Heartseed.
+Needed Object: Blight Sample (as proof for Lyra)
+Treasure: Heartseed of the Ancient Grove (Componente del Sigillo della Natura)
+Veil Connection: Trees and animals respond to her presence; she remembers before the Veil and feels its suffering directly through nature. The Blight is a direct manifestation of a Veil tear.
+PlayerHint: Elira soffre con la sua foresta. Portale un campione della piaga per Lyra. Potrebbe poi affidarti l'`Heartseed of the Ancient Grove`, essenziale per i Sigilli.
 Dialogue Hooks:
-- "The trees weep for what you’ve burned."
-- "This path is older than your maps. And far less forgiving."
-Veil Connection: Trees and animals respond to her presence; she remembers before the Veil.
+- "The trees weep for what you’ve burned... o per ciò che il Velo spezzato sta distruggendo."
+- "This path is older than your maps. And far less forgiving to those who disrupt the balance."
+- "Quest'Heartseed... è il cuore pulsante della foresta. Un frammento della sua antica magia, necessario per ristabilire l'armonia."

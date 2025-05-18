@@ -2,11 +2,12 @@ Name: Cassian
 Area: City
 Role: Bureaucrat
 Motivation: Maintain influence and power.
-Goal: Engineer a rival's downfall.
+Goal: Engineer a rival's downfall. (Secondary to main plot, but his reward is key)
 Needed Object: Rival's Ledger
-Treasure: Ornate Data Codex
-PlayerHint: Cassian is trying to ruin a rival and likely needs incriminating evidence, such as the Rival's Ledger. He might offer a test of trust first.
+Treasure: Codice delle Verità Velate (Ornate Data Codex containing vital Veil lore)
+Veil Connection: Controls hidden scrolls tied to Veil research; manipulating knowledge for power. He may not fully understand the significance of the codex he possesses in relation to the Veil's stability.
+PlayerHint: Cassian è consumato dalla sua ambizione. Se lo aiuti a far cadere il suo rivale, potresti ottenere qualcosa di più prezioso di quanto lui stesso immagini: il "Codice delle Verità Velate".
 Dialogue Hooks:
 - "Policy is the art of slow poisoning… no offense, of course."
 - "I’d offer you a contract, but you’d better read the margins first."
-Veil Connection: Controls hidden scrolls tied to Veil research; manipulating knowledge for power.
+- "Quel codex? Un vecchio tomo polveroso. Prendilo pure, se mi porti quel registro..."

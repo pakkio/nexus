@@ -1,12 +1,13 @@
 Name: Boros
 Area: Mountain
-Role: Retired Warrior / Goatherd
-Motivation: Live peacefully and pass on wisdom.
-Goal: Teach a worthy soul before he dies.
-Needed Object: Lost Goat Bell
-Treasure: Warrior's Keepsake
-PlayerHint: Boros, the old goatherd on the Mountain, seeks a worthy student. Retrieving his Lost Goat Bell could be the test he's looking for.
+Role: Retired Warrior / Goatherd, Witness to a Past Veil Breach
+Motivation: Live peacefully and pass on wisdom & warnings about the Veil.
+Goal: Teach a worthy soul and ensure his warnings are heeded before he dies.
+Needed Object: Lost Goat Bell (a test of worthiness)
+Treasure: Testimonianza Incisa di Boros (Warrior's Keepsake containing a detailed account of a past Veil breach)
+Veil Connection: Survived a Veil breach; remembers truths and horrors no one else dares speak. His memories are a direct proof of the Veil's fragility.
+PlayerHint: Boros ha visto cose terribili. Guadagna la sua fiducia ritrovando la sua campanella. La sua testimonianza è una prova cruciale per Lyra.
 Dialogue Hooks:
-- "The wind up here doesn’t lie. Listen to it next time."
-- "I buried my sword beneath the oldest goat. Don’t ask how I know which one."
-Veil Connection: Survived a Veil breach; remembers truths no one else dares speak.
+- "The wind up here doesn’t lie. Listen to it next time... sussurra di antichi orrori."
+- "I buried my sword beneath the oldest goat. Don’t ask how I know which one. Ma ho seppellito anche ricordi più oscuri."
+- "Questa incisione... che possa servire da monito. Il Velo si è già squarciato una volta."

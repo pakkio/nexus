@@ -73,12 +73,15 @@ class TerminalFormatter:
             cls._ansi_enabled = (os.environ.get('WT_SESSION') is not None or
                                  os.environ.get('ConEmuANSI') == 'ON' or
                                  os.environ.get('ANSICON') is not None)
+            if not cls._ansi_enabled: # Try to enable it if on Windows and not explicitly supported by env vars
+                os.system('') # This call can activate VT100 processing in some Windows consoles
+                # We don't re-check here as it's a one-shot attempt; subsequent calls will use the initial detection.
         else:
             # Unix-like check (stdout is a TTY)
             # Also check TERM environment variable for common values
             term = os.environ.get('TERM', '')
             cls._ansi_enabled = hasattr(sys.stdout, 'isatty') and sys.stdout.isatty() and \
-                                'xterm' in term or 'screen' in term or 'vt100' in term or 'linux' in term
+                                ('xterm' in term or 'screen' in term or 'vt100' in term or 'linux' in term or 'alacritty' in term or 'kitty' in term)
         return cls._ansi_enabled
 
     @classmethod
@@ -125,19 +128,19 @@ class TerminalFormatter:
             return cls.plain_text_formatter(text, width=effective_width)
 
         formatted_lines = []
-        in_code_block = False # Basic state for potential future code block handling
+        # in_code_block = False # Basic state for potential future ```code block``` handling
 
         # Split lines but preserve trailing newline if present
         lines = text.splitlines() # Handles different newline types
 
-        for line in lines:
-            original_line = line # For fallback/debugging
+        for line_idx, line_content in enumerate(lines):
+            original_line = line_content # For fallback/debugging
 
             # --- Block Element Formatting (Applied first) ---
             processed_block = False
 
             # Headings
-            heading_match = re.match(cls.RE_HEADING, line)
+            heading_match = re.match(cls.RE_HEADING, line_content)
             if heading_match:
                 level = len(heading_match.group(1))
                 content = heading_match.group(2).strip()
@@ -145,50 +148,64 @@ class TerminalFormatter:
                 processed_block = True
 
             # Blockquotes (apply dim/italic style)
-            elif re.match(cls.RE_QUOTE, line):
-                m = re.match(cls.RE_QUOTE, line)
+            elif re.match(cls.RE_QUOTE, line_content):
+                m = re.match(cls.RE_QUOTE, line_content)
                 # Recursively format the quote content for inline styles
-                quote_content = cls.format_inline_styles(m.group(1))
+                quote_content_styled = cls.format_inline_styles(m.group(1))
                 # Apply wrapping to the quote content *after* inline formatting
-                wrapped_quote = textwrap.wrap(quote_content, width=effective_width - 2) # Indent by 2
-                formatted_lines.extend([f"{cls.DIM}{cls.ITALIC}{cls.CYAN}> {wq}{cls.RESET}" for wq in wrapped_quote])
+                # Indent by 2 for the "> " part
+                wrapped_quote_lines = textwrap.wrap(quote_content_styled, width=effective_width - 2, subsequent_indent='  ')
+                for wq_line_idx, wq_line_content in enumerate(wrapped_quote_lines):
+                    if wq_line_idx == 0:
+                        formatted_lines.append(f"{cls.DIM}{cls.ITALIC}{cls.CYAN}> {wq_line_content}{cls.RESET}")
+                    else: # Subsequent lines of a wrapped quote are already indented by textwrap
+                        formatted_lines.append(f"{cls.DIM}{cls.ITALIC}{cls.CYAN}{wq_line_content}{cls.RESET}")
                 processed_block = True
 
             # Bullet Lists (apply color and bullet)
-            elif re.match(cls.RE_BULLET_LIST, line):
-                m = re.match(cls.RE_BULLET_LIST, line)
-                bullet = m.group(1) # Could use specific bullet chars based on group(1) if desired
-                # Recursively format list item content
-                item_content = cls.format_inline_styles(m.group(2))
-                wrapped_item = textwrap.wrap(item_content, width=effective_width - 4) # Indent bullet list
-                formatted_lines.append(f"{cls.YELLOW}  {bullet} {cls.RESET}{wrapped_item[0]}")
-                formatted_lines.extend([f"    {line}" for line in wrapped_item[1:]])
+            elif re.match(cls.RE_BULLET_LIST, line_content):
+                m = re.match(cls.RE_BULLET_LIST, line_content)
+                bullet = m.group(1)
+                item_content_styled = cls.format_inline_styles(m.group(2))
+                # Indent for "  * " prefix. Subsequent lines should align with item_content.
+                wrapped_item_lines = textwrap.wrap(item_content_styled, width=effective_width - 4, subsequent_indent='    ')
+                for wi_line_idx, wi_line_content in enumerate(wrapped_item_lines):
+                    if wi_line_idx == 0:
+                        formatted_lines.append(f"{cls.YELLOW}  {bullet} {cls.RESET}{wi_line_content}")
+                    else: # Already indented by textwrap subsequent_indent
+                        formatted_lines.append(f"{cls.RESET}{wi_line_content}") # Reset needed if previous line ended with color
                 processed_block = True
 
             # Numbered Lists
-            elif re.match(cls.RE_NUMBER_LIST, line):
-                m = re.match(cls.RE_NUMBER_LIST, line)
+            elif re.match(cls.RE_NUMBER_LIST, line_content):
+                m = re.match(cls.RE_NUMBER_LIST, line_content)
                 number = m.group(1)
-                item_content = cls.format_inline_styles(m.group(2))
-                wrapped_item = textwrap.wrap(item_content, width=effective_width - (len(number) + 3)) # Adjust indent
-                formatted_lines.append(f"{cls.YELLOW} {number}. {cls.RESET}{wrapped_item[0]}")
-                formatted_lines.extend([f"  {' ' * len(number)}. {line}" for line in wrapped_item[1:]]) # Align subsequent lines
+                item_content_styled = cls.format_inline_styles(m.group(2))
+                # Adjust indent for " 1. " (number length + ". ")
+                num_prefix_len = len(number) + 2
+                sub_indent = ' ' * (num_prefix_len + 1) # Subsequent indent for wrapped lines
+                wrapped_item_lines = textwrap.wrap(item_content_styled, width=effective_width - (num_prefix_len+1), subsequent_indent=sub_indent)
+                for wi_line_idx, wi_line_content in enumerate(wrapped_item_lines):
+                    if wi_line_idx == 0:
+                        formatted_lines.append(f"{cls.YELLOW} {number}. {cls.RESET}{wi_line_content}")
+                    else: # Already indented
+                         formatted_lines.append(f"{cls.RESET}{wi_line_content}")
                 processed_block = True
 
 
             # --- Inline Formatting and Wrapping (if not a processed block element) ---
             if not processed_block:
                 # Apply inline styles first
-                formatted_line = cls.format_inline_styles(line)
+                formatted_line_content = cls.format_inline_styles(line_content)
 
                 # Wrap the line after inline styles are applied
                 try:
-                    # Handle empty lines correctly
-                    wrapped_lines = textwrap.wrap(formatted_line, width=effective_width) if formatted_line.strip() else ['']
-                    formatted_lines.extend(wrapped_lines)
+                    # Handle empty lines correctly (textwrap returns empty list for empty string)
+                    wrapped_sub_lines = textwrap.wrap(formatted_line_content, width=effective_width) if formatted_line_content.strip() else ['']
+                    formatted_lines.extend(wrapped_sub_lines)
                 except Exception as e:
-                    # Fallback if wrapping fails (e.g., complex ANSI sequences)
-                    print(f"{cls.RED}Warning: Text wrapping failed for line: {original_line} (Error: {e}){cls.RESET}", file=sys.stderr)
+                    # Fallback if wrapping fails (e.g., complex ANSI sequences miscalculated by textwrap)
+                    # print(f"{cls.RED}Warning: Text wrapping failed for line: {original_line} (Error: {e}){cls.RESET}", file=sys.stderr)
                     formatted_lines.append(original_line) # Append original line on error
 
         return '\n'.join(formatted_lines)
@@ -197,13 +214,30 @@ class TerminalFormatter:
     def format_inline_styles(cls, line: str) -> str:
         """Applies inline formatting (bold, italic, etc.) using regex."""
         # Apply styles in a specific order to avoid conflicts (e.g., bold first)
-        line = re.sub(cls.RE_BOLD_STARS, f"{cls.BOLD}\\1{cls.RESET}", line)
-        line = re.sub(cls.RE_BOLD_UNDERSCORES, f"{cls.BOLD}\\1{cls.RESET}", line)
-        line = re.sub(cls.RE_ITALIC_STARS, f"{cls.ITALIC}\\1{cls.RESET}", line)
-        line = re.sub(cls.RE_ITALIC_UNDERSCORES, f"{cls.ITALIC}\\1{cls.RESET}", line)
-        line = re.sub(cls.RE_UNDERLINE, f"{cls.UNDERLINE}\\1{cls.RESET}", line)
-        line = re.sub(cls.RE_HIGHLIGHT, f"{cls.REVERSE}\\1{cls.RESET}", line) # Often used for `code`
+        line = re.sub(cls.RE_BOLD_STARS, f"{cls.BOLD}\\1{cls.RESET_BOLD}", line, flags=re.DOTALL)
+        line = re.sub(cls.RE_BOLD_UNDERSCORES, f"{cls.BOLD}\\1{cls.RESET_BOLD}", line, flags=re.DOTALL)
+        line = re.sub(cls.RE_ITALIC_STARS, f"{cls.ITALIC}\\1{cls.RESET_ITALIC}", line, flags=re.DOTALL)
+        line = re.sub(cls.RE_ITALIC_UNDERSCORES, f"{cls.ITALIC}\\1{cls.RESET_ITALIC}", line, flags=re.DOTALL)
+        line = re.sub(cls.RE_UNDERLINE, f"{cls.UNDERLINE}\\1{cls.RESET_UNDERLINE}", line, flags=re.DOTALL)
+        line = re.sub(cls.RE_HIGHLIGHT, f"{cls.REVERSE}\\1{cls.RESET_REVERSE}", line, flags=re.DOTALL)
         return line
+
+    # Helper properties for resetting specific styles if we want to be granular
+    # This helps if styles are nested, though full proper nesting is hard with regex.
+    # For simple cases, just RESET is fine.
+    @classmethod
+    @property
+    def RESET_BOLD(cls): return cls.RESET # Or specific un-bold if terminal supports and it's needed
+    @classmethod
+    @property
+    def RESET_ITALIC(cls): return cls.RESET
+    @classmethod
+    @property
+    def RESET_UNDERLINE(cls): return cls.RESET
+    @classmethod
+    @property
+    def RESET_REVERSE(cls): return cls.RESET
+
 
     @staticmethod
     def plain_text_formatter(text: str, width: Optional[int] = None) -> str:
@@ -217,12 +251,12 @@ class TerminalFormatter:
 
         for line in lines:
             # Remove markdown formatting for plain text output
-            line = re.sub(r'\*\*(.+?)\*\*', r'\1', line) # Bold
-            line = re.sub(r'__(.+?)__', r'\1', line)     # Bold
-            line = re.sub(r'(?<![\*\w])\*(?!\s)(.+?)(?<!\s)\*(?![\*\w])', r'\1', line) # Italic *
-            line = re.sub(r'(?<![\w_])_(?!_)(.+?)(?<!_)_(?![\w_])', r'\1', line) # Italic _
-            line = re.sub(r'~(.*?)~', r'\1', line)       # Underline
-            line = re.sub(r'`(.*?)`', r'\1', line)       # Highlight/Code
+            line = re.sub(r'\*\*(.+?)\*\*', r'\1', line, flags=re.DOTALL)
+            line = re.sub(r'__(.+?)__', r'\1', line, flags=re.DOTALL)
+            line = re.sub(r'(?<![\*\w])\*(?!\s)(.+?)(?<!\s)\*(?![\*\w])', r'\1', line, flags=re.DOTALL)
+            line = re.sub(r'(?<![\w_])_(?!_)(.+?)(?<!_)_(?![\w_])', r'\1', line, flags=re.DOTALL)
+            line = re.sub(r'~(.*?)~', r'\1', line, flags=re.DOTALL)
+            line = re.sub(r'`(.*?)`', r'\1', line, flags=re.DOTALL)
 
             # Handle block elements simply
             line = re.sub(r'^(#{1,6})\s+', '', line)      # Remove heading markers
@@ -248,57 +282,60 @@ class TerminalFormatter:
 # ===========================================
 #  Blocco di Test Eseguibile (__main__)
 # ===========================================
-# (Keep the existing if __name__ == '__main__' block for visual testing)
 if __name__ == '__main__':
-    # Test ANSI support detection
     print(f"{TerminalFormatter.BOLD}--- Terminal ANSI Support Test ---{TerminalFormatter.RESET}")
     if TerminalFormatter.supports_ansi():
         print(f"{TerminalFormatter.GREEN}✓ ANSI support detected/enabled.{TerminalFormatter.RESET}")
     else:
-        # Try enabling ANSI explicitly on Windows if possible (requires OS-level support)
         if os.name == 'nt':
-            os.system('') # This can sometimes enable ANSI processing in cmd.exe/powershell
-            if TerminalFormatter.supports_ansi(): # Check again
+            os.system('')
+            if TerminalFormatter.supports_ansi():
                 print(f"{TerminalFormatter.YELLOW}✓ ANSI support enabled (likely via OS trick).{TerminalFormatter.RESET}")
+                TerminalFormatter.enable_ansi(True) # Explicitly enable if trick worked
             else:
                 print(f"{TerminalFormatter.RED}⚠ ANSI support not detected. Formatting will be plain text.{TerminalFormatter.RESET}")
         else:
             print(f"{TerminalFormatter.RED}⚠ ANSI support not detected. Formatting will be plain text.{TerminalFormatter.RESET}")
 
-    # --- Visual Formatting Test ---
     print(f"\n{TerminalFormatter.BOLD}--- Visual Formatting Test ---{TerminalFormatter.RESET}")
     sample_text = """# Intestazione Livello 1
 Questo è testo normale sotto H1. Contiene **grassetto**, *corsivo*, ~sottolineato~ e `codice inline`. _Anche underscore italici_. __E bold__.
+Un'altra riga di testo **con grassetto che si estende\nsu più righe** per testare DOTALL.
+*E corsivo che\nva a capo anche lui.*
 
 ## Intestazione Livello 2 con `codice`
 Paragrafo dopo H2.
 > Questo è un blocco citazione.
-> Può contenere **formattazione** *inline*.
-> Si estende su più righe.
+> Può contenere **formattazione** *inline* e si estende su più righe,
+> sperando che il wrapping funzioni correttamente con l'indentazione e mantenga lo stile.
+> Ultima riga della citazione.
 
 ### Lista Puntata (H3)
-- Primo elemento
+- Primo elemento molto lungo che dovrebbe andare a capo correttamente mantenendo l'allineamento del testo successivo sotto il bullet e non sotto il simbolo del bullet.
 - Secondo con *corsivo*
-  - Sotto-elemento (indentazione può variare)
-+ Altro tipo di bullet
-* E un altro
+  - Sotto-elemento (indentazione può variare, qui non gestita specificamente)
++ Altro tipo di bullet con testo che si spera vada a capo bene.
+* E un altro.
 
 #### Lista Numerata (H4)
-1. Primo punto numerato.
+1. Primo punto numerato, anche questo abbastanza lungo per vedere come gestisce il wrapping delle righe successive.
 2. Secondo punto con **grassetto**.
-   Riga continua allineata.
-10. Decimo punto per testare allineamento.
+   Riga continua allineata manualmente (questo non è wrapping automatico).
+10. Decimo punto per testare allineamento con numeri a due cifre. Questo testo è anche lungo per vedere il wrapping.
 
 Testo normale alla fine. *Corsivo alla fine*. **Grassetto alla fine.** `Codice alla fine`.
+Un'ultima riga normale.
 """
 
     print("\n--- Formatted Output (width=70) ---")
+    # Ensure ANSI is enabled for this part of the test if auto-detection was tricky
+    # TerminalFormatter.enable_ansi(True)
     print(TerminalFormatter.format_terminal_text(sample_text, width=70))
 
     print("\n--- Plain Text Output (width=70) ---")
-    # Force disable ANSI for this test
-    TerminalFormatter.enable_ansi(False)
+    TerminalFormatter.enable_ansi(False) # Force disable ANSI for this test
     print(TerminalFormatter.format_terminal_text(sample_text, width=70))
-    TerminalFormatter.enable_ansi(True) # Re-enable auto-detect
+    # Re-enable based on detection for subsequent runs or other scripts importing this
+    TerminalFormatter._ansi_enabled = None # Reset to allow re-detection next time supports_ansi is called
 
     print(f"\n{TerminalFormatter.BOLD}--- Test Finished ---{TerminalFormatter.RESET}")

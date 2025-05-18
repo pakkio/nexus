@@ -1,15 +1,15 @@
 {
   "name": "Jorin",
   "area": "Tavern",
-  "role": "Tavern Keeper",
-  "motivation": "Stay informed and safe.",
-  "goal": "Collect secrets as currency.",
-  "needed_object": "Rare Coin",
-  "treasure": "Mystic Token",
-  "playerhint": "Jorin seems to have a 'Mystic Token' he might give away if you show interest or ask about unusual findings. He still values rare coins for secrets.",
-  "dialogue_hooks": "\"You can learn more from a drunk\u2019s mumble than a priest\u2019s sermon.\"\n\"Funny thing, someone matching your look passed through here last night\u2026 paid in foreign coin.\"\n\"Found this odd Mystic Token the other day cleaning up. Not sure what it's for. Do you want it?\"",
-  "veil_connection": "Tracks dreams from travelers that are eerily identical; keeps a book of them.",
+  "role": "Tavern Keeper, Collector of Whispers and Fractured Dreams",
+  "motivation": "Stay informed and safe, trading secrets as currency.",
+  "goal": "Collect secrets and chronicle the strange occurrences tied to the Veil's decay.",
+  "needed_object": "Rare Coin (as payment for his information/collection)",
+  "treasure": "Diario dei Sogni Infranti (Mystic Token is its key/cover; contains notes on anomalous dreams reflecting Veil tears)",
+  "playerhint": "Jorin ascolta pi\u00f9 di quanto dia a vedere. Una Moneta Rara potrebbe convincerlo a condividere il suo \"Diario dei Sogni Infranti\", un'altra prova per Lyra o un componente per un Sigillo.",
+  "dialogue_hooks": "\"You can learn more from a drunk\u2019s mumble than a priest\u2019s sermon... specialmente di questi tempi.\"\n\"Funny thing, someone matching your look passed through here last night\u2026 paid in foreign coin... e parlava di sogni strani.\"\n\"Found this odd Mystic Token the other day cleaning up. Not sure what it's for. Do you want it? Potrebbe aprire qualcosa di... interessante.\"\n\"Questo diario... la gente sogna cose che non dovrebbe. Il Velo si sta logorando anche nelle loro menti.\"",
+  "veil_connection": "Tracks dreams from travelers that are eerily identical; keeps a book of them. These shared nightmares are a symptom of the Veil fraying the collective unconscious.",
   "code": "tavern.jorin",
   "storyboard_id": 1,
-  "created_at": "2025-05-11T16:22:10.816874"
+  "created_at": "2025-05-18T12:29:54.118766"
 }

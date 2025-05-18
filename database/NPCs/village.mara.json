@@ -2,14 +2,14 @@
   "name": "Mara",
   "area": "Village",
   "role": "Herbalist",
-  "motivation": "Preserve ancient plant knowledge.",
+  "motivation": "Preserve ancient plant knowledge and aid her community. (Secondary Quest)",
   "goal": "Recreate a legendary healing elixir.",
   "needed_object": "Blueleaf Seed",
   "treasure": "Healing Elixir Draft",
-  "playerhint": "Mara, the Village herbalist, is attempting to make a legendary healing elixir. She needs a Blueleaf Seed for her potion.",
-  "dialogue_hooks": "\"Have you ever seen a blueleaf flower bloom under moonlight?\"\n\"My gran used to say: \u2018Every wound teaches you what root to use next time.\u2019\"",
-  "veil_connection": "",
+  "playerhint": "Mara \u00e8 un'erborista di talento. Aiutarla a trovare il Seme di Blueleaf ti frutter\u00e0 un utile Elisir Curativo, ma la sua quest \u00e8 secondaria alla crisi del Velo.",
+  "dialogue_hooks": "\"Have you ever seen a blueleaf flower bloom under moonlight? \u00c8 una meraviglia.\"\n\"My gran used to say: \u2018Every wound teaches you what root to use next time.\u2019\"\n\"Questo elisir... potrebbe non salvare il mondo, ma pu\u00f2 lenire qualche sofferenza.\"",
+  "veil_connection": "(Minor or Indirect) Some rare herbs she seeks might only grow in places subtly affected by Veil energy, making them harder to find or more potent. Her work is about resilience in a changing world.",
   "code": "village.mara",
   "storyboard_id": 1,
-  "created_at": "2025-05-11T16:22:10.817446"
+  "created_at": "2025-05-18T12:29:54.118940"
 }

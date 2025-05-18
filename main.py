@@ -24,7 +24,9 @@ try:
     # main_utils already imported above for load_dotenv
     from main_utils import get_help_text # Example if needed directly here
 except ImportError as e:
-    print(f"{TerminalFormatter.RED}Fatal Error: Could not import a required module in main.py: {e}{TerminalFormatter.RESET}")
+    # Fallback TerminalFormatter for initial error message if it's the one missing
+    class TF: RED = "\033[91m"; RESET = "\033[0m"; BOLD = "\033[1m"; YELLOW = "\033[93m"; DIM = "\033[2m"; MAGENTA = "\033[35m"; CYAN = "\033[36m"; BRIGHT_CYAN = "\033[96m"; BG_BLUE = "\033[44m"; BRIGHT_WHITE = "\033[97m"; BG_GREEN = "\033[42m"; BLACK = "\033[30m";
+    print(f"{TF.RED}Fatal Error: Could not import a required module in main.py: {e}{TF.RESET}")
     print("Please ensure db_manager.py, main_core.py, main_utils.py, and terminal_formatter.py are present.")
     sys.exit(1)
 
@@ -82,94 +84,85 @@ def main():
     parser.add_argument(
         "--player",
         default="Player1", # Default player identifier
-        help="Identifier for the player (currently unused)."
+        help="Identifier for the player." # Player ID is used for saving state
     )
 
     args = parser.parse_args()
 
     # --- Initial Setup & Welcome Message ---
-    print(f"\n{TerminalFormatter.BG_BLUE}{TerminalFormatter.BRIGHT_WHITE}{TerminalFormatter.BOLD} ELDORIA DIALOGUE SYSTEM {TerminalFormatter.RESET}")
-    print(f"{TerminalFormatter.BRIGHT_CYAN}{'=' * 50}{TerminalFormatter.RESET}")
+    TF_main = TerminalFormatter # Use the successfully imported one
+    print(f"\n{TF_main.BG_BLUE}{TF_main.BRIGHT_WHITE}{TF_main.BOLD} ELDORIA DIALOGUE SYSTEM {TF_main.RESET}")
+    print(f"{TF_main.BRIGHT_CYAN}{'=' * 50}{TF_main.RESET}")
 
     # Determine effective settings
-    # Mockup mode is default unless DB connection is viable & requested implicitly/explicitly
-    # DbManager's __init__ handles the logic of checking env vars if args.mockup is False
-    USE_MOCKUP = args.mockup # Force mockup if flag is set
+    USE_MOCKUP = args.mockup
     MOCKUP_DIR = args.mockup_dir
     USE_STREAM = not args.no_stream
-    AUTO_SHOW_STATS = args.show_stats # Use the positive flag
-    MODEL_NAME = args.model # Pass along the potentially None value
+    AUTO_SHOW_STATS = args.show_stats
+    MODEL_NAME = args.model
     PLAYER_ID = args.player
     INITIAL_AREA = args.area
-    # Only set initial NPC if initial area is also provided
     INITIAL_NPC = args.npc if INITIAL_AREA else None
 
     if INITIAL_NPC and not INITIAL_AREA:
-        # This case is now handled better in run_interaction_loop, but good to keep maybe
-        print(f"{TerminalFormatter.YELLOW}Warning: --npc ('{INITIAL_NPC}') provided without --area. Ignoring starting NPC.{TerminalFormatter.RESET}")
+        print(f"{TF_main.YELLOW}Warning: --npc ('{INITIAL_NPC}') provided without --area. Ignoring starting NPC.{TF_main.RESET}")
         INITIAL_NPC = None
 
-    # Check ANSI support for user info
-    if not TerminalFormatter.supports_ansi():
-        print(f"{TerminalFormatter.YELLOW}Note: Terminal might not support ANSI formatting fully.{TerminalFormatter.RESET}")
+    if not TF_main.supports_ansi():
+        print(f"{TF_main.YELLOW}Note: Terminal might not support ANSI formatting fully.{TF_main.RESET}")
 
     # --- Initialize DB Manager ---
-    print(f"\n{TerminalFormatter.DIM}[INIT] Initializing DB Manager...{TerminalFormatter.RESET}")
-    db = None # Initialize db to None
+    print(f"\n{TF_main.DIM}[INIT] Initializing DB Manager...{TF_main.RESET}")
+    db = None
     try:
-        # Pass use_mockup explicitly, DbManager handles config loading from env if not mockup
         db = DbManager(use_mockup=USE_MOCKUP, mockup_dir=MOCKUP_DIR)
-        # Optional: Perform a quick connection test if *not* in mockup mode
         if not USE_MOCKUP and db.db_config and db.db_config.get('host'):
-            print(f"{TerminalFormatter.DIM}Attempting test connection to real DB...{TerminalFormatter.RESET}")
+            print(f"{TF_main.DIM}Attempting test connection to real DB...{TF_main.RESET}")
             try:
-                conn_test = db.connect() # Should raise error if connection fails
+                conn_test = db.connect()
                 conn_test.close()
-                print(f"{TerminalFormatter.GREEN}✅ Real DB connection test successful.{TerminalFormatter.RESET}")
+                print(f"{TF_main.GREEN}✅ Real DB connection test successful.{TF_main.RESET}")
             except Exception as conn_e:
-                print(f"{TerminalFormatter.YELLOW}⚠️ Real DB connection test failed: {conn_e}{TerminalFormatter.RESET}")
-                print(f"{TerminalFormatter.YELLOW}   Ensure DB is running and config (env vars) is correct.{TerminalFormatter.RESET}")
-                # Decide if this should be fatal? Maybe not, allow app to start but DB ops will fail later.
+                print(f"{TF_main.YELLOW}⚠️ Real DB connection test failed: {conn_e}{TF_main.RESET}")
+                print(f"{TF_main.YELLOW}   Ensure DB is running and config (env vars) is correct.{TF_main.RESET}")
         else:
-            print(f"{TerminalFormatter.GREEN}✅ DB Manager initialized ({'Mockup Mode' if USE_MOCKUP else 'Real DB Mode - Config Read'}).{TerminalFormatter.RESET}")
+            print(f"{TF_main.GREEN}✅ DB Manager initialized ({'Mockup Mode' if USE_MOCKUP else 'Real DB Mode - Config Read'}).{TF_main.RESET}")
 
     except Exception as e:
-        print(f"{TerminalFormatter.RED}❌ Fatal Error Initializing DB Manager: {e}{TerminalFormatter.RESET}")
+        print(f"{TF_main.RED}❌ Fatal Error Initializing DB Manager: {e}{TF_main.RESET}")
         traceback.print_exc()
         sys.exit(1)
 
     # --- Load Storyboard ---
-    print(f"\n{TerminalFormatter.DIM}[INIT] Loading storyboard...{TerminalFormatter.RESET}")
-    story = "" # Initialize story
+    print(f"\n{TF_main.DIM}[INIT] Loading storyboard...{TF_main.RESET}")
+    story = ""
     try:
-        story_data = db.get_storyboard() # Returns dict
+        story_data = db.get_storyboard()
         story = story_data.get("description", "[Storyboard description missing or failed to load]")
-        print(f"{TerminalFormatter.DIM}✅ Story loaded ({len(story)} chars).{TerminalFormatter.RESET}")
+        print(f"{TF_main.DIM}✅ Story loaded ({len(story)} chars).{TF_main.RESET}")
     except Exception as e:
-        print(f"{TerminalFormatter.RED}❌ Error loading storyboard via DbManager: {e}. Using default.{TerminalFormatter.RESET}")
-        story = "[Default story due to loading error]" # Fallback story
+        print(f"{TF_main.RED}❌ Error loading storyboard via DbManager: {e}. Using default.{TF_main.RESET}")
+        story = "[Default story due to loading error]"
 
     # --- Start Interaction Loop ---
-    print(f"\n{TerminalFormatter.DIM}Starting interaction loop...{TerminalFormatter.RESET}")
+    print(f"\n{TF_main.DIM}Starting interaction loop...{TF_main.RESET}")
     try:
         run_interaction_loop(
             db=db,
             story=story,
             initial_area=INITIAL_AREA,
             initial_npc_name=INITIAL_NPC,
-            model_name=MODEL_NAME, # Pass model name from args/env
+            model_name=MODEL_NAME,
             use_stream=USE_STREAM,
             auto_show_stats=AUTO_SHOW_STATS,
             player_id=PLAYER_ID
         )
     except Exception as e:
-        # Catch critical errors during the main loop execution
-        print(f"\n{TerminalFormatter.RED}❌ Critical Error during execution: {e}{TerminalFormatter.RESET}")
+        print(f"\n{TF_main.RED}❌ Critical Error during execution: {e}{TF_main.RESET}")
         traceback.print_exc()
         sys.exit(1)
     finally:
-        # Optional: Add any final cleanup here if needed
-        print(f"\n{TerminalFormatter.DIM}Application closing.{TerminalFormatter.RESET}")
+        print(f"\n{TF_main.DIM}Application closing.{TF_main.RESET}")
 
 
 if __name__ == "__main__":

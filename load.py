@@ -2,7 +2,7 @@
 # Updated Version with corrected NPC parser
 
 import os
-import mysql.connector 
+import mysql.connector
 import time
 import json
 import argparse
@@ -16,12 +16,12 @@ try:
     # print("Environment variables loaded (if .env file exists).")
 except ImportError:
     print("python-dotenv not found. Skipping .env file loading.")
-    def load_dotenv(): pass 
+    def load_dotenv(): pass
 
-class TerminalFormatter: 
+class TerminalFormatter:
     DIM = ""; RESET = ""; YELLOW = ""; RED = ""; GREEN = ""; BOLD = "";
     # Add other colors if your script uses them directly here, e.g. BRIGHT_CYAN
-    BRIGHT_CYAN = "" 
+    BRIGHT_CYAN = ""
     @staticmethod
     def format_terminal_text(text, width=80): import textwrap; return "\n".join(textwrap.wrap(text, width=width))
 
@@ -63,7 +63,7 @@ def parse_npc_file(filepath):
         'goal': '', 'needed_object': '', 'treasure': '',
         'playerhint': '', 'dialogue_hooks': '', 'veil_connection': '', 'code': ''
     }
-    
+
     # Order matters if keys are substrings of others, but not with ":"
     known_keys_map = {
         'Name:': 'name', 'Area:': 'area', 'Role:': 'role',
@@ -84,7 +84,7 @@ def parse_npc_file(filepath):
 
         for line_raw in lines:
             line_stripped = line_raw.strip()
-            if not line_stripped: 
+            if not line_stripped:
                 current_dict_key_for_multiline = None # Reset on empty lines
                 continue
 
@@ -95,11 +95,11 @@ def parse_npc_file(filepath):
             for key_prefix_in_map, dict_key_name_target in known_keys_map.items():
                 if line_stripped.lower().startswith(key_prefix_in_map.lower()):
                     content_after_key = line_stripped[len(key_prefix_in_map):].strip()
-                    
+
                     if dict_key_name_target == 'dialogue_hooks_header':
                         # This line is "Dialogue Hooks:", it just sets the context
                         # for subsequent '-' lines. Initialize/clear the actual dialogue_hooks field.
-                        data['dialogue_hooks'] = "" 
+                        data['dialogue_hooks'] = ""
                         current_dict_key_for_multiline = 'dialogue_hooks' # Context for '-' lines
                     else:
                         data[dict_key_name_target] = content_after_key
@@ -107,11 +107,11 @@ def parse_npc_file(filepath):
                         if dict_key_name_target in multiline_capable_dict_keys:
                             current_dict_key_for_multiline = dict_key_name_target
                         else: # It's a single-line key
-                            current_dict_key_for_multiline = None 
-                    
+                            current_dict_key_for_multiline = None
+
                     new_key_matched_this_line = True
                     break  # Found a key, process it and move to next line
-            
+
             if new_key_matched_this_line:
                 continue # Go to the next line in the file
 
@@ -138,7 +138,7 @@ def parse_npc_file(filepath):
                       # the key line itself was empty "Key: " which is fine.
                     data[current_dict_key_for_multiline] = original_line_content
                 continue # Processed as a continuation, move to next line
-            
+
             # 4. If none of the above, it's an unhandled/stray line or format issue
             # print(f"{TerminalFormatter.YELLOW}Notice: Unhandled line in NPC file '{filepath}': '{original_line_content}'{TerminalFormatter.RESET}")
 
@@ -149,11 +149,11 @@ def parse_npc_file(filepath):
         for key_to_strip in data.keys():
             if isinstance(data[key_to_strip], str):
                 data[key_to_strip] = data[key_to_strip].strip()
-        
+
         if not data.get('name') or not data.get('area'):
             print(f"{TerminalFormatter.YELLOW}Warning: NPC file '{filepath}' missing Name or Area.{TerminalFormatter.RESET}")
         return data
-        
+
     except FileNotFoundError: print(f"{TerminalFormatter.RED}Error: NPC file not found: '{filepath}'{TerminalFormatter.RESET}"); raise
     except Exception as e: print(f"{TerminalFormatter.RED}Error parsing NPC file '{filepath}': {e}{TerminalFormatter.RESET}"); traceback.print_exc(); raise
 
@@ -224,8 +224,8 @@ def load_to_mysql(storyboard_filepath, db_config):
                         npc_data.get('veil_connection', ''), storyboard_id )
                     cursor.execute(query, values)
                     npc_count += 1
-                except Exception as e: print(f"  ❌ Error processing/inserting NPC {npc_code} from {filename}: {e}"); conn.rollback() 
-        conn.commit() 
+                except Exception as e: print(f"  ❌ Error processing/inserting NPC {npc_code} from {filename}: {e}"); conn.rollback()
+        conn.commit()
         print(f"✅ Successfully loaded storyboard and {npc_count} NPCs.")
         success = True
     except Exception as err: print(f"{TerminalFormatter.RED}DB loading script failed: {err}{TerminalFormatter.RESET}");
@@ -246,7 +246,7 @@ def load_to_mockup(storyboard_filepath, mockup_dir="database"):
                 try: [os.remove(os.path.join(table_dir, f)) for f in os.listdir(table_dir) if f.endswith('.json')]
                 except OSError as e: print(f"{TerminalFormatter.YELLOW}Warn: Could not clean {table_dir}: {e}{TerminalFormatter.RESET}")
             else: os.makedirs(table_dir, exist_ok=True) # Ensure it exists
-        
+
         player_data_dirs = [os.path.join(mockup_dir, d) for d in ["ConversationHistory", "PlayerState", "PlayerProfiles"]]
         for p_dir in player_data_dirs: os.makedirs(p_dir, exist_ok=True)
 
@@ -266,7 +266,7 @@ def load_to_mockup(storyboard_filepath, mockup_dir="database"):
                 try:
                     npc_data = parse_npc_file(filepath) # Uses corrected parser
                     npc_data['code'] = npc_code
-                    npc_data['storyboard_id'] = 1 
+                    npc_data['storyboard_id'] = 1
                     npc_data['created_at'] = datetime.now().isoformat()
                     with open(os.path.join(npc_dir_path, f"{npc_code}.json"), 'w', encoding='utf-8') as f: json.dump(npc_data, f, indent=2)
                     npc_count += 1
@@ -297,9 +297,9 @@ if __name__ == "__main__":
         }
         if all([db_config['host'], db_config['user'], db_config['database']]): use_real_db = True
         else: print(f"{TerminalFormatter.YELLOW}Warn: Real DB mode requested but config missing. Falling back to mockup.{TerminalFormatter.RESET}")
-    
+
     load_successful = load_to_mysql(args.storyboard, db_config) if use_real_db else load_to_mockup(args.storyboard, args.mockup_dir)
-    
+
     if load_successful: print("\nData loading process completed successfully."); exit(0)
     else: print("\nData loading process FAILED. Please check errors."); exit(1)
 

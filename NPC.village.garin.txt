@@ -1,12 +1,13 @@
 Name: Garin
 Area: Village
-Role: Blacksmith
-Motivation: Protect the village and redeem his past.
-Goal: Reforge his broken family sword.
-Needed Object: Lion Crest Fragment
-Treasure: Reforged Hilt
-PlayerHint: Garin, the Village blacksmith, wishes to reforge his family's broken sword. A Lion Crest Fragment is the key component he's missing.
+Role: Blacksmith, Inheritor of a Veil War Legacy
+Motivation: Protect the village and redeem his past by reforging his family's sacred sword.
+Goal: Reforge his broken family sword, whose essence can contribute to a Seal.
+Needed Object: Lion Crest Fragment (key component for the sword's hilt)
+Treasure: Emblema del Guardiano Forgiato (Reforged Hilt whose core is a Seal component of Protection)
+Veil Connection: Inherited a blade forged in the Veil War; dreams of forging in divine fire. The metal itself remembers the Veil and how to resist it.
+PlayerHint: Garin il fabbro vuole riforgiare un'antica spada. Aiutalo a trovare il "Frammento Stemma Leone". L'elsa riforgiata, l'"Emblema del Guardiano Forgiato", è ciò che serve a Lyra.
 Dialogue Hooks:
-- "Steel remembers every swing. That’s why I hammer with care."
-- "If you find any pieces with a lion crest… bring them to me, no questions."
-Veil Connection: Inherited a blade forged in the Veil War; dreams of forging in divine fire.
+- "Steel remembers every swing. That’s why I hammer with care... e questa vecchia lama ricorda la Guerra del Velo."
+- "If you find any pieces with a lion crest… bring them to me, no questions. È per un lavoro... importante."
+- "Questo emblema... non è solo parte di una spada, è un simbolo di protezione, forgiato nel fuoco della speranza."
