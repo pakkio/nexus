@@ -201,8 +201,8 @@ def run_interaction_loop(
                     interaction_log_for_profile = game_session_state['chat_session'].messages[-2:]
 
 
-                npc_name_for_profile_update = game_session_state.get('current_npc',{}).get('name')
-
+                # npc_name_for_profile_update = game_session_state.get('current_npc',{}).get('name')
+                npc_name_for_profile_update = None if game_session_state.get('current_npc') is None else game_session_state.get('current_npc').get('name')
                 # Call the LLM-based update_player_profile
                 updated_profile, profile_changes_detected = update_player_profile(
                     previous_profile=current_profile_cache,
