@@ -4,13 +4,24 @@ version = "0.1.0"
 description = ""
 authors = ["Your Name <you@example.com>"]
 readme = "README.md"
+packages = [
+    { include = "*.py" }
+]
 
 [tool.poetry.dependencies]
+python = "^3.12"
+requests = "^2.32.3"
+python-dotenv = "^1.0.0"
+mysql-connector-python = "^9.3.0"
+
+# Dipendenze di sviluppo
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.0"
+black = "^23.7.0"
 python = "^3.12"
 dotenv = "^0.9.9"
 mysql-connector-python = "^9.3.0"
 requests = "^2.32.3"
-
 
 [build-system]
 requires = ["poetry-core"]
