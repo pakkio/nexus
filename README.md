@@ -67,6 +67,63 @@ Il framework è composto da moduli interconnessi che gestiscono diversi aspetti 
 - Chiave API per OpenRouter
 - MySQL (opzionale, supportata modalità file-based)
 
+
+1. Clona il repository:
+
+   ```bash
+   git clone https://github.com/pakkio/nexus.git
+   cd nexus
+   ```
+
+2. Installa le dipendenze con Poetry:
+
+   ```bash
+   # Se non hai già Poetry installato
+   pip install poetry
+   
+   # Installa tutte le dipendenze del progetto
+   poetry install
+   
+   # Attiva l'ambiente virtuale creato da Poetry
+   poetry shell
+   ```
+
+3. Crea un file .env nella directory principale con le seguenti variabili:
+
+   ```
+   OPENROUTER_API_KEY=your_openrouter_api_key
+   OPENROUTER_DEFAULT_MODEL=google/gemma-2-9b-it:free
+   PROFILE_ANALYSIS_MODEL=google/gemma-2-2b-it:free
+
+   # Solo se usi un database MySQL
+   DB_HOST=localhost
+   DB_PORT=3306
+   DB_USER=your_db_user
+   DB_PASSWORD=your_db_password
+   DB_NAME=nexus_db
+   `
+
+## Vantaggi dell'Uso di Poetry
+
+Poetry offre diversi benefici rispetto all'approccio con `requirements.txt`:
+
+- **Gestione automatica degli ambienti virtuali**: crea e gestisce un ambiente virtuale dedicato al progetto
+- **Risoluzione delle dipendenze**: risolve automaticamente i conflitti tra le dipendenze
+- **Blocco delle versioni**: mantiene il file `poetry.lock` che assicura che tutti gli sviluppatori usino esattamente le stesse versioni delle dipendenze
+- **Pubblicazione semplificata**: facilita il processo di build e pubblicazione del pacchetto su PyPI
+
+## Esecuzione del Progetto con Poetry
+
+Per eseguire il progetto dopo l'installazione con Poetry:
+
+```bash
+# Assicurati di essere nell'ambiente virtuale di Poetry
+poetry shell
+
+# Poi esegui il progetto come indicato ad esempio
+python main.py --mockup --player TestSeeker --area "Sanctum of Whispers"
+```
+
 ## Installazione
 
 1. Clona il repository:
