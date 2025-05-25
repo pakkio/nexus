@@ -1,282 +1,420 @@
-# Nexus: LLM-Powered Text Adventure Framework
+# 🌟 Nexus Framework
+### *Il Futuro delle Avventure Testuali è Qui*
 
-![Nexus Framework Banner](https://img.shields.io/badge/Nexus-Interactive%20Fiction%20Engine-blue)
+---
 
-**Nexus** è un framework avanzato per la creazione di avventure testuali potenziate da modelli linguistici di grandi dimensioni (LLM). Pensato per sviluppatori di narrativa interattiva che vogliono creare mondi dinamici con personaggi non giocanti dotati di memoria, apprendimento e profondità psicologica.
+## 🎭 Introduzione
 
-Il sistema attualmente implementa "The Shattered Veil", un'avventura ambientata nel mondo di Eldoria, dove una barriera mistica che protegge il mondo si sta disgregando.
+**Nexus** non è l'ennesimo motore per avventure testuali. È una **rivoluzione narrativa** che porta l'intelligenza artificiale nel cuore della storytelling interattiva. Immagina un mondo dove i personaggi non solo rispondono alle tue azioni, ma ti *ricordano*, ti *studiano*, e si *adattano* al tuo stile di gioco.
 
-## Indice
+Attualmente implementa **"The Shattered Veil"**, un'epica avventura ambientata nel misterioso mondo di **Eldoria**, dove una barriera mistica che protegge la realtà si sta sgretolando sotto i tuoi occhi.
 
-- [Caratteristiche Principali](#caratteristiche-principali)
-- [Architettura](#architettura)
-- [Requisiti](#requisiti)
-- [Installazione](#installazione)
-- [Configurazione](#configurazione)
-- [Esecuzione Rapida](#esecuzione-rapida)
-- [Utilizzo](#utilizzo)
-- [Creazione di NPC e Storie](#creazione-di-npc-e-storie)
-- [Come Contribuire](#come-contribuire)
+---
 
-## Caratteristiche Principali
+## ✨ Caratteristiche che Cambiano le Regole del Gioco
 
-- **NPCs con Memoria Persistente**: I personaggi ricordano le conversazioni e le interazioni precedenti, permettendo una narrazione continuativa e coerente.
-- **Profilo Psicologico del Giocatore**: Il sistema analizza il comportamento del giocatore attraverso LLM per costruire un profilo psicologico che influenza le reazioni degli NPC.
-- **Adattamento degli NPC**: Gli NPC adattano le loro risposte in base al profilo del giocatore per interazioni più personalizzate.
-- **Interfaccia a Linea di Comando**: Sistema di comandi intuitivo con formattazione ANSI per una migliore leggibilità.
-- **Database Flessibile**: Supporto per database MySQL reale con fallback a sistema basato su file JSON.
-- **Integrazione LLM**: Wrapper per OpenRouter che supporta diversi modelli linguistici.
-- **Modalità di Consulenza**: Sistema `/hint` che permette ai giocatori di consultare un NPC saggio (Lyra) per ricevere consigli strategici.
-- **Sistema di Inventario e Crediti**: Gestione degli oggetti e dell'economia di gioco.
+### 🧠 **NPCs con Memoria Persistente**
+Non più dialoghi robotici: i personaggi ricordano ogni conversazione, ogni scelta, ogni momento condiviso. La narrazione diventa un **tessuto vivente** di relazioni autentiche.
 
-## Architettura
+### 🎯 **Profilo Psicologico Dinamico**
+Il sistema *ti osserva mentre giochi*, costruendo un profilo psicologico che influenza come il mondo reagisce a te. Sei diplomatico? Aggressivo? Curioso? Gli NPCs se ne accorgeranno.
 
-Il framework è composto da moduli interconnessi che gestiscono diversi aspetti del gioco:
+### 🎨 **Adattamento Intelligente**
+Ogni personaggio modifica il proprio comportamento in base a chi sei e a come ti comporti. Un'esperienza **davvero personalizzata**.
+
+### 💻 **Interfaccia Elegante**
+Sistema di comandi intuitivo con **formattazione ANSI** che trasforma il terminale in una finestra su mondi fantastici.
+
+### 🗃️ **Database Flessibile**
+Supporto completo per **MySQL** con fallback intelligente su file JSON. La tua avventura è sempre al sicuro.
+
+### 🤖 **Integrazione LLM Avanzata**
+Wrapper sofisticato per **OpenRouter** che supporta i migliori modelli linguistici disponibili. Gestione separata dei modelli per dialoghi NPCs e analisi psicologica del giocatore.
+
+### 🔮 **Sistema di Consulenza Integrato**
+Il comando `/hint` ti connette con **Lyra**, un'oracolo digitale che mantiene cache intelligente dei consigli basati sul contesto di gioco.
+
+### 🎒 **Economia di Gioco Completa**
+Sistema di inventario e crediti che aggiunge profondità strategica alle tue scelte.
+
+### ⚡ **Sistema di Reset Intelligente**
+Script di reset integrato per ripulire stati di gioco, database e profili giocatore quando necessario.
+
+---
+
+## 🏗️ Architettura del Sistema
+
+Il framework è costruito con una **architettura modulare** che respira eleganza e flessibilità:
 
 ```
-┌─────────────────┐      ┌─────────────────┐      ┌─────────────────┐
-│     main.py     │──────│   main_core.py  │──────│ command_processor│
-└────────┬────────┘      └────────┬────────┘      └────────┬────────┘
-         │                        │                         │
-         │                        │                         │
-┌────────▼────────┐      ┌────────▼────────┐      ┌────────▼────────┐
-│   db_manager.py │◄─────│  session_utils  │◄─────│  chat_manager   │
-└────────┬────────┘      └────────┬────────┘      └────────┬────────┘
-         │                        │                         │
-         │                        │                         │
-┌────────▼────────┐      ┌────────▼────────┐      ┌────────▼────────┐
-│player_profile_  │◄─────│  hint_manager   │◄─────│   llm_wrapper   │
-│    manager      │      │                 │      │                 │
-└─────────────────┘      └─────────────────┘      └─────────────────┘
+┌─────────────────┐ ┌─────────────────┐ ┌─────────────────┐
+│ main.py         │──────│ main_core.py    │──────│ command_processor│
+└────────┬────────┘ └────────┬────────┘ └────────┬────────┘
+         │                   │                   │
+         │                   │                   │
+┌────────▼────────┐ ┌────────▼────────┐ ┌────────▼────────┐
+│ db_manager.py   │◄─────│ session_utils   │◄─────│ chat_manager    │
+└────────┬────────┘ └────────┬────────┘ └────────┬────────┘
+         │                   │                   │
+         │                   │                   │
+┌────────▼────────┐ ┌────────▼────────┐ ┌────────▼────────┐
+│player_profile_  │◄─────│ hint_manager    │◄─────│ llm_wrapper     │
+│ manager         │      │                 │      │                 │
+└─────────────────┘ └─────────────────┘ └─────────────────┘
 ```
 
-- `main.py`: Punto di ingresso dell'applicazione che gestisce argomenti da linea di comando e inizializzazione.
-- `main_core.py`: Loop di interazione principale che coordina le sessioni di gioco.
-- `command_processor.py`: Elabora i comandi dell'utente e aggiorna lo stato di gioco.
-- `session_utils.py`: Gestisce le conversazioni e il cambio di contesto tra NPC.
-- `chat_manager.py`: Interfaccia con LLM per gestire conversazioni dinamiche.
-- `player_profile_manager.py`: Analizza il comportamento del giocatore e aggiorna il suo profilo psicologico.
-- `db_manager.py`: Gestisce la persistenza dei dati su database MySQL o file system.
-- `llm_wrapper.py`: Interfaccia con OpenRouter per l'accesso a modelli linguistici di grandi dimensioni.
-- `terminal_formatter.py`: Formattazione e stili ANSI per l'output terminale.
-- `hint_manager.py`: Gestisce il sistema di consulenza con Lyra.
+### 🧩 **Componenti Chiave**
 
-## Requisiti
+- **`main.py`** - *Il portale d'ingresso*: gestisce argomenti avanzati inclusi modelli separati per dialoghi e analisi profilo
+- **`main_core.py`** - *Il cuore pulsante*: coordina il loop principale con aggiornamenti del profilo giocatore tramite LLM
+- **`command_processor.py`** - *L'interprete*: gestisce 15+ comandi specializzati con tracking azioni per profilo psicologico
+- **`session_utils.py`** - *Il regista*: orchestra conversazioni con integrazione insights psicologici nel system prompt degli NPCs
+- **`chat_manager.py`** - *Il ponte*: interfaccia streaming con statistiche dettagliate (token, tempi, performance)
+- **`player_profile_manager.py`** - *Lo psicologo*: analisi LLM-based con extraction JSON robusta per profili comportamentali
+- **`db_manager.py`** - *La memoria*: supporto MySQL completo + fallback JSON con schema player profiles avanzato
+- **`llm_wrapper.py`** - *Il traduttore*: client OpenRouter con gestione errori, logging e supporto streaming SSE
+- **`terminal_formatter.py`** - *L'artista*: formattazione ANSI avanzata con supporto Markdown-like (bold, italic, colori)
+- **`hint_manager.py`** - *Il consigliere*: sistema di cache intelligente per consigli contestuali di Lyra
+- **`load.py`** - *Il costruttore*: parser per NPCs e storyboard con supporto encoding UTF-8
 
-- Python 3.8+
-- Chiave API per OpenRouter
-- MySQL (opzionale, supportata modalità file-based)
+---
 
+## 🚀 Setup Rapido
 
-1. Clona il repository:
+### **Requisiti Minimi**
+- **Python 3.8+** (il linguaggio degli dei)
+- **Chiave API OpenRouter** (il passaporto per l'IA)
+- **MySQL** *(opzionale, ma consigliato per l'esperienza completa)*
 
-   ```bash
-   git clone https://github.com/pakkio/nexus.git
-   cd nexus
-   ```
-
-2. Installa le dipendenze con Poetry:
-
-   ```bash
-   # Se non hai già Poetry installato
-   pip install poetry
-   
-   # Installa tutte le dipendenze del progetto
-   poetry install
-   
-   # Attiva l'ambiente virtuale creato da Poetry
-   poetry shell
-   ```
-
-3. Crea un file .env nella directory principale con le seguenti variabili:
-
-   ```
-   OPENROUTER_API_KEY=your_openrouter_api_key
-   OPENROUTER_DEFAULT_MODEL=google/gemma-2-9b-it:free
-   PROFILE_ANALYSIS_MODEL=google/gemma-2-2b-it:free
-
-   # Solo se usi un database MySQL
-   DB_HOST=localhost
-   DB_PORT=3306
-   DB_USER=your_db_user
-   DB_PASSWORD=your_db_password
-   DB_NAME=nexus_db
-   `
-
-## Vantaggi dell'Uso di Poetry
-
-Poetry offre diversi benefici rispetto all'approccio con `requirements.txt`:
-
-- **Gestione automatica degli ambienti virtuali**: crea e gestisce un ambiente virtuale dedicato al progetto
-- **Risoluzione delle dipendenze**: risolve automaticamente i conflitti tra le dipendenze
-- **Blocco delle versioni**: mantiene il file `poetry.lock` che assicura che tutti gli sviluppatori usino esattamente le stesse versioni delle dipendenze
-- **Pubblicazione semplificata**: facilita il processo di build e pubblicazione del pacchetto su PyPI
-
-## Esecuzione del Progetto con Poetry
-
-Per eseguire il progetto dopo l'installazione con Poetry:
+### **Installazione con Poetry** *(Raccomandato)*
 
 ```bash
-# Assicurati di essere nell'ambiente virtuale di Poetry
+# Clona il futuro
+git clone https://github.com/pakkio/nexus.git
+cd nexus
+
+# Preparati alla magia
+pip install poetry
+poetry install
 poetry shell
-
-# Poi esegui il progetto come indicato ad esempio
-python main.py --mockup --player TestSeeker --area "Sanctum of Whispers"
 ```
 
-## Installazione
+**Perché Poetry?** Perché la vita è troppo breve per gestire dipendenze manualmente:
+- ✅ **Ambienti virtuali automatici**
+- ✅ **Risoluzione intelligente dei conflitti**
+- ✅ **Versioni bloccate e riproducibili**
+- ✅ **Pubblicazione su PyPI semplificata**
 
-1. Clona il repository:
-   ```bash
-   git clone https://github.com/yourusername/nexus-framework.git
-   cd nexus-framework
-   ```
-
-2. Installa le dipendenze:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-3. Crea un file `.env` nella directory principale con le seguenti variabili:
-   ```
-   OPENROUTER_API_KEY=your_openrouter_api_key
-   OPENROUTER_DEFAULT_MODEL=google/gemma-2-9b-it:free
-   PROFILE_ANALYSIS_MODEL=google/gemma-2-2b-it:free
-   
-   # Solo se usi un database MySQL
-   DB_HOST=localhost
-   DB_PORT=3306
-   DB_USER=your_db_user
-   DB_PASSWORD=your_db_password
-   DB_NAME=nexus_db
-   ```
-
-## Configurazione
-
-Il framework è altamente configurabile attraverso argomenti a linea di comando e file di configurazione:
-
-- **Modalità Database**: Scegli tra database MySQL reale o sistema basato su file con il flag `--mockup`.
-- **Modelli LLM**: Configura modelli diversi per il dialogo degli NPC e l'analisi del profilo con `--model` e `--profile-analysis-model`.
-- **Streaming**: Abilita o disabilita lo streaming della risposta con `--no-stream`.
-- **Statistiche**: Mostra statistiche sulle chiamate LLM con `--show-stats`.
-
-## Esecuzione Rapida
-
-Per avviare rapidamente il framework con impostazioni predefinite:
+### **Installazione Tradizionale**
 
 ```bash
-# Modalità database file-based (raccomandato per iniziare)
+# Per i puristi
+git clone https://github.com/pakkio/nexus.git
+cd nexus
+pip install -r requirements.txt
+```
+
+### **Configurazione Ambientale**
+
+Crea il file `.env` nella directory principale con le tue credenziali:
+
+```env
+OPENROUTER_API_KEY=your_actual_openrouter_api_key_here
+OPENROUTER_DEFAULT_MODEL=google/gemma-2-9b-it:free
+PROFILE_ANALYSIS_MODEL=google/gemma-2-2b-it:free
+DB_HOST=localhost
+DB_PORT=3306
+DB_USER=your_db_user
+DB_PASSWORD=your_db_password
+DB_NAME=nexus_db
+```
+
+**⚠️ IMPORTANTE:** L'`OPENROUER_API_KEY` deve essere una chiave API valida ottenuta da [OpenRouter](https://openrouter.ai). Senza questa chiave, il sistema non potrà effettuare chiamate LLM.
+
+---
+
+## 🎮 Lanciare la Tua Avventura
+
+### **Avvio Immediato**
+```bash
+# Con Poetry
+poetry shell
 python main.py --mockup --player TestSeeker --area "Sanctum of Whispers"
 
-# Con database MySQL (se configurato)
+# Modalità database completa
 python main.py --db --player TestSeeker --area "Sanctum of Whispers"
 
-# Con modelli personalizzati
+# Con modelli premium
 python main.py --mockup --model anthropic/claude-3-opus:beta --profile-analysis-model google/gemma-2-2b-it:free
 ```
 
-## Utilizzo
+### **Opzioni di Configurazione Avanzate**
 
-Una volta avviato, interagisci con il mondo usando comandi testuali. Ecco i principali:
+- **`--mockup`** / **`--db`** - Scegli tra file JSON o database MySQL
+- **`--model`** - Specifica il modello LLM per i dialoghi
+- **`--profile-analysis-model`** - Modello per l'analisi psicologica
+- **`--no-stream`** - Disabilita lo streaming delle risposte
+- **`--show-stats`** - Mostra statistiche dettagliate sulle chiamate LLM
 
-- **Navigazione**: `/go <area>`, `/areas`, `/whereami`
-- **Interazione**: `/talk <npc>`, `/who`, `/npcs`
-- **Oggetti e Denaro**: `/inventory`, `/give <item>`, `/give <numero> Credits`
-- **Aiuto e Consulenza**: `/hint`, `/endhint`
-- **Profilo**: `/profile`, `/profile_for_npc`
-- **Statistiche e Debug**: `/stats`, `/session_stats`, `/history`
-- **Gestione**: `/clear`, `/exit`
+---
 
-Esempio di sessione:
+## 🕹️ Comandi di Gioco
+
+Una volta nel mondo di Eldoria, usa questi comandi per plasmarlo:
+
+### **🗺️ Navigazione**
+- `/go <area>` - Viaggia verso nuove terre
+- `/areas` - Scopri tutti i luoghi disponibili
+- `/whereami` - Dove ti trovi ora?
+
+### **👥 Interazione Sociale**
+- `/talk <npc>` - Inizia una conversazione
+- `/who` - Chi c'è qui con te?
+- `/npcs` - Lista tutti i personaggi disponibili
+
+### **🎒 Gestione Risorse**
+- `/inventory` - Controlla i tuoi oggetti
+- `/give <item>` - Dona un oggetto
+- `/give <numero> Credits` - Trasferisci denaro
+
+### **🔮 Saggezza e Aiuto**
+- `/hint` - Consulta l'oracolo Lyra
+- `/endhint` - Termina la consultazione
+
+### **📊 Informazioni e Debug**
+- `/profile` - Il tuo profilo psicologico
+- `/profile_for_npc` - Come ti vedono gli NPCs
+- `/stats` - Statistiche di gioco
+- `/session_stats` - Dati della sessione corrente
+- `/history` - Cronologia delle tue azioni
+
+### **⚙️ Gestione Sistema**
+- `/clear` - Pulisci lo schermo
+- `/exit` - Termina l'avventura
+- `/stats` - Statistiche complete delle chiamate LLM (token, tempi, modelli)
+- `/session_stats` - Statistiche della sessione corrente
+- `/history` - Cronologia completa delle tue azioni
+
+### **🔧 Strumenti di Sviluppo**
+- `python load.py --mockup --storyboard <file>` - Carica nuovi contenuti
+- Script di reset per database e profili giocatore
+- Modalità debug con logging avanzato
+
+---
+
+## 🎬 Esempio di Sessione
 
 ```
 You > ciao, chi sei?
 
-Lyra > Sono Lyra, Custode della Conoscenza Velata e ultima discendente di un antico 
-ordine di Guardiani del Velo. Il mio compito è preservare la conoscenza ancestrale 
-e guidare coloro che possono aiutare a fermare il collasso del Velo.
+Lyra > Sono Lyra, Custode della Conoscenza Velata e ultima discendente 
+       di un antico ordine di Guardiani del Velo. Il mio compito è 
+       preservare la conoscenza ancestrale e guidare coloro che possono 
+       aiutare a fermare il collasso del Velo.
 
 You > cosa devo fare?
 
-Lyra > Devi trovare prove della corruzione del Velo. Cerca nei luoghi critici: 
-la Foresta, dove Elira potrebbe aiutarti a ottenere un campione della piaga, 
-o le Montagne, dove il vecchio Boros conserva testimonianze di una precedente 
-rottura del Velo.
+Lyra > Devi trovare prove della corruzione del Velo. Cerca nei luoghi 
+       critici: la Foresta, dove Elira potrebbe aiutarti a ottenere un 
+       campione della piaga, o le Montagne, dove il vecchio Boros 
+       conserva testimonianze di una precedente rottura del Velo.
 
 You > /go forest
 
 Moving to: Forest...
 
-Elira > The trees weep for what you've burned... o per ciò che il Velo spezzato 
-sta distruggendo.
+Elira > The trees weep for what you've burned... o per ciò che il Velo 
+        spezzato sta distruggendo.
+
+You > /profile
+
+[Profilo Psicologico Dettagliato]
+- Curiosità: 7/10 (Aumentata dalle domande frequenti)
+- Cautela: 5/10 (Approccio equilibrato ai pericoli)
+- Empatia: 6/10 (Interesse per la sofferenza di Elira)
 ```
 
-## Creazione di NPC e Storie
+---
 
-Il framework utilizza file di testo semplici per definire NPC e storyboard:
+## 🛠️ Creazione di Contenuti
 
-### File Storyboard (es. `Storyboard.TheShatteredVeil.txt`)
+### **📜 Definire Nuove Storie**
+
+I file storyboard definiscono l'ambientazione generale:
 
 ```
 Name: The Shattered Veil
 Description:
-For centuries, the world of Eldoria has been protected by the Veil, a barrier of
-mystical energy separating the material realm from the chaotic magic beyond. Now
-the Veil is fraying, and strange anomalies ripple across the land. Each NPC holds
-a clue, a key, or a curse connected to this unraveling.
+For centuries, the world of Eldoria has been protected by the Veil, 
+a barrier of mystical energy separating the material realm from the 
+chaotic magic beyond. Now the Veil is fraying, and strange anomalies 
+ripple across the land.
 
 Themes:
 - Forgotten truths
-- Leaking magic
+- Leaking magic  
 - Fractured dreams
 ```
 
-### File NPC (es. `NPC.sanctumofwhispers.lyra.txt`)
+### **👤 Progettare NPCs Memorabili**
+
+Il sistema supporta NPCs complessi con motivazioni strutturate:
 
 ```
 Name: Lyra
 Area: Sanctum of Whispers
 Role: Custode della Conoscenza Velata
-Motivation: Preservare la conoscenza ancestrale, impedire il collasso del Velo
-Goal: Confermare la gravità della rottura del Velo attraverso prove tangibili.
+Motivation: Preservare la conoscenza ancestrale
+Goal: Confermare la gravità della rottura del Velo
 Needed Object: Prove della Rottura
 Treasure: La "Mappa delle Ombre Crescenti"
-Veil Connection: Discendente diretta dei primi Guardiani del Velo.
-PlayerHint: Lyra è la tua guida principale e la fonte di conoscenza sulla crisi del Velo.
+Veil Connection: Discendente diretta dei primi Guardiani
+
 Dialogue Hooks:
-- "Benvenuto/a, Cercatore/Cercatrice. Sento l'eco dei tuoi passi nel grande disegno del destino."
-- "Non sono semplici dicerie o incubi isolati. Il tessuto della realtà si sta logorando."
+- "Benvenuto/a, Cercatore. Sento l'eco dei tuoi passi nel destino."
+- "Il tessuto della realtà si sta logorando davanti ai nostri occhi."
 ```
 
-Per caricare nuovi NPC e storie:
+**NPCs Disponibili nel Mondo di Eldoria:**
+- **Lyra** (Sanctum) - La guida saggia, custode dei segreti del Velo
+- **Elira** (Forest) - Guardiana della natura, soffre con la sua foresta corrotta
+- **Boros** (Mountain) - Guerriero in pensione, testimone di antiche catastrofi
+- **Jorin** (Tavern) - Oste collezionista di sussurri e sogni infranti
+- **Garin** (Village) - Fabbro erede di una tradizione della Guerra del Velo
+- **Syra** (Ancient Ruins) - Spirito guardiano legato ai Sigilli ancestrali
+- **Theron** (City) - Alto Giudice corrotto, antagonista principale
+
+### **⚡ Caricamento Contenuti**
 
 ```bash
+# Carica nuovi NPCs e storie
 python load.py --mockup --storyboard Storyboard.TheShatteredVeil.txt
+
+# Reset completo del sistema (carica tutti i dati di default)
+./reset_game
+
+# Avvio rapido dopo reset
+python main.py --mockup --player TestSeeker --area "Sanctum of Whispers"
+
+# Debug e test con statistiche
+python main.py --mockup --show-stats --model anthropic/claude-3-opus:beta
 ```
 
-## Come Contribuire
-
-Apprezziamo contributi e miglioramenti al framework. Ecco come partecipare:
-
-1. Fai un fork del repository
-2. Crea un branch per la tua funzionalità (`git checkout -b feature/amazing-feature`)
-3. Committa le tue modifiche (`git commit -m 'Add some amazing feature'`)
-4. Pusha al branch (`git push origin feature/amazing-feature`)
-5. Apri una Pull Request
-
-Aree particolarmente interessanti per contributi:
-- Miglioramenti alla logica di analisi del profilo
-- Nuovi sistemi di gioco (crafting, combattimento, etc.)
-- Ottimizzazioni per i prompt LLM
-- Nuove storie e NPCs
-- Interfaccia utente migliorata
+**Script `reset_game`:** Combina pulizia database + ricaricamento dati + inizializzazione sistema. Perfetto per reset rapidi durante sviluppo.
 
 ---
 
-*Nexus Framework è un progetto open source per avventure testuali potenziate da IA.*
+## 🤝 Contribuire al Progetto
 
-Riferimenti:
-1. https://github.com/anthropic/claude-documentation - Documentazione Claude
-2. https://openrouter.ai/docs - Documentazione OpenRouter API
-3. https://github.com/mysql/mysql-connector-python - Connettore MySQL per Python
-4. https://pypi.org/project/python-dotenv/ - Gestione variabili d'ambiente
+Il **Nexus Framework** cresce grazie alla community. Ecco come unirti all'avventura:
+
+### **🔧 Processo di Contribuzione**
+
+1. **Fork** del repository
+2. **Crea** un branch per la tua feature (`git checkout -b feature/amazing-feature`)
+3. **Committa** le modifiche (`git commit -m 'Add some amazing feature'`)
+4. **Push** al branch (`git push origin feature/amazing-feature`)
+5. **Apri** una Pull Request
+
+### **🎯 Aree di Interesse**
+
+- **🧠 Miglioramenti AI** - Logica di analisi del profilo più sofisticata
+- **🎮 Nuovi Sistemi** - Crafting, combattimento, magia
+- **⚡ Ottimizzazioni** - Prompt LLM più efficienti
+- **📚 Contenuti** - Nuove storie e personaggi indimenticabili
+- **🎨 UX/UI** - Interfaccia sempre più elegante e intuitiva
+
+---
+
+## 🚨 Troubleshooting
+
+### **Errore 401: "No auth credentials found"**
+
+**Problema:** Il sistema non trova le credenziali OpenRouter API.
+
+**Soluzioni:**
+```bash
+# 1. Verifica che il file .env esista
+ls -la .env
+
+# 2. Controlla il contenuto del file .env
+cat .env
+
+# 3. Assicurati che la chiave API sia valida
+# Visita https://openrouter.ai/settings/keys per ottenere/verificare la tua chiave
+
+# 4. Riavvia il framework dopo aver modificato .env
+python main.py --mockup --player TestSeeker --area "Sanctum of Whispers"
+```
+
+### **NPCs non rispondono / Chiamate LLM falliscono**
+
+**Cause comuni:**
+- API key OpenRouter scaduta o non valida
+- Crediti insufficienti su OpenRouter
+- Modello LLM non disponibile
+
+**Debug:**
+```bash
+# Testa con modelli gratuiti confermati
+python main.py --mockup --model google/gemma-2-9b-it:free --profile-analysis-model google/gemma-2-2b-it:free --show-stats
+```
+
+### **Database MySQL non funziona**
+
+**Usa la modalità mockup per test rapidi:**
+```bash
+# Modalità file-based (no MySQL richiesto)
+python main.py --mockup --player TestSeeker
+
+# Reset completo del sistema
+./reset_game
+```
+
+### **Errori di import/dipendenze**
+
+**Con Poetry:**
+```bash
+poetry install --sync
+poetry shell
+```
+
+**Con pip:**
+```bash
+pip install -r requirements.txt --upgrade
+```
+
+### **Performance Lenta**
+
+**Ottimizzazioni:**
+- Usa modelli più piccoli per profile analysis: `google/gemma-2-2b-it:free`
+- Disabilita streaming se non necessario: `--no-stream`
+- Monitora l'uso con: `--show-stats`
+
+---
+
+## 🏆 Conclusione
+
+**Nexus Framework** rappresenta l'evoluzione naturale della narrativa interattiva. Non stiamo solo creando giochi - stiamo **forgiando mondi vivi** dove ogni scelta conta, ogni personaggio respira, e ogni storia si adatta a chi la vive.
+
+Il sistema di *profiling psicologico* basato su LLM trasforma ogni sessione in un'esperienza unica, mentre la *memoria persistente* degli NPCs crea narrazioni che crescono organicamente con il tempo. La flessibilità architetturale permette di estendere facilmente il framework con nuovi sistemi di gioco.
+
+**Nexus** è più di un motore - è una **piattaforma per l'immaginazione**.
+
+---
+
+## 📚 Riferimenti
+
+- [Documentazione Claude](https://docs.anthropic.com/) - Guida completa all'API Claude
+- [OpenRouter API](https://openrouter.ai/docs) - Documentazione per l'accesso ai modelli LLM
+- [MySQL Connector Python](https://github.com/mysql/mysql-connector-python) - Connettore ufficiale MySQL
+- [Python-dotenv](https://pypi.org/project/python-dotenv/) - Gestione elegante delle variabili d'ambiente
+- [Poetry Documentation](https://python-poetry.org/docs/) - Gestione dipendenze moderna
+- [ANSI Color Codes](https://en.wikipedia.org/wiki/ANSI_escape_code) - Formattazione terminale avanzata
+- [Server-Sent Events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events) - Streaming protocol per LLM responses
+
+---
+
+*Nexus Framework - Dove l'Intelligenza Artificiale Incontra l'Immaginazione*
+
+**Licenza:** MIT | **Linguaggio:** Python 3.8+ | **Stato:** Attivo
