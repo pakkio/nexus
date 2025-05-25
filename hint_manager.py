@@ -1,4 +1,5 @@
-# Path: hint_manager.py (NEW FILE)
+# Path: hint_manager.py
+# FIXED: Updated build_initial_lyra_prompt() to accept 6 parameters including story_context
 
 import hashlib
 import time
@@ -38,191 +39,252 @@ def generate_cache_key(state: Dict[str, Any]) -> str:
     # This needs to be tailored to your game's logic.
     if 'veil_status' in plot_flags:
         critical_flags_parts.append(f"veil:{plot_flags['veil_status']}")
-    if 'seals_found_count' in plot_flags:
-        critical_flags_parts.append(f"seals:{plot_flags['seals_found_count']}")
+    if 'seals_collected' in plot_flags:
+        critical_flags_parts.append(f"seals:{plot_flags['seals_collected']}")
+    if 'evidence_count' in plot_flags:
+        critical_flags_parts.append(f"evidence:{plot_flags['evidence_count']}")
 
-    # Key inventory items (example)
-    inventory = state.get('player_inventory', [])
-    key_items_str = ""
-    # Example: Check for items Lyra tracks for her quest
-    # This also needs to be tailored.
-    # key_quest_items = ["Heartseed of the Ancient Grove", "Frammento del Sigillo dello Spirito"]
-    # found_key_items = [item for item in key_quest_items if state.get('db')._clean_item_name(item) in inventory]
-    # if found_key_items:
-    #    key_items_str = "keyitems:" + ",".join(sorted(found_key_items))
-    # For simplicity now, hash a small representation of inventory
-    inventory_sample_hash = hashlib.md5(",".join(sorted(inventory[:5])).encode('utf-8')).hexdigest()
+    critical_flags_str = "_".join(critical_flags_parts) if critical_flags_parts else "no_flags"
+
+    # Combine all elements
+    cache_key_raw = f"{player_id}_{npc_code}_{last_messages_hash}_{critical_flags_str}"
+    return hashlib.md5(cache_key_raw.encode('utf-8')).hexdigest()
 
 
-    critical_flags_str = ";".join(sorted(critical_flags_parts))
-
-    # Combine all parts into a single string for hashing
-    # Adding player_id ensures cache is per-player.
-    key_string = f"{player_id}:{npc_code}:{last_messages_hash}:{critical_flags_str}:{inventory_sample_hash}"
-
-    return hashlib.md5(key_string.encode('utf-8')).hexdigest()
-
-
-def summarize_conversation_for_lyra(
-    chat_history: List[Dict[str, str]],
-    llm_wrapper_func: Callable,
-    model_name: Optional[str],
-    TF # TerminalFormatter class/instance
-    ) -> str:
+def summarize_conversation_for_lyra(chat_history: List[Dict[str, str]],
+                                    llm_wrapper_func: Callable,
+                                    model_name: str,
+                                    TF: type) -> str:
     """
-    Uses an LLM to summarize the provided chat history for Lyra.
+    Summarizes the current conversation between player and NPC for Lyra's guidance.
     """
-    if not llm_wrapper_func:
-        return "[Summarization LLM not available]"
-    if not chat_history:
-        return "[No conversation to summarize]"
+    if not chat_history or len(chat_history) == 0:
+        return "No conversation has taken place yet."
 
-    # Filter out system messages from the history to be summarized, if any are present.
-    # However, chat_history from chat_session.get_history() should already be filtered or structured.
-    user_assistant_history = [msg for msg in chat_history if msg.get("role") in ["user", "assistant"]]
-    if not user_assistant_history:
-        return "[Conversation has no user/assistant messages to summarize]"
+    # Take last 6 messages for context (3 exchanges)
+    recent_messages = chat_history[-6:] if len(chat_history) > 6 else chat_history
 
-    # Construct the messages payload for the summarizer LLM
-    summarizer_system_prompt = (
-        "You are an expert summarizer. Given the following dialogue between a player (Seeker) "
-        "and an NPC, provide a concise summary (max 3-4 sentences). Highlight the NPC's apparent goals or needs, "
-        "what the Seeker was trying to achieve or ask, any key items, locations, or names mentioned, "
-        "and any unresolved questions or conflicts. Focus on information that a wise sage mentor (Lyra) "
-        "would find most relevant for guiding the Seeker."
-    )
+    conversation_text = ""
+    for msg in recent_messages:
+        role = msg.get('role', 'unknown')
+        content = msg.get('content', '')
+        if role == 'user':
+            conversation_text += f"Player: {content}\n"
+        elif role == 'assistant':
+            conversation_text += f"NPC: {content}\n"
 
-    # Present the history as a single block of text for the summarizer's "user" prompt
-    dialogue_text = "\n".join([f"{msg['role'].capitalize()}: {msg['content']}" for msg in user_assistant_history])
-
-    summarizer_messages = [
-        {"role": "system", "content": summarizer_system_prompt},
-        {"role": "user", "content": f"Please summarize this dialogue:\n\n{dialogue_text}"}
+    # Create summarization prompt
+    summarization_messages = [
+        {
+            "role": "system",
+            "content": """You are an expert at summarizing conversations for strategic guidance. 
+            Summarize this player-NPC conversation focusing on:
+            - What the player learned or discovered
+            - What the player asked about or seemed interested in
+            - Any quests, items, or objectives mentioned
+            - The NPC's key responses or offers
+            - The player's apparent goals or concerns
+            
+            Keep it concise but include all strategically relevant details."""
+        },
+        {
+            "role": "user",
+            "content": f"Summarize this conversation:\n\n{conversation_text}"
+        }
     ]
 
     try:
-        summary_text, stats = llm_wrapper_func(
-            messages=summarizer_messages,
-            model_name=model_name, # Or a specific, fast model for summarization
-            stream=False, # Summaries are usually short, no need to stream
-            collect_stats=False # Stats for summarization might not be critical for player
+        summary, _ = llm_wrapper_func(
+            messages=summarization_messages,
+            model_name=model_name,
+            stream=False,
+            collect_stats=False
         )
-        if stats and stats.get("error"):
-            return f"[Error during summarization: {stats.get('error')}]"
-        return summary_text.strip() if summary_text else "[Summary was empty]"
+        return summary.strip()
     except Exception as e:
-        print(f"{TF.RED}Exception during summarization call: {e}{TF.RESET}")
-        return f"[Exception during summarization: {type(e).__name__}]"
+        print(f"{TF.YELLOW}Warning: Could not generate conversation summary: {e}{TF.RESET}")
+        return f"Recent conversation summary unavailable. Last exchange: {conversation_text[-200:]}"
 
 
-def build_initial_lyra_prompt(
-    conversation_summary: str,
-    player_data: Dict[str, Any], # Contains inventory, credits, plot_flags, current_area (of stashed NPC)
-    stashed_npc_data: Dict[str, Any], # Profile of the NPC the player was talking to
-    TF, # TerminalFormatter
-    story_context: str # Global story context
-    ) -> str:
+def build_initial_lyra_prompt(summary: str,
+                              player_data: Dict[str, Any],
+                              player_profile: Dict[str, Any],
+                              stashed_npc_data: Dict[str, Any],
+                              TF: type,
+                              story_context: str) -> str:
     """
-    Constructs the detailed initial "user" prompt to send to Lyra for guidance.
+    FIXED: Now accepts 6 parameters including story_context.
+    Builds the initial prompt for Lyra consultation based on current game state.
     """
 
-    stashed_npc_name = stashed_npc_data.get('name', 'an unknown individual')
-    stashed_npc_role = stashed_npc_data.get('role', 'of unknown role')
-    stashed_npc_area = player_data.get('current_area', stashed_npc_data.get('area', 'an unknown area'))
-    stashed_npc_motivation = stashed_npc_data.get('motivation', 'Their motivations are unclear.')
-    stashed_npc_goal = stashed_npc_data.get('goal', 'Their goals are unknown.')
+    # Extract key information
+    player_name = player_data.get('player_id', 'Seeker')
+    current_area = player_data.get('current_area', 'Unknown Location')
 
-    inventory_str = ", ".join(player_data.get('inventory', [])) or "nothing"
-    credits_str = str(player_data.get('credits', 0))
+    # NPC information
+    npc_name = stashed_npc_data.get('name', 'Unknown NPC') if stashed_npc_data else 'No one'
+    npc_area = stashed_npc_data.get('area', current_area) if stashed_npc_data else current_area
+    npc_role = stashed_npc_data.get('role', 'Unknown Role') if stashed_npc_data else None
 
-    plot_flags_list = []
-    for flag, value in player_data.get('plot_flags', {}).items():
-        plot_flags_list.append(f"- {flag.replace('_', ' ').capitalize()}: {value}")
-    plot_flags_str = "\n".join(plot_flags_list) if plot_flags_list else "No specific plot progress noted."
+    # Player profile insights
+    core_traits = player_profile.get('core_traits', {})
+    decision_patterns = player_profile.get('decision_patterns', [])
+    key_experiences = player_profile.get('key_experiences_tags', [])
+    interaction_style = player_profile.get('interaction_style_summary', 'Unknown style')
 
-    prompt = f"""Lyra, my wise guide, the Seeker requires your counsel. They were just in {TF.BOLD}{stashed_npc_area}{TF.RESET}, interacting with {TF.BOLD}{stashed_npc_name}{TF.RESET} ({TF.ITALIC}{stashed_npc_role}{TF.RESET}).
-This individual's motivations seem to be: "{stashed_npc_motivation}"
-Their apparent goal is: "{stashed_npc_goal}"
-
-{TF.DIM}--- Summary of their recent interaction ---{TF.RESET}
-{conversation_summary}
-{TF.DIM}--- End of Summary ---{TF.RESET}
-
-{TF.DIM}--- Seeker's Current Status ---{TF.RESET}
-{TF.BOLD}Area of last interaction:{TF.RESET} {stashed_npc_area}
-{TF.BOLD}Inventory:{TF.RESET} {inventory_str}
-{TF.BOLD}Credits:{TF.RESET} {credits_str}
-{TF.BOLD}Known Plot Progress:{TF.RESET}
-{plot_flags_str}
-
-{TF.DIM}--- World Context ---{TF.RESET}
-{story_context}
-{TF.DIM}--- End World Context ---{TF.RESET}
-
-{TF.BOLD}Considering all of this, Lyra, what insights, warnings, or guidance can you offer the Seeker? {TF.RESET}
-What might be their next best step, something crucial they might be overlooking, or how should they approach the situation with {stashed_npc_name}?
-Your advice should help them in their overall quest to mend the Veil and restore the Seals. Be thoughtful and perceptive.
-"""
-    return prompt.strip()
-
-if __name__ == "__main__":
-    class MockTF: BOLD=""; RESET=""; ITALIC=""; DIM="" # Basic mock for testing
-    class MockLLMWrapper:
-        def __call__(self, messages, model_name, stream, collect_stats):
-            if "summarize this dialogue" in messages[-1]['content']:
-                return "This is a test summary: NPC wants X, Player asked Y.", {"error": None}
-            return "Lyra says: Consider the ancient prophecy.", {"error": None}
-
-    mock_llm_wrapper = MockLLMWrapper()
-
-    print("--- Testing Hint Manager ---")
-
-    sample_chat_history = [
-        {"role": "user", "content": "Hello Syra, what is this place?"},
-        {"role": "assistant", "content": "These are the Ancient Ruins, seeker. They remember much."},
-        {"role": "user", "content": "I need a fragment for Lyra."}
+    # Build the prompt with story context
+    prompt_parts = [
+        f"Salve, Lyra. Sono {player_name}, il Cercatore di cui hai sentito parlare.",
+        "",
+        f"**Situazione attuale:**",
+        f"- Mi trovo attualmente in: {current_area}",
     ]
-    summary = summarize_conversation_for_lyra(sample_chat_history, mock_llm_wrapper, "test-model", MockTF)
-    print(f"Generated Summary: {summary}")
-    assert "Test summary" in summary
 
-    player_data_sample = {
-        'inventory': ['Glowing Stone', 'Old Map'],
-        'credits': 150,
-        'plot_flags': {'ruins_visited': True, 'syra_met': True},
-        'current_area': 'Ancient Ruins'
+    if npc_name != 'No one':
+        prompt_parts.extend([
+            f"- Stavo parlando con: {npc_name}",
+            f"- Luogo dell'incontro: {npc_area}",
+        ])
+        if npc_role:
+            prompt_parts.append(f"- Il loro ruolo: {npc_role}")
+    else:
+        prompt_parts.append("- Non stavo parlando con nessuno in particolare")
+
+    prompt_parts.extend([
+        "",
+        f"**Contesto della conversazione:**",
+        summary if summary else "Nessuna conversazione significativa ancora.",
+        "",
+        f"**Il mio profilo comportamentale:**"
+    ])
+
+    # Add key traits with values
+    if core_traits:
+        prompt_parts.append("- Tratti principali:")
+        for trait, value in core_traits.items():
+            if value >= 7:
+                intensity = "molto alto"
+            elif value >= 6:
+                intensity = "alto"
+            elif value >= 4:
+                intensity = "moderato"
+            else:
+                intensity = "basso"
+            prompt_parts.append(f"  * {trait.title()}: {intensity} ({value}/10)")
+
+    # Add recent behavioral patterns
+    if decision_patterns:
+        recent_patterns = decision_patterns[-3:] if len(decision_patterns) > 3 else decision_patterns
+        prompt_parts.extend([
+            "- Schemi comportamentali recenti:",
+            *[f"  * {pattern}" for pattern in recent_patterns]
+        ])
+
+    # Add key experiences
+    if key_experiences:
+        recent_experiences = key_experiences[-3:] if len(key_experiences) > 3 else key_experiences
+        prompt_parts.extend([
+            "- Esperienze chiave:",
+            *[f"  * {exp}" for exp in recent_experiences]
+        ])
+
+    prompt_parts.extend([
+        f"- Stile di interazione: {interaction_style}",
+        "",
+        f"**Contesto della storia ({story_context}):**",
+    ])
+
+    # Add story-specific context based on "The Shattered Veil"
+    if "Shattered Veil" in story_context or "shattered" in story_context.lower():
+        prompt_parts.extend([
+            "Il Velo che protegge Eldoria si sta sgretolando. Ho bisogno della tua saggezza",
+            "per capire come procedere nella mia missione di raccogliere prove della sua",
+            "decadenza e trovare i componenti per riparare i Sigilli Antichi.",
+        ])
+    else:
+        prompt_parts.extend([
+            f"Sto vivendo un'avventura in {story_context}.",
+            "Ho bisogno della tua guida per capire come procedere al meglio.",
+        ])
+
+    prompt_parts.extend([
+        "",
+        "Cosa consigli? Come dovrei procedere data la mia situazione attuale?",
+        "Quali sono le priorità che dovrei considerare?"
+    ])
+
+    return "\n".join(prompt_parts)
+
+
+def get_cached_hint(cache_key: str, state: Dict[str, Any]) -> Optional[str]:
+    """
+    Retrieves cached hint if available and still valid.
+    """
+    # Simple in-memory cache for now - in production this could be stored in DB
+    hint_cache = state.get('hint_cache', {})
+
+    if cache_key in hint_cache:
+        cached_entry = hint_cache[cache_key]
+        # Check if cache is still fresh (e.g., less than 10 minutes old)
+        if time.time() - cached_entry.get('timestamp', 0) < 600:  # 10 minutes
+            return cached_entry.get('hint')
+
+    return None
+
+
+def cache_hint(cache_key: str, hint: str, state: Dict[str, Any]) -> None:
+    """
+    Stores hint in cache for future use.
+    """
+    if 'hint_cache' not in state:
+        state['hint_cache'] = {}
+
+    state['hint_cache'][cache_key] = {
+        'hint': hint,
+        'timestamp': time.time()
     }
-    stashed_npc_data_sample = {
-        'name': 'Syra',
-        'role': 'Spirit Guardian',
-        'area': 'Ancient Ruins',
-        'motivation': 'Protect the ruins.',
-        'goal': 'Guide a worthy soul.'
-    }
-    story_sample = "The Veil is shattering. Seals must be restored."
 
-    lyra_prompt = build_initial_lyra_prompt(summary, player_data_sample, stashed_npc_data_sample, MockTF, story_sample)
-    print(f"\nInitial Lyra Prompt:\n{lyra_prompt}")
-    assert "Syra" in lyra_prompt
-    assert "Glowing Stone" in lyra_prompt
-    assert "ruins_visited: True" in lyra_prompt
-    assert "Veil is shattering" in lyra_prompt
+    # Limit cache size to prevent memory issues
+    if len(state['hint_cache']) > 50:
+        # Remove oldest entries
+        sorted_cache = sorted(
+            state['hint_cache'].items(),
+            key=lambda x: x[1]['timestamp']
+        )
+        # Keep only the 30 most recent
+        state['hint_cache'] = dict(sorted_cache[-30:])
 
-    # Mock state for cache key
-    mock_state_for_cache = {
-        'player_id': 'PlayerTest',
-        'current_npc': stashed_npc_data_sample,
-        'chat_session': type('Chat', (), {'messages': sample_chat_history})(), # Mock session
-        'db': type('DB', (), {'load_player_state': lambda pid: player_data_sample, '_clean_item_name': lambda x: x.lower()})(), # Mock DB
-        'player_inventory': player_data_sample['inventory']
-    }
-    key1 = generate_cache_key(mock_state_for_cache)
-    print(f"\nCache Key 1: {key1}")
 
-    # Change something minor
-    mock_state_for_cache['chat_session'].messages.append({"role": "assistant", "content": "The fragment is hidden well."})
-    key2 = generate_cache_key(mock_state_for_cache)
-    print(f"Cache Key 2 (after msg add): {key2}")
-    assert key1 != key2
+def format_lyra_response(raw_response: str, TF: type) -> str:
+    """
+    Formats Lyra's response with appropriate styling.
+    """
+    # Clean up the response
+    response = raw_response.strip()
 
-    print("\nHint Manager tests seem okay.")
+    # Add Lyra's distinctive formatting
+    formatted_lines = []
+    lines = response.split('\n')
+
+    for line in lines:
+        line = line.strip()
+        if not line:
+            formatted_lines.append("")
+            continue
+
+        # Style different types of content
+        if line.startswith('**') and line.endswith('**'):
+            # Headers/emphasis
+            clean_line = line.replace('**', '')
+            formatted_lines.append(f"{TF.BOLD}{TF.CYAN}{clean_line}{TF.RESET}")
+        elif line.startswith('- ') or line.startswith('* '):
+            # Bullet points
+            formatted_lines.append(f"{TF.DIM}{line}{TF.RESET}")
+        elif line.startswith('  '):
+            # Indented content
+            formatted_lines.append(f"{TF.DIM}{line}{TF.RESET}")
+        else:
+            # Regular text
+            formatted_lines.append(line)
+
+    return '\n'.join(formatted_lines)

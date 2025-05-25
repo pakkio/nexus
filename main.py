@@ -1,6 +1,7 @@
 # Path: main.py
 # MODIFIED: Added --profile-analysis-model argument
-
+from dotenv import load_dotenv
+load_dotenv()
 import os
 import sys
 import argparse

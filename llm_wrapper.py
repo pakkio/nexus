@@ -211,7 +211,7 @@ def llm_wrapper(messages: List[Dict[str, str]],
         # The marker phrase from player_profile_manager.py
         if system_content.strip().startswith("You are an AI analyzing a player's recent interactions"):
             is_utility_call_with_system_prompt_only = True
-            logging.info("llm_wrapper: Detected system-only utility call (profile analysis). Proceeding with API call.")
+            #logging.info("llm_wrapper: Detected system-only utility call (profile analysis). Proceeding with API call.")
         # Add elif for other utility markers if needed in the future.
 
     if not is_utility_call_with_system_prompt_only and messages[-1].get("role") != "user":
@@ -257,7 +257,7 @@ def llm_wrapper(messages: List[Dict[str, str]],
     stats = None
 
     try:
-        logging.info(f"llm_wrapper: Calling model {model_name}. Stream: {stream}.")
+        #logging.info(f"llm_wrapper: Calling model {model_name}. Stream: {stream}.")
         # logging.debug(f"llm_wrapper: Payload: {json.dumps(payload, indent=2)[:500]}...") # Careful with logging full payload
 
         response = requests.post(
