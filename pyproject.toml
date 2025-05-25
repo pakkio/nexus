@@ -2,8 +2,8 @@
 name = "nexus"
 version = "0.1.0"
 description = ""
-authors = ["Your Name <you@example.com>"]
-readme = "README.md"
+authors = ["Claudio Pacchiega <claudio.pacchiega@gmail.com>"]
+package-mode = false
 packages = [
     { include = "*.py" }
 ]
