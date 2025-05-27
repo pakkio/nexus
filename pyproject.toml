@@ -8,11 +8,17 @@ packages = [
     { include = "*.py" }
 ]
 
+
+
 [tool.poetry.dependencies]
 python = "^3.12"
 requests = "^2.32.3"
 python-dotenv = "^1.0.0"
 mysql-connector-python = "^9.3.0"
+
+
+pytest = "^7.4.0"
+pytest-mock = "^3.10.0"
 
 # Dipendenze di sviluppo
 tree-sitter = "^0.24.0"
