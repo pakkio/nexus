@@ -1,1 +1,7 @@
 /.env
+# Ignore database folder
+database/
+
+# Ignore Python cache and compiled files
+__pycache__/
+compiled/

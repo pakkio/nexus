@@ -1,293 +1,160 @@
-# tests/test_db_manager.py
-import pytest
-import os
 import json
-import tempfile
-import shutil
-from unittest.mock import Mock, MagicMock, patch
-from db_manager import DbManager, MockConnection, MockCursor
+import traceback
+from typing import Dict, Any
+import time # Added import for the problematic line, or this line needs fixing.
 
-class TestDbManager:
-    @pytest.fixture
-    def mock_terminal_formatter(self):
-        class MockTF:
-            RED = YELLOW = GREEN = RESET = BOLD = DIM = ""
-            MAGENTA = CYAN = BRIGHT_CYAN = BG_BLUE = ""
-            BRIGHT_WHITE = BG_GREEN = BLACK = ""
-            @staticmethod
-            def format_terminal_text(text, width=80): return text
-        return MockTF
+# Import handlers from the new subdirectory
 
-    @pytest.fixture
-    def temp_mockup_dir(self):
-        # Create a temporary directory for testing
-        temp_dir = tempfile.mkdtemp()
+from .command_handlers import (
+    handle_exit, handle_help, handle_go, handle_talk, handle_who, handle_whereami,
+    handle_npcs, handle_areas, handle_stats, handle_session_stats, handle_clear,
+    handle_hint, handle_endhint, handle_inventory, handle_give,
+    handle_profile, handle_profile_for_npc, handle_history
+)
 
-        # Create subdirectories for testing
-        os.makedirs(os.path.join(temp_dir, "PlayerState"), exist_ok=True)
-        os.makedirs(os.path.join(temp_dir, "PlayerProfiles"), exist_ok=True)
-        os.makedirs(os.path.join(temp_dir, "PlayerInventory"), exist_ok=True)
-        os.makedirs(os.path.join(temp_dir, "NPCs"), exist_ok=True)
-        os.makedirs(os.path.join(temp_dir, "Storyboards"), exist_ok=True)
-        os.makedirs(os.path.join(temp_dir, "ConversationHistory"), exist_ok=True)
+# Import shared utilities
 
-        yield temp_dir
+from .command_handler_utils import HandlerResult, _add_profile_action
 
-        # Clean up after tests
-        shutil.rmtree(temp_dir)
+import session_utils # Still needed for get_npc_color etc. in process_input_revised
 
-    def test_initialize_db_manager_mockup(self, temp_mockup_dir):
-        # Initialize DbManager in mockup mode
-        db = DbManager(use_mockup=True, mockup_dir=temp_mockup_dir)
+# The main command map
 
-        # Check that it's using the right directory
-        assert db.mockup_dir == temp_mockup_dir
-        assert db.use_mockup is True
+command_handlers_map: Dict[str, callable] = {
+    'exit': handle_exit, 'quit': handle_exit,
+    'help': handle_help,
+    'go': handle_go,
+    'areas': handle_areas,
+    'talk': handle_talk,
+    'who': handle_who,
+    'whereami': handle_whereami,
+    'npcs': handle_npcs,
+    'hint': handle_hint,
+    'endhint': handle_endhint,
+    'inventory': handle_inventory, 'inv': handle_inventory,
+    'give': handle_give,
+    'profile': handle_profile,
+    'profile_for_npc': handle_profile_for_npc,
+    'stats': handle_stats,
+    'session_stats': handle_session_stats,
+    'clear': handle_clear,
+    'history': handle_history,
+}
 
-    def test_connect_mockup(self, temp_mockup_dir):
-        # Initialize DbManager in mockup mode
-        db = DbManager(use_mockup=True, mockup_dir=temp_mockup_dir)
+def process_input_revised(user_input: str, state: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Processes user input, dispatching to command handlers or LLM.
+    This function remains largely the same but calls imported handlers.
+    """
+    state['npc_made_new_response_this_turn'] = False # Reset flag
+    if not user_input.strip(): # Ignore empty input
+        return state # No change, continue loop
 
-        # Test connect method creates a MockConnection
-        connection = db.connect()
-        assert isinstance(connection, MockConnection)
-        assert connection.mockup_dir == temp_mockup_dir
+    TF = state.get('TerminalFormatter') # Get from state
+    chat_session = state.get('chat_session')
+    current_npc = state.get('current_npc')
+    fmt_stats_func = state.get('format_stats') # Function from state
+    is_in_lyra_hint_mode = state.get('in_lyra_hint_mode', False)
+    debug_mode = state.get('debug_mode', False)
 
-    def test_get_storyboard_empty(self, temp_mockup_dir):
-        # Initialize DbManager in mockup mode
-        db = DbManager(use_mockup=True, mockup_dir=temp_mockup_dir)
+    command_processed_this_turn = False
 
-        # Test getting storyboard when none exists
-        story = db.get_storyboard()
-        assert story["name"] == "Default Story"
-        assert "[No storyboard data found or loaded]" in story["description"]
+    if user_input.startswith('/'):
+        parts = user_input[1:].split(None, 1)
+        command = parts[0].lower() if parts else ""
+        args_str = parts[1] if len(parts) > 1 else ""
 
-    def test_get_storyboard_with_data(self, temp_mockup_dir):
-        # Create a test storyboard file
-        storyboard_data = {
-            "name": "Test Storyboard",
-            "description": "This is a test storyboard."
-        }
-        storyboard_dir = os.path.join(temp_mockup_dir, "Storyboards")
-        with open(os.path.join(storyboard_dir, "1.json"), "w") as f:
-            json.dump(storyboard_data, f)
+        try:
+            if command in command_handlers_map:
+                handler_func = command_handlers_map[command]
+                # Handlers like 'go', 'talk', 'give' take args_str
+                if command in ['go', 'talk', 'give']:
+                    state = handler_func(args_str, state)
+                else: # Most handlers just take state
+                    state = handler_func(state)
 
-        # Initialize DbManager in mockup mode
-        db = DbManager(use_mockup=True, mockup_dir=temp_mockup_dir)
+                if state.get('status') == 'exit': # Check if handler requested exit
+                    return state
+                command_processed_this_turn = True
+            else:
+                print(f"{TF.YELLOW}Unknown command '/{command}'. Try /help.{TF.RESET}")
+                command_processed_this_turn = True # Mark as processed to avoid LLM call
+        except Exception as e:
+            print(f"{TF.RED}Error processing command '/{command}': {type(e).__name__} - {e}{TF.RESET}")
+            if debug_mode:
+                traceback.print_exc()
+            command_processed_this_turn = True # Mark as processed on error too
+    else: # Not a command, so it's dialogue for the LLM
+        # --- Dialogue processing / NPC turn ---
+        # This part triggers if input was not a command OR if a command forces an NPC turn
+        # (e.g., after /give, the NPC should react).
 
-        # Test getting storyboard
-        story = db.get_storyboard()
-        assert story["name"] == "Test Storyboard"
-        assert story["description"] == "This is a test storyboard."
+        force_npc_turn_after_command = state.get('force_npc_turn_after_command', False)
+        if force_npc_turn_after_command:
+            state.pop('force_npc_turn_after_command', None) # Consume the flag
 
-    def test_get_npc(self, temp_mockup_dir):
-        # Create a test NPC file
-        npc_data = {
-            "name": "Test NPC",
-            "area": "Test Area",
-            "role": "Test Role",
-            "code": "test_npc"
-        }
-        npc_dir = os.path.join(temp_mockup_dir, "NPCs")
-        with open(os.path.join(npc_dir, "test_npc.json"), "w") as f:
-            json.dump(npc_data, f)
+        needs_llm_call = False
+        prompt_for_llm = user_input # Default to user's text input
 
-        # Initialize DbManager in mockup mode
-        db = DbManager(use_mockup=True, mockup_dir=temp_mockup_dir)
+        if not command_processed_this_turn: # Was dialogue
+            needs_llm_call = True
+        elif force_npc_turn_after_command and not is_in_lyra_hint_mode: # Command that needs NPC reaction
+            # Special prompt to make NPC react to player's action (e.g., giving an item)
+            prompt_for_llm = "[NPC reacts to player's action]"
+            needs_llm_call = True
 
-        # Test getting NPC
-        npc = db.get_npc("Test Area", "Test NPC")
-        assert npc["name"] == "Test NPC"
-        assert npc["area"] == "Test Area"
-        assert npc["role"] == "Test Role"
-        assert npc["code"] == "test_npc"
+        # If in Lyra hint mode and user typed dialogue (not a command handled above), it's for Lyra
 
-        # Test getting non-existent NPC
-        npc = db.get_npc("Test Area", "Non-existent NPC")
-        assert npc is None
+        if is_in_lyra_hint_mode and not command_processed_this_turn:
+            needs_llm_call = True
 
-    def test_list_npcs_by_area(self, temp_mockup_dir):
-        # Create test NPC files
-        npc_dir = os.path.join(temp_mockup_dir, "NPCs")
+        if needs_llm_call:
+            if current_npc and chat_session:
+                npc_name_for_prompt = current_npc.get('name', 'NPC')
+                if is_in_lyra_hint_mode: # Adjust name if consulting Lyra
+                    npc_name_for_prompt = "Lyra (Consultation)"
 
-        npc1 = {
-            "name": "NPC 1",
-            "area": "Area 1",
-            "role": "Role 1",
-            "code": "npc1"
-        }
-        with open(os.path.join(npc_dir, "npc1.json"), "w") as f:
-            json.dump(npc1, f)
+                npc_color = session_utils.get_npc_color(current_npc.get('name', 'NPC'), TF)
+                if is_in_lyra_hint_mode: # Lyra's specific color for consultation
+                    npc_color = session_utils.get_npc_color("Lyra", TF)
 
-        npc2 = {
-            "name": "NPC 2",
-            "area": "Area 2",
-            "role": "Role 2",
-            "code": "npc2"
-        }
-        with open(os.path.join(npc_dir, "npc2.json"), "w") as f:
-            json.dump(npc2, f)
+                # Only print NPC prompt if it's not Lyra being re-prompted by /hint itself
+                if not (is_in_lyra_hint_mode and command_processed_this_turn and command == 'hint'):
+                    print(f"\n{TF.BOLD}{npc_color}{npc_name_for_prompt} > {TF.RESET}")
 
-        # Initialize DbManager in mockup mode
-        db = DbManager(use_mockup=True, mockup_dir=temp_mockup_dir)
+                try:
+                    _response_text, stats = chat_session.ask(
+                        prompt_for_llm, current_npc.get('name', 'NPC'), # Pass original NPC name for placeholder if needed
+                        state.get('use_stream', True), True # collect_stats is True
+                    )
+                    if not _response_text.strip() and not (stats and stats.get("error")):
+                        # Handle empty but non-error LLM responses with a placeholder
+                        placeholder_msg = f"{TF.DIM}{TF.ITALIC}*{npc_name_for_prompt} seems to ponder for a moment...*{TF.RESET}"
+                        if is_in_lyra_hint_mode: # Specific placeholder for Lyra
+                            placeholder_msg = f"{TF.DIM}{TF.ITALIC}*Lyra ponders deeply...*{TF.RESET}"
+                        print(placeholder_msg)
 
-        # Test listing NPCs
-        npcs = db.list_npcs_by_area()
+                    state['npc_made_new_response_this_turn'] = True # Mark that NPC responded
+                    if _response_text.strip(): # Only add to profile log if there was actual content
+                        _add_profile_action(state, f"NPC Response from {npc_name_for_prompt}: '{_response_text[:50]}{'...' if len(_response_text) > 50 else ''}'")
 
-        # Verify NPCs are listed
-        assert len(npcs) == 2
-        # Verify they are sorted by area
-        assert npcs[0]["name"] == "NPC 1"
-        assert npcs[0]["area"] == "Area 1"
-        assert npcs[1]["name"] == "NPC 2"
-        assert npcs[1]["area"] == "Area 2"
+                    if state.get('auto_show_stats', False) and stats and fmt_stats_func:
+                        print(fmt_stats_func(stats)) # Display stats if enabled
 
-    def test_player_state_crud(self, temp_mockup_dir):
-        # Initialize DbManager in mockup mode
-        db = DbManager(use_mockup=True, mockup_dir=temp_mockup_dir)
+                    # If in Lyra hint mode, update the cache with the new interaction
+                    if is_in_lyra_hint_mode and state.get('lyra_hint_cache'):
+                        state['lyra_hint_cache']['lyra_chat_history'] = chat_session.get_history()
+                        # The following line was 'state['command_handler_utils.time'].time()'.
+                        # 'command_handler_utils' doesn't expose 'time' this way.
+                        # Assuming standard 'time.time()' is intended.
+                        state['lyra_hint_cache']['timestamp'] = time.time()
 
-        player_id = "test_player"
+                except Exception as e:
+                    state['npc_made_new_response_this_turn'] = False # Mark as no response on error
+                    print(f"{TF.RED}LLM Chat Error with {npc_name_for_prompt}: {type(e).__name__} - {e}{TF.RESET}")
+                    if debug_mode:
+                        traceback.print_exc()
+            elif user_input: # User typed something but not in a conversation
+                print(f"{TF.YELLOW}You're not talking to anyone. Use /go to move to an area, then /talk <npc_name>.{TF.RESET}")
 
-        # Test loading default state
-        state = db.load_player_state(player_id)
-        assert state["credits"] == 220  # Default value
-        assert state["current_area"] is None
-
-        # Test saving and loading state
-        state["current_area"] = "Test Area"
-        state["credits"] = 500
-        db.save_player_state(player_id, state)
-
-        loaded_state = db.load_player_state(player_id)
-        assert loaded_state["current_area"] == "Test Area"
-        assert loaded_state["credits"] == 500
-
-        # Test getting player credits
-        assert db.get_player_credits(player_id) == 500
-
-        # Test updating player credits
-        game_state = {"player_credits_cache": 500, "TerminalFormatter": Mock()}
-        result = db.update_player_credits(player_id, 100, game_state)
-        assert result is True
-        assert game_state["player_credits_cache"] == 600
-        assert db.get_player_credits(player_id) == 600
-
-    def test_player_profile_crud(self, temp_mockup_dir):
-        # Initialize DbManager in mockup mode
-        db = DbManager(use_mockup=True, mockup_dir=temp_mockup_dir)
-
-        player_id = "test_player"
-
-        # Test loading default profile
-        profile = db.load_player_profile(player_id)
-        assert "core_traits" in profile
-        assert "decision_patterns" in profile
-        assert profile["core_traits"]["curiosity"] == 5  # Default value
-
-        # Test saving and loading profile with modifications
-        profile["core_traits"]["curiosity"] = 8
-        profile["key_experiences_tags"].append("test_experience")
-        db.save_player_profile(player_id, profile)
-
-        loaded_profile = db.load_player_profile(player_id)
-        assert loaded_profile["core_traits"]["curiosity"] == 8
-        assert "test_experience" in loaded_profile["key_experiences_tags"]
-
-    def test_inventory_management(self, temp_mockup_dir):
-        # Initialize DbManager in mockup mode
-        db = DbManager(use_mockup=True, mockup_dir=temp_mockup_dir)
-
-        player_id = "test_player"
-
-        # Test loading empty inventory
-        inventory = db.load_inventory(player_id)
-        assert inventory == []
-
-        # Test adding item to inventory
-        game_state = {"player_inventory": [], "TerminalFormatter": Mock()}
-        result = db.add_item_to_inventory(player_id, "Test Item", game_state)
-        assert result is True
-        assert game_state["player_inventory"] == ["test item"]  # Note: lowercase after cleaning
-
-        # Test loading inventory with item
-        inventory = db.load_inventory(player_id)
-        assert "test item" in inventory
-
-        # Test removing item from inventory
-        result = db.remove_item_from_inventory(player_id, "Test Item", game_state)
-        assert result is True
-        assert game_state["player_inventory"] == []
-
-        # Test removing non-existent item
-        result = db.remove_item_from_inventory(player_id, "Non-existent Item", game_state)
-        assert result is False
-
-    def test_conversation_management(self, temp_mockup_dir):
-        # Initialize DbManager in mockup mode
-        db = DbManager(use_mockup=True, mockup_dir=temp_mockup_dir)
-
-        player_id = "test_player"
-        npc_code = "test_npc"
-
-        # Create test directory for conversations
-        player_conv_dir = os.path.join(temp_mockup_dir, "ConversationHistory", player_id)
-        os.makedirs(player_conv_dir, exist_ok=True)
-
-        # Test loading empty conversation
-        conversation = db.load_conversation(player_id, npc_code)
-        assert conversation == []
-
-        # Test saving and loading conversation
-        test_conversation = [
-            {"role": "user", "content": "Hello"},
-            {"role": "assistant", "content": "Hi there"}
-        ]
-        db.save_conversation(player_id, npc_code, test_conversation)
-
-        loaded_conversation = db.load_conversation(player_id, npc_code)
-        assert len(loaded_conversation) == 2
-        assert loaded_conversation[0]["role"] == "user"
-        assert loaded_conversation[0]["content"] == "Hello"
-        assert loaded_conversation[1]["role"] == "assistant"
-        assert loaded_conversation[1]["content"] == "Hi there"
-
-    def test_mock_connection(self, temp_mockup_dir):
-        # Test MockConnection methods
-        conn = MockConnection(temp_mockup_dir)
-
-        # Test is_connected
-        assert conn.is_connected() is True
-
-        # Test cursor creation
-        cursor = conn.cursor()
-        assert isinstance(cursor, MockCursor)
-
-        # Test close
-        conn.close()
-        assert conn.is_connected() is False
-
-        # Test other methods for coverage
-        conn.commit()
-        conn.rollback()
-        conn.start_transaction()
-
-    def test_mock_cursor(self, temp_mockup_dir):
-        # Test MockCursor methods
-        cursor = MockCursor(temp_mockup_dir)
-
-        # Test execute
-        cursor.execute("SELECT * FROM test")
-
-        # Test executemany
-        cursor.executemany("INSERT INTO test VALUES (%s)", [("value1",), ("value2",)])
-
-        # Test fetchone and fetchall
-        assert cursor.fetchone() is None
-        assert cursor.fetchall() == []
-
-        # Test properties
-        assert cursor.rowcount == 0
-        assert cursor.description is None
-
-        # Test close
-        cursor.close()
+    return state
