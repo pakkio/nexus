@@ -1,5 +1,5 @@
 from typing import Dict, Any
-from ..command_handler_utils import HandlerResult, _add_profile_action
+from command_handler_utils import HandlerResult, _add_profile_action
 
 def handle_stats(state: Dict[str, Any]) -> HandlerResult:
     _add_profile_action(state, "Used /stats command")

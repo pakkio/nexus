@@ -16,11 +16,21 @@ except ImportError as e:
 
 try:
   import command_processor
+except ImportError as e:
+  TF = TerminalFormatter
+  print(f"{TF.RED}Fatal Error: Could not import command_processor: {e}{TF.RESET}")
+  sys.exit(1)
+try:
   import session_utils
+except ImportError as e:
+    TF = TerminalFormatter
+    print(f"{TF.RED}Fatal Error: Could not import session_utils: {e}{TF.RESET}")
+    sys.exit(2)
+try:
   from player_profile_manager import update_player_profile, get_default_player_profile
 except ImportError as e:
   TF = TerminalFormatter
-  print(f"{TF.RED}Fatal Error: Could not import command_processor, session_utils, or player_profile_manager: {e}{TF.RESET}")
+  print(f"{TF.RED}Fatal Error: Could not import player_profile_manager: {e}{TF.RESET}")
   def update_player_profile(previous_profile, interaction_log, player_actions, llm_wrapper_func, model_name, current_npc_name, TF):
     print(f"{TF.YELLOW}Warning: player_profile_manager.update_player_profile (LLM-based) not available.{TF.RESET}")
     return previous_profile, ["Profile update function (LLM-based) missing"]

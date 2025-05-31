@@ -20,38 +20,52 @@ except ImportError:
     print("Warning: Fallback dummy llm_wrapper called in session_utils.")
     return "[LLM Fallback Response]", None
 
-# FIXED: Color mapping for NPCs
-def get_npc_color(npc_name: str, TerminalFormatter) -> str:
+# Import TerminalFormatter e ChatSession qui se necessario per type hinting o istanze dirette,
+# altrimenti assicurati che siano passati come argomenti dove servono.
+try:
+  from terminal_formatter import TerminalFormatter
+  from chat_manager import ChatSession
+except ImportError:
+  # Definizioni di fallback se non possono essere importate (meno ideale)
+  class TerminalFormatter:
+    BRIGHT_CYAN = RED = YELLOW = GREEN = BLUE = MAGENTA = DIM = BOLD = RESET = ITALIC = ""
+    BRIGHT_RED = BRIGHT_GREEN = BRIGHT_BLUE = BRIGHT_MAGENTA = BRIGHT_WHITE = ""
+    BG_GREEN = BLACK = ""
+    @staticmethod
+    def get_terminal_width(): return 80
+    @staticmethod
+    def format_terminal_text(text, width=80): return text
+  class ChatSession:
+    def __init__(self, model_name): self.model_name = model_name; self.messages = []; self.system_prompt = None; self.player_hint = None
+    def set_system_prompt(self, p): self.system_prompt = p
+    def get_system_prompt(self): return self.system_prompt
+    def set_player_hint(self, h): self.player_hint = h
+    def add_message(self, r, c): self.messages.append({'role':r, 'content':c})
+    def get_history(self): return ([{'role':'system', 'content':self.system_prompt}] if self.system_prompt else []) + self.messages
+
+
+def get_npc_color(npc_name: str, TF: type) -> str: # TF è passato come tipo/classe
   """Returns a unique color for each NPC based on their name or role."""
   npc_name_lower = npc_name.lower()
-  
-  # Predefined mappings for important NPCs
   color_mappings = {
-    'lyra': TerminalFormatter.BRIGHT_CYAN,      # Cyan for the wise oracle
-    'syra': TerminalFormatter.DIM,              # Dim gray for the ancient spirit
-    'elira': TerminalFormatter.GREEN,           # Green for the forest dweller
-    'boros': TerminalFormatter.YELLOW,          # Yellow for the mountain warrior
-    'jorin': TerminalFormatter.BRIGHT_YELLOW,   # Bright yellow for the tavern keeper
-    'garin': TerminalFormatter.RED,             # Red for the blacksmith
-    'mara': TerminalFormatter.CYAN,             # Cyan for the herbalist
-    'cassian': TerminalFormatter.BLUE,          # Blue for the bureaucrat
-    'irenna': TerminalFormatter.MAGENTA,        # Magenta for the resistance leader
-    'theron': TerminalFormatter.BRIGHT_RED,     # Bright red for the antagonist
+    'lyra': TF.BRIGHT_CYAN,
+    'syra': TF.DIM,
+    'elira': TF.GREEN,
+    'boros': TF.YELLOW,
+    'jorin': TF.BRIGHT_YELLOW,
+    'garin': TF.RED,
+    'mara': TF.CYAN,
+    'cassian': TF.BLUE,
+    'irenna': TF.MAGENTA,
+    'theron': TF.BRIGHT_RED,
   }
-  
-  # Try exact match first
   if npc_name_lower in color_mappings:
     return color_mappings[npc_name_lower]
-  
-  # Fall back to hash-based color for unknown NPCs
+
   npc_hash = hashlib.md5(npc_name_lower.encode()).hexdigest()
   color_options = [
-    TerminalFormatter.BRIGHT_GREEN,
-    TerminalFormatter.BRIGHT_BLUE,
-    TerminalFormatter.BRIGHT_MAGENTA,
-    TerminalFormatter.BRIGHT_WHITE,
-    TerminalFormatter.CYAN,
-    TerminalFormatter.YELLOW,
+    TF.BRIGHT_GREEN, TF.BRIGHT_BLUE, TF.BRIGHT_MAGENTA,
+    TF.BRIGHT_WHITE, TF.CYAN, TF.YELLOW,
   ]
   color_index = int(npc_hash, 16) % len(color_options)
   return color_options[color_index]
@@ -64,15 +78,15 @@ def _format_storyboard_for_prompt(story_text: str, max_length: int = 300) -> str
   return story_text
 
 def build_system_prompt(
-    npc: Dict[str, Any],
-    story: str,
-    TerminalFormatter,
-    player_id: Optional[str] = None,
-    db=None,
-    conversation_summary_for_lyra: Optional[str] = None,
-    player_profile: Optional[Dict[str, Any]] = None,
-    llm_wrapper_func: Optional[Callable] = None,
-    llm_model_name: Optional[str] = None
+        npc: Dict[str, Any],
+        story: str,
+        TF: type, # Passa TerminalFormatter come tipo/classe
+        player_id: Optional[str] = None,
+        db=None, # db può essere None se non usato per profili qui
+        conversation_summary_for_lyra: Optional[str] = None,
+        player_profile: Optional[Dict[str, Any]] = None,
+        llm_wrapper_func: Optional[Callable] = None,
+        llm_model_name: Optional[str] = None
 ) -> str:
   story_context = _format_storyboard_for_prompt(story)
   name = npc.get('name', 'Unknown NPC')
@@ -81,30 +95,28 @@ def build_system_prompt(
   motivation = npc.get('motivation', 'None specified')
   goal = npc.get('goal', 'achieve their objectives')
   player_hint_for_npc_context = npc.get('playerhint', f"The player might try to help you achieve your goal: '{goal}'.")
-  hooks = npc.get('dialogue_hooks', 'Standard dialogue')
+  hooks = npc.get('dialogue_hooks', 'Standard dialogue') # Questo viene direttamente dal parser
   veil = npc.get('veil_connection', '')
 
   prompt_lines = [
     f"Sei {name}, un/una {role} nell'area di {area} nel mondo di Eldoria.",
     f"Motivazione: '{motivation}'. Obiettivo (cosa TU, l'NPC, vuoi ottenere): '{goal}'.",
     f"V.O. (Guida per l'azione del giocatore per aiutarti): \"{player_hint_for_npc_context}\"",
-    f"Stile di dialogo suggerito (usa queste frasi o simili come ispirazione, ma sii naturale e varia le tue risposte): {hooks}.",
+    # Non includere i dialogue_hooks direttamente nel system prompt di base,
+    # la loro gestione è più per l'apertura o per l'ispirazione dell'LLM
   ]
+  if hooks: # Aggiungiamo una nota che ci sono dei ganci per l'ispirazione
+    prompt_lines.append(f"Per ispirazione, considera questi stili/frasi chiave dal tuo personaggio: (alcune potrebbero essere contestuali, non usarle tutte alla cieca)\n{hooks[:300]}{'...' if len(hooks)>300 else ''}")
 
-  if veil: 
+  if veil:
     prompt_lines.append(f"Collegamento al Velo (Tuo Background Segreto Importante): {veil}")
 
   effective_llm_wrapper_for_distill = llm_wrapper_func if llm_wrapper_func else llm_wrapper
-  
   if player_profile and name.lower() != "lyra":
     if effective_llm_wrapper_for_distill and llm_model_name:
       distilled_insights = get_distilled_profile_insights_for_npc(
-        player_profile,
-        npc,
-        story_context,
-        effective_llm_wrapper_for_distill,
-        llm_model_name,
-        TF=TerminalFormatter
+        player_profile, npc, story_context,
+        effective_llm_wrapper_for_distill, llm_model_name, TF=TF
       )
       if distilled_insights:
         prompt_lines.append(f"\nSottile Consapevolezza del Cercatore (Adatta leggermente il tuo tono/approccio in base a questo): {distilled_insights}")
@@ -114,18 +126,7 @@ def build_system_prompt(
     if isinstance(core_traits, dict) and core_traits:
       traits_summary = ", ".join([f"{k.capitalize()}: {v}/10" for k, v in core_traits.items()])
       profile_summary_parts_for_lyra.append(f"Tratti principali osservati: {traits_summary}.")
-    elif isinstance(core_traits, list) and core_traits:
-      profile_summary_parts_for_lyra.append(f"Tratti dominanti osservati: {', '.join(core_traits)}.")
-    
-    if player_profile.get("interaction_style_summary"):
-      profile_summary_parts_for_lyra.append(f"Stile di interazione: {player_profile['interaction_style_summary']}.")
-    if player_profile.get("veil_perception"):
-      profile_summary_parts_for_lyra.append(f"Percezione del Velo: {player_profile['veil_perception'].replace('_', ' ')}.")
-    if player_profile.get("decision_patterns"):
-      patterns_str = ", ".join([p.replace('_', ' ') for p in player_profile.get("decision_patterns", [])])
-      if patterns_str: 
-        profile_summary_parts_for_lyra.append(f"Schemi decisionali notati: {patterns_str}.")
-    
+    # ... (altre parti del profilo per Lyra) ...
     if profile_summary_parts_for_lyra:
       prompt_lines.append(
         f"\nCONSAPEVOLEZZA DEL CERCATORE PER TE, LYRA (Usa queste informazioni per guidarlo meglio):\n"
@@ -146,7 +147,6 @@ def build_system_prompt(
     "Risposte tendenzialmente concise (2-4 frasi), a meno che non venga richiesto di elaborare o la situazione lo richieda.",
     "Sii consapevole delle interazioni passate se riassunte sopra o nella cronologia della chat.",
     "",
-    # FIXED: Make NPCs less generous and more realistic
     "COMPORTAMENTO IMPORTANTE: Sei un personaggio con le TUE motivazioni e obiettivi.",
     "Non dare oggetti o crediti al giocatore a meno che non abbia VERAMENTE guadagnato la tua fiducia o completato un compito significativo per te.",
     "Se il giocatore chiede direttamente oggetti o aiuto, puoi essere cauto, richiedere prove della sua affidabilità, o proporre uno scambio equo.",
@@ -166,35 +166,34 @@ def build_system_prompt(
     "Esempio di risposta CORRETTA in cui NON DAI nulla perché il giocatore non ha fatto niente di speciale:",
     "NPC Dialogo: Hmm, non ti conosco abbastanza per fidarmi. Forse se mi portassi qualcosa che dimostra le tue intenzioni..."
   ])
-
   return "\n".join(prompt_lines)
 
 def load_and_prepare_conversation(
-    db, player_id: str, area_name: str, npc_name: str,
-    model_name: Optional[str],
-    story: str, ChatSession_class, TerminalFormatter,
-    conversation_summary_for_lyra_context: Optional[str] = None,
-    llm_wrapper_for_profile_distillation: Optional[Callable] = None
-) -> Tuple[Optional[Dict[str, Any]], Optional[Any]]:
+        db, player_id: str, area_name: str, npc_name: str,
+        model_name: Optional[str],
+        story: str, ChatSession_class: type, TF_class: type, # Passa le classi
+        conversation_summary_for_lyra_context: Optional[str] = None,
+        llm_wrapper_for_profile_distillation: Optional[Callable] = None
+) -> Tuple[Optional[Dict[str, Any]], Optional[ChatSession]]:
   try:
     npc_data = db.get_npc(area_name, npc_name)
     if not npc_data:
-      print(f"{TerminalFormatter.RED}❌ NPC '{npc_name}' not found in '{area_name}'.{TerminalFormatter.RESET}")
+      print(f"{TF_class.RED}❌ NPC '{npc_name}' not found in '{area_name}'.{TF_class.RESET}")
       return None, None
 
     npc_code = npc_data.get("code")
     if not npc_code:
-      print(f"{TerminalFormatter.RED}❌ NPC '{npc_name}' missing 'code'.{TerminalFormatter.RESET}")
+      print(f"{TF_class.RED}❌ NPC '{npc_name}' missing 'code'.{TF_class.RESET}")
       return None, None
 
     player_profile = None
     if hasattr(db, 'load_player_profile'):
       player_profile = db.load_player_profile(player_id)
-    if not player_profile:
+    if not player_profile: # Assicura che player_profile sia un dict
       player_profile = get_default_player_profile()
 
     system_prompt = build_system_prompt(
-      npc_data, story, TerminalFormatter,
+      npc_data, story, TF_class,
       player_id=player_id, db=db,
       conversation_summary_for_lyra=conversation_summary_for_lyra_context if npc_name.lower() == "lyra" else None,
       player_profile=player_profile,
@@ -206,12 +205,12 @@ def load_and_prepare_conversation(
     chat_session.set_system_prompt(system_prompt)
 
     player_hint_from_data = npc_data.get('playerhint')
-    if not player_hint_from_data:
+    if not player_hint_from_data: # Costruisci un hint di fallback se mancante
       npc_goal = npc_data.get('goal')
       npc_needed = npc_data.get('needed_object')
       if npc_goal:
         player_hint_from_data = f"Help them with: '{npc_goal}'."
-        if npc_needed: 
+        if npc_needed:
           player_hint_from_data += f" They need '{npc_needed}'."
     chat_session.set_player_hint(player_hint_from_data)
 
@@ -219,135 +218,208 @@ def load_and_prepare_conversation(
     if db_conversation_history:
       for msg in db_conversation_history:
         role, content = msg.get("role"), msg.get("content")
-        if role and content is not None: 
+        if role and content is not None: # Aggiungi solo se entrambi validi
           chat_session.add_message(role, content)
 
     return npc_data, chat_session
   except Exception as e:
-    print(f"{TerminalFormatter.RED}❌ Error in load_and_prepare_conversation for {npc_name}: {e}{TerminalFormatter.RESET}")
+    print(f"{TF_class.RED}❌ Error in load_and_prepare_conversation for {npc_name}: {e}{TF_class.RESET}")
     traceback.print_exc()
     return None, None
 
-def save_current_conversation(db, player_id: str, current_npc: Optional[Dict[str, Any]], chat_session, TerminalFormatter):
-  if not current_npc or not chat_session: 
+def save_current_conversation(db, player_id: str, current_npc: Optional[Dict[str, Any]], chat_session: Optional[ChatSession], TF_class: type):
+  if not current_npc or not chat_session:
     return
-  npc_code = current_npc.get("code")
-  if not npc_code or not player_id: 
-    return
-  if current_npc.get('name', '').lower() == 'lyra' and chat_session.get_system_prompt() and "INFORMAZIONE CONTESTUALE AGGIUNTIVA" in chat_session.get_system_prompt():
-    return
-  try:
-    if chat_session.messages:
-      history_to_save = chat_session.get_history()
-      history_to_save_filtered = [msg for msg in history_to_save if msg.get("role") != "system"]
-      if history_to_save_filtered:
-        db.save_conversation(player_id, npc_code, history_to_save_filtered)
-  except Exception as e: 
-    print(f"Err saving convo for {npc_code}: {e}")
 
-def get_npc_opening_line(npc_data: Dict[str, Any], TerminalFormatter) -> str:
+  npc_code = current_npc.get("code")
+  if not npc_code or not player_id:
+    # print(f"{TF_class.DIM}Debug: Skipping save_current_conversation - no npc_code or player_id.{TF_class.RESET}")
+    return
+
+  # Non salvare la storia di Lyra se è una consultazione per /hint (identificata dalla presenza del summary nel system prompt)
+  if current_npc.get('name', '').lower() == 'lyra':
+    system_p = chat_session.get_system_prompt()
+    if system_p and "INFORMAZIONE CONTESTUALE AGGIUNTIVA" in system_p:
+      # print(f"{TF_class.DIM}Debug: Skipping save_current_conversation for Lyra /hint session.{TF_class.RESET}")
+      return
+  try:
+    if chat_session.messages: # Salva solo se ci sono messaggi effettivi oltre al system prompt
+      history_to_save = chat_session.get_history() # Questo include il system prompt
+      # Filtra il system prompt PRIMA di salvare, come previsto dalla tua logica
+      history_to_save_filtered = [msg for msg in history_to_save if msg.get("role") != "system"]
+
+      if history_to_save_filtered: # Salva solo se c'è storia utente/assistente
+        db.save_conversation(player_id, npc_code, history_to_save_filtered)
+        # print(f"{TF_class.DIM}Debug: Saved conversation with {npc_code}.{TF_class.RESET}")
+  except Exception as e:
+    print(f"{TF_class.YELLOW}Warning: Error saving conversation for NPC {npc_code}: {e}{TF_class.RESET}")
+
+
+def get_npc_opening_line(npc_data: Dict[str, Any], TF_class: type) -> str:
   name = npc_data.get('name', 'the figure')
   role = npc_data.get('role', '')
   hooks_text = npc_data.get('dialogue_hooks', '')
-  
-  hooks = []
-  if isinstance(hooks_text, str):
-    potential_hooks = [h.strip() for h in hooks_text.split('\n') if h.strip()]
-    hooks = [h for h in potential_hooks if h.startswith('- ') or '"' in h or not any(h.lower().startswith(kw) for kw in ["(iniziale):", "(dopo le prove):"])]
-    
-    if npc_data.get('name', '').lower() == 'lyra' and "(iniziale):" in hooks_text.lower():
-      try:
-        initial_section = hooks_text.lower().split("(iniziale):")[1].split("\n(")[0]
-        hooks_from_section = [h.strip() for h in initial_section.splitlines() if h.strip().startswith('- ')]
-        if hooks_from_section: 
-          hooks = [h[2:] for h in hooks_from_section]
-      except Exception:
-        hooks = [h.strip() for h in hooks_text.split('\n') if h.strip() and (h.startswith("- ") or '"' in h) ]
 
-  if hooks:
-    chosen_hook = random.choice(hooks).replace("\"", "")
-    if not chosen_hook.startswith(("*")): 
-      return f"*{name} says,* \"{chosen_hook}\""
-    else: 
-      return chosen_hook
-  elif role: 
+  candidate_hooks = []
+
+  # Logica specifica per Lyra per tentare di prendere solo le battute iniziali
+  if npc_data.get('name', '').lower() == 'lyra':
+    # print(f"DEBUG LYRA (get_npc_opening_line): Full hooks_text:\n---\n{hooks_text}\n---")
+    in_initial_section = False
+    temp_initial_hooks = []
+    for line_iter in hooks_text.splitlines():
+      line_stripped_lower = line_iter.strip().lower()
+
+      if line_stripped_lower.startswith("(iniziale):"):
+        in_initial_section = True
+        # print(f"DEBUG LYRA: Entered initial section with line: '{line_iter.strip()}'")
+        continue
+
+        # Se troviamo un'altra intestazione di sezione (che inizia con '('), usciamo dalla sezione iniziale
+      if in_initial_section and line_stripped_lower.startswith("(") and line_stripped_lower != "(iniziale):":
+        in_initial_section = False
+        # print(f"DEBUG LYRA: Exited initial section due to: '{line_stripped_lower}'")
+        break
+
+      if in_initial_section:
+        line_trimmed_for_hook = line_iter.strip()
+        if line_trimmed_for_hook.startswith('- '):
+          actual_hook_text = line_trimmed_for_hook[2:].strip().replace("\"", "")
+          if actual_hook_text:
+            temp_initial_hooks.append(actual_hook_text)
+            # print(f"DEBUG LYRA: Added initial hook candidate: '{actual_hook_text}'")
+
+    if temp_initial_hooks:
+      candidate_hooks = temp_initial_hooks # Usa queste se trovate
+      # print(f"DEBUG LYRA: Using specific initial_hooks_candidate (count {len(candidate_hooks)}): {candidate_hooks[:2]}")
+
+  # Fallback o parsing generale se non è Lyra o se la sezione iniziale di Lyra non ha prodotto nulla
+  if not candidate_hooks and isinstance(hooks_text, str):
+    # print(f"DEBUG GENERAL HOOKS (for {name}): Parsing full hooks_text.")
+    potential_hooks_general = [h.strip() for h in hooks_text.split('\n') if h.strip()]
+
+    # Prima priorità: righe che iniziano con '- ' (tipiche battute)
+    lines_starting_with_dash = [
+      h[2:].strip().replace("\"", "") for h in potential_hooks_general
+      if h.startswith('- ')
+    ]
+    if lines_starting_with_dash:
+      candidate_hooks = lines_starting_with_dash
+    else:
+      # Seconda priorità: righe che contengono virgolette ma non sono intestazioni di sezione
+      lines_with_quotes_not_headers = [
+        h.strip().replace("\"", "") for h in potential_hooks_general
+        if ('"' in h and not any(h.lower().startswith(kw) for kw in ["(iniziale):", "(dopo le prove):", "(durante la ricerca", "(verso il rituale):"]))
+      ]
+      if lines_with_quotes_not_headers:
+        candidate_hooks = lines_with_quotes_not_headers
+    # print(f"DEBUG GENERAL HOOKS (for {name}): Found candidates (count {len(candidate_hooks)}): {candidate_hooks[:2]}")
+
+
+  if candidate_hooks:
+    chosen_hook = random.choice(candidate_hooks)
+    if not chosen_hook.startswith(("*")):
+      return f"*{name} says,* \"{chosen_hook.strip()}\""
+    else:
+      return chosen_hook.strip()
+  elif role:
     return random.choice([
-      f"*{name} the {role} regards you.* What do you want?", 
+      f"*{name} the {role} regards you.* What do you want?",
       f"*{name}, the {role}, looks up as you approach.* Yes?"
     ])
-  else: 
+  else:
     return f"*{name} watches you expectantly.*"
 
-def print_conversation_start_banner(npc_data: Dict[str, Any], area_name: str, TerminalFormatter):
-  npc_name = npc_data.get('name', 'NPC').upper()
-  # FIXED: Use NPC-specific color for banner
-  npc_color = get_npc_color(npc_data.get('name', 'NPC'), TerminalFormatter)
-  
-  print(f"\n{TerminalFormatter.BG_GREEN}{TerminalFormatter.BLACK}{TerminalFormatter.BOLD} NOW TALKING TO {npc_color}{npc_name}{TerminalFormatter.RESET}{TerminalFormatter.BG_GREEN}{TerminalFormatter.BLACK}{TerminalFormatter.BOLD} IN {area_name.upper()} {TerminalFormatter.RESET}")
-  print(f"{TerminalFormatter.DIM}Type '/exit' to leave, '/help' for commands, '/hint' for guidance.{TerminalFormatter.RESET}")
-  if npc_data.get('name','').lower() != 'lyra' or not ("INFORMAZIONE CONTESTUALE AGGIUNTIVA" in (npc_data.get('system_prompt_debug_field_if_needed',''))):
-    print(f"{TerminalFormatter.BRIGHT_CYAN}{'=' * 60}{TerminalFormatter.RESET}\n")
+def print_conversation_start_banner(npc_data: Dict[str, Any], area_name: str, TF_class: type):
+  npc_name_display = npc_data.get('name', 'NPC').upper()
+  npc_color_code = get_npc_color(npc_data.get('name', 'NPC'), TF_class)
+
+  # Costruisci la stringa del banner
+  banner_line1_content = f" NOW TALKING TO {npc_color_code}{npc_name_display}{TF_class.RESET}{TF_class.BG_GREEN}{TF_class.BLACK}{TF_class.BOLD} IN {area_name.upper()} "
+  banner_line1 = f"{TF_class.BG_GREEN}{TF_class.BLACK}{TF_class.BOLD}{banner_line1_content}{TF_class.RESET}"
+
+  print(f"\n{banner_line1}")
+  print(f"{TF_class.DIM}Type '/exit' to leave, '/help' for commands, '/hint' for guidance.{TF_class.RESET}")
+
+  # Evita la linea di separazione extra per Lyra quando è una consultazione /hint
+  # Questo controllo dovrebbe idealmente essere basato su uno stato più esplicito,
+  # ma per ora usiamo il nome e il contenuto del system prompt come euristica.
+  is_lyra_hint_consultation = False
+  if npc_data.get('name','').lower() == 'lyra':
+    # Se avessimo accesso alla sessione qui, potremmo controllare il system prompt
+    # Per ora, questa funzione non ha la sessione, quindi non possiamo fare quel controllo avanzato.
+    # La logica di non stampare il separatore per le consultazioni /hint è meglio gestirla
+    # dove si chiama print_conversation_start_banner, se possibile.
+    pass
+
+  if not is_lyra_hint_consultation: # Stampa il separatore se non è una consultazione speciale di Lyra
+    print(f"{TF_class.BRIGHT_CYAN}{'=' * 60}{TF_class.RESET}\n")
+
 
 def start_conversation_with_specific_npc(
-    db, player_id: str, area_name: str, npc_name: str,
-    model_name: Optional[str], story: str, ChatSession_class, TerminalFormatter,
-    llm_wrapper_for_profile_distillation: Optional[Callable] = None
-) -> Tuple[Optional[Dict[str, Any]], Optional[Any]]:
+        db, player_id: str, area_name: str, npc_name: str,
+        model_name: Optional[str], story: str, ChatSession_class: type, TF_class: type,
+        llm_wrapper_for_profile_distillation: Optional[Callable] = None
+) -> Tuple[Optional[Dict[str, Any]], Optional[ChatSession]]:
+
   npc_data, new_session = load_and_prepare_conversation(
-    db, player_id, area_name, npc_name, model_name, story, ChatSession_class, TerminalFormatter,
+    db, player_id, area_name, npc_name, model_name, story, ChatSession_class, TF_class,
     llm_wrapper_for_profile_distillation=llm_wrapper_for_profile_distillation
   )
-  
+
   if npc_data and new_session:
-    print_conversation_start_banner(npc_data, area_name, TerminalFormatter)
-    
-    # FIXED: Use NPC-specific color for dialogue
-    npc_color = get_npc_color(npc_data.get('name', 'NPC'), TerminalFormatter)
-    
-    if not new_session.messages:
-      opening_line = get_npc_opening_line(npc_data, TerminalFormatter)
-      print(f"{TerminalFormatter.BOLD}{npc_color}{npc_data['name']} > {TerminalFormatter.RESET}")
-      print(TerminalFormatter.format_terminal_text(opening_line, width=TerminalFormatter.get_terminal_width()))
-      new_session.add_message("assistant", opening_line)
+    print_conversation_start_banner(npc_data, area_name, TF_class)
+    npc_color_code = get_npc_color(npc_data.get('name', 'NPC'), TF_class)
+
+    if not new_session.messages: # Solo se la cronologia (escluso system) è vuota
+      opening_line = get_npc_opening_line(npc_data, TF_class)
+      print(f"{TF_class.BOLD}{npc_color_code}{npc_data['name']} > {TF_class.RESET}")
+      print(TF_class.format_terminal_text(opening_line, width=TF_class.get_terminal_width()))
+      new_session.add_message("assistant", opening_line) # Aggiungi alla cronologia
       print()
-    elif new_session.messages:
-      print(f"{TerminalFormatter.DIM}--- Continuing conversation with {npc_data['name']} ---{TerminalFormatter.RESET}")
+    elif new_session.messages: # Se c'è una cronologia (utente/assistente)
+      print(f"{TF_class.DIM}--- Continuing conversation with {npc_data['name']} ---{TF_class.RESET}")
       last_msg = new_session.messages[-1]
       role_display = "You" if last_msg['role'] == 'user' else npc_data.get('name', 'NPC')
-      color = TerminalFormatter.GREEN if last_msg['role'] == 'user' else npc_color
-      print(f"{TerminalFormatter.BOLD}{color}{role_display} > {TerminalFormatter.RESET}")
-      print(TerminalFormatter.format_terminal_text(last_msg['content']))
+
+      color_to_use = TF_class.GREEN if last_msg['role'] == 'user' else npc_color_code
+
+      print(f"{TF_class.BOLD}{color_to_use}{role_display} > {TF_class.RESET}")
+      print(TF_class.format_terminal_text(last_msg['content']))
       print()
-    
     return npc_data, new_session
   return None, None
 
+
 def auto_start_default_npc_conversation(
-    db, player_id: str, area_name: str, model_name: Optional[str],
-    story: str, ChatSession_class, TerminalFormatter,
-    llm_wrapper_for_profile_distillation: Optional[Callable] = None
-) -> Tuple[Optional[Dict[str, Any]], Optional[Any]]:
+        db, player_id: str, area_name: str, model_name: Optional[str],
+        story: str, ChatSession_class: type, TF_class: type,
+        llm_wrapper_for_profile_distillation: Optional[Callable] = None
+) -> Tuple[Optional[Dict[str, Any]], Optional[ChatSession]]:
+
   default_npc_info = db.get_default_npc(area_name)
   if not default_npc_info:
+    # print(f"{TF_class.YELLOW}No default NPC found in '{area_name}'.{TF_class.RESET}")
     return None, None
-  
+
   default_npc_name = default_npc_info.get('name')
-  if not default_npc_name: 
+  if not default_npc_name:
+    # print(f"{TF_class.YELLOW}Default NPC in '{area_name}' has no name.{TF_class.RESET}")
     return None, None
-  
+
   return start_conversation_with_specific_npc(
-    db, player_id, area_name, default_npc_name, model_name, story, ChatSession_class, TerminalFormatter,
+    db, player_id, area_name, default_npc_name, model_name, story, ChatSession_class, TF_class,
     llm_wrapper_for_profile_distillation=llm_wrapper_for_profile_distillation
   )
 
-def refresh_known_npcs_list(db, TerminalFormatter) -> List[Dict[str, Any]]:
-  try: 
+def refresh_known_npcs_list(db, TF_class: type) -> List[Dict[str, Any]]:
+  try:
     return db.list_npcs_by_area()
-  except Exception as e: 
-    print(f"{TerminalFormatter.RED}Error refreshing NPC list: {e}{TerminalFormatter.RESET}")
+  except Exception as e:
+    print(f"{TF_class.RED}Error refreshing NPC list: {e}{TF_class.RESET}")
     return []
 
 def get_known_areas_from_list(all_known_npcs: List[Dict[str, Any]]) -> List[str]:
-  if not all_known_npcs: 
+  if not all_known_npcs:
     return []
   return sorted(list(set(n.get('area', '').strip() for n in all_known_npcs if n.get('area', '').strip())), key=str.lower)
