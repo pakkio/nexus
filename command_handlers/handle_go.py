@@ -1,6 +1,6 @@
 from typing import Dict, Any
 import session_utils
-from ..command_handler_utils import HandlerResult, _add_profile_action
+from command_handler_utils import HandlerResult, _add_profile_action
 
 def handle_go(args: str, state: Dict[str, Any]) -> HandlerResult:
     TF = state['TerminalFormatter']
