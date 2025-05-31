@@ -1,33 +1,37 @@
-# Path: main_utils.py
-# MODIFIED: Added /profile and /profile_for_npc to help text.
-
 import os
 from typing import Dict, List, Any
 
 try:
-    from dotenv import load_dotenv as load_dotenv_file
+  from dotenv import load_dotenv as load_dotenv_file
 except ImportError:
-    def load_dotenv_file(): pass
+  def load_dotenv_file(): pass
 
 try:
-    from terminal_formatter import TerminalFormatter
+  from terminal_formatter import TerminalFormatter
 except ImportError:
-    class TerminalFormatter: # Basic fallback
-        DIM = ""; RESET = ""; BOLD = ""; YELLOW = ""; RED = ""; GREEN = ""; MAGENTA = ""; CYAN = ""; BRIGHT_CYAN=""; BRIGHT_GREEN = ""; BRIGHT_MAGENTA = ""; ITALIC = "";
-        @staticmethod
-        def format_terminal_text(text, width=80): import textwrap; return "\n".join(textwrap.wrap(text, width=width))
-        @staticmethod
-        def get_terminal_width(): return 80
-
+  class TerminalFormatter: # Basic fallback
+    DIM = ""; RESET = ""; BOLD = ""; YELLOW = ""; RED = ""; GREEN = ""; MAGENTA = ""; CYAN = ""; BRIGHT_CYAN=""; BRIGHT_GREEN = ""; BRIGHT_MAGENTA = ""; ITALIC = "";
+    @staticmethod
+    def format_terminal_text(text, width=80): import textwrap; return "\n".join(textwrap.wrap(text, width=width))
+    @staticmethod
+    def get_terminal_width(): return 80
 
 def load_environment_variables():
-    load_dotenv_file()
+  load_dotenv_file()
 
+def get_nlp_command_config() -> Dict[str, Any]:
+  """Restituisce la configurazione per l'interpretazione NLP dei comandi."""
+  return {
+    'enabled': os.environ.get('NLP_COMMAND_INTERPRETATION_ENABLED', 'true').lower() == 'true',
+    'confidence_threshold': float(os.environ.get('NLP_COMMAND_CONFIDENCE_THRESHOLD', '0.7')),
+    'model_name': os.environ.get('NLP_COMMAND_MODEL', None),  # Se None, usa il model principale
+    'debug_mode': os.environ.get('NLP_COMMAND_DEBUG', 'false').lower() == 'true'
+  }
 
 def get_help_text() -> str:
-    """Generates the help text for user commands."""
-    TF = TerminalFormatter
-    return f"""
+  """Generates the help text for user commands."""
+  TF = TerminalFormatter
+  return f"""
 {TF.YELLOW}{TF.BOLD}Available Commands:{TF.RESET}
  {TF.DIM}/exit{TF.RESET}                - Exit the application.
  {TF.DIM}/quit{TF.RESET}                - Alias for /exit.
@@ -37,14 +41,14 @@ def get_help_text() -> str:
  {TF.DIM}/go <area_name_fragment>{TF.RESET} - Move to a new area (e.g., /go tav, /go ancient ruins).
  {TF.DIM}/areas{TF.RESET}               - List all visitable areas.
  {TF.DIM}/talk <npc_name|.>{TF.RESET} - Start talking to an NPC in the current area (e.g., /talk Jorin).
-                        '.' for a random NPC.
+            '.' for a random NPC.
  {TF.DIM}/who{TF.RESET}                 - List NPCs in the current area.
  {TF.DIM}/whereami{TF.RESET}            - Show your current location and conversation partner.
  {TF.DIM}/npcs{TF.RESET}                - List all known NPCs by area.
 
 {TF.BRIGHT_CYAN}Guidance & Information:{TF.RESET}
  {TF.DIM}/hint{TF.RESET}                - Consult Lyra for guidance based on your current situation.
-                        (Temporarily switches context to Lyra).
+            (Temporarily switches context to Lyra).
  {TF.DIM}/endhint{TF.RESET}             - End consultation with Lyra and return to your previous interaction.
  {TF.DIM}/inventory{TF.RESET}           - Display your inventory and Credits.
  {TF.DIM}/inv{TF.RESET}                 - Alias for /inventory.
@@ -60,34 +64,51 @@ def get_help_text() -> str:
  {TF.DIM}/session_stats{TF.RESET}       - Show statistics for the current NPC conversation.
  {TF.DIM}/clear{TF.RESET}               - Clear current conversation history (in memory only).
  {TF.DIM}/history{TF.RESET}             - Show raw JSON history for the current conversation.
+
+{TF.CYAN}{TF.BOLD}💡 Natural Language Commands:{TF.RESET}
+You can also use natural language instead of explicit commands:
+ {TF.DIM}"voglio andare alla taverna"{TF.RESET}  → {TF.DIM}/go tavern{TF.RESET}
+ {TF.DIM}"cosa ho nell'inventario?"{TF.RESET}    → {TF.DIM}/inventory{TF.RESET}
+ {TF.DIM}"chi c'è qui?"{TF.RESET}               → {TF.DIM}/who{TF.RESET}
+ {TF.DIM}"aiuto"{TF.RESET}                      → {TF.DIM}/help{TF.RESET}
+ {TF.DIM}"esco"{TF.RESET}                       → {TF.DIM}/exit{TF.RESET}
 """
 
 def format_storyboard_for_prompt(story: str, max_length: int = 300) -> str:
-    if not isinstance(story, str): return "[No Story]"
-    return story[:max_length] + "..." if len(story) > max_length else story
+  if not isinstance(story, str): return "[No Story]"
+  return story[:max_length] + "..." if len(story) > max_length else story
 
 def format_npcs_list(npcs_list: List[Dict[str, Any]]) -> str:
-    if not npcs_list: return f"{TerminalFormatter.YELLOW}No NPCs found.{TerminalFormatter.RESET}"
-    output = [f"\n{TerminalFormatter.YELLOW}{TerminalFormatter.BOLD}Known NPCs:{TerminalFormatter.RESET}"]
-    current_area_display = None
-    # Sort by area first, then by NPC name within each area
-    sorted_npcs = sorted(npcs_list, key=lambda x: (x.get('area', 'Unknown Area').lower(), x.get('name', 'Unknown NPC').lower()))
-    for npc_info in sorted_npcs:
-        area = npc_info.get('area', 'Unknown Area')
-        name = npc_info.get('name', 'Unknown NPC')
-        role = npc_info.get('role', 'Unknown Role')
-        if area != current_area_display:
-            if current_area_display is not None: output.append("") # Add a blank line between areas
-            current_area_display = area
-            output.append(f"{TerminalFormatter.BRIGHT_CYAN}{current_area_display}{TerminalFormatter.RESET}")
-        output.append(f"  {TerminalFormatter.DIM}- {name} ({role}){TerminalFormatter.RESET}")
-    return "\n".join(output)
-
+  if not npcs_list: return f"{TerminalFormatter.YELLOW}No NPCs found.{TerminalFormatter.RESET}"
+  
+  output = [f"\n{TerminalFormatter.YELLOW}{TerminalFormatter.BOLD}Known NPCs:{TerminalFormatter.RESET}"]
+  current_area_display = None
+  
+  sorted_npcs = sorted(npcs_list, key=lambda x: (x.get('area', 'Unknown Area').lower(), x.get('name', 'Unknown NPC').lower()))
+  
+  for npc_info in sorted_npcs:
+    area = npc_info.get('area', 'Unknown Area')
+    name = npc_info.get('name', 'Unknown NPC')
+    role = npc_info.get('role', 'Unknown Role')
+    
+    if area != current_area_display:
+      if current_area_display is not None: output.append("") # Add a blank line between areas
+      current_area_display = area
+      output.append(f"{TerminalFormatter.BRIGHT_CYAN}{current_area_display}{TerminalFormatter.RESET}")
+    
+    output.append(f"  {TerminalFormatter.DIM}- {name} ({role}){TerminalFormatter.RESET}")
+  
+  return "\n".join(output)
 
 if __name__ == "__main__":
-    print(f"--- main_utils Tests ---")
-    help_text_test = get_help_text()
-    assert "/profile" in help_text_test
-    assert "/profile_for_npc" in help_text_test
-    print("Help text includes new profile commands. All basic tests passed.")
-
+  print(f"--- main_utils Tests ---")
+  
+  # Test NLP config
+  nlp_config = get_nlp_command_config()
+  print(f"NLP Config: {nlp_config}")
+  
+  help_text_test = get_help_text()
+  assert "/profile" in help_text_test
+  assert "/profile_for_npc" in help_text_test
+  assert "Natural Language" in help_text_test
+  print("Help text includes new profile commands and NLP info. All basic tests passed.")
