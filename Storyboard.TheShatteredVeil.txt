@@ -1,8 +1,12 @@
 Name: The Shattered Veil
 Description:
-For centuries, the world of Eldoria has been protected by the Veil, a barrier of mystical energy separating the material realm from the chaotic magic beyond. Now the Veil is fraying, and strange anomalies ripple across the land. Each NPC holds a clue, a key, or a curse connected to this unraveling.
+For centuries, the world of Eldoria has been protected by the Veil, a mystical barrier separating the material realm from the chaotic magic beyond. Now the Veil is fraying, and strange anomalies ripple across the land. Each NPC holds a clue, a key, or a curse connected to this unraveling.
+
+To navigate this crisis, the Seeker will need profound wisdom. Many turn to Lyra, the Sage of the Sanctum of Whispers, for her deep understanding of the Veil and its history. Others might consult Boros, the old warrior of the Mountain, whose memories hold forgotten truths about past Veil breaches. Elira, the guardian of the Forest, also possesses ancient knowledge tied to the land's suffering. The choice of guide can shape the Seeker's path.
 
 Themes:
 - Forgotten truths
 - Leaking magic
 - Fractured dreams!
+- The burden of knowledge
+- Choosing one's path to wisdom

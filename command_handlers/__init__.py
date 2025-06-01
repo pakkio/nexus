@@ -1,39 +1,29 @@
-from typing import Dict, Any
-import session_utils
-from command_handler_utils import HandlerResult, _add_profile_action
+# command_handlers/__init__.py
+from .handle_exit import handle_exit
+from .handle_help import handle_help
+from .handle_go import handle_go
+from .handle_talk import handle_talk
+from .handle_who import handle_who
+from .handle_whereami import handle_whereami
+from .handle_npcs import handle_npcs
+from .handle_areas import handle_areas
+from .handle_listareas import handle_listareas
+from .handle_stats import handle_stats
+from .handle_session_stats import handle_session_stats
+from .handle_clear import handle_clear
+from .handle_hint import handle_hint # MODIFIED: Ensure these are present
+from .handle_endhint import handle_endhint # MODIFIED: Ensure these are present
+from .handle_inventory import handle_inventory
+from .handle_give import handle_give
+from .handle_receive import handle_receive
+from .handle_profile import handle_profile
+from .heandle_profile_for_npc import handle_profile_for_npc # Typo in original, kept for consistency if it exists
+from .handle_history import handle_history
 
-def handle_areas(state: Dict[str, Any]) -> HandlerResult:
-  TF = state['TerminalFormatter']
-  db = state['db']
-  _add_profile_action(state, "Used /areas command")
-  all_known_npcs = session_utils.refresh_known_npcs_list(db, TF)
-  known_areas = session_utils.get_known_areas_from_list(all_known_npcs)
-  if not known_areas:
-    print(f"{TF.YELLOW}No known areas found.{TF.RESET}")
-  else:
-    print(f"\n{TF.BRIGHT_CYAN}{TF.BOLD}Available Areas to /go to:{TF.RESET}")
-    for area_name in known_areas:
-      print(f" {TF.CYAN}➢ {area_name}{TF.RESET}")
-  return {**state, 'status': 'ok', 'continue_loop': True}
-
-# NUOVO: Import per handle_listareas
-def handle_listareas(state: Dict[str, Any]) -> HandlerResult:
-  """Handler per il comando /listareas - mostra aree su una riga per copia-incolla."""
-  TF = state['TerminalFormatter']
-  db = state['db']
-  
-  _add_profile_action(state, "Used /listareas command")
-  
-  all_known_npcs = session_utils.refresh_known_npcs_list(db, TF)
-  known_areas = session_utils.get_known_areas_from_list(all_known_npcs)
-  
-  if not known_areas:
-    print(f"{TF.YELLOW}No known areas found.{TF.RESET}")
-  else:
-    # Crea una stringa con tutte le aree separate da virgole
-    areas_string = ", ".join(known_areas)
-    print(f"\n{TF.BRIGHT_CYAN}{TF.BOLD}Available Areas:{TF.RESET}")
-    print(f"{TF.CYAN}{areas_string}{TF.RESET}")
-    print(f"\n{TF.DIM}💡 Copy-paste ready format above{TF.RESET}")
-  
-  return {**state, 'status': 'ok', 'continue_loop': True}
+__all__ = [
+    "handle_exit", "handle_help", "handle_go", "handle_talk", "handle_who",
+    "handle_whereami", "handle_npcs", "handle_areas", "handle_listareas",
+    "handle_stats", "handle_session_stats", "handle_clear", "handle_hint", "handle_endhint",
+    "handle_inventory", "handle_give", "handle_receive", "handle_profile",
+    "handle_profile_for_npc", "handle_history"
+]

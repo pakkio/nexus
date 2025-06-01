@@ -1,420 +1,395 @@
-# 🌟 Nexus Framework
-### *Il Futuro delle Avventure Testuali è Qui*
-
----
-
-## 🎭 Introduzione
-
-**Nexus** non è l'ennesimo motore per avventure testuali. È una **rivoluzione narrativa** che porta l'intelligenza artificiale nel cuore della storytelling interattiva. Immagina un mondo dove i personaggi non solo rispondono alle tue azioni, ma ti *ricordano*, ti *studiano*, e si *adattano* al tuo stile di gioco.
-
-Attualmente implementa **"The Shattered Veil"**, un'epica avventura ambientata nel misterioso mondo di **Eldoria**, dove una barriera mistica che protegge la realtà si sta sgretolando sotto i tuoi occhi.
-
----
-
-## ✨ Caratteristiche che Cambiano le Regole del Gioco
-
-### 🧠 **NPCs con Memoria Persistente**
-Non più dialoghi robotici: i personaggi ricordano ogni conversazione, ogni scelta, ogni momento condiviso. La narrazione diventa un **tessuto vivente** di relazioni autentiche.
-
-### 🎯 **Profilo Psicologico Dinamico**
-Il sistema *ti osserva mentre giochi*, costruendo un profilo psicologico che influenza come il mondo reagisce a te. Sei diplomatico? Aggressivo? Curioso? Gli NPCs se ne accorgeranno.
-
-### 🎨 **Adattamento Intelligente**
-Ogni personaggio modifica il proprio comportamento in base a chi sei e a come ti comporti. Un'esperienza **davvero personalizzata**.
-
-### 💻 **Interfaccia Elegante**
-Sistema di comandi intuitivo con **formattazione ANSI** che trasforma il terminale in una finestra su mondi fantastici.
-
-### 🗃️ **Database Flessibile**
-Supporto completo per **MySQL** con fallback intelligente su file JSON. La tua avventura è sempre al sicuro.
-
-### 🤖 **Integrazione LLM Avanzata**
-Wrapper sofisticato per **OpenRouter** che supporta i migliori modelli linguistici disponibili. Gestione separata dei modelli per dialoghi NPCs e analisi psicologica del giocatore.
-
-### 🔮 **Sistema di Consulenza Integrato**
-Il comando `/hint` ti connette con **Lyra**, un'oracolo digitale che mantiene cache intelligente dei consigli basati sul contesto di gioco.
-
-### 🎒 **Economia di Gioco Completa**
-Sistema di inventario e crediti che aggiunge profondità strategica alle tue scelte.
-
-### ⚡ **Sistema di Reset Intelligente**
-Script di reset integrato per ripulire stati di gioco, database e profili giocatore quando necessario.
-
----
-
-## 🏗️ Architettura del Sistema
-
-Il framework è costruito con una **architettura modulare** che respira eleganza e flessibilità:
-
-```
-┌─────────────────┐ ┌─────────────────┐ ┌─────────────────┐
-│ main.py         │──────│ main_core.py    │──────│ command_processor│
-└────────┬────────┘ └────────┬────────┘ └────────┬────────┘
-         │                   │                   │
-         │                   │                   │
-┌────────▼────────┐ ┌────────▼────────┐ ┌────────▼────────┐
-│ db_manager.py   │◄─────│ session_utils   │◄─────│ chat_manager    │
-└────────┬────────┘ └────────┬────────┘ └────────┬────────┘
-         │                   │                   │
-         │                   │                   │
-┌────────▼────────┐ ┌────────▼────────┐ ┌────────▼────────┐
-│player_profile_  │◄─────│ hint_manager    │◄─────│ llm_wrapper     │
-│ manager         │      │                 │      │                 │
-└─────────────────┘ └─────────────────┘ └─────────────────┘
-```
-
-### 🧩 **Componenti Chiave**
-
-- **`main.py`** - *Il portale d'ingresso*: gestisce argomenti avanzati inclusi modelli separati per dialoghi e analisi profilo
-- **`main_core.py`** - *Il cuore pulsante*: coordina il loop principale con aggiornamenti del profilo giocatore tramite LLM
-- **`command_processor.py`** - *L'interprete*: gestisce 15+ comandi specializzati con tracking azioni per profilo psicologico
-- **`session_utils.py`** - *Il regista*: orchestra conversazioni con integrazione insights psicologici nel system prompt degli NPCs
-- **`chat_manager.py`** - *Il ponte*: interfaccia streaming con statistiche dettagliate (token, tempi, performance)
-- **`player_profile_manager.py`** - *Lo psicologo*: analisi LLM-based con extraction JSON robusta per profili comportamentali
-- **`db_manager.py`** - *La memoria*: supporto MySQL completo + fallback JSON con schema player profiles avanzato
-- **`llm_wrapper.py`** - *Il traduttore*: client OpenRouter con gestione errori, logging e supporto streaming SSE
-- **`terminal_formatter.py`** - *L'artista*: formattazione ANSI avanzata con supporto Markdown-like (bold, italic, colori)
-- **`hint_manager.py`** - *Il consigliere*: sistema di cache intelligente per consigli contestuali di Lyra
-- **`load.py`** - *Il costruttore*: parser per NPCs e storyboard con supporto encoding UTF-8
-
----
-
-## 🚀 Setup Rapido
-
-### **Requisiti Minimi**
-- **Python 3.8+** (il linguaggio degli dei)
-- **Chiave API OpenRouter** (il passaporto per l'IA)
-- **MySQL** *(opzionale, ma consigliato per l'esperienza completa)*
-
-### **Installazione con Poetry** *(Raccomandato)*
-
-```bash
-# Clona il futuro
-git clone https://github.com/pakkio/nexus.git
-cd nexus
-
-# Preparati alla magia
-pip install poetry
-poetry install
-poetry shell
-```
-
-**Perché Poetry?** Perché la vita è troppo breve per gestire dipendenze manualmente:
-- ✅ **Ambienti virtuali automatici**
-- ✅ **Risoluzione intelligente dei conflitti**
-- ✅ **Versioni bloccate e riproducibili**
-- ✅ **Pubblicazione su PyPI semplificata**
-
-### **Installazione Tradizionale**
-
-```bash
-# Per i puristi
-git clone https://github.com/pakkio/nexus.git
-cd nexus
-pip install -r requirements.txt
-```
-
-### **Configurazione Ambientale**
-
-Crea il file `.env` nella directory principale con le tue credenziali:
-
-```env
-OPENROUTER_API_KEY=your_actual_openrouter_api_key_here
-OPENROUTER_DEFAULT_MODEL=google/gemma-2-9b-it:free
-PROFILE_ANALYSIS_MODEL=google/gemma-2-2b-it:free
-DB_HOST=localhost
-DB_PORT=3306
-DB_USER=your_db_user
-DB_PASSWORD=your_db_password
-DB_NAME=nexus_db
-```
-
-**⚠️ IMPORTANTE:** L'`OPENROUER_API_KEY` deve essere una chiave API valida ottenuta da [OpenRouter](https://openrouter.ai). Senza questa chiave, il sistema non potrà effettuare chiamate LLM.
-
----
-
-## 🎮 Lanciare la Tua Avventura
-
-### **Avvio Immediato**
-```bash
-# Con Poetry
-poetry shell
-python main.py --mockup --player TestSeeker --area "Sanctum of Whispers"
-
-# Modalità database completa
-python main.py --db --player TestSeeker --area "Sanctum of Whispers"
-
-# Con modelli premium
-python main.py --mockup --model anthropic/claude-3-opus:beta --profile-analysis-model google/gemma-2-2b-it:free
-```
-
-### **Opzioni di Configurazione Avanzate**
-
-- **`--mockup`** / **`--db`** - Scegli tra file JSON o database MySQL
-- **`--model`** - Specifica il modello LLM per i dialoghi
-- **`--profile-analysis-model`** - Modello per l'analisi psicologica
-- **`--no-stream`** - Disabilita lo streaming delle risposte
-- **`--show-stats`** - Mostra statistiche dettagliate sulle chiamate LLM
-
----
-
-## 🕹️ Comandi di Gioco
-
-Una volta nel mondo di Eldoria, usa questi comandi per plasmarlo:
-
-### **🗺️ Navigazione**
-- `/go <area>` - Viaggia verso nuove terre
-- `/areas` - Scopri tutti i luoghi disponibili
-- `/whereami` - Dove ti trovi ora?
-
-### **👥 Interazione Sociale**
-- `/talk <npc>` - Inizia una conversazione
-- `/who` - Chi c'è qui con te?
-- `/npcs` - Lista tutti i personaggi disponibili
-
-### **🎒 Gestione Risorse**
-- `/inventory` - Controlla i tuoi oggetti
-- `/give <item>` - Dona un oggetto
-- `/give <numero> Credits` - Trasferisci denaro
-
-### **🔮 Saggezza e Aiuto**
-- `/hint` - Consulta l'oracolo Lyra
-- `/endhint` - Termina la consultazione
-
-### **📊 Informazioni e Debug**
-- `/profile` - Il tuo profilo psicologico
-- `/profile_for_npc` - Come ti vedono gli NPCs
-- `/stats` - Statistiche di gioco
-- `/session_stats` - Dati della sessione corrente
-- `/history` - Cronologia delle tue azioni
-
-### **⚙️ Gestione Sistema**
-- `/clear` - Pulisci lo schermo
-- `/exit` - Termina l'avventura
-- `/stats` - Statistiche complete delle chiamate LLM (token, tempi, modelli)
-- `/session_stats` - Statistiche della sessione corrente
-- `/history` - Cronologia completa delle tue azioni
-
-### **🔧 Strumenti di Sviluppo**
-- `python load.py --mockup --storyboard <file>` - Carica nuovi contenuti
-- Script di reset per database e profili giocatore
-- Modalità debug con logging avanzato
-
----
-
-## 🎬 Esempio di Sessione
-
-```
-You > ciao, chi sei?
-
-Lyra > Sono Lyra, Custode della Conoscenza Velata e ultima discendente 
-       di un antico ordine di Guardiani del Velo. Il mio compito è 
-       preservare la conoscenza ancestrale e guidare coloro che possono 
-       aiutare a fermare il collasso del Velo.
-
-You > cosa devo fare?
-
-Lyra > Devi trovare prove della corruzione del Velo. Cerca nei luoghi 
-       critici: la Foresta, dove Elira potrebbe aiutarti a ottenere un 
-       campione della piaga, o le Montagne, dove il vecchio Boros 
-       conserva testimonianze di una precedente rottura del Velo.
-
-You > /go forest
-
-Moving to: Forest...
-
-Elira > The trees weep for what you've burned... o per ciò che il Velo 
-        spezzato sta distruggendo.
-
-You > /profile
-
-[Profilo Psicologico Dettagliato]
-- Curiosità: 7/10 (Aumentata dalle domande frequenti)
-- Cautela: 5/10 (Approccio equilibrato ai pericoli)
-- Empatia: 6/10 (Interesse per la sofferenza di Elira)
-```
-
----
-
-## 🛠️ Creazione di Contenuti
-
-### **📜 Definire Nuove Storie**
-
-I file storyboard definiscono l'ambientazione generale:
-
-```
-Name: The Shattered Veil
-Description:
-For centuries, the world of Eldoria has been protected by the Veil, 
-a barrier of mystical energy separating the material realm from the 
-chaotic magic beyond. Now the Veil is fraying, and strange anomalies 
-ripple across the land.
-
-Themes:
-- Forgotten truths
-- Leaking magic  
-- Fractured dreams
-```
-
-### **👤 Progettare NPCs Memorabili**
-
-Il sistema supporta NPCs complessi con motivazioni strutturate:
-
-```
-Name: Lyra
-Area: Sanctum of Whispers
-Role: Custode della Conoscenza Velata
-Motivation: Preservare la conoscenza ancestrale
-Goal: Confermare la gravità della rottura del Velo
-Needed Object: Prove della Rottura
-Treasure: La "Mappa delle Ombre Crescenti"
-Veil Connection: Discendente diretta dei primi Guardiani
-
-Dialogue Hooks:
-- "Benvenuto/a, Cercatore. Sento l'eco dei tuoi passi nel destino."
-- "Il tessuto della realtà si sta logorando davanti ai nostri occhi."
-```
-
-**NPCs Disponibili nel Mondo di Eldoria:**
-- **Lyra** (Sanctum) - La guida saggia, custode dei segreti del Velo
-- **Elira** (Forest) - Guardiana della natura, soffre con la sua foresta corrotta
-- **Boros** (Mountain) - Guerriero in pensione, testimone di antiche catastrofi
-- **Jorin** (Tavern) - Oste collezionista di sussurri e sogni infranti
-- **Garin** (Village) - Fabbro erede di una tradizione della Guerra del Velo
-- **Syra** (Ancient Ruins) - Spirito guardiano legato ai Sigilli ancestrali
-- **Theron** (City) - Alto Giudice corrotto, antagonista principale
-
-### **⚡ Caricamento Contenuti**
-
-```bash
-# Carica nuovi NPCs e storie
-python load.py --mockup --storyboard Storyboard.TheShatteredVeil.txt
-
-# Reset completo del sistema (carica tutti i dati di default)
-./reset_game
-
-# Avvio rapido dopo reset
-python main.py --mockup --player TestSeeker --area "Sanctum of Whispers"
-
-# Debug e test con statistiche
-python main.py --mockup --show-stats --model anthropic/claude-3-opus:beta
-```
-
-**Script `reset_game`:** Combina pulizia database + ricaricamento dati + inizializzazione sistema. Perfetto per reset rapidi durante sviluppo.
-
----
-
-## 🤝 Contribuire al Progetto
-
-Il **Nexus Framework** cresce grazie alla community. Ecco come unirti all'avventura:
-
-### **🔧 Processo di Contribuzione**
-
-1. **Fork** del repository
-2. **Crea** un branch per la tua feature (`git checkout -b feature/amazing-feature`)
-3. **Committa** le modifiche (`git commit -m 'Add some amazing feature'`)
-4. **Push** al branch (`git push origin feature/amazing-feature`)
-5. **Apri** una Pull Request
-
-### **🎯 Aree di Interesse**
-
-- **🧠 Miglioramenti AI** - Logica di analisi del profilo più sofisticata
-- **🎮 Nuovi Sistemi** - Crafting, combattimento, magia
-- **⚡ Ottimizzazioni** - Prompt LLM più efficienti
-- **📚 Contenuti** - Nuove storie e personaggi indimenticabili
-- **🎨 UX/UI** - Interfaccia sempre più elegante e intuitiva
-
----
-
-## 🚨 Troubleshooting
-
-### **Errore 401: "No auth credentials found"**
-
-**Problema:** Il sistema non trova le credenziali OpenRouter API.
-
-**Soluzioni:**
-```bash
-# 1. Verifica che il file .env esista
-ls -la .env
-
-# 2. Controlla il contenuto del file .env
-cat .env
-
-# 3. Assicurati che la chiave API sia valida
-# Visita https://openrouter.ai/settings/keys per ottenere/verificare la tua chiave
-
-# 4. Riavvia il framework dopo aver modificato .env
-python main.py --mockup --player TestSeeker --area "Sanctum of Whispers"
-```
-
-### **NPCs non rispondono / Chiamate LLM falliscono**
-
-**Cause comuni:**
-- API key OpenRouter scaduta o non valida
-- Crediti insufficienti su OpenRouter
-- Modello LLM non disponibile
-
-**Debug:**
-```bash
-# Testa con modelli gratuiti confermati
-python main.py --mockup --model google/gemma-2-9b-it:free --profile-analysis-model google/gemma-2-2b-it:free --show-stats
-```
-
-### **Database MySQL non funziona**
-
-**Usa la modalità mockup per test rapidi:**
-```bash
-# Modalità file-based (no MySQL richiesto)
-python main.py --mockup --player TestSeeker
-
-# Reset completo del sistema
-./reset_game
-```
-
-### **Errori di import/dipendenze**
-
-**Con Poetry:**
-```bash
-poetry install --sync
-poetry shell
-```
-
-**Con pip:**
-```bash
-pip install -r requirements.txt --upgrade
-```
-
-### **Performance Lenta**
-
-**Ottimizzazioni:**
-- Usa modelli più piccoli per profile analysis: `google/gemma-2-2b-it:free`
-- Disabilita streaming se non necessario: `--no-stream`
-- Monitora l'uso con: `--show-stats`
-
----
-
-## 🏆 Conclusione
-
-**Nexus Framework** rappresenta l'evoluzione naturale della narrativa interattiva. Non stiamo solo creando giochi - stiamo **forgiando mondi vivi** dove ogni scelta conta, ogni personaggio respira, e ogni storia si adatta a chi la vive.
-
-Il sistema di *profiling psicologico* basato su LLM trasforma ogni sessione in un'esperienza unica, mentre la *memoria persistente* degli NPCs crea narrazioni che crescono organicamente con il tempo. La flessibilità architetturale permette di estendere facilmente il framework con nuovi sistemi di gioco.
-
-**Nexus** è più di un motore - è una **piattaforma per l'immaginazione**.
-
----
-
-## 📚 Riferimenti
-
-- [Documentazione Claude](https://docs.anthropic.com/) - Guida completa all'API Claude
-- [OpenRouter API](https://openrouter.ai/docs) - Documentazione per l'accesso ai modelli LLM
-- [MySQL Connector Python](https://github.com/mysql/mysql-connector-python) - Connettore ufficiale MySQL
-- [Python-dotenv](https://pypi.org/project/python-dotenv/) - Gestione elegante delle variabili d'ambiente
-- [Poetry Documentation](https://python-poetry.org/docs/) - Gestione dipendenze moderna
-- [ANSI Color Codes](https://en.wikipedia.org/wiki/ANSI_escape_code) - Formattazione terminale avanzata
-- [Server-Sent Events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events) - Streaming protocol per LLM responses
-
----
-
-*Nexus Framework - Dove l'Intelligenza Artificiale Incontra l'Immaginazione*
-
-**Licenza:** MIT | **Linguaggio:** Python 3.8+ | **Stato:** Attivo
+# Eldoria: AI-Assisted Text RPG Engine
+
+Eldoria is a Python-based command-line application that provides a framework for creating and playing AI-assisted text-based role-playing games. It leverages Large Language Models (LLMs) for dynamic NPC dialogue, player psychological profiling, and even for selecting in-game guides. The system is designed to be data-driven, allowing game content (story, NPCs, areas) to be defined in simple text files.
+
+## Core Features
+
+*   **LLM-Powered Dialogue:** NPCs conversations are powered by LLMs (configurable via OpenRouter), providing dynamic and context-aware interactions.
+*   **Dynamic Player Profiling:** The system analyzes player interactions and dialogue choices to build and update a psychological profile for the player. This profile can subtly influence NPC behavior and hints.
+*   **Data-Driven Content:** Game worlds, including storyboards and Non-Player Characters (NPCs), are defined in external `.txt` files, making content creation and modification accessible.
+*   **Hint System & Wise Guide:** Players can request hints from a "Wise Guide" NPC. The system can even use an LLM to select the most appropriate NPC for this role based on the story's context.
+*   **Command & Natural Language Input:** Players can interact using explicit commands (e.g., `/go tavern`) or by typing natural language phrases which the system attempts to interpret.
+*   **Inventory & Basic Game State:** Manages player inventory, credits, and plot flags.
+*   **Persistent State:** Player progress, inventory, and conversation history can be saved either to a MySQL database or a local file-based mockup system.
+*   **Terminal Formatting:** Utilizes ANSI escape codes for colored and styled text output, enhancing readability.
+*   **Modular Design:** Components like chat management, database interaction, LLM wrapping, and command handling are separated into distinct modules.
+
+## Technology Stack
+
+*   Python 3.x
+*   **LLM Integration:** `requests` (for OpenRouter API)
+*   **Database (Optional):** `mysql-connector-python`
+*   **Environment Management:** `python-dotenv`
+*   **Testing (Development):** `pytest`
+
+## Prerequisites
+
+*   Python 3.8+
+*   Pip (Python package installer)
+*   Git (for cloning the repository)
+*   (Optional) MySQL Server if you intend to use a real database.
+
+## Setup & Installation
+
+1.  **Clone the Repository:**
+    ```bash
+    git clone <repository-url>
+    cd eldoria-engine # Or your repository name
+    ```
+
+2.  **Create a Virtual Environment (Recommended):**
+    ```bash
+    python -m venv venv
+    source venv/bin/activate  # On Windows: venv\Scripts\activate
+    ```
+
+3.  **Install Dependencies:**
+    Create a `requirements.txt` file with the following content (or use one if provided):
+    ```txt
+    requests
+    python-dotenv
+    mysql-connector-python
+    # pytest (for development/testing)
+    ```
+    Then install:
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+4.  **Configure Environment Variables:**
+    Create a `.env` file in the root directory of the project. This file will store your API keys and database credentials.
+    ```env
+    # --- OpenRouter API Configuration ---
+    OPENROUTER_API_KEY="sk-or-v1-..." # Your OpenRouter API Key
+    OPENROUTER_APP_URL="http://localhost:3000" # Your app's URL (can be placeholder)
+    OPENROUTER_APP_TITLE="EldoriaClient" # Your app's name
+
+    # --- Default LLM Models (via OpenRouter) ---
+    # Model for NPC dialogue
+    OPENROUTER_DEFAULT_MODEL="google/gemma-2-9b-it:free"
+    # Model for player profile analysis (can be same as default)
+    PROFILE_ANALYSIS_MODEL="mistralai/mistral-7b-instruct:free"
+    # Model for selecting the "Wise Guide" NPC
+    GUIDE_SELECTION_MODEL="openai/gpt-4.1-nano" # Or another suitable model
+
+    # --- NLP Command Interpretation (Optional - Models for this are defined above) ---
+    NLP_COMMAND_INTERPRETATION_ENABLED="true" # true or false
+    NLP_COMMAND_CONFIDENCE_THRESHOLD="0.7" # 0.0 to 1.0
+    # NLP_COMMAND_MODEL="google/gemma-2-9b-it:free" # If you want a specific model for this, otherwise uses PROFILE_ANALYSIS_MODEL or OPENROUTER_DEFAULT_MODEL
+
+    # --- Database Configuration (Optional - for MySQL) ---
+    # DB_HOST="localhost"
+    # DB_PORT="3306"
+    # DB_USER="your_db_user"
+    # DB_PASSWORD="your_db_password"
+    # DB_NAME="eldoria_db"
+    # DB_TIMEOUT="10"
+    ```
+    *   **Important:** Get an API key from [OpenRouter.ai](https://openrouter.ai/).
+    *   You can find available model identifiers on OpenRouter. The free models are good for testing.
+    *   If you don't set database variables, or if you use the `--mockup` flag, the system will use a local file-based mockup.
+
+5.  **Database Setup (Optional - for MySQL):**
+    *   Ensure your MySQL server is running.
+    *   Create a database (e.g., `eldoria_db`).
+    *   The application will attempt to create the necessary tables (`PlayerState`, `PlayerInventory`, `NPCs`, `Storyboards`, `ConversationHistory`, `PlayerProfiles`) on first run if they don't exist, provided it can connect to the database specified in `.env`.
+
+6.  **Load Game Data:**
+    The game world (story, NPCs) is defined in `.txt` files. You need to load this data into the system.
+    The `load.py` script handles this.
+
+    *   **To load into the mockup file system (default if DB is not configured or `--mockup` is used implicitly by `main.py`):**
+        ```bash
+        python load.py --storyboard Storyboard.TheShatteredVeil.txt --mockup
+        # Or for the other storyboard:
+        # python load.py --storyboard Storyboard.TheQuadCosmos.txt --mockup
+        ```
+        This will create/populate a `database/` directory (or the one specified by `--mockup-dir`) with JSON files representing the game data.
+
+    *   **To load into a MySQL database:**
+        First, ensure your `.env` file has the correct `DB_HOST`, `DB_USER`, `DB_PASSWORD`, and `DB_NAME`.
+        ```bash
+        python load.py --storyboard Storyboard.TheShatteredVeil.txt --db
+        # Or:
+        # python load.py --storyboard Storyboard.TheShatteredVeil.txt --host <db_host> --user <user> --password <pass> --dbname <db_name>
+        ```
+        This will connect to your MySQL database, truncate existing `NPCs` and `Storyboards` tables, and load the new data. Player-specific tables (`PlayerState`, `PlayerInventory`, `ConversationHistory`, `PlayerProfiles`) are not truncated by `load.py`.
+
+    *   **Resetting the Game (`reset_game` concept):**
+        There isn't a single `reset_game` script provided in the PAK. However, you can achieve a full reset by:
+        1.  **For MySQL:**
+            *   Dropping and recreating the database.
+            *   Alternatively, truncating all game-related tables (NPCs, Storyboards, PlayerState, PlayerInventory, ConversationHistory, PlayerProfiles).
+            *   Then, running `python load.py --storyboard <your_story.txt> --db` to repopulate static world data.
+        2.  **For Mockup:**
+            *   Deleting the mockup directory (e.g., `rm -rf database/`).
+            *   Running `python load.py --storyboard <your_story.txt> --mockup` to recreate and repopulate it.
+
+## Running the Game
+
+Once set up and data is loaded, you can run the game using `main.py`.
+
+*   **Basic Usage (using mockup by default if DB isn't fully configured in .env):**
+    ```bash
+    python main.py
+    ```
+    This will typically start you in the "Sanctum of Whispers" (if "The Shattered Veil" storyboard is loaded) or try to determine a starting point.
+
+*   **Using Mockup Explicitly:**
+    ```bash
+    python main.py --mockup
+    ```
+
+*   **Starting in a Specific Area/NPC:**
+    ```bash
+    python main.py --mockup --area Forest --npc Elira
+    python main.py --mockup --area City
+    ```
+
+*   **Using a Specific LLM Model:**
+    ```bash
+    python main.py --mockup --model "anthropic/claude-3-haiku"
+    ```
+
+*   **Specifying a Player ID:**
+    ```bash
+    python main.py --mockup --player MyHeroName
+    ```
+
+*   **Debug Mode (shows more internal info, including profile updates):**
+    ```bash
+    python main.py --mockup --debug
+    ```
+
+*   **Show LLM Stats Automatically:**
+    ```bash
+    python main.py --mockup --show-stats
+    ```
+
+*   **Connecting to MySQL (if configured in `.env` and data loaded with `--db`):**
+    If your `.env` is correctly set up for MySQL, `main.py` will attempt to use it by default unless `--mockup` is specified.
+    ```bash
+    python main.py # Attempts to use DB if .env is configured
+    ```
+
+## Game Mechanics & Concepts
+
+### Interacting
+*   **Dialogue:** Simply type what you want to say to the current NPC.
+*   **Commands:** Start with a `/`. Key commands include:
+    *   `/help`: Shows available commands.
+    *   `/go <area_name_fragment>`: Move to an area (e.g., `/go tavern`, `/go ancient`).
+    *   `/talk <npc_name>`: Talk to a specific NPC in your current area (e.g., `/talk Lyra`).
+    *   `/talk .`: Talk to a random (actually, the first available) NPC in the current area.
+    *   `/who`: List NPCs in the current area.
+    *   `/whereami`: Show current location and NPC.
+    *   `/inventory` or `/inv`: Show your items and credits.
+    *   `/give <item_name>`: Give an item to the current NPC.
+    *   `/give <amount> Credits`: Give credits.
+    *   `/hint`: Consult the "Wise Guide" for advice.
+    *   `/endhint`: Stop consulting the Wise Guide and return to your previous context.
+    *   `/profile`: View your character's psychological profile.
+    *   `/stats`: Show LLM stats for the last turn.
+    *   `/session_stats`: Show aggregate LLM stats for the current conversation.
+    *   `/clear`: Clears the current in-memory conversation history with the NPC.
+    *   `/exit` or `/quit`: Exit the game.
+*   **Natural Language Commands:** The system attempts to interpret common phrases as commands (e.g., "vado in taverna" might become `/go Tavern`).
+
+### Player Profile
+As you interact, the game builds a psychological profile based on your choices, dialogue, and actions. This includes:
+*   `core_traits`: Numerical values for traits like Curiosity, Caution, Empathy, Aggression, etc.
+*   `decision_patterns`: Tags describing your common decision-making approaches.
+*   `key_experiences_tags`: Tags for significant events or interactions.
+*   `interaction_style_summary`: A textual summary of how you tend to interact.
+*   `veil_perception`: Your character's evolving view of the "Veil" (if relevant to the story).
+*   `trust_levels`: How much your character trusts others in general or specific NPCs.
+*   `inferred_motivations`: What seems to be driving your character.
+
+This profile can be viewed with `/profile` and is used by the LLM to subtly tailor NPC responses and hints from the Wise Guide.
+
+### Hint System & Wise Guide
+The `/hint` command allows you to consult a "Wise Guide" NPC.
+*   The `wise_guide_selector.py` module uses an LLM to analyze the main storyboard and the list of available NPCs to determine who is best suited for this role (e.g., Lyra in "The Shattered Veil").
+*   When you use `/hint`, your current conversation is paused, and a new one begins with the Wise Guide. The guide is provided with context about your recent interactions and your player profile to give relevant advice.
+*   `/endhint` returns you to your previous conversation.
+
+### Inventory, Credits & Plot Flags
+*   **Inventory:** You can acquire items, which are stored in your inventory.
+*   **Credits:** The game includes a basic currency system.
+*   **Plot Flags:** Internal variables that track story progression or player achievements. These are managed by the game logic and can influence NPC dialogue or available options (though this is more an implicit feature of how an NPC's `system_prompt` might be designed to react to them).
+
+## Creating Content
+
+Game content is defined in `.txt` files.
+
+### Storyboard Files
+*   Format: `Storyboard.<YourStoryName>.txt`
+*   Structure:
+    ```text
+    Name: <Title of the Story>
+    Description:
+    <Paragraph 1 of the story description/premise.>
+    <Paragraph 2, and so on.>
+    Temi: (or Themes:)
+    - <Theme 1>
+    - <Theme 2>
+    ```
+*   Example: `Storyboard.TheShatteredVeil.txt`
+
+### NPC Files
+*   Format: `NPC.<AreaName>.<NPCName>.txt` (e.g., `NPC.Forest.Elira.txt`)
+    *   The `AreaName` and `NPCName` from the filename are used as part of the NPC's unique `code` in the database/mockup (e.g., `forest.elira`).
+*   Structure (Key-Value pairs, multi-line values are appended):
+    ```text
+    Name: <NPC's Display Name>
+    Area: <Area where the NPC is found>
+    Role: <NPC's role or job>
+    Motivation: <What drives this NPC? Can be multi-line.>
+    Goal: <What does this NPC want to achieve? Can be multi-line.>
+    Needed Object: <Specific item the NPC might need from the player for a quest.>
+    Treasure: <Item the NPC might give as a reward. Format: "Item Name" or "X Credits">
+    Veil Connection: <How this NPC relates to the central theme/mystery (e.g., the Veil). Can be multi-line.>
+    PlayerHint: <A hint for the player on how to interact or what this NPC offers/needs. Can be multi-line.>
+    Dialogue Hooks:
+    - "<A sample line of dialogue or typical phrase>"
+    - "<Another hook, perhaps situational>"
+    - "(Contextual_Hook_Category): Specific type of hook, e.g., (Initial)"
+    - "  - <Hook under the category>"
+    ```
+*   **Important for NPC giving items/credits:**
+    If an NPC's dialogue results in them giving an item or credits to the player, the LLM is instructed to append a special line at the VERY END of its response:
+    `[GIVEN_ITEMS: ItemName1, Amount Credits, ItemName2, ...]`
+    Example: `[GIVEN_ITEMS: Healing Potion, 50 Credits]`
+    The `main_core.py` parses this tag to update the player's inventory and credits.
+
+## Example Scenario: "Office Life"
+
+Let's create a minimal "Office Life" scenario.
+
+1.  **Create `Storyboard.OfficeLife.txt`:**
+    ```text
+    Name: A Day at OmniCorp
+    Description:
+    Welcome to OmniCorp, where the coffee is lukewarm and the deadlines are always looming.
+    Navigate the treacherous waters of office politics, try to get your work done, and maybe uncover
+    the mystery of the perpetually jammed printer.
+    Temi:
+    - Bureaucracy
+    - Teamwork (or lack thereof)
+    - The daily grind
+    ```
+
+2.  **Create `NPC.Office.Bob.txt`:**
+    ```text
+    Name: Bob
+    Area: Office
+    Role: Senior Accountant, Perpetually Stressed
+    Motivation: Finish the quarterly reports before his ulcer acts up. Avoid any extra work.
+    Goal: Get the TPS report figures from Alice.
+    Needed Object: TPS Report Figures
+    Treasure: Stapler (He has many, might give one if very grateful)
+    Veil Connection: Believes the printer is possessed by the ghost of a disgruntled intern.
+    PlayerHint: Bob needs figures from Alice for his report. He's stressed and not very helpful unless it benefits him. Offering coffee might make him more receptive.
+    Dialogue Hooks:
+    - "Don't talk to me unless it's about those TPS figures."
+    - "Is it 5 o'clock yet? This quarter is killing me."
+    - "If Alice doesn't get me those numbers, heads will roll. Mostly mine."
+    - "(If offered coffee): Oh, thank heavens. Maybe I can think straight for five minutes."
+    ```
+
+3.  **Create `NPC.Office.Alice.txt`:**
+    ```text
+    Name: Alice
+    Area: Office
+    Role: Marketing Specialist, Overworked
+    Motivation: Launch the new "SynergyMax" campaign successfully. Get Bob off her back about some report.
+    Goal: Get approval for the new campaign slogan from Carol in HR.
+    Needed Object: Campaign Slogan Approval
+    Treasure: OmniCorp Branded Pen
+    Veil Connection: Suspects a rival department is sabotaging the coffee machine.
+    PlayerHint: Alice is busy with her campaign. She needs Carol's approval for a slogan. She might have the TPS figures Bob needs if you help her.
+    Dialogue Hooks:
+    - "SynergyMax is going to be huge, if I can just get this slogan approved!"
+    - "Bob needs what now? Ugh, tell him I'm swamped. Unless... you could help me with something?"
+    - "Carol in HR holds the keys to my campaign's success. And my sanity."
+    ```
+
+4.  **Create `NPC.HR.Carol.txt`:**
+    ```text
+    Name: Carol
+    Area: HR Department
+    Role: HR Manager, Stickler for Rules
+    Motivation: Ensure all company policies are followed. Maintain order and compliance.
+    Goal: Process all pending employee onboarding forms.
+    Needed Object: Signed Onboarding Form (from a new hire, perhaps the player?)
+    Treasure: "Employee of the Month" Certificate (Blank)
+    Veil Connection: Secretly writes fan fiction about inter-departmental romances.
+    PlayerHint: Carol is all about procedure. She might approve Alice's slogan if she's in a good mood, perhaps after some tedious HR task is completed for her.
+    Dialogue Hooks:
+    - "Policy 3.4.b clearly states all slogan proposals require form HR-1138."
+    - "Have you seen the new hire's onboarding form? It's missing from my inbox."
+    - "Creative slogans are fine, Alice, as long as they don't violate the company's inclusivity guidelines."
+    ```
+
+5.  **Load the "Office Life" Scenario (into mockup):**
+    ```bash
+    python load.py --storyboard Storyboard.OfficeLife.txt --mockup
+    ```
+
+6.  **Run the Game with the "Office Life" Scenario:**
+    ```bash
+    python main.py --mockup --area Office --npc Bob --player Intern1
+    ```
+
+    You'll start by talking to Bob. You can then try:
+    *   Asking Bob about the TPS report.
+    *   `/go Office` (if you want to see who else is there, then `/talk Alice`)
+    *   `/go HR Department` then `/talk Carol`
+    *   Try to get the TPS figures from Alice and give them to Bob.
+    *   Try to get slogan approval from Carol for Alice.
+    *   Use `/hint` to see who the "Wise Guide" is (it might be Carol due to her central HR role, or perhaps no one specific in this simple scenario).
+
+## Directory Structure (Key Components)
+
+
+.
+├── Storyboard.TheShatteredVeil.txt # Example storyboard data
+├── Storyboard.TheQuadCosmos.txt # Another example storyboard
+├── NPC.AreaName.NPCName.txt # Numerous NPC data files
+├── command_handlers/ # Python files for specific '/' command logic
+│ ├── handle_go.py
+│ └── ...
+├── .env # For API keys and credentials (you create this)
+├── chat_manager.py # Manages chat sessions and history
+├── command_interpreter.py # Interprets natural language into commands
+├── command_processor.py # Dispatches commands to handlers or LLM
+├── db_manager.py # Handles database (MySQL/mockup) interactions
+├── hint_manager.py # Logic for providing hints via Wise Guide
+├── llm_wrapper.py # Interface to the LLM (OpenRouter)
+├── load.py # Script to load story/NPC data
+├── main.py # Main application entry point
+├── main_core.py # Core interaction loop logic
+├── main_utils.py # Utility functions for main
+├── player_profile_manager.py # Manages dynamic player psychological profile
+├── session_utils.py # Utilities for managing game sessions, NPCs
+├── terminal_formatter.py # ANSI terminal formatting
+├── wise_guide_selector.py # Selects the "Wise Guide" NPC
+└── requirements.txt # Python dependencies (you create or is provided)
+
+## Future Enhancements (Ideas)
+
+*   **GUI:** A web-based or desktop GUI instead of CLI.
+*   **More Complex Quest System:** Formal quest objects, tracking, and rewards.
+*   **Combat System:** If desired for the RPG type.
+*   **Skill/Attribute System:** Beyond the psychological profile.
+*   **Multiplayer:** Allow multiple players to interact in the same world.
+*   **Visual Maps/Area Descriptions:** More immersive world representation.
+*   **Advanced NLP:** Finer-grained intent recognition and entity extraction.
+
+## Contributing
+
+Contributions are welcome! Please feel free to fork the repository, make changes, and submit pull requests. For major changes, please open an issue first to discuss what you would like to change.
+
+## License
+
+MIT License
