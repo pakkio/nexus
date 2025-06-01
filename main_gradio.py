@@ -491,6 +491,6 @@ if __name__ == "__main__":
     interface.launch(
         server_name="0.0.0.0",
         server_port=7860,
-        share=False,  # Set to True if you want a public link
+        share=True,  # Set to True if you want a public link
         debug=False
     )
