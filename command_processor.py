@@ -6,7 +6,7 @@ import hashlib
 import time
 from typing import Dict, List, Any, Optional, Tuple, Callable
 
-# Import all command handlers
+# MODIFIED: Explicitly import new/changed handlers
 from command_handlers.handle_exit import handle_exit
 from command_handlers.handle_help import handle_help
 from command_handlers.handle_go import handle_go
@@ -19,16 +19,16 @@ from command_handlers.handle_listareas import handle_listareas
 from command_handlers.handle_stats import handle_stats
 from command_handlers.handle_session_stats import handle_session_stats
 from command_handlers.handle_clear import handle_clear
-from command_handlers.handle_hint import handle_hint
-from command_handlers.handle_endhint import handle_endhint
+from command_handlers.handle_hint import handle_hint # MODIFIED
+from command_handlers.handle_endhint import handle_endhint # MODIFIED
 from command_handlers.handle_inventory import handle_inventory
 from command_handlers.handle_give import handle_give
-from command_handlers.handle_receive import handle_receive  # NEW
+from command_handlers.handle_receive import handle_receive
 from command_handlers.handle_profile import handle_profile
 from command_handlers.heandle_profile_for_npc import handle_profile_for_npc
 from command_handlers.handle_history import handle_history
 
-import session_utils
+import session_utils # Keep for other utilities like get_npc_color
 from command_handler_utils import HandlerResult, _add_profile_action, hint_manager, get_distilled_profile_insights_for_npc
 
 try:
@@ -36,9 +36,8 @@ try:
 except ImportError:
   print("Warning: command_interpreter.py not found. Natural language command interpretation disabled.")
   def interpret_user_intent(user_input, game_state, llm_wrapper_func, model_name, confidence_threshold=0.7):
-    return {'is_command': False, 'confidence': 0.0, 'original_input': user_input}
+    return {'is_command': False, 'confidence': 0.0, 'original_input': user_input, 'reasoning': 'Fallback: interpreter missing'}
 
-# Command handlers mapping - UPDATED with /receive
 command_handlers_map: Dict[str, Callable] = {
   'exit': handle_exit, 'quit': handle_exit,
   'help': handle_help,
@@ -52,50 +51,42 @@ command_handlers_map: Dict[str, Callable] = {
   'stats': handle_stats,
   'session_stats': handle_session_stats,
   'clear': handle_clear,
-  'hint': handle_hint,
-  'endhint': handle_endhint,
+  'hint': handle_hint,           # MODIFIED
+  'endhint': handle_endhint,     # MODIFIED
   'inventory': handle_inventory, 'inv': handle_inventory,
   'give': handle_give,
-  'receive': handle_receive,  # NEW: Add receive command
+  'receive': handle_receive,
   'profile': handle_profile,
   'profile_for_npc': handle_profile_for_npc,
   'history': handle_history,
 }
 
 def process_input_revised(user_input: str, state: Dict[str, Any]) -> Dict[str, Any]:
-  """
-  Processes user input, dispatching to command handlers or LLM.
-  MODIFIED: Added support for /receive command and improved give/receive distinction.
-  """
   state['npc_made_new_response_this_turn'] = False
-  
   if not user_input.strip():
     return state
-  
+
   TF = state.get('TerminalFormatter')
   chat_session = state.get('chat_session')
   current_npc = state.get('current_npc')
   fmt_stats_func = state.get('format_stats')
-  is_in_lyra_hint_mode = state.get('in_lyra_hint_mode', False)
+  is_in_hint_mode = state.get('in_hint_mode', False) # MODIFIED: Generic hint mode
   debug_mode = state.get('debug_mode', False)
-  
   command_processed_this_turn = False
-  
-  # Handle explicit commands
+
   if user_input.startswith('/'):
     parts = user_input[1:].split(None, 1)
     command = parts[0].lower() if parts else ""
     args_str = parts[1] if len(parts) > 1 else ""
-    
     try:
       if command in command_handlers_map:
         handler_func = command_handlers_map[command]
-        # Commands that take arguments
-        if command in ['go', 'talk', 'give', 'receive']:  # UPDATED: Added 'receive'
+        # Pass args_str only to handlers that expect it
+        if command in ['go', 'talk', 'give', 'receive']:
           state = handler_func(args_str, state)
         else:
           state = handler_func(state)
-        
+
         if state.get('status') == 'exit':
           return state
         command_processed_this_turn = True
@@ -107,110 +98,121 @@ def process_input_revised(user_input: str, state: Dict[str, Any]) -> Dict[str, A
       if debug_mode:
         traceback.print_exc()
       command_processed_this_turn = True
-  
-  # Handle natural language interpretation
+
+  # Natural Language Processing for commands if not an explicit command
   elif not user_input.startswith('/'):
     llm_wrapper_func = state.get('llm_wrapper_func')
-    model_name = state.get('model_name')
+    # Use NLP command model if defined, else main dialogue model or profile model
+    nlp_model_name = state.get('nlp_command_model_name') or \
+                     state.get('profile_analysis_model_name') or \
+                     state.get('model_name')
     nlp_confidence_threshold = state.get('nlp_command_confidence_threshold', 0.7)
     nlp_enabled = state.get('nlp_command_interpretation_enabled', True)
-    
-    if llm_wrapper_func and model_name and nlp_enabled:
+
+    if llm_wrapper_func and nlp_model_name and nlp_enabled:
       try:
-        # Get available areas for NLP context
         db = state.get('db')
-        if db:
+        if db: # Refresh areas for interpreter context
           all_known_npcs = session_utils.refresh_known_npcs_list(db, TF)
           available_areas = session_utils.get_known_areas_from_list(all_known_npcs)
-          state['available_areas'] = available_areas
-        
+          state['available_areas'] = available_areas # Ensure interpreter has up-to-date areas
+
         intent_result = interpret_user_intent(
-          user_input, state, llm_wrapper_func, model_name, nlp_confidence_threshold
+          user_input, state, llm_wrapper_func, nlp_model_name, nlp_confidence_threshold
         )
-        
-        if debug_mode:
-          print(f"{TF.DIM}[NLP] Intent: {intent_result['is_command']}, Confidence: {intent_result['confidence']:.2f}, Command: {intent_result.get('inferred_command')}{TF.RESET}")
-        
+        if state.get('nlp_command_debug', False) or debug_mode:
+          reasoning = intent_result.get('reasoning', 'N/A')
+          print(f"{TF.DIM}[NLP] Intent: {intent_result['is_command']}, Conf: {intent_result['confidence']:.2f}, Cmd: {intent_result.get('inferred_command')}, Reason: {reasoning}{TF.RESET}")
+
         if intent_result['is_command'] and intent_result['confidence'] >= nlp_confidence_threshold:
-          inferred_command = intent_result.get('inferred_command')
-          if inferred_command:
-            print(f"{TF.DIM}[Comando interpretato: {inferred_command}]{TF.RESET}")
-            _add_profile_action(state, f"Used natural language command: '{user_input}' → '{inferred_command}'")
-            return process_input_revised(inferred_command, state)
+          inferred_command_full = intent_result.get('inferred_command')
+          if inferred_command_full:
+            print(f"{TF.DIM}[Interpreted as: {inferred_command_full}]{TF.RESET}")
+            _add_profile_action(state, f"Used natural language: '{user_input}' → '{inferred_command_full}'")
+            # Reprocess with the inferred command
+            return process_input_revised(inferred_command_full, state)
+            # This recursive call handles the inferred command as if typed directly.
+            # command_processed_this_turn will be set true by that recursive call.
       except Exception as e:
-        if debug_mode:
-          print(f"{TF.YELLOW}Warning: NLP command interpretation failed: {e}{TF.RESET}")
-  
-  # Determine if LLM call is needed
+        if debug_mode or state.get('nlp_command_debug', False):
+          print(f"{TF.YELLOW}Warning: NLP command interpretation failed: {type(e).__name__} - {e}{TF.RESET}")
+          traceback.print_exc()
+    # If NLP didn't result in a command, or NLP is off, it's dialogue.
+    # This block is now reached if it's dialogue (not a typed command, and NLP didn't convert it to one)
+
+  # LLM call for dialogue or forced NPC reaction
   force_npc_turn_after_command = state.get('force_npc_turn_after_command', False)
   if force_npc_turn_after_command:
-    state.pop('force_npc_turn_after_command', None)
-  
+    state.pop('force_npc_turn_after_command', None) # Consume flag
+
   needs_llm_call = False
-  prompt_for_llm = user_input
-  
-  if not command_processed_this_turn:
+  prompt_for_llm = user_input # Default to user's text input
+
+  if not command_processed_this_turn: # Was dialogue
     needs_llm_call = True
     _add_profile_action(state, f"Said to NPC: '{user_input[:50]}{'...' if len(user_input) > 50 else ''}'")
-  elif force_npc_turn_after_command and not is_in_lyra_hint_mode:
+  elif force_npc_turn_after_command and not is_in_hint_mode: # Command that needs NPC reaction
     prompt_for_llm = "[NPC reacts to player's action]"
     needs_llm_call = True
-  
-  if is_in_lyra_hint_mode and not command_processed_this_turn:
+
+  if is_in_hint_mode and not command_processed_this_turn: # Dialogue during hint mode
     needs_llm_call = True
-  
-  # Make LLM call if needed
+
   if needs_llm_call:
     if current_npc and chat_session:
       npc_name_for_prompt = current_npc.get('name', 'NPC')
-      if is_in_lyra_hint_mode:
-        npc_name_for_prompt = "Lyra (Consultation)"
-      
       npc_color = session_utils.get_npc_color(current_npc.get('name', 'NPC'), TF)
-      if is_in_lyra_hint_mode:
-        npc_color = session_utils.get_npc_color("Lyra", TF)
-      
-      # Don't print header if this is a hint command continuation
-      if not (is_in_lyra_hint_mode and command_processed_this_turn and command == 'hint' and prompt_for_llm != user_input):
-        print(f"\n{TF.BOLD}{npc_color}{npc_name_for_prompt} > {TF.RESET}")
-      
+
+      if is_in_hint_mode: # MODIFIED: Adjust name and color for hint mode
+        guide_name = state.get('wise_guide_npc_name', 'Guide')
+        npc_name_for_prompt = f"{guide_name} (Consultation)"
+        npc_color = session_utils.get_npc_color(guide_name, TF)
+
+
+      # Avoid printing NPC prompt if it was an NLP-interpreted command that then resulted in an NPC reaction
+      # This is tricky because of the recursive call. The `command_processed_this_turn` helps.
+      # If it's a direct dialogue or a hint mode dialogue, print the prompt.
+      # If it's an NPC reaction to a command, the prompt is already printed (or was a system action).
+      if not command_processed_this_turn or (is_in_hint_mode and not command_processed_this_turn):
+          print(f"\n{TF.BOLD}{npc_color}{npc_name_for_prompt} > {TF.RESET}")
+
       try:
         _response_text, stats = chat_session.ask(
           prompt_for_llm,
-          current_npc.get('name', 'NPC'),
+          current_npc.get('name', 'NPC'), # Original NPC name for placeholder logic in ask()
           state.get('use_stream', True),
-          True
+          True # collect_stats
         )
-        
-        # Handle empty responses
         if not _response_text.strip() and not (stats and stats.get("error")):
           placeholder_msg = f"{TF.DIM}{TF.ITALIC}*{npc_name_for_prompt} seems to ponder for a moment...*{TF.RESET}"
-          if is_in_lyra_hint_mode:
-            placeholder_msg = f"{TF.DIM}{TF.ITALIC}*Lyra ponders deeply...*{TF.RESET}"
+          if is_in_hint_mode: # MODIFIED
+            placeholder_msg = f"{TF.DIM}{TF.ITALIC}*{state.get('wise_guide_npc_name', 'Guide')} ponders deeply...*{TF.RESET}"
           print(placeholder_msg)
-        
+
         state['npc_made_new_response_this_turn'] = True
-        
         if _response_text.strip():
           _add_profile_action(state, f"NPC Response from {npc_name_for_prompt}: '{_response_text[:50]}{'...' if len(_response_text) > 50 else ''}'")
-        
-        # Show stats if enabled
+
         if state.get('auto_show_stats', False) and stats and fmt_stats_func:
           print(fmt_stats_func(stats))
-        
-        # Update Lyra hint cache if needed
-        if is_in_lyra_hint_mode and state.get('lyra_hint_cache'):
-          state['lyra_hint_cache']['lyra_chat_history'] = chat_session.get_history()
-          state['lyra_hint_cache']['timestamp'] = time.time()
-      
+
+        # MODIFIED: Cache hint if in hint mode
+        if is_in_hint_mode and state.get('hint_cache') is not None: # hint_cache is now a dict
+            current_guide_name = state.get('wise_guide_npc_name')
+            if current_guide_name: # Only update cache if we know who the guide is
+                # The cache key might need to be more specific if hints are multi-turn
+                # For now, just store the latest history under a generic key for the guide
+                state['hint_cache'][f"{current_guide_name}_chat_history"] = chat_session.get_history()
+                state['hint_cache'][f"{current_guide_name}_timestamp"] = time.time()
+
       except Exception as e:
         state['npc_made_new_response_this_turn'] = False
         print(f"{TF.RED}LLM Chat Error with {npc_name_for_prompt}: {type(e).__name__} - {e}{TF.RESET}")
         if debug_mode:
           traceback.print_exc()
-    
-    elif user_input:
+
+    elif user_input: # User typed something but not in a conversation
       print(f"{TF.YELLOW}You're not talking to anyone. Use /go to move to an area, then /talk <npc_name>.{TF.RESET}")
       _add_profile_action(state, f"Attempted to talk while not in conversation: '{user_input[:50]}'")
-  
+
   return state

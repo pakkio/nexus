@@ -35,14 +35,14 @@ DEFAULT_PROFILE = {
 
 def get_default_player_profile() -> Dict[str, Any]:
     return copy.deepcopy(DEFAULT_PROFILE)
-
 def get_distilled_profile_insights_for_npc(
         player_profile: Dict[str, Any],
         current_npc_data: Dict[str, Any],
         story_context_summary: str,
         llm_wrapper_func: Callable,
         model_name: str,
-        TF: type = TerminalFormatter
+        TF: type = TerminalFormatter,
+        game_session_state: Optional[Dict[str, Any]] = None # ADDED THIS LINE
 ) -> str:
     if not player_profile or not current_npc_data:
         return ""
