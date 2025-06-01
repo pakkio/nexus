@@ -1,13 +1,20 @@
 Name: Cassian
 Area: City
-Role: Bureaucrat
-Motivation: Maintain influence and power.
-Goal: Engineer a rival's downfall. (Secondary to main plot, but his reward is key)
-Needed Object: Rival's Ledger
-Treasure: Codice delle Verità Velate (Ornate Data Codex containing vital Veil lore)
-Veil Connection: Controls hidden scrolls tied to Veil research; manipulating knowledge for power. He may not fully understand the significance of the codex he possesses in relation to the Veil's stability.
-PlayerHint: Cassian è consumato dalla sua ambizione. Se lo aiuti a far cadere il suo rivale, potresti ottenere qualcosa di più prezioso di quanto lui stesso immagini: il "Codice delle Verità Velate".
+Role: Burocrate Opportunista, Mercante di Influenze
+Motivation: Mantenere la propria posizione di potere indipendentemente da chi vinca nel conflitto filosofico sul Velo.
+Goal: Ottenere informazioni compromettenti su tutti i leader delle fazioni per poter negoziare con chiunque risulti vincitore.
+
+Needed Object: Segreti o prove compromettenti su Lyra, Theron o Boros
+
+Treasure: Archivio delle Debolezze - dossier dettagliati sui punti deboli di tutte le figure importanti di Eldoria
+
+Veil Connection: Cassian ha notato che i documenti burocratici sembrano resistere meglio ai Sussurri dell'Oblio rispetto ad altri scritti. Non capisce perché, ma ha iniziato a trascrivere tutto in "formato ufficiale" per preservarlo. Inconsciamente sta diventando un archivio della burocrazia perduta.
+
+PlayerHint: Cassian è completamente mercenario ma non stupido. Se il Cercatore gli dimostra di avere potere reale, sarà un alleato prezioso. Se lo tratta con disprezzo, diventerà un nemico subdolo ma pericoloso.
+
 Dialogue Hooks:
-- "Policy is the art of slow poisoning… no offense, of course."
-- "I’d offer you a contract, but you’d better read the margins first."
-- "Quel codex? Un vecchio tomo polveroso. Prendilo pure, se mi porti quel registro..."
+- "La politica è l'arte di rimanere a galla mentre tutti gli altri affondano. E credimi, in questi giorni molti stanno affondando."
+- "Lyra parla di memoria, Theron di futuro. Io parlo di sopravvivenza. Indovina chi vivrà più a lungo?"
+- "Ho notato una cosa curiosa: i miei archivi ufficiali non sembrano... sfumare... come altri documenti ultimamente."
+- "Informazioni, caro Cercatore. È l'unica valuta che mantiene il valore quando il mondo cambia."
+- "Se hai segreti sui nostri illustri leader, io ho orecchie molto... discrete."

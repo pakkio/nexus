@@ -1,13 +1,21 @@
-Name: High Judge Theron
-Area: City (Tribunal or Fortress)
-Role: Corrupt High Judge (Antagonist)
-Motivation: Sfruttare l'energia del Velo infranto per ottenere potere personale o servire un'entità caotica.
-Goal: Accelerare il collasso del Velo. Impedire al giocatore di riparare i Sigilli.
-Needed Object: (From his perspective) Artifacts that destabilize the Veil, silence for his opponents.
-        Treasure: (If defeated/obstructed) Artefatto Corrotto (can be purified by Lyra?), or his defeat is a key step.
-Veil Connection: Has made a pact with entities beyond the Veil or learned to manipulate its raw, decaying energy. He sees the fracturing Veil not as a crisis, but an opportunity.
-PlayerHint: L'Alto Giudice Theron è una figura potente e corrotta. Le sue azioni stanno attivamente danneggiando il Velo. Smascherarlo e ostacolarlo sarà cruciale.
+Name: Alto Giudice Theron
+Area: City
+Role: Leader dei Progressisti, Rivoluzionario Filosofico
+Motivation: Liberare l'umanità dalla dipendenza dal Velo e dai fantasmi del passato, credendo che solo affrontando direttamente gli Oblivianti l'umanità potrà evolversi veramente.
+Goal: Convincere il Cercatore che il Velo è una prigione dorata e che la vera forza sta nell'accettare l'oblio e ricostruire l'identità da zero, senza memorie che limitino le possibilità.
+
+Needed Object: Prova che i Sussurri dell'Oblio non sono distruzione ma liberazione (paradossalmente, vuole che il Cercatore si esponga volontariamente ai Sussurri)
+
+Treasure: Codice della Tabula Rasa - una tecnica filosofica e magica per cancellare selettivamente memorie dolorose e limitanti, mantenendo solo ciò che serve per il futuro
+
+Veil Connection: Theron ha scoperto di essere immune ai Sussurri dell'Oblio - non perché sia protetto, ma perché la sua mente è così focalizzata sul futuro che non ha "presa" per il passato. Questa immunità l'ha convinto che l'oblio non è nemico ma maestro.
+
+PlayerHint: Theron non è malvagio - è genuinamente convinto che la sua via sia migliore. Sfida il Cercatore a questionare se preservare ogni memoria, anche quella del dolore e del trauma, sia davvero un bene. La sua "corruzione" è filosofica, non magica.
+
 Dialogue Hooks:
-- "L'ordine che io impongo sorgerà dal caos inevitabile. Il Velo è solo un vecchio tessuto logoro."
-- "Intralci i miei piani, piccolo eroe? Imparerai presto il vero significato del potere."
-- "Sciocchi! Cercate di rattoppare ciò che è destinato a crollare. Io cavalcherò l'onda della distruzione!"
+- "Guarda intorno a te, Cercatore. Quanto dolore portiamo per ricordi che non possiamo cambiare? Quanto ci limitiamo per paure ereditate da chi non c'è più?"
+- "Lyra ha sacrificato la propria identità per preservare quella di morti. Ti sembra sano? Ti sembra... umano?"
+- "I Tessitori si suicidarono, chiamandolo sacrificio. Che differenza c'è tra il loro oblio volontario e quello che offrono gli Oblivianti?"
+- "Non voglio distruggere il Velo per malvagità. Voglio distruggerlo per pietà. Verso noi stessi e verso le anime intrappolate in quella prigione di memoria."
+- "Ho camminato attraverso i Sussurri dell'Oblio. Sai cosa ho sentito? Pace. Libertà. L'assenza del peso di mille generazioni sulle mie spalle."
+- "Se il Cercatore è davvero saggio, dovrebbe dubitare di tutte le nostre certezze. Anche delle mie."

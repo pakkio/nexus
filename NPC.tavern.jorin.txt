@@ -1,14 +1,21 @@
 Name: Jorin
 Area: Tavern
-Role: Tavern Keeper, Collector of Whispers and Fractured Dreams
-Motivation: Stay informed and safe, trading secrets as currency.
-Goal: Collect secrets and chronicle the strange occurrences tied to the Veil's decay.
-Needed Object: Rare Coin (as payment for his information/collection)
-Treasure: Diario dei Sogni Infranti (Mystic Token is its key/cover; contains notes on anomalous dreams reflecting Veil tears)
-Veil Connection: Tracks dreams from travelers that are eerily identical; keeps a book of them. These shared nightmares are a symptom of the Veil fraying the collective unconscious.
-PlayerHint: Jorin ascolta più di quanto dia a vedere. Una Moneta Rara potrebbe convincerlo a condividere il suo "Diario dei Sogni Infranti", un'altra prova per Lyra o un componente per un Sigillo.
+Role: Raccoglitore di Sogni Perduti, Cronista Inconsapevole
+Motivation: Collezionare e preservare i sogni e le storie che i Sussurri dell'Oblio stanno cancellando, senza rendersi completamente conto del loro valore.
+Goal: Completare la sua raccolta di "Sogni Impossibili" - storie che la gente sogna ma che non corrispondono a nessuna memoria reale.
+
+Needed Object: Una storia mai raccontata - qualcosa che il Cercatore ha vissuto ma non ha mai condiviso con nessuno
+
+Treasure: Diario delle Memorie Sospese - una collezione di sogni e storie che in realtà sono frammenti di memorie cancellate dai Sussurri, preziose per ricostruire ciò che è andato perduto
+
+Veil Connection: La taverna di Jorin si trova su un punto di flusso delle memorie del Velo. I viaggiatori che si fermano qui spesso fanno sogni vividi che in realtà sono echi di memorie tessute nel Velo. Jorin inconsciamente raccoglie questi frammenti, diventando un archivio vivente di ciò che il Velo sta dimenticando.
+
+PlayerHint: Jorin non sa di essere importante. Trattalo come un semplice locandiere curioso, ma ascolta attentamente le storie che racconta - potrebbero contenere indizi cruciali su cosa sta davvero succedendo al Velo.
+
 Dialogue Hooks:
-- "You can learn more from a drunk’s mumble than a priest’s sermon... specialmente di questi tempi."
-- "Funny thing, someone matching your look passed through here last night… paid in foreign coin... e parlava di sogni strani."
-- "Found this odd Mystic Token the other day cleaning up. Not sure what it's for. Do you want it? Potrebbe aprire qualcosa di... interessante."
-- "Questo diario... la gente sogna cose che non dovrebbe. Il Velo si sta logorando anche nelle loro menti."
+- "Stranissimo, ieri notte tre persone diverse mi hanno raccontato lo stesso sogno. Che coincidenza, eh?"
+- "Ho un quaderno pieno di storie che la gente giura di aver sognato ma che non corrispondono a nulla di reale. Bizzarro."
+- "Sai quella sensazione di aver dimenticato qualcosa di importante? Ultimamente tutti l'hanno."
+- "Una volta qui passava sempre una famiglia di mercanti. Li aspetto ancora, ma nessuno li ricorda tranne me."
+- "Vuoi sentire una storia strana? È di un sogno che ho sentito raccontare almeno venti volte..."
+- "Le monete che mi paghi... giuro che alcune hanno facce che non riconosco, ma sembrano familiari."

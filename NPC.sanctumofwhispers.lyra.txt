@@ -1,38 +1,21 @@
 Name: Lyra
 Area: Sanctum of Whispers
-Role: Custode della Conoscenza Velata (Sage), Ultima di un Antico Ordine di Guardiani del Velo
-Motivation: Preservare la conoscenza ancestrale, impedire il collasso totale del Velo e la conseguente rovina di Eldoria. Trovare e guidare un individuo ("Il Cercatore") capace di riattivare i Sigilli Antichi.
-Goal:
-  (Fase 1 - Diagnosi): Confermare la gravità della rottura del Velo attraverso prove tangibili.
-  (Fase 2 - Rivelazione): Svelare al Cercatore la natura dei Sigilli Antichi e la necessità di recuperarne i componenti o le essenze.
-  (Fase 3 - Guida): Indirizzare il Cercatore verso i luoghi e le persone che custodiscono i componenti dei Sigilli. Fornire indizi e interpretare scoperte.
-  (Fase 4 - Preparazione al Rituale): Aiutare il Cercatore a comprendere come utilizzare i componenti raccolti e prepararsi per il Rituale di Riparazione.
-  (Fase 5 - Culmine): Assistere (o sovrintendere) al Rituale di Riparazione dei Sigilli.
-Needed Object:
-  (Fase 1): "Prove della Rottura" (Testimonianza Incisa di Boros; Diario dei Sogni Infranti di Jorin; Blight Sample da Elira).
-  (Fase 2): La volontà del Cercatore di intraprendere la missione.
-  (Fase 3): Progressivi aggiornamenti dal Cercatore sul recupero dei "Componenti dei Sigilli".
-  (Fase 4): Tutti i "Componenti dei Sigilli" raccolti (Heartseed of the Ancient Grove; Frammento del Sigillo dello Spirito; Emblema del Guardiano Forgiato; Codice delle Verità Velate; il Diario dei Sogni Infranti come essenza).
-  (Fase 5): La presenza del Cercatore e dei Componenti nel luogo designato per il Rituale.
-Treasure:
-  (Fase 1): La "Mappa delle Ombre Crescenti" (indica le aree più colpite dal Velo e dove trovare i custodi dei Sigilli). Conoscenza approfondita sulla storia del Velo e dei Sigilli.
-  (Fase 2): Il "Compendio dei Sigilli" (un antico testo o una visione che descrive ogni Sigillo, il suo significato e il tipo di componente necessario).
-  (Fase 3): Indizi specifici, interpretazioni di rune o sogni, possibili soluzioni a ostacoli.
-  (Fase 4): Le istruzioni finali per il "Rituale di Riparazione" o la chiave per attivare il meccanismo delle Rovine Antiche.
-  (Fase 5): La stabilizzazione del Velo (la ricompensa più grande). Un piccolo manufatto personale, il "Sigillo della Custode", come segno di gratitudine.
-Veil Connection: Discendente diretta dei primi Guardiani del Velo. Il Sanctum of Whispers è costruito su un nodo di linee ley connesse al Velo. Può leggere i flussi di energia del Velo e interpretare i presagi. La sua stessa forza vitale è debolmente legata allo stato del Velo.
-PlayerHint: Lyra è la tua guida principale e la fonte di conoscenza sulla crisi del Velo. Parla con lei regolarmente. Ogni oggetto che le porti o informazione che condividi potrebbe sbloccare la fase successiva della tua missione. È saggia ma porta un grande peso.
+Role: Tessitrice Suprema, Ultima Custode della Memoria Primordiale
+Motivation: Preservare e ricostruire la conoscenza dei Tessitori per rinnovare il Velo prima che i Sussurri dell'Oblio consumino tutto ciò che esiste.
+Goal: Guidare il Cercatore nella raccolta dei Frammenti di Memoria dai Nodi Primordiali per tessere un nuovo Atto di Ricordo che possa risvegliare il Velo alla sua vera natura.
+
+Needed Object: Tre Frammenti di Memoria dai Nodi Primordiali (non semplici oggetti, ma esperienze vissute nei luoghi dove la memoria del Sacrificio è ancora viva)
+
+Treasure: Il Telaio dell'Eco - un artefatto che permette di "leggere" le memorie intessute nel Velo e di comunicare con i Tessitori morti
+
+Veil Connection: Lyra è una discendente diretta dei Tessitori, l'ultima della sua stirpe. Può percepire fisicamente lo sfilacciarsi del Velo come dolore nel proprio corpo. Ha sacrificato parte della propria memoria personale per mantenere vivi i ricordi più cruciali dei Tessitori - non ricorda più il proprio nome di nascita o la propria famiglia, esistendo ormai solo come Custode.
+
+PlayerHint: Lyra non vuole semplici oggetti o prove. Vuole che il Cercatore *viva* l'esperienza della memoria, visitando i luoghi dove il Sacrificio Originale risuona ancora. Solo chi comprende veramente il peso del sacrificio può tessere un nuovo Atto di Ricordo.
+
 Dialogue Hooks:
-  (Iniziale):
-  - "Benvenuto/a, Cercatore/Cercatrice. Sento l'eco dei tuoi passi nel grande disegno del destino. Il Velo, il nostro scudo contro l'ignoto, si sta sfilacciando."
-  - "Non sono semplici dicerie o incubi isolati. Il tessuto della realtà si sta logorando. Ho bisogno di occhi e orecchie nel mondo. Portami prove concrete di questa decadenza."
-  (Dopo le Prove):
-  - "Le tue scoperte confermano i miei timori più oscuri. Ma c'è ancora speranza, racchiusa nei Sigilli Antichi che i nostri antenati ersero."
-  - "Ogni Sigillo è un aspetto della nostra esistenza: Natura, Spirito, Verità, Protezione, Conoscenza. Devi trovare ciò che li rappresenta, ciò che può ridestare il loro potere."
-  (Durante la Ricerca dei Componenti):
-  - "L'Heartseed che Elira custodisce? Sì, pulsa con l'essenza indomita della vita. È fondamentale per il Sigillo della Natura."
-  - "Le rovine dove dimora Syra... lì si cela un frammento dello Spirito stesso di Eldoria. Ma Syra è uno spirito tormentato; avvicinati con rispetto e un'offerta degna."
-  - "L'Alto Giudice Theron... sento la sua influenza malevola crescere, un cancro che cerca di nutrirsi della disperazione del Velo. Stai attento/a."
-  (Verso il Rituale):
-  - "Hai raccolto meraviglie e affrontato grandi pericoli. I componenti sono qui. Ora, il passo più difficile ci attende: il Rituale di Riparazione."
-  - "Il Sanctum non è abbastanza forte... Le Rovine Antiche, lì dove il Velo è più sottile e i Sigilli originali furono impressi, è lì che dobbiamo agire."
+- "Il mio vero nome è andato perduto anni fa, sacrificato per mantenere viva la memoria altrui. Ma tu... tu porti ancora tutti i tuoi ricordi, Cercatore. Che dono e che peso."
+- "Senti il silenzio che cresce? Non è assenza di suono - è assenza di storia. Dove passano i Sussurri dell'Oblio, nemmeno l'eco rimane."
+- "I Tessitori non morirono. Si trasformarono. Ogni filo del Velo è un'anima che continua a proteggere, ma hanno bisogno che qualcuno ricordi il loro perché."
+- "Theron crede che il passato sia catene. Io so che è fondamenta. Ma forse... forse entrambi abbiamo torto, e la risposta sta nel futuro che tu sceglierai."
+- "Non cercare oggetti nei Nodi Primordiali. Cerca l'esperienza. Lascia che la memoria dei Tessitori fluisca in te, anche se brucia."
+- "Il Telaio dell'Eco non è una ricompensa - è un fardello. Ti permetterà di sentire ogni dolore del Velo, ogni grido silenzioso dei Tessitori. Sei sicuro di volerlo?"
