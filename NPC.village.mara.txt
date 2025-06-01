@@ -1,13 +1,20 @@
 Name: Mara
 Area: Village
-Role: Herbalist
-Motivation: Preserve ancient plant knowledge and aid her community. (Secondary Quest)
-Goal: Recreate a legendary healing elixir.
-Needed Object: Blueleaf Seed
-Treasure: Healing Elixir Draft
-Veil Connection: (Minor or Indirect) Some rare herbs she seeks might only grow in places subtly affected by Veil energy, making them harder to find or more potent. Her work is about resilience in a changing world.
-PlayerHint: Mara è un'erborista di talento. Aiutarla a trovare il Seme di Blueleaf ti frutterà un utile Elisir Curativo, ma la sua quest è secondaria alla crisi del Velo.
+Role: Erborista della Memoria, Curatrice delle Radici Perdute
+Motivation: Preservare la conoscenza erboristica che si sta perdendo man mano che le piante "dimenticate" dai Sussurri dell'Oblio scompaiono dalla realtà.
+Goal: Creare un elisir che possa proteggere temporaneamente dalla perdita di memoria causata dai Sussurri dell'Oblio.
+
+Needed Object: Semi o radici di una pianta che è già stata parzialmente "dimenticata" ma non completamente cancellata
+
+Treasure: Infuso della Persistenza - una pozione che per alcune ore rende immuni agli effetti minori dei Sussurri dell'Oblio
+
+Veil Connection: Mara ha notato che certe piante stanno letteralmente sparendo dalla realtà, insieme a ogni conoscenza su di esse. Il suo giardino è uno degli ultimi posti dove crescono varietà che altrove sono state "dimenticate". Sta lottando contro il tempo per preservare semi di specie che potrebbero non esistere più domani.
+
+PlayerHint: Mara è pragmatica e orientata alla sopravvivenza. Non le interessano le grandi filosofie, ma gli strumenti concreti per proteggere le persone che ama. La sua ricompensa è estremamente utile ma temporanea.
+
 Dialogue Hooks:
-- "Have you ever seen a blueleaf flower bloom under moonlight? È una meraviglia."
-- "My gran used to say: ‘Every wound teaches you what root to use next time.’"
-- "Questo elisir... potrebbe non salvare il mondo, ma può lenire qualche sofferenza."
+- "Mia nonna mi insegnò a riconoscere il Blueleaf. Ieri sono andata a raccoglierlo e... non c'era. Non solo morto - proprio mai esistito."
+- "Ho un intero giardino di piante che nessun altro ricorda. È come essere l'ultima custode di un mondo che sta svanendo."
+- "L'Infuso della Persistenza non è una cura. È un cerotto su una ferita mortale. Ma a volte un cerotto salva la vita."
+- "Se portassi semi di qualcosa che sta... sfumando... forse potremmo salvarlo insieme."
+- "La gente viene da me per medicine per mali che non ricordano di aver mai avuto. È terrificante."

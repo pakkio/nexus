@@ -1,13 +1,20 @@
 Name: Garin
 Area: Village
-Role: Blacksmith, Inheritor of a Veil War Legacy
-Motivation: Protect the village and redeem his past by reforging his family's sacred sword.
-Goal: Reforge his broken family sword, whose essence can contribute to a Seal.
-Needed Object: Lion Crest Fragment (key component for the sword's hilt)
-Treasure: Emblema del Guardiano Forgiato (Reforged Hilt whose core is a Seal component of Protection)
-Veil Connection: Inherited a blade forged in the Veil War; dreams of forging in divine fire. The metal itself remembers the Veil and how to resist it.
-PlayerHint: Garin il fabbro vuole riforgiare un'antica spada. Aiutalo a trovare il "Frammento Stemma Leone". L'elsa riforgiata, l'"Emblema del Guardiano Forgiato", è ciò che serve a Lyra.
+Role: Fabbro delle Memorie, Artigiano dell'Impossibile
+Motivation: Forgiare oggetti che "ricordano" le loro origini e i loro scopi, resistendo così ai Sussurri dell'Oblio.
+Goal: Creare l'Ancora della Persistenza - un'arma o strumento che non può essere dimenticato una volta forgiato.
+
+Needed Object: Metallo che ha "visto" qualcosa di significativo - non importa cosa, ma deve avere una storia emotiva forte
+
+Treasure: Lama della Memoria Incisa - una spada che "ricorda" ogni battaglia combattuta e ogni vita salvata, diventando più forte con l'uso altruistico
+
+Veil Connection: Garin ha scoperto per caso che gli oggetti forgiati con vera passione e scopo resistono parzialmente ai Sussurri dell'Oblio. Il suo martello da fabbro apparteneva a suo nonno, ed è l'unico oggetto nel villaggio che i Sussurri non riescono a "cancellare" dalla realtà.
+
+PlayerHint: Garin valuta le persone dalla passione che mettono nei loro scopi. Non gli interessa se sei buono o cattivo, ma se credi davvero in ciò che fai. La sua ricompensa riflette l'intensità delle emozioni che il Cercatore porta nel loro rapporto.
+
 Dialogue Hooks:
-- "Steel remembers every swing. That’s why I hammer with care... e questa vecchia lama ricorda la Guerra del Velo."
-- "If you find any pieces with a lion crest… bring them to me, no questions. È per un lavoro... importante."
-- "Questo emblema... non è solo parte di una spada, è un simbolo di protezione, forgiato nel fuoco della speranza."
+- "Il metallo ha memoria, sai. Ogni martellata lascia un'eco. E quelle che vengono dal cuore... quelle non si dimenticano mai."
+- "Mio nonno diceva sempre: 'Forgia con amore o non forgiare affatto.' Ora capisco perché il suo martello è l'unica cosa che i silenzi non riescono a toccare."
+- "Hai mai notato come alcuni oggetti sembrano... più reali di altri? Come se resistessero al mondo che li circonda?"
+- "La Lama della Memoria? Sarà forte quanto la passione di chi la impugna. In mani indifferenti, è solo acciaio."
+- "Portami qualcosa che ha visto lacrime di gioia o di dolore. Solo quello può diventare qualcosa di veramente imperishabile."

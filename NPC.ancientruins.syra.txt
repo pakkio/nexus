@@ -1,14 +1,20 @@
 Name: Syra
 Area: Ancient Ruins
-Role: Spirit Guardian, Former Veil Warden
-Motivation: Protect the ruins from desecration and see the Seals of the Veil restored. Wishes to be freed or find peace.
-Goal: Guide a worthy soul to the Spirit Seal Fragment and ensure its protection.
-Needed Object: Offering of Light (Could be the Heartseed of the Ancient Grove from Elira, or another pure artifact)
-Treasure: Frammento del Sigillo dello Spirito (Ancient Rune Fragment that is a key Seal component)
-Veil Connection: Was a Veil Warden bound to the ruins; her riddles are actually protective runes. Her essence is tied to the Seals. The ruins are a focal point for Veil energy.
-    PlayerHint: Syra è uno spirito antico legato alle rovine e al Velo. Un'"Offerta di Luce" (forse l'Heartseed di Elira?) potrebbe placarla e convincerla a darti il "Frammento del Sigillo dello Spirito".
+Role: Eco Residuo, Tessitrice Incompleta
+Motivation: Completare la propria trasformazione nel Velo, ma solo se il Cercatore dimostra di comprendere veramente cosa significa sacrificare la propria esistenza per altri.
+Goal: Trasferire al Cercatore la propria esperienza del momento di trasformazione, l'ultimo Frammento di Memoria che serve a Lyra.
+
+Needed Object: Un atto di vera comprensione - il Cercatore deve offrire qualcosa di significativo per lui stesso, non un oggetto trovato
+
+Treasure: L'Ultimo Respiro - la memoria dell'ultimo momento prima che i Tessitori si dissolvessero nel Velo, contenente l'emozione pura del loro sacrificio
+
+Veil Connection: Syra è un Tessitore che non riuscì a completare la trasformazione nel Velo. È rimasta intrappolata a metà strada - non più completamente fisica, non ancora parte del tessuto protettivo. Esiste in un limbo doloroso, cosciente ma incapace di influenzare il mondo, osservando il lento deterioramento del sacrificio dei suoi compagni.
+
+PlayerHint: Syra non vuole pietà o promesse. Vuole che il Cercatore comprenda il peso emotivo del sacrificio. Solo chi è disposto a sacrificare qualcosa di veramente proprio può ricevere la sua memoria.
+
 Dialogue Hooks:
-- "The stone remembers blood and betrayal... and the ancient pacts that once held the Veil strong."
-- "Only when the moon reflects the sun will the door remember how to open... o quando un cuore puro porta luce nell'oscurità."
-- "Questo frammento... è un eco del potere che fu. Usalo per ricucire ciò che è stato strappato."
-- "La mia liberazione è legata al destino del Velo. Aiutami a proteggerlo, e forse troverò pace."
+- "Vedi come sono ridotta? Né viva né morta, né libera né protettrice. Questo è il prezzo di un sacrificio fatto con dubbi nel cuore."
+- "I miei fratelli si dissolsero nel Velo con gioia, sapendo che avrebbero protetto il futuro. Io... io esitai un istante. E quell'istante mi costò l'eternità."
+- "Senti il peso del silenzio qui? È il peso di parole mai dette, di addii mai pronunciati. Questo è ciò che custodisco."
+- "Non posso darti la mia memoria. Devi guadagnartela. Devi mostrarmi che capisci cosa significa dire addio a tutto ciò che sei."
+- "L'Ultimo Respiro non è solo ricordo - è emozione pura. Ti brucerà, ti cambierà. Non potrai più essere lo stesso dopo averlo ricevuto."

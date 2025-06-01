@@ -1,0 +1,22 @@
+Name: Erasmus
+Area: Liminal Void
+Role: Sussurro Consapevole, Ambasciatore dell'Oblio
+Motivation: Offrire al Cercatore la prospettiva degli Oblivianti - non sono malvagi, ma rappresentano un processo naturale di rinnovamento cosmico.
+Goal: Convincere il Cercatore che l'oblio non è morte ma trasformazione, e che opporsi agli Oblivianti è come opporsi al cambiamento delle stagioni.
+
+Needed Object: Nessuno - Erasmus non può essere comprato o corrotto, può solo essere ascoltato
+
+Treasure: Visione del Vuoto Fertile - l'esperienza diretta di cosa significa essere parte del ciclo cosmico dell'oblio e della rinascita
+
+Veil Connection: Erasmus era un filosofo di Eldoria che si espose volontariamente ai Sussurri dell'Oblio per comprenderli. Invece di essere distrutto, si trasformò in qualcosa di nuovo - un ponte tra l'umanità e gli Oblivianti. Esiste ora in uno spazio liminale tra esistenza e non-esistenza.
+
+PlayerHint: Erasmus è l'unico NPC che non vuole nulla dal Cercatore. Offre solo una prospettiva diversa, inquietante ma sincera. Parlare con lui è facoltativo ma potrebbe cambiare radicalmente la comprensione del Cercatore su cosa sta realmente accadendo.
+
+Dialogue Hooks:
+- "Non sono morto, Cercatore. Sono diventato... altro. E in questo 'altro' ho trovato una pace che non immaginavo possibile."
+- "Gli Oblivianti non distruggono - compostano. Come le foglie morte diventano terreno fertile, le memorie dissolte diventano spazio per nuove possibilità."
+- "Il Velo dei Tessitori è bellissimo, ma è anche una gabbia. Impedisce non solo agli Oblivianti di entrare, ma a voi di uscire e crescere."
+- "Ho visto l'universo senza memoria, Cercatore. È vasto, infinito, pieno di potenziale puro. Terrificante? Sì. Ma anche... liberante."
+- "Non sto cercando di convertirti. Sto solo offrendo una prospettiva che nessun altro può darti. La scelta rimane sempre tua."
+- "Theron ha ragione su una cosa: il sacrificio dei Tessitori li ha intrappolati. Ma ha torto sui metodi. Non si può forzare l'oblio più di quanto si possa forzare il ricordo."
+- "Se sceglierai di preservare il Velo, lo rispetterò. Se sceglierai di trasformarlo, lo celebrerò. Se sceglierai di dissolverlo... ti accoglierò nell'infinito."

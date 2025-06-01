@@ -1,13 +1,20 @@
 Name: Irenna
 Area: City
-Role: Resistance Leader / Puppeteer
-Motivation: Protect the innocent and expose corruption, especially the High Judge's.
-Goal: Unmask the High Judge’s crimes, revealing his connection to the Veil's decay.
-Needed Object: Puppet String Spool (for a special performance to reveal truth)
-Treasure: Judge's Diary Page (Reveals High Judge Theron's plans to exploit the Veil)
-Veil Connection: Her puppet shows move on their own; orphan children may be Veil-touched. She senses the growing darkness spread by figures like the Judge.
-PlayerHint: Irenna combatte l'ingiustizia. Aiutala a smascherare l'Alto Giudice Theron; il suo diario potrebbe essere la chiave per capire una minaccia diretta al Velo.
+Role: Marionettista della Resistenza, Artista della Memoria Vivente
+Motivation: Usare il teatro di marionette per preservare storie che i Sussurri dell'Oblio stanno cercando di cancellare.
+Goal: Creare una rappresentazione teatrale che "fissi" nella memoria collettiva la verità sui crimini di Theron e sui pericoli della sua filosofia.
+
+Needed Object: Testimonianza diretta di qualcuno che ha visto gli effetti reali della filosofia di Theron
+
+Treasure: Fili dell'Intreccio - corde di marionetta intessute con frammenti del Velo stesso, che permettono di "animare" ricordi e farli rivivere teatralmente
+
+Veil Connection: Le marionette di Irenna si muovono a volte da sole, animate dai frammenti di memorie perdute che si aggrappano a qualsiasi forma che possa dar loro espressione. Lei non lo sa, ma i suoi spettacoli stanno letteralmente impedendo ad alcune memorie di dissolversi completamente.
+
+PlayerHint: Irenna è un'artista prima che una rivoluzionaria. La convince di più una storia ben raccontata che un argomento logico. Vuole emozione e verità umana, non prove legali.
+
 Dialogue Hooks:
-- "The little ones know more than you think — they just talk with string and wood."
-- "Every play I perform is a truth they can't imprison. E il Giudice ha molti segreti."
-- "Quel diario... potrebbe provare che la corruzione è più profonda di quanto immaginiamo, e tocca il Velo stesso."
+- "I bambini capiscono sempre le mie storie, anche quando gli adulti le dimenticano. Forse perché i piccoli non sanno ancora che alcune cose 'non possono' essere vere."
+- "Le mie marionette... a volte si muovono da sole durante le prove. Come se volessero raccontare storie che io non conosco."
+- "Theron dice che dimenticare il dolore è liberazione. Ma dimenticare il dolore significa dimenticare anche la compassione che ne nasce."
+- "Questi fili... li ho trovati in un posto strano. Sembrano normali, ma quando li uso per uno spettacolo, la gente non riesce a dimenticare quello che ha visto."
+- "Ho bisogno di una storia vera, Cercatore. Una storia che faccia piangere anche i cuori di pietra."
