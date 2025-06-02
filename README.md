@@ -1,3 +1,9 @@
+---
+title: nexus
+app_file: main_gradio2.py
+sdk: gradio
+sdk_version: 5.32.0
+---
 # Eldoria: AI-Assisted Text RPG Engine
 
 Eldoria is a Python-based command-line application that provides a framework for creating and playing AI-assisted text-based role-playing games. It leverages Large Language Models (LLMs) for dynamic NPC dialogue, player psychological profiling, and even for selecting in-game guides. The system is designed to be data-driven, allowing game content (story, NPCs, areas) to be defined in simple text files.
