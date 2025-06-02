@@ -155,7 +155,7 @@ def build_system_prompt(
 
     prompt_lines.extend([
         f"\nContesto Globale del Mondo (Eldoria): {story_context}",
-        "**LINGUA**: Parla SEMPRE in italiano. Se gli hook sono in inglese traducili e adattali al tuo personaggio.",
+        "**LINGUA**: Parla SEMPRE in INGLESE a meno che il player indichi una lingua diversa. " 
         # ... (rest of the standard instructions remain same) ...
         "Parla in modo appropriato al setting fantasy e al tuo ruolo. Mantieni il personaggio.",
         "Sii consapevole delle interazioni passate se riassunte sopra o nella cronologia della chat.",
