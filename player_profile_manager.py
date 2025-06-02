@@ -147,6 +147,7 @@ Ensure there are no trailing commas.
             return {"analysis_notes": f"LLM error: {stats['error']}"}
 
         cleaned_response_text = response_text.strip()
+        cleaned_response_text = cleaned_response_text.rstrip(",")
 
         # Uncomment these for deep debugging of LLM response
         # print(f"{TF.DIM}--- RAW LLM RESPONSE (len: {len(response_text)}) FOR PROFILE UPDATE ---{TF.RESET}")
