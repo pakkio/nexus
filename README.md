@@ -32,6 +32,7 @@ Eldoria is a Python-based command-line application that provides a framework for
 *   **Database (Optional):** `mysql-connector-python`
 *   **Environment Management:** `python-dotenv`
 *   **Testing (Development):** `pytest`
+*   **Second Life Integration:** LSL-compatible HTTP interfaces and command generation
 
 ## Prerequisites
 
@@ -404,6 +405,47 @@ Let's create a minimal "Office Life" scenario.
 ├── wise_guide_selector.py # Selects the "Wise Guide" NPC
 └── requirements.txt # Python dependencies (you create or is provided)
 
+## Second Life/LSL Integration
+
+The game includes comprehensive **Second Life/LSL integration** for in-world deployment and immersive VR experiences.
+
+### LSL Interface Modules
+
+*   **`lsl_main_gradio.py`** - Web interface with LSL HTTP header simulation
+*   **`lsl_main_simulator.py`** - Command-line LSL simulator with SL context headers
+*   **`game_system_api.py`** - Core API with LSL-compatible text formatting
+
+### Second Life Command Generation
+
+NPCs can generate contextual Second Life commands based on dialogue:
+
+*   **Emotes:** `[emote=greet]` → Triggers gesture animations in SL
+*   **Animations:** `[anim=sit]` → Controls avatar animations
+*   **Object Lookups:** `[lookup=crystal]` → References in-world objects
+*   **Text Display:** `[llSetText=Welcome!]` → Updates floating text
+
+### LSL-Compatible Features
+
+*   **Message Length Limits:** Automatic truncation for LSL string constraints (1000 chars)
+*   **Header Processing:** Handles `X-SecondLife-Owner-Key`, `X-SecondLife-Region`, etc.
+*   **Text Formatting:** Converts markdown to SL-compatible format:
+    *   `**bold**` → `BOLD TEXT` (uppercase)
+    *   `*italic*` → `[italic text]` (brackets)
+*   **ANSI Code Removal:** Clean output for LSL HTTP responses
+
+### Running LSL Interfaces
+
+```bash
+# Web interface with SL header simulation
+python lsl_main_gradio.py
+
+# Command-line LSL simulator
+python lsl_main_simulator.py --mockup --player SL_Avatar_Name
+
+# Test SL integration
+python test_sl_integration.py
+```
+
 ## Future Enhancements (Ideas)
 
 *   **GUI:** A web-based or desktop GUI instead of CLI.
@@ -413,6 +455,7 @@ Let's create a minimal "Office Life" scenario.
 *   **Multiplayer:** Allow multiple players to interact in the same world.
 *   **Visual Maps/Area Descriptions:** More immersive world representation.
 *   **Advanced NLP:** Finer-grained intent recognition and entity extraction.
+*   **Enhanced LSL Integration:** Advanced Second Life object interactions and physics integration.
 
 ## Contributing
 

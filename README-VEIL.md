@@ -166,6 +166,38 @@ Track your AI interaction with comprehensive statistics:
 * 🟢 **Active** - AI model currently being used
 * 🔴 **Inactive** - AI model not yet used in session
 
+### Second Life Integration for Immersive Roleplay
+
+Experience Eldoria directly in virtual worlds through **LSL integration**:
+
+**🌐 Virtual World Deployment:**
+* Deploy NPCs as interactive objects in Second Life
+* Real-time conversations with AI-powered characters
+* Contextual animations and gestures during dialogue
+* In-world object interactions and references
+
+**🎮 Enhanced Immersion Features:**
+* **Avatar Context:** NPCs recognize your SL avatar name and region
+* **Visual Commands:** NPCs trigger emotes, animations, and object interactions
+* **Spatial Awareness:** References to nearby objects and locations
+* **Dynamic Text:** Floating text updates based on story progression
+
+**📡 Technical Implementation:**
+```bash
+# Launch SL-compatible interface
+python lsl_main_gradio.py
+
+# Test SL command generation
+python test_sl_integration.py
+```
+
+**🎭 Example SL Experience:**
+When talking to Lyra in the Sanctum, she might respond:
+> *"The Veil remembers all who seek wisdom..."* 
+> `[emote=bow][llSetText=Wisdom Seeker Welcomed][lookup=ancient_tome]`
+
+This triggers: a bowing gesture, updates floating text, and highlights the ancient tome object in your virtual environment.
+
 ### Dynamic Character Profiling
 Your psychological profile evolves based on:
 * **Dialogue choices** with NPCs
