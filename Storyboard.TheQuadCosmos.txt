@@ -1,8 +1,0 @@
-Name: The Quad Cosmos
-Description:
-In un sistema stellare di quattro pianeti (Tyrranor, Anqar, Caelus e Oceana), una caccia al tesoro è iniziata per recuperare un antico artefatto alieno. Ogni NPC detiene una chiave o un segreto legato a questa caccia.
-
-Temi:
-- La ricerca della verità
-- L'equilibrio della natura
-- La lotta per il potere

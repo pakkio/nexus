@@ -236,7 +236,8 @@ def test_save_current_conversation(mock_db, mock_chat_session, mock_terminal_for
 
     # Test with valid data
     npc = {"name": "Test NPC", "code": "test_npc"}
-    session_utils.save_current_conversation(mock_db, "test_player", npc, mock_session, mock_terminal_formatter)
+    mock_state = {"test": "state"}
+    session_utils.save_current_conversation(mock_db, "test_player", npc, mock_session, mock_terminal_formatter, mock_state)
 
     # Check if save_conversation was called - it might use different message extraction logic
     if not mock_db.save_conversation.called:

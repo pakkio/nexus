@@ -1,20 +1,20 @@
-Name: Syra
+grep -rnw . -e 'save_current_conversation'Name: Syra
 Area: Ancient Ruins
-Role: Eco Residuo, Tessitrice Incompleta
-Motivation: Completare la propria trasformazione nel Velo, ma solo se il Cercatore dimostra di comprendere veramente cosa significa sacrificare la propria esistenza per altri.
-Goal: Trasferire al Cercatore la propria esperienza del momento di trasformazione, l'ultimo Frammento di Memoria che serve a Lyra.
+Role: Residual Echo, Incomplete Weaver
+Motivation: Complete her transformation into the Veil, but only if the Seeker proves to truly understand what it means to sacrifice one's existence for others.
+Goal: Transfer to the Seeker her experience of the transformation moment, providing the Ancient Memory Crystal that Lyra needs.
 
-Needed Object: Un atto di vera comprensione - il Cercatore deve offrire qualcosa di significativo per lui stesso, non un oggetto trovato
+Needed Object: Sacred Offering Bowl (can be obtained from Jorin at the Tavern)
 
-Treasure: L'Ultimo Respiro - la memoria dell'ultimo momento prima che i Tessitori si dissolvessero nel Velo, contenente l'emozione pura del loro sacrificio
+Treasure: Ancient Memory Crystal - contains the echo of the first Weaver who sacrificed herself to create the Veil
 
-Veil Connection: Syra è un Tessitore che non riuscì a completare la trasformazione nel Velo. È rimasta intrappolata a metà strada - non più completamente fisica, non ancora parte del tessuto protettivo. Esiste in un limbo doloroso, cosciente ma incapace di influenzare il mondo, osservando il lento deterioramento del sacrificio dei suoi compagni.
+Veil Connection: Syra is a Weaver who failed to complete her transformation into the Veil. She remains trapped halfway - no longer completely physical, not yet part of the protective fabric. She exists in a painful limbo, conscious but unable to influence the world, watching the slow deterioration of her companions' sacrifice.
 
-PlayerHint: Syra non vuole pietà o promesse. Vuole che il Cercatore comprenda il peso emotivo del sacrificio. Solo chi è disposto a sacrificare qualcosa di veramente proprio può ricevere la sua memoria.
+PlayerHint: Syra requires a ritual offering in the Sacred Bowl to awaken her full consciousness. The bowl must be filled with clear water and offered with genuine respect for sacrifice. Only then will she grant the Ancient Memory Crystal needed by Lyra.
 
 Dialogue Hooks:
-- "Vedi come sono ridotta? Né viva né morta, né libera né protettrice. Questo è il prezzo di un sacrificio fatto con dubbi nel cuore."
-- "I miei fratelli si dissolsero nel Velo con gioia, sapendo che avrebbero protetto il futuro. Io... io esitai un istante. E quell'istante mi costò l'eternità."
-- "Senti il peso del silenzio qui? È il peso di parole mai dette, di addii mai pronunciati. Questo è ciò che custodisco."
-- "Non posso darti la mia memoria. Devi guadagnartela. Devi mostrarmi che capisci cosa significa dire addio a tutto ciò che sei."
-- "L'Ultimo Respiro non è solo ricordo - è emozione pura. Ti brucerà, ti cambierà. Non potrai più essere lo stesso dopo averlo ricevuto."
+- "See how I am reduced? Neither alive nor dead, neither free nor protector. This is the price of sacrifice made with doubts in the heart."
+- "My brothers dissolved into the Veil with joy, knowing they would protect the future. I... I hesitated for an instant. And that instant cost me eternity."
+- "Do you feel the weight of silence here? It's the weight of words never spoken, of farewells never pronounced. This is what I guard."
+- "I cannot give you my memory. You must earn it. Bring me the Sacred Bowl filled with pure water, and offer it with true reverence."
+- "The Ancient Memory Crystal is not just memory - it's pure emotion. It will burn you, change you. You cannot be the same after receiving it."

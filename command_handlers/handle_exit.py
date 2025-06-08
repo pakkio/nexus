@@ -13,7 +13,7 @@ def handle_exit(state: Dict[str, Any]) -> HandlerResult:
 
     print(f"\n{TF.DIM}Saving last active conversation (if any)...{TF.RESET}")
     session_utils.save_current_conversation(
-        state['db'], player_id, state.get('current_npc'), state.get('chat_session'), TF
+        state['db'], player_id, state.get('current_npc'), state.get('chat_session'), TF, state
     )
 
     # Player state and profile are saved in the main loop's finally block or after exit status.

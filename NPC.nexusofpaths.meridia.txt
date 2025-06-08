@@ -1,21 +1,21 @@
 Name: Meridia
 Area: Nexus of Paths
-Role: Tessitrice del Destino, Guardiana delle Scelte Finali
-Motivation: Assicurarsi che la scelta finale del Cercatore sia presa con piena consapevolezza delle conseguenze, non per impulso o manipolazione.
-Goal: Preparare il Cercatore al momento della Scelta Ultima, quando dovrà decidere il destino del Velo davanti ai rappresentanti di tutte le fazioni.
+Role: Weaver of Destiny, Guardian of Final Choices
+Motivation: Ensure that the Seeker's final choice is made with full awareness of consequences, not from impulse or manipulation.
+Goal: Prepare the Seeker for the moment of Ultimate Choice, when they must decide the fate of the Veil before representatives of all factions.
 
-Needed Object: Prova di aver compreso tutte e tre le filosofie (Preservazione, Distruzione, Trasformazione) e di aver stabilito una propria posizione indipendente
+Needed Object: Master Key (forged from completing multiple faction questlines and proving understanding)
 
-Treasure: Il Telaio del Nuovo Inizio - lo strumento che permetterà di attuare qualsiasi decisione prenda il Cercatore, che sia riparare, distruggere o trasformare il Velo
+Treasure: Loom of New Beginning - the tool that will allow implementing whatever decision the Seeker makes, whether to repair, destroy, or transform the Veil
 
-Veil Connection: Meridia è l'ultima Tessitrice rimasta che non si è mai sacrificata al Velo. È rimasta nel mondo fisico per millenni, aspettando il momento in cui qualcuno avrebbe dovuto fare la Scelta Ultima. È contemporaneamente la più antica e la più giovane tra i Tessitori - antica di millennii ma mai trasformata.
+Veil Connection: Meridia is the last remaining Weaver who never sacrificed herself to the Veil. She remained in the physical world for millennia, waiting for the moment when someone would have to make the Ultimate Choice. She is simultaneously the oldest and youngest among the Weavers - ancient in millennia but never transformed.
 
-PlayerHint: Meridia è la fine del gioco. Non apparirà fino a quando il Cercatore non avrà interagito significativamente con tutte e tre le fazioni principali. La sua "quest" è essenzialmente il finale del gioco, dove tutte le scelte precedenti convergono.
+PlayerHint: Meridia is the endgame. She won't appear until the Seeker has significantly interacted with multiple faction leaders and proven their understanding. Her "quest" is essentially the game's finale, where all previous choices converge.
 
 Dialogue Hooks:
-- "Ho aspettato così a lungo, Cercatore. Generazioni sono passate mentre io rimanevo, custodendo questo momento."
-- "Lyra conserva la memoria del sacrificio. Theron immagina la libertà dell'oblio. Boros cerca l'equilibrio del cambiamento. Ma tu... cosa vedi tu?"
-- "Il Telaio del Nuovo Inizio non ha preferenze. Può tessere preservazione, distruzione o trasformazione con uguale facilità. La scelta è solo tua."
-- "Non temere le conseguenze della tua decisione. Qualunque essa sia, sarà onesta se viene dal tuo cuore e dalla tua comprensione."
-- "I miei fratelli si sacrificarono per proteggere il futuro. Io mi sacrificai per proteggere la scelta. Ora quel futuro e quella scelta sono nelle tue mani."
-- "Dimmi, Cercatore: dopo tutto quello che hai visto e sentito, cosa credi sia meglio per Eldoria? Non per i Tessitori, non per le fazioni, ma per il mondo che verrà?"
+- "I have waited so long, Seeker. Generations have passed while I remained, guarding this moment."
+- "Lyra preserves the memory of sacrifice. Theron imagines the freedom of oblivion. Boros seeks the balance of change. But you... what do you see?"
+- "The Loom of New Beginning has no preferences. It can weave preservation, destruction, or transformation with equal ease. The choice is yours alone."
+- "Don't fear the consequences of your decision. Whatever it is, it will be honest if it comes from your heart and understanding."
+- "My brothers sacrificed themselves to protect the future. I sacrificed myself to protect choice. Now that future and that choice are in your hands."
+- "You've completed many quests and gained much wisdom. Bring me the Master Key - proof of your journey - and I'll prepare you for the ultimate decision."

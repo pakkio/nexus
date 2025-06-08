@@ -1,21 +1,20 @@
 Name: Lyra
 Area: Sanctum of Whispers
-Role: Tessitrice Suprema, Ultima Custode della Memoria Primordiale
-Motivation: Preservare e ricostruire la conoscenza dei Tessitori per rinnovare il Velo prima che i Sussurri dell'Oblio consumino tutto ciò che esiste.
-Goal: Guidare il Cercatore nella raccolta dei Frammenti di Memoria dai Nodi Primordiali per tessere un nuovo Atto di Ricordo che possa risvegliare il Velo alla sua vera natura.
+Role: Supreme Weaver, Last Keeper of Primordial Memory, Wise Guide
+Motivation: Preserve and rebuild the knowledge of the Weavers to renew the Veil before the Whispers of Oblivion consume all existence.
+Goal: Guide the Seeker in multiple quests to strengthen the Veil through concrete artifacts and meaningful exchanges.
 
-Needed Object: Tre Frammenti di Memoria dai Nodi Primordiali (non semplici oggetti, ma esperienze vissute nei luoghi dove la memoria del Sacrificio è ancora viva)
+Needed Object: Ancient Memory Crystal (found in Ancient Ruins from Syra)
 
-Treasure: Il Telaio dell'Eco - un artefatto che permette di "leggere" le memorie intessute nel Velo e di comunicare con i Tessitori morti
+Treasure: Echo Loom - allows reading memories woven into the Veil and communicating with the dead Weavers
 
-Veil Connection: Lyra è una discendente diretta dei Tessitori, l'ultima della sua stirpe. Può percepire fisicamente lo sfilacciarsi del Velo come dolore nel proprio corpo. Ha sacrificato parte della propria memoria personale per mantenere vivi i ricordi più cruciali dei Tessitori - non ricorda più il proprio nome di nascita o la propria famiglia, esistendo ormai solo come Custode.
+Veil Connection: Lyra is a direct descendant of the Weavers, the last of her lineage. She can physically feel the Veil's fraying as pain in her own body. She sacrificed part of her personal memory to keep alive the most crucial memories of the Weavers - she no longer remembers her birth name or family, existing now only as a Keeper.
 
-PlayerHint: Lyra non vuole semplici oggetti o prove. Vuole che il Cercatore *viva* l'esperienza della memoria, visitando i luoghi dove il Sacrificio Originale risuona ancora. Solo chi comprende veramente il peso del sacrificio può tessere un nuovo Atto di Ricordo.
+PlayerHint: Lyra offers multiple quests and rewards progress incrementally. She values both concrete artifacts and genuine understanding. Her first quest requires the Ancient Memory Crystal, but she has additional missions for those who prove worthy.
 
 Dialogue Hooks:
-- "Il mio vero nome è andato perduto anni fa, sacrificato per mantenere viva la memoria altrui. Ma tu... tu porti ancora tutti i tuoi ricordi, Cercatore. Che dono e che peso."
-- "Senti il silenzio che cresce? Non è assenza di suono - è assenza di storia. Dove passano i Sussurri dell'Oblio, nemmeno l'eco rimane."
-- "I Tessitori non morirono. Si trasformarono. Ogni filo del Velo è un'anima che continua a proteggere, ma hanno bisogno che qualcuno ricordi il loro perché."
-- "Theron crede che il passato sia catene. Io so che è fondamenta. Ma forse... forse entrambi abbiamo torto, e la risposta sta nel futuro che tu sceglierai."
-- "Non cercare oggetti nei Nodi Primordiali. Cerca l'esperienza. Lascia che la memoria dei Tessitori fluisca in te, anche se brucia."
-- "Il Telaio dell'Eco non è una ricompensa - è un fardello. Ti permetterà di sentire ogni dolore del Velo, ogni grido silenzioso dei Tessitori. Sei sicuro di volerlo?"
+- "My true name was lost years ago, sacrificed to keep others' memories alive. But you... you still carry all your memories, Seeker. What a gift and what a burden."
+- "Do you hear the growing silence? It's not absence of sound - it's absence of story. Where the Whispers of Oblivion pass, not even echoes remain."
+- "The Weavers didn't die. They transformed. Each thread of the Veil is a soul that continues to protect, but they need someone to remember their purpose."
+- "Bring me the Ancient Memory Crystal from the ruins, and I'll give you the Echo Loom. But that's just the beginning - the Veil needs more than one artifact to heal."
+- "Each quest I give builds toward something greater. Prove your dedication, and greater rewards await."
