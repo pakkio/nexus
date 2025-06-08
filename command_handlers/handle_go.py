@@ -84,7 +84,8 @@ def handle_go(args_str: str, state: Dict[str, Any]) -> Dict[str, Any]:
             TF,
             state, # Pass the full game_session_state
             conversation_summary_for_guide_context=None, # Not a hint context
-            llm_wrapper_for_profile_distillation=state.get('llm_wrapper_func')
+            llm_wrapper_for_profile_distillation=state.get('llm_wrapper_func'),
+            model_type="dialogue" # Regular NPC conversation
         )
         if npc_data and new_session:
             state['current_npc'] = npc_data

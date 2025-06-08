@@ -18,6 +18,7 @@ from command_handlers.handle_areas import handle_areas
 from command_handlers.handle_listareas import handle_listareas
 from command_handlers.handle_stats import handle_stats
 from command_handlers.handle_session_stats import handle_session_stats
+from command_handlers.handle_all_stats import handle_all_stats
 from command_handlers.handle_clear import handle_clear
 from command_handlers.handle_hint import handle_hint # MODIFIED
 from command_handlers.handle_endhint import handle_endhint # MODIFIED
@@ -50,6 +51,7 @@ command_handlers_map: Dict[str, Callable] = {
   'listareas': handle_listareas,
   'stats': handle_stats,
   'session_stats': handle_session_stats,
+  'all_stats': handle_all_stats,
   'clear': handle_clear,
   'hint': handle_hint,           # MODIFIED
   'endhint': handle_endhint,     # MODIFIED

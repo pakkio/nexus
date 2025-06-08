@@ -189,7 +189,8 @@ def load_and_prepare_conversation(
     story: str, ChatSession_class: type, TF_class: type,
     game_session_state: Dict[str, Any], # MODIFIED: Pass full game state
     conversation_summary_for_guide_context: Optional[str] = None, # MODIFIED: Renamed
-    llm_wrapper_for_profile_distillation_func: Optional[Callable] = None # MODIFIED: Renamed
+    llm_wrapper_for_profile_distillation_func: Optional[Callable] = None, # MODIFIED: Renamed
+    model_type: str = "dialogue" # NEW: Model type for stats tracking
 ) -> Tuple[Optional[Dict[str, Any]], Optional[ChatSession]]:
     try:
         npc_data = db.get_npc(area_name, npc_name)
@@ -210,7 +211,7 @@ def load_and_prepare_conversation(
             llm_wrapper_func_for_distill=llm_wrapper_for_profile_distillation_func
         )
 
-        chat_session = ChatSession_class(model_name=model_name)
+        chat_session = ChatSession_class(model_name=model_name, model_type=model_type)
         chat_session.set_system_prompt(system_prompt)
 
         player_hint_from_data = npc_data.get('playerhint')
@@ -385,14 +386,16 @@ def start_conversation_with_specific_npc(
     model_name: Optional[str], story: str, ChatSession_class: type, TF_class: type,
     game_session_state: Dict[str, Any], # MODIFIED: Pass full game state
     conversation_summary_for_guide_context: Optional[str] = None, # MODIFIED: Renamed
-    llm_wrapper_for_profile_distillation: Optional[Callable] = None
+    llm_wrapper_for_profile_distillation: Optional[Callable] = None,
+    model_type: str = "dialogue" # NEW: Model type for stats tracking
 ) -> Tuple[Optional[Dict[str, Any]], Optional[ChatSession]]:
 
     npc_data, new_session = load_and_prepare_conversation(
         db, player_id, area_name, npc_name, model_name, story, ChatSession_class, TF_class,
         game_session_state=game_session_state, # Pass state
         conversation_summary_for_guide_context=conversation_summary_for_guide_context,
-        llm_wrapper_for_profile_distillation_func=llm_wrapper_for_profile_distillation # Pass renamed
+        llm_wrapper_for_profile_distillation_func=llm_wrapper_for_profile_distillation, # Pass renamed
+        model_type=model_type # NEW: Pass model type
     )
 
     if npc_data and new_session:
@@ -432,7 +435,8 @@ def auto_start_default_npc_conversation(
     db, player_id: str, area_name: str, model_name: Optional[str],
     story: str, ChatSession_class: type, TF_class: type,
     game_session_state: Dict[str, Any], # MODIFIED: Pass full state
-    llm_wrapper_for_profile_distillation: Optional[Callable] = None
+    llm_wrapper_for_profile_distillation: Optional[Callable] = None,
+    model_type: str = "dialogue" # NEW: Model type for stats tracking
 ) -> Tuple[Optional[Dict[str, Any]], Optional[ChatSession]]:
     default_npc_info = db.get_default_npc(area_name)
     if not default_npc_info:
@@ -444,7 +448,8 @@ def auto_start_default_npc_conversation(
     return start_conversation_with_specific_npc(
         db, player_id, area_name, default_npc_name, model_name, story, ChatSession_class, TF_class,
         game_session_state=game_session_state, # Pass state
-        llm_wrapper_for_profile_distillation=llm_wrapper_for_profile_distillation
+        llm_wrapper_for_profile_distillation=llm_wrapper_for_profile_distillation,
+        model_type=model_type # NEW: Pass model type
     )
 
 def refresh_known_npcs_list(db, TF_class: type) -> List[Dict[str, Any]]:

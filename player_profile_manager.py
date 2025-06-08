@@ -10,6 +10,7 @@ import copy
 try:
     from llm_wrapper import llm_wrapper # Crucial for this approach
     from terminal_formatter import TerminalFormatter
+    from llm_stats_tracker import get_global_stats_tracker
 except ImportError:
     print("WARNING (player_profile_manager): llm_wrapper or terminal_formatter not found. Profile features WILL BE SEVERELY limited.")
     def llm_wrapper(messages, model_name, stream, collect_stats, formatting_function=None, width=None):
@@ -142,6 +143,15 @@ Ensure there are no trailing commas.
             stream=False, # Profile analysis should be non-streamed
             collect_stats=True
         )
+        
+        # Record stats for profile analysis
+        if stats:
+            try:
+                stats_tracker = get_global_stats_tracker()
+                stats_tracker.record_call(model_name, "profile", stats)
+            except Exception as e:
+                print(f"{TF.DIM}Warning: Could not record profile LLM stats: {e}{TF.RESET}")
+        
         if stats and stats.get("error"):
             print(f"{TF.RED}LLM Error during profile update suggestion: {stats['error']}{TF.RESET}")
             return {"analysis_notes": f"LLM error: {stats['error']}"}

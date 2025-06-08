@@ -100,7 +100,8 @@ def handle_hint(state: Dict[str, Any]) -> Dict[str, Any]:
         TF,                                         # 8. TF_class
         state,                                      # 9. game_session_state (passed positionally)
         conversation_summary_for_guide_context=conversation_summary_for_sys_prompt, # 10. (keyword ok for optional)
-        llm_wrapper_for_profile_distillation=state['llm_wrapper_func'] # 11. (keyword ok for optional)
+        llm_wrapper_for_profile_distillation=state['llm_wrapper_func'], # 11. (keyword ok for optional)
+        model_type="guide_selection" # 12. NEW: Track as guide consultation
     )
 
     if not guide_npc_obj or not guide_session:
