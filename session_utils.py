@@ -168,12 +168,15 @@ def build_system_prompt(
         "IMPORTANTE: Dai oggetti/crediti SOLO se il giocatore ha VERAMENTE meritato la tua generosità attraverso azioni concrete.",
         "Questa riga DEVE essere ESATTAMENTE nel seguente formato, senza alcuna variazione: ",
         "[GIVEN_ITEMS: NomeOggetto1, Quantità Credits, NomeOggetto2, ...]",
-        "Per i crediti, usa il formato 'X Credits' (es. '100 Credits'). Separa i nomi degli oggetti/crediti con una virgola.",
+        "Per i crediti, usa il formato 'X Credits' per dare crediti o '-X Credits' per farli pagare (es. '100 Credits' per dare, '-50 Credits' per far pagare). Separa i nomi degli oggetti/crediti con una virgola.",
         "Ogni nome di oggetto o quantità di crediti deve essere separato da una virgola.",
         "Se non dai nessun oggetto o credito, NON includere ASSOLUTAMENTE la riga [GIVEN_ITEMS:].",
         "Esempio di risposta CORRETTA in cui DAI oggetti e crediti DOPO che il giocatore ha completato un compito:",
         "NPC Dialogo: Eccellente! Hai dimostrato il tuo valore. Prendi questa Spada Leggendaria e questi 50 Credits per il disturbo.",
         "[GIVEN_ITEMS: Spada Leggendaria, 50 Credits]",
+        "Esempio di risposta CORRETTA in cui VENDI un oggetto al giocatore:",
+        "NPC Dialogo: Certo, posso venderti questa Pozione di Cura per 25 crediti. Ecco qui.",
+        "[GIVEN_ITEMS: Pozione di Cura, -25 Credits]",
         "Esempio di risposta CORRETTA in cui NON DAI nulla perché il giocatore non ha fatto niente di speciale:",
         "NPC Dialogo: Hmm, non ti conosco abbastanza per fidarmi. Forse se mi portassi qualcosa che dimostra le tue intenzioni..."
     ])
