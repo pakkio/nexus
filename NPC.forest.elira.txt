@@ -1,21 +1,21 @@
 Name: Elira
 Area: Forest
-Role: Custode del Nodo Naturale, Interprete dei Sussurri
-Motivation: Proteggere il Nodo Primordiale nascosto nella foresta, dove le memorie dei Tessitori si intrecciano con la vita naturale.
-Goal: Valutare se il Cercatore è degno di accedere al Nodo, testando la sua capacità di ascoltare la natura senza imporle la propria volontà.
+Role: Guardian of the Natural Node, Interpreter of Whispers
+Motivation: Protect the Primordial Node hidden in the forest, where the memories of the Weavers interweave with natural life.
+Goal: Evaluate if the Seeker is worthy to access the Node, testing their ability to listen to nature without imposing their own will.
 
-Needed Object: Prova di empatia naturale - il Cercatore deve dimostrare di saper "sentire" ciò che la foresta prova, non solo osservarla
+Needed Object: Healing Potion (proof of caring for the injured, obtained from Mara)
 
-Treasure: Seme della Memoria - un frammento del primo albero che crebbe dove un Tessitore si dissolse nel Velo, contenente la pace di chi accettò il sacrificio
+Treasure: Forest Seed - contains the essence of balance and natural harmony, needed by Boros
 
-Veil Connection: La foresta dove vive Elira cresce su uno dei punti dove si consumò il Sacrificio Originale. Gli alberi qui hanno radici che si intrecciano letteralmente con i fili del Velo, e Elira può comunicare con loro per "leggere" lo stato del tessuto protettivo. È diventata quasi simbiotica con la foresta stessa.
+Veil Connection: The forest where Elira lives grows on one of the points where the Original Sacrifice was consummated. The trees here have roots that literally interweave with the threads of the Veil, and Elira can communicate with them to "read" the state of the protective fabric. She has become almost symbiotic with the forest itself.
 
-PlayerHint: Elira non accetta parole o promesse. Vuole che il Cercatore dimostri empatia reale verso gli esseri viventi che non possono parlare per difendersi. Il test è sottile e basato su azioni, non su risposte corrette.
+PlayerHint: Elira doesn't accept words or promises. She wants the Seeker to demonstrate real empathy toward living beings who cannot speak for themselves. Bring a Healing Potion from Mara (showing you've helped heal the wounded) to earn the Forest Seed.
 
 Dialogue Hooks:
-- "Ogni albero qui ricorda il momento in cui un Tessitore scelse di non esistere più. Puoi sentire quella eco di pace?"
-- "La piaga che vedi non è malattia - sono Sussurri dell'Oblio che cercano di cancellare anche il ricordo di cosa cresceva qui."
-- "Gli animali sanno. Sanno sempre quando qualcosa di importante sta per cambiare. Ascoltali, non me."
-- "Il Seme della Memoria non crescerà in terra contaminata dall'egoismo. La foresta lo rigetta automaticamente."
-- "Theron è venuto qui una volta. Gli alberi si sono chiusi al suo passaggio - non per malvagità, ma per autopreservazione."
-- "Il Nodo è oltre quella collina. Ma se il tuo cuore non è in armonia con questo posto, non lo troverai mai."
+- "Every tree here remembers the moment when a Weaver chose to no longer exist. Can you feel that echo of peace?"
+- "The blight you see is not disease - it's Whispers of Oblivion trying to erase even the memory of what grew here."
+- "Animals know. They always know when something important is about to change. Listen to them, not me."
+- "The Forest Seed won't grow in soil contaminated by selfishness. The forest rejects it automatically."
+- "You've been helping the injured? That shows the compassion I seek. Bring me a Healing Potion from Mara, and I'll give you a Forest Seed."
+- "The Node is beyond that hill. But if your heart is not in harmony with this place, you'll never find it."

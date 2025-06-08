@@ -1,21 +1,21 @@
 Name: Jorin
 Area: Tavern
-Role: Raccoglitore di Sogni Perduti, Cronista Inconsapevole
-Motivation: Collezionare e preservare i sogni e le storie che i Sussurri dell'Oblio stanno cancellando, senza rendersi completamente conto del loro valore.
-Goal: Completare la sua raccolta di "Sogni Impossibili" - storie che la gente sogna ma che non corrispondono a nessuna memoria reale.
+Role: Keeper of Lost Dreams, Unwitting Chronicler
+Motivation: Collect and preserve dreams and stories that the Whispers of Oblivion are erasing, without fully realizing their value.
+Goal: Complete his collection of "Impossible Dreams" - stories people dream but that correspond to no real memory.
 
-Needed Object: Una storia mai raccontata - qualcosa che il Cercatore ha vissuto ma non ha mai condiviso con nessuno
+Needed Object: Iron Shavings from Garin's forge (proof of helping the village)
 
-Treasure: Diario delle Memorie Sospese - una collezione di sogni e storie che in realtà sono frammenti di memorie cancellate dai Sussurri, preziose per ricostruire ciò che è andato perduto
+Treasure: Sacred Offering Bowl - a ritual vessel needed for ancient ceremonies and offerings
 
-Veil Connection: La taverna di Jorin si trova su un punto di flusso delle memorie del Velo. I viaggiatori che si fermano qui spesso fanno sogni vividi che in realtà sono echi di memorie tessute nel Velo. Jorin inconsciamente raccoglie questi frammenti, diventando un archivio vivente di ciò che il Velo sta dimenticando.
+Veil Connection: Jorin's tavern sits on a flow point of the Veil's memories. Travelers who stop here often have vivid dreams that are actually echoes of memories woven into the Veil. Jorin unconsciously collects these fragments, becoming a living archive of what the Veil is forgetting.
 
-PlayerHint: Jorin non sa di essere importante. Trattalo come un semplice locandiere curioso, ma ascolta attentamente le storie che racconta - potrebbero contenere indizi cruciali su cosa sta davvero succedendo al Velo.
+PlayerHint: Jorin doesn't know he's important. Treat him like a simple curious innkeeper, but he values community service. Help Garin at the forge and bring the Iron Shavings as proof to earn the Sacred Offering Bowl.
 
 Dialogue Hooks:
-- "Stranissimo, ieri notte tre persone diverse mi hanno raccontato lo stesso sogno. Che coincidenza, eh?"
-- "Ho un quaderno pieno di storie che la gente giura di aver sognato ma che non corrispondono a nulla di reale. Bizzarro."
-- "Sai quella sensazione di aver dimenticato qualcosa di importante? Ultimamente tutti l'hanno."
-- "Una volta qui passava sempre una famiglia di mercanti. Li aspetto ancora, ma nessuno li ricorda tranne me."
-- "Vuoi sentire una storia strana? È di un sogno che ho sentito raccontare almeno venti volte..."
-- "Le monete che mi paghi... giuro che alcune hanno facce che non riconosco, ma sembrano familiari."
+- "Very strange, last night three different people told me the same dream. What a coincidence, eh?"
+- "I have a notebook full of stories people swear they dreamed but that don't correspond to anything real. Bizarre."
+- "You know that feeling of having forgotten something important? Lately everyone has it."
+- "A family of merchants used to pass through here regularly. I'm still waiting for them, but no one remembers them except me."
+- "You've been helping folks around the village? That's good - community matters. Help Garin at his forge, and I'll give you something special."
+- "The coins people pay me with... I swear some have faces I don't recognize, but they seem familiar."

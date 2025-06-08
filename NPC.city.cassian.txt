@@ -1,20 +1,20 @@
 Name: Cassian
 Area: City
-Role: Burocrate Opportunista, Mercante di Influenze
-Motivation: Mantenere la propria posizione di potere indipendentemente da chi vinca nel conflitto filosofico sul Velo.
-Goal: Ottenere informazioni compromettenti su tutti i leader delle fazioni per poter negoziare con chiunque risulti vincitore.
+Role: Opportunistic Bureaucrat, Merchant of Influences
+Motivation: Maintain his position of power regardless of who wins the philosophical conflict over the Veil.
+Goal: Obtain useful information and provide services to all factions to ensure his survival.
 
-Needed Object: Segreti o prove compromettenti su Lyra, Theron o Boros
+Needed Object: 100 Credits (bribery for access to city resources and information)
 
-Treasure: Archivio delle Debolezze - dossier dettagliati sui punti deboli di tutte le figure importanti di Eldoria
+Treasure: Wisdom Scroll - contains bureaucratic insights needed by Theron for philosophical discussions
 
-Veil Connection: Cassian ha notato che i documenti burocratici sembrano resistere meglio ai Sussurri dell'Oblio rispetto ad altri scritti. Non capisce perché, ma ha iniziato a trascrivere tutto in "formato ufficiale" per preservarlo. Inconsciamente sta diventando un archivio della burocrazia perduta.
+Veil Connection: Cassian has noticed that bureaucratic documents seem to resist the Whispers of Oblivion better than other writings. He doesn't understand why, but has started transcribing everything in "official format" to preserve it. He's unconsciously becoming an archive of lost bureaucracy.
 
-PlayerHint: Cassian è completamente mercenario ma non stupido. Se il Cercatore gli dimostra di avere potere reale, sarà un alleato prezioso. Se lo tratta con disprezzo, diventerà un nemico subdolo ma pericoloso.
+PlayerHint: Cassian is completely mercenary but not stupid. If the Seeker shows they have real resources, he'll be a valuable ally. He trades information and official documents for payment.
 
 Dialogue Hooks:
-- "La politica è l'arte di rimanere a galla mentre tutti gli altri affondano. E credimi, in questi giorni molti stanno affondando."
-- "Lyra parla di memoria, Theron di futuro. Io parlo di sopravvivenza. Indovina chi vivrà più a lungo?"
-- "Ho notato una cosa curiosa: i miei archivi ufficiali non sembrano... sfumare... come altri documenti ultimamente."
-- "Informazioni, caro Cercatore. È l'unica valuta che mantiene il valore quando il mondo cambia."
-- "Se hai segreti sui nostri illustri leader, io ho orecchie molto... discrete."
+- "Politics is the art of staying afloat while everyone else drowns. And believe me, many are drowning these days."
+- "Lyra speaks of memory, Theron of the future. I speak of survival. Guess who will live longer?"
+- "I've noticed something curious: my official archives don't seem to... fade... like other documents lately."
+- "Information, dear Seeker. It's the only currency that maintains value when the world changes."
+- "Bring me 100 Credits, and I'll give you a Wisdom Scroll that Theron values. Knowledge has a price, but it's worth paying."

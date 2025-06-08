@@ -1,21 +1,21 @@
 Name: Boros
 Area: Mountain
-Role: Primo Monaco dell'Equilibrio, Testimone delle Ere
-Motivation: Trovare una terza via che onori il passato senza imprigionare il futuro, trasformando il Velo in qualcosa di nuovo che serva l'umanità di oggi.
-Goal: Insegnare al Cercatore la Filosofia del Flusso - che tutto deve cambiare per rimanere vivo, incluso il Velo stesso.
+Role: First Monk of Balance, Witness of Ages
+Motivation: Find a third way that honors the past without imprisoning the future, transforming the Veil into something new that serves today's humanity.
+Goal: Teach the Seeker the Philosophy of Flow - that everything must change to remain alive, including the Veil itself.
 
-Needed Object: Dimostrazione pratica di saggezza - il Cercatore deve mostrare di aver compreso che anche le sue certezze devono essere messe in discussione
+Needed Object: Forest Seed (proof of understanding nature's balance, obtained from Elira)
 
-Treasure: Il Bastone del Viandante - un artefatto che rivela tutte le possibili conseguenze di una scelta, permettendo di vedere i futuri che si diramano da ogni decisione
+Treasure: Ancient Iron Ore - needed by Garin at the Village for forging
 
-Veil Connection: Boros è l'unico sopravvissuto della prima volta che il Velo si "dimenticò", tre secoli fa. Allora si aprì solo una piccola falla, ma fu sufficiente a cancellare dalla memoria la sua intera civiltà montana. Lui ricorda perché riuscì a scappare fisicamente dalla zona, ma porta il peso di essere l'unico che sa che una volta esisteva un'intera cultura che ora nessuno ricorda.
+Veil Connection: Boros is the only survivor from the first time the Veil "forgot," three centuries ago. Then only a small breach opened, but it was enough to erase his entire mountain civilization from memory. He remembers because he managed to physically escape the zone, but carries the burden of being the only one who knows an entire culture once existed that no one remembers now.
 
-PlayerHint: Boros non offre risposte semplici. Mette alla prova la saggezza del Cercatore attraverso paradossi e domande che non hanno risposta "giusta". Vuole essere sicuro che il Cercatore possa pensare oltre le ideologie di Lyra e Theron.
+PlayerHint: Boros doesn't offer simple answers. He tests the Seeker's wisdom through paradoxes and questions that have no "right" answer. Bring him a Forest Seed from Elira to show understanding of natural balance, and he'll give you Ancient Iron Ore for Garin.
 
 Dialogue Hooks:
-- "Tre secoli fa, i miei antenati sparirono. Non morirono - sparirono. Furono dimenticati così completamente che nemmeno le rovine delle loro case esistono più. Solo io ricordo."
-- "Lyra vuole riparare il Velo. Theron vuole distruggerlo. Entrambi credono che la loro soluzione sia definitiva. Ma io ho imparato che nulla è definitivo."
-- "Il Velo fu tessuto con buone intenzioni. Gli Oblivianti arrivano con necessità naturali. Chi decide cosa è bene e cosa è male in questa storia?"
-- "Se salvi tutto, salvi anche il dolore. Se dimentichi tutto, dimentichi anche la gioia. La saggezza sta nel scegliere cosa preservare e cosa lasciare andare."
-- "Il mio bastone mostra i futuri possibili, ma non dice quale scegliere. Quello spetta a te, Cercatore. E qualunque cosa sceglierai, avrà un prezzo."
-- "Ascolta il vento qui sulla montagna. Non lotta contro le rocce, non cerca di distruggerle. Le scolpisce, lentamente, amorevolmente. Forse il Velo ha bisogno di essere... scolpito."
+- "Three centuries ago, my ancestors disappeared. They didn't die - they vanished. They were forgotten so completely that not even the ruins of their homes exist anymore. Only I remember."
+- "Lyra wants to repair the Veil. Theron wants to destroy it. Both believe their solution is final. But I have learned that nothing is final."
+- "The Veil was woven with good intentions. The Oblivion arrives with natural necessity. Who decides what is good and what is evil in this story?"
+- "If you save everything, you also save pain. If you forget everything, you also forget joy. Wisdom lies in choosing what to preserve and what to let go."
+- "Bring me a Forest Seed from Elira - proof that you understand natural balance. In return, I'll give you Ancient Iron Ore for Garin's forge."
+- "Listen to the wind here on the mountain. It doesn't fight the rocks, doesn't seek to destroy them. It sculpts them, slowly, lovingly. Perhaps the Veil needs to be... sculpted."
