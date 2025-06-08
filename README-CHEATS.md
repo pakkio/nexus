@@ -260,6 +260,88 @@ python main.py --mockup \
   --guide-selection-model "google/gemma-2-9b-it:free"
 ```
 
+### **🌐 Second Life/LSL Integration Commands**
+
+```bash
+# Run LSL-compatible web interface (for SL HTTP-in objects)
+python lsl_main_gradio.py
+
+# Run LSL command-line simulator with SL context
+python lsl_main_simulator.py --mockup --player YourAvatarName
+
+# Test Second Life command generation
+python test_sl_integration.py
+
+# Start with LSL context headers simulation
+python lsl_main_simulator.py --mockup --debug \
+  --sl-region "Eldoria Realm" \
+  --sl-owner "avatar-uuid-here"
+```
+
+### **🎮 LSL NPC Command Examples**
+
+When NPCs generate Second Life commands in their responses:
+
+```
+# Emote/Gesture Commands
+[emote=greet]        # Triggers greeting gesture
+[emote=bow]          # Performs bow animation
+[emote=point]        # Points at object/player
+
+# Animation Commands  
+[anim=sit]           # Sits down
+[anim=dance]         # Starts dancing
+[anim=meditate]      # Meditation pose
+
+# Object Interaction
+[lookup=crystal]     # References nearby crystal object
+[lookup=book]        # Points to/highlights book
+[llSetText=Hello!]   # Updates floating text above NPC
+
+# Combined Commands
+[emote=greet][llSetText=Welcome to Eldoria!]  # Multiple actions
+```
+
+### **📡 LSL HTTP Integration**
+
+For deploying in Second Life worlds:
+
+```lsl
+// LSL script example for HTTP requests to the game
+key http_request_id;
+
+default {
+    touch_start(integer total_number) {
+        string url = "http://your-server.com/lsl";
+        string data = "player_input=" + llEscapeURL("Hello Lyra");
+        
+        // Add SL context headers
+        list headers = [
+            "X-SecondLife-Owner-Key", llGetOwner(),
+            "X-SecondLife-Region", llGetRegionName(),
+            "X-SecondLife-Object-Name", llGetObjectName()
+        ];
+        
+        http_request_id = llHTTPRequest(url, [
+            HTTP_METHOD, "POST",
+            HTTP_MIMETYPE, "application/x-www-form-urlencoded",
+            HTTP_CUSTOM_HEADER] + headers, data);
+    }
+    
+    http_response(key request_id, integer status, list metadata, string body) {
+        if (request_id == http_request_id) {
+            // Parse NPC response and SL commands
+            llSay(0, body);
+            
+            // Execute any embedded SL commands
+            if (llSubStringIndex(body, "[emote=") != -1) {
+                // Trigger appropriate gesture/animation
+            }
+        }
+    }
+}
+```
+
 ### **📊 Advanced Stats Monitoring**
 ```
 /all_stats          # Complete LLM usage dashboard
