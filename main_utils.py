@@ -68,6 +68,7 @@ def get_help_text(game_session_state: Optional[Dict[str, Any]] = None) -> str: #
 {TF.BRIGHT_MAGENTA}Session Management & Stats:{TF.RESET}
  {TF.DIM}/stats{TF.RESET}               - Show statistics for the last LLM response.
  {TF.DIM}/session_stats{TF.RESET}       - Show statistics for the current NPC conversation.
+ {TF.DIM}/all_stats{TF.RESET}           - Show comprehensive statistics for all LLM types.
  {TF.DIM}/clear{TF.RESET}               - Clear current conversation history (in memory only).
  {TF.DIM}/history{TF.RESET}             - Show raw JSON history for the current conversation.
 

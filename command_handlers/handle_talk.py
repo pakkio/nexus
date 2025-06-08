@@ -68,12 +68,14 @@ def handle_talk(args: str, state: Dict[str, Any]) -> HandlerResult:
         else: # Switching to a new NPC or starting a new conversation
             if session_old: # Save previous conversation if exists
                 print(f"{TF.DIM}Saving previous conversation with {npc_old.get('name','NPC')}...{TF.RESET}")
-                session_utils.save_current_conversation(db, player_id, npc_old, session_old, TF)
+                session_utils.save_current_conversation(db, player_id, npc_old, session_old, TF, state)
 
             llm_wrapper_for_npc_setup = state.get('llm_wrapper_func')
             npc_data, new_session = session_utils.start_conversation_with_specific_npc(
                 db, player_id, area, target_npc_info['name'], model, story, ChatSession_cls, TF,
-                llm_wrapper_for_profile_distillation=llm_wrapper_for_npc_setup
+                game_session_state=state,
+                llm_wrapper_for_profile_distillation=llm_wrapper_for_npc_setup,
+                model_type="dialogue" # Regular NPC conversation
             )
             if npc_data and new_session:
                 new_state_part.update({'current_npc': npc_data, 'chat_session': new_session})

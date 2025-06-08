@@ -13,6 +13,7 @@ import traceback # Added for more detailed error printing if needed
 try:
     from llm_wrapper import llm_wrapper
     from terminal_formatter import TerminalFormatter
+    from llm_stats_tracker import get_global_stats_tracker
 except ImportError as e:
     print(f"Error importing modules in chat_manager.py: {e}")
     class TerminalFormatter:
@@ -23,8 +24,22 @@ except ImportError as e:
         def get_terminal_width(): return 80
 
 
-def format_stats(stats: Optional[Dict[str, Any]]) -> str:
-    """Formatta il dizionario delle statistiche per una visualizzazione leggibile."""
+def format_stats(stats: Optional[Dict[str, Any]], model_type: str = "dialogue") -> str:
+    """Formatta il dizionario delle statistiche per una visualizzazione leggibile.
+    
+    Args:
+        stats: Dictionary of stats or None to use global tracker
+        model_type: Type of model for filtering stats
+    """
+    if stats is None:
+        # Use global stats tracker
+        try:
+            tracker = get_global_stats_tracker()
+            return tracker.format_last_stats(model_type)
+        except:
+            return f"{TerminalFormatter.DIM}Statistiche non disponibili.{TerminalFormatter.RESET}"
+    
+    # Legacy format for backward compatibility
     if not stats:
         return f"{TerminalFormatter.DIM}Statistiche non disponibili.{TerminalFormatter.RESET}"
 
@@ -44,18 +59,22 @@ def format_stats(stats: Optional[Dict[str, Any]]) -> str:
 
 class ChatSession:
     """Gestisce una sessione di chat interattiva con un LLM."""
-    def __init__(self, model_name: Optional[str] = None, use_formatting: bool = True):
+    def __init__(self, model_name: Optional[str] = None, use_formatting: bool = True, model_type: str = "dialogue"):
         self.model_name = model_name
         self._effective_model_name: Optional[str] = None
+        self.model_type = model_type  # Type of LLM usage (dialogue, profile, etc.)
         self.system_prompt: Optional[str] = None
         self.messages: List[Dict[str, str]] = []
         self.last_stats: Optional[Dict[str, Any]] = None
         self.current_player_hint: Optional[str] = None
         self.session_start_time: float = time.time()
+        # Legacy stats for backward compatibility
         self.total_session_calls: int = 0
         self.total_session_input_tokens: int = 0
         self.total_session_output_tokens: int = 0
         self.total_session_time: float = 0.0
+        # Get reference to global stats tracker
+        self.stats_tracker = get_global_stats_tracker()
 
     def set_system_prompt(self, prompt: str):
         self.system_prompt = prompt
@@ -151,10 +170,15 @@ class ChatSession:
 
         self.last_stats = stats
         if stats and not stats.get("error"):
+            # Legacy stats for backward compatibility
             self.total_session_calls += 1
             self.total_session_input_tokens += stats.get("input_tokens", 0)
             self.total_session_output_tokens += stats.get("output_tokens", 0)
             self.total_session_time += stats.get("total_time", 0.0)
+            
+            # Record in global stats tracker
+            model_name = self._effective_model_name or self.model_name or "Unknown"
+            self.stats_tracker.record_call(model_name, self.model_type, stats)
 
         return output_text if output_text is not None else "", stats
 
@@ -169,23 +193,28 @@ class ChatSession:
     def get_last_stats(self) -> Optional[Dict[str, Any]]: return self.last_stats
     def get_model_name(self) -> str: return self._effective_model_name or self.model_name or "Default LLM Model"
 
-    def format_session_stats(self) -> str:
-        total_runtime = time.time() - self.session_start_time
-        lines = [f"{TerminalFormatter.BOLD}Statistiche Sessione Totali ({self.get_model_name()}):{TerminalFormatter.RESET}"]
-        lines.append(f"{TerminalFormatter.DIM}- Durata Sessione Attiva: {total_runtime:.2f}s{TerminalFormatter.RESET}")
-        lines.append(f"{TerminalFormatter.DIM}- Chiamate LLM Totali: {self.total_session_calls}{TerminalFormatter.RESET}")
-        if self.total_session_calls > 0:
-            lines.append(f"{TerminalFormatter.DIM}- Tempo Totale in LLM: {self.total_session_time:.2f}s{TerminalFormatter.RESET}")
-            avg_call_time = self.total_session_time / self.total_session_calls
-            lines.append(f"{TerminalFormatter.DIM}- Tempo Medio per Chiamata LLM: {avg_call_time:.2f}s{TerminalFormatter.RESET}")
-            total_tokens_processed = self.total_session_input_tokens + self.total_session_output_tokens
-            lines.append(f"{TerminalFormatter.DIM}- Tokens Totali (In/Out/Sum): {self.total_session_input_tokens} / {self.total_session_output_tokens} / {total_tokens_processed}{TerminalFormatter.RESET}")
-            if self.total_session_time > 0 and self.total_session_output_tokens > 0:
-                avg_throughput = self.total_session_output_tokens / self.total_session_time
-                lines.append(f"{TerminalFormatter.DIM}- Throughput Medio Output: {avg_throughput:.2f} tokens/s{TerminalFormatter.RESET}")
-            else: lines.append(f"{TerminalFormatter.DIM}- Throughput Medio Output: N/A{TerminalFormatter.RESET}")
-        else: lines.append(f"{TerminalFormatter.DIM}- Nessuna chiamata LLM effettuata in questa sessione.{TerminalFormatter.RESET}")
-        return "\n".join(lines)
+    def format_session_stats(self, use_global_tracker: bool = True) -> str:
+        if use_global_tracker:
+            # Use the new global stats tracker for this model type
+            return self.stats_tracker.format_session_stats(self.model_type)
+        else:
+            # Legacy format for backward compatibility
+            total_runtime = time.time() - self.session_start_time
+            lines = [f"{TerminalFormatter.BOLD}Statistiche Sessione Totali ({self.get_model_name()}):{TerminalFormatter.RESET}"]
+            lines.append(f"{TerminalFormatter.DIM}- Durata Sessione Attiva: {total_runtime:.2f}s{TerminalFormatter.RESET}")
+            lines.append(f"{TerminalFormatter.DIM}- Chiamate LLM Totali: {self.total_session_calls}{TerminalFormatter.RESET}")
+            if self.total_session_calls > 0:
+                lines.append(f"{TerminalFormatter.DIM}- Tempo Totale in LLM: {self.total_session_time:.2f}s{TerminalFormatter.RESET}")
+                avg_call_time = self.total_session_time / self.total_session_calls
+                lines.append(f"{TerminalFormatter.DIM}- Tempo Medio per Chiamata LLM: {avg_call_time:.2f}s{TerminalFormatter.RESET}")
+                total_tokens_processed = self.total_session_input_tokens + self.total_session_output_tokens
+                lines.append(f"{TerminalFormatter.DIM}- Tokens Totali (In/Out/Sum): {self.total_session_input_tokens} / {self.total_session_output_tokens} / {total_tokens_processed}{TerminalFormatter.RESET}")
+                if self.total_session_time > 0 and self.total_session_output_tokens > 0:
+                    avg_throughput = self.total_session_output_tokens / self.total_session_time
+                    lines.append(f"{TerminalFormatter.DIM}- Throughput Medio Output: {avg_throughput:.2f} tokens/s{TerminalFormatter.RESET}")
+                else: lines.append(f"{TerminalFormatter.DIM}- Throughput Medio Output: N/A{TerminalFormatter.RESET}")
+            else: lines.append(f"{TerminalFormatter.DIM}- Nessuna chiamata LLM effettuata in questa sessione.{TerminalFormatter.RESET}")
+            return "\n".join(lines)
 
 if __name__ == '__main__':
     print(f"\n{TerminalFormatter.BOLD}{TerminalFormatter.YELLOW}--- Testing ChatManager ---{TerminalFormatter.RESET}")

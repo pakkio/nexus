@@ -107,27 +107,38 @@ def run_interaction_loop(
             print(f"{TerminalFormatter.YELLOW}Note: Initial area '{initial_area}' matched multiple areas: {area_matches}. Using '{area_matches[0]}'.{TerminalFormatter.RESET}")
 
         if initial_npc_name:
+            # Determine model type based on whether this is the wise guide
+            model_type = "guide_selection" if initial_npc_name and initial_npc_name.lower() == wise_guide_npc_name.lower() else "dialogue"
             npc_data, session = session_utils.start_conversation_with_specific_npc(
                 db, player_id, game_session_state['current_area'], initial_npc_name,
                 model_name, story, ChatSession, TerminalFormatter, game_session_state, # Pass full state
-                llm_wrapper_for_profile_distillation=llm_wrapper_for_setup
+                llm_wrapper_for_profile_distillation=llm_wrapper_for_setup,
+                model_type=model_type
             )
             if npc_data and session:
                 game_session_state['current_npc'], game_session_state['chat_session'] = npc_data, session
             else: # NPC not found or error, try default for the area
                 print(f"{TerminalFormatter.YELLOW}Warn: Specified NPC '{initial_npc_name}' not found in '{game_session_state['current_area']}'. Trying default NPC.{TerminalFormatter.RESET}")
+                # Check if default NPC might be the wise guide
+                default_npc_info = db.get_default_npc(game_session_state['current_area'])
+                default_model_type = "guide_selection" if (default_npc_info and default_npc_info.get('name', '').lower() == wise_guide_npc_name.lower()) else "dialogue"
                 default_npc_data, default_session = session_utils.auto_start_default_npc_conversation(
                     db, player_id, game_session_state['current_area'], model_name, story,
                     ChatSession, TerminalFormatter, game_session_state, # Pass full state
-                    llm_wrapper_for_profile_distillation=llm_wrapper_for_setup
+                    llm_wrapper_for_profile_distillation=llm_wrapper_for_setup,
+                    model_type=default_model_type
                 )
                 if default_npc_data and default_session:
                     game_session_state['current_npc'], game_session_state['chat_session'] = default_npc_data, default_session
         else: # No specific NPC, start with default for the area
+            # Check if default NPC might be the wise guide  
+            default_npc_info = db.get_default_npc(game_session_state['current_area'])
+            default_model_type = "guide_selection" if (default_npc_info and default_npc_info.get('name', '').lower() == wise_guide_npc_name.lower()) else "dialogue"
             default_npc_data, default_session = session_utils.auto_start_default_npc_conversation(
                 db, player_id, game_session_state['current_area'], model_name, story,
                 ChatSession, TerminalFormatter, game_session_state, # Pass full state
-                llm_wrapper_for_profile_distillation=llm_wrapper_for_setup
+                llm_wrapper_for_profile_distillation=llm_wrapper_for_setup,
+                model_type=default_model_type
             )
             if default_npc_data and default_session:
                 game_session_state['current_npc'], game_session_state['chat_session'] = default_npc_data, default_session

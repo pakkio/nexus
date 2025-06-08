@@ -4,6 +4,7 @@ from typing import Dict, List, Any, Optional, Callable
 
 try:
   from terminal_formatter import TerminalFormatter
+  from llm_stats_tracker import get_global_stats_tracker
 except ImportError:
   class TerminalFormatter:
     DIM = ""; RESET = ""; BOLD = ""; YELLOW = ""; RED = ""; GREEN = ""; MAGENTA = ""; CYAN = ""; ITALIC = ""
@@ -220,6 +221,14 @@ def interpret_user_intent(
       stream=False,  # Non vogliamo streaming per questo
       collect_stats=True
     )
+    
+    # Record stats for command interpretation
+    if stats:
+      try:
+        stats_tracker = get_global_stats_tracker()
+        stats_tracker.record_call(model_name, "command_interpretation", stats)
+      except Exception as e:
+        print(f"{TF.DIM}Warning: Could not record command interpretation LLM stats: {e}{TF.RESET}")
     
     if stats and stats.get("error"):
       print(f"{TF.YELLOW}Warning: LLM error in command interpretation: {stats['error']}{TF.RESET}")
