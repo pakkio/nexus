@@ -201,7 +201,7 @@ def run_interaction_loop(
                     if item_list_str: # Process items only if string is not empty
                         potential_items = [item.strip() for item in item_list_str.split(',') if item.strip()]
                         for item_str in potential_items:
-                            credit_match = re.match(r"(\d+)\s+credits?", item_str, re.IGNORECASE)
+                            credit_match = re.match(r"(-?\d+)\s+credits?", item_str, re.IGNORECASE)
                             if credit_match:
                                 credits_given += int(credit_match.group(1))
                             else:
@@ -213,9 +213,19 @@ def run_interaction_loop(
                 for item_name in items_given_names:
                     if db_instance.add_item_to_inventory(player_id_curr, item_name, game_session_state): # Pass state for inv cache update
                         game_session_state['actions_this_turn_for_profile'].append(f"Received '{item_name}' from {current_npc_data.get('name', 'NPC')}")
-            if credits_given > 0:
+            if credits_given != 0:
+                # Check if player has sufficient credits for negative amounts
+                if credits_given < 0:
+                    current_credits = db_instance.get_player_credits(player_id_curr)
+                    if current_credits < abs(credits_given):
+                        print(f"{TF_curr.RED}[TRANSACTION FAILED] You don't have enough credits! You have {current_credits}, but need {abs(credits_given)}.{TF_curr.RESET}")
+                        continue # Skip this transaction
+                
                 if db_instance.update_player_credits(player_id_curr, credits_given, game_session_state): # Pass state for credits cache update
-                    game_session_state['actions_this_turn_for_profile'].append(f"Received {credits_given} Credits from {current_npc_data.get('name', 'NPC')}")
+                    if credits_given > 0:
+                        game_session_state['actions_this_turn_for_profile'].append(f"Received {credits_given} Credits from {current_npc_data.get('name', 'NPC')}")
+                    else:
+                        game_session_state['actions_this_turn_for_profile'].append(f"Paid {abs(credits_given)} Credits to {current_npc_data.get('name', 'NPC')}")
 
       # Check for item giving consequences (player gave item to NPC)
       item_given_details = game_session_state.pop('item_given_to_npc_this_turn', None)

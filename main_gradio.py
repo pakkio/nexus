@@ -398,6 +398,9 @@ def get_detailed_info(info_type: str):
         
     elif info_type == "help":
         return format_help_for_web()
+        
+    elif info_type == "stats":
+        return get_token_stats_detailed()
     
     return "Info not available."
 
@@ -457,11 +460,95 @@ def update_info_panel(info_type: str):
     return game.current_info_display
 
 
+def get_quick_recap():
+    """Get quick recap section showing where you are and profile abstract"""
+    if not game.initialized:
+        return "🌟 **Status:** _Initializing realm..._"
+    
+    # Location info
+    area = game.session_state.get('current_area', 'The Void')
+    current_npc = game.session_state.get('current_npc')
+    
+    location_info = f"📍 **Location:** {area}"
+    if game.session_state.get('in_hint_mode'):
+        guide_name = game.session_state.get('wise_guide_npc_name', 'Guide')
+        location_info += f" (consulting {guide_name})"
+    elif current_npc:
+        npc_name = current_npc.get('name', 'Mysterious Figure')
+        location_info += f" (with {npc_name})"
+    
+    # Quick profile abstract (top 2 traits)
+    profile_cache = game.session_state.get('player_profile_cache', {})
+    if profile_cache and 'traits' in profile_cache:
+        traits = profile_cache['traits']
+        # Get top 2 traits by value
+        sorted_traits = sorted(traits.items(), key=lambda x: x[1], reverse=True)[:2]
+        trait_text = ", ".join([f"{trait.title()}: {get_trait_qualitative_level(value)}" 
+                              for trait, value in sorted_traits])
+        profile_abstract = f"🧙 **Character:** {trait_text}"
+    else:
+        profile_abstract = "🧙 **Character:** _Analyzing personality..._"
+    
+    # Credits and inventory summary
+    credits = game.session_state.get('player_credits_cache', 0)
+    inventory_count = len(game.session_state.get('player_inventory', []))
+    resources = f"💰 {credits} credits • 🎒 {inventory_count} items"
+    
+    return f"{location_info}\n{profile_abstract}\n{resources}"
+
+
+def get_llm_status_indicators():
+    """Get LLM status indicators with color coding"""
+    if not game.initialized:
+        return "🔴 LLMs: _Offline_"
+    
+    # Color coding: green=chat, orange=command, yellow=profile, red=additional
+    chat_status = "🟢" if game.session_state.get('chat_session') else "🔴"
+    command_status = "🟠"  # Always active for command detection
+    profile_status = "🟡" if game.session_state.get('player_profile_cache') else "🔴"
+    additional_status = "🔴"  # Red for additional profile interpreter
+    
+    # Get current model info
+    current_model = game.session_state.get('model_name', 'Unknown')
+    model_short = current_model.split('/')[-1] if '/' in current_model else current_model
+    
+    return f"**LLM Status:** {chat_status} Chat • {command_status} Command • {profile_status} Profile • {additional_status} Additional\n**Model:** {model_short}"
+
+
+def get_token_stats_detailed():
+    """Get detailed token statistics for each LLM"""
+    if not game.initialized:
+        return "📊 **Token Stats:** _Not available_"
+    
+    stats_lines = ["📊 **Token Usage by LLM:**"]
+    
+    # Chat LLM stats
+    chat_session = game.session_state.get('chat_session')
+    if chat_session:
+        last_stats = chat_session.get_last_stats()
+        if last_stats:
+            input_tokens = last_stats.get('input_tokens', 0)
+            output_tokens = last_stats.get('output_tokens', 0)
+            total_tokens = last_stats.get('total_tokens', input_tokens + output_tokens)
+            stats_lines.append(f"🟢 **Chat:** {total_tokens} tokens ({input_tokens}→{output_tokens})")
+        else:
+            stats_lines.append("🟢 **Chat:** _No stats yet_")
+    else:
+        stats_lines.append("🟢 **Chat:** _Inactive_")
+    
+    # Command and profile LLM stats (these would need to be tracked separately)
+    stats_lines.append("🟠 **Command:** _Lightweight processing_")
+    stats_lines.append("🟡 **Profile:** _Usage tracked per update_")
+    stats_lines.append("🔴 **Additional:** _Not implemented_")
+    
+    return "\n".join(stats_lines)
+
+
 def get_main_status_displays(): 
     """Get main status displays for the right panel"""
     print("[DEBUG] get_main_status_displays called")
     if not game.initialized:
-        return "🎒 Empty", "💰 0", "### 📍 Unknown", "🧙 N/A"
+        return "🎒 Empty", "💰 0", "### 📍 Unknown", "🧙 N/A", get_quick_recap(), get_llm_status_indicators()
     
     # Inventory
     inv_text = f"🎒 **{len(game.session_state.get('player_inventory', []))} items**" if game.session_state.get('player_inventory') else "🎒 **Empty pouch**"
@@ -485,7 +572,7 @@ def get_main_status_displays():
     else:
         interaction_status = "⏳ *Exploring...*"
     
-    return inv_text, cred_text, f"{location_header}\n{interaction_status}", get_profile_summary()
+    return inv_text, cred_text, f"{location_header}\n{interaction_status}", get_profile_summary(), get_quick_recap(), get_llm_status_indicators()
 
 
 def send_message(message: str, chat_history: List[Dict[str, str]]):
@@ -622,7 +709,7 @@ def auto_initialize():
         game.current_info_display = get_detailed_info("profile") 
         return chat_history, *get_main_status_displays(), game.current_info_display, message
     else:
-        return [], "Error", "Error", "Error", "Error", f"Init Fail: {message}", message
+        return [], "Error", "Error", "Error", "Error", "Error", "Error", f"Init Fail: {message}", message
 
 
 def use_hint():
@@ -746,7 +833,7 @@ def create_interface():
     
     # Auto-initialize
     (initial_chat_history, initial_inv_text, initial_cred_text, initial_loc_text, 
-     initial_prof_sum, initial_info_panel_content, initial_status_message) = auto_initialize()
+     initial_prof_sum, initial_recap, initial_llm_status, initial_info_panel_content, initial_status_message) = auto_initialize()
     
     with gr.Blocks(
         title="Eldoria", 
@@ -801,6 +888,17 @@ def create_interface():
             with gr.Column(scale=1): 
                 gr.Markdown("## 🌟 Realm Status")
                 
+                # Quick Recap Section
+                gr.Markdown("### ⚡ Quick Recap")
+                quick_recap_display = gr.Markdown(initial_recap)
+                
+                # LLM Status Indicators  
+                gr.Markdown("### 🤖 LLM Status")
+                llm_status_display = gr.Markdown(initial_llm_status)
+                
+                gr.Markdown("---")
+                gr.Markdown("### 📊 Character & Resources")
+                
                 inventory_display = gr.Markdown(initial_inv_text)
                 credits_display = gr.Markdown(initial_cred_text)
                 location_display = gr.Markdown(initial_loc_text) 
@@ -814,6 +912,9 @@ def create_interface():
                     npcs_btn = gr.Button("👥 Characters", size="sm")
                     areas_btn = gr.Button("🗺️ Realms", size="sm")
                 
+                with gr.Row():
+                    stats_btn = gr.Button("📊 Token Stats", size="sm", variant="secondary")
+                
                 info_panel = gr.Markdown(
                     value=initial_info_panel_content, 
                     label="📋 Detailed Information"
@@ -823,18 +924,18 @@ def create_interface():
         send_btn.click(
             fn=send_message, 
             inputs=[msg_input, chatbot], 
-            outputs=[chatbot, msg_input, inventory_display, credits_display, location_display, profile_summary_display, status_message_display]
+            outputs=[chatbot, msg_input, inventory_display, credits_display, location_display, profile_summary_display, quick_recap_display, llm_status_display, status_message_display]
         )
         
         msg_input.submit(
             fn=send_message, 
             inputs=[msg_input, chatbot], 
-            outputs=[chatbot, msg_input, inventory_display, credits_display, location_display, profile_summary_display, status_message_display]
+            outputs=[chatbot, msg_input, inventory_display, credits_display, location_display, profile_summary_display, quick_recap_display, llm_status_display, status_message_display]
         )
         
         hint_btn.click(
             fn=use_hint, 
-            outputs=[chatbot, inventory_display, credits_display, location_display, profile_summary_display, status_message_display]
+            outputs=[chatbot, inventory_display, credits_display, location_display, profile_summary_display, quick_recap_display, llm_status_display, status_message_display]
         )
         
         inventory_info_btn.click(
@@ -865,6 +966,11 @@ def create_interface():
         
         areas_btn.click(
             fn=lambda: update_info_panel("areas"), 
+            outputs=[info_panel]
+        )
+        
+        stats_btn.click(
+            fn=lambda: update_info_panel("stats"), 
             outputs=[info_panel]
         )
     
