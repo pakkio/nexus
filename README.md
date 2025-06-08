@@ -10,10 +10,15 @@ Eldoria is a Python-based command-line application that provides a framework for
 
 ## Core Features
 
-*   **LLM-Powered Dialogue:** NPCs conversations are powered by LLMs (configurable via OpenRouter), providing dynamic and context-aware interactions.
+*   **Multi-Model LLM Integration:** Uses different specialized LLMs for specific purposes:
+    *   **Dialogue LLM** - Powers dynamic NPC conversations
+    *   **Profile Analysis LLM** - Analyzes player psychology and behavior patterns
+    *   **Guide Selection LLM** - Intelligently selects wise guides based on story context
+    *   **Command Interpretation LLM** - Processes natural language commands
+*   **Advanced Statistics Tracking:** Comprehensive LLM usage monitoring with real-time dashboards showing token usage, performance metrics, and activity status across all model types.
 *   **Dynamic Player Profiling:** The system analyzes player interactions and dialogue choices to build and update a psychological profile for the player. This profile can subtly influence NPC behavior and hints.
 *   **Data-Driven Content:** Game worlds, including storyboards and Non-Player Characters (NPCs), are defined in external `.txt` files, making content creation and modification accessible.
-*   **Hint System & Wise Guide:** Players can request hints from a "Wise Guide" NPC. The system can even use an LLM to select the most appropriate NPC for this role based on the story's context.
+*   **Intelligent Hint System & Wise Guide:** Players can request hints from a "Wise Guide" NPC. The system uses an LLM to select the most appropriate NPC for this role based on the story's context.
 *   **Command & Natural Language Input:** Players can interact using explicit commands (e.g., `/go tavern`) or by typing natural language phrases which the system attempts to interpret.
 *   **Inventory & Basic Game State:** Manages player inventory, credits, and plot flags.
 *   **Persistent State:** Player progress, inventory, and conversation history can be saved either to a MySQL database or a local file-based mockup system.
@@ -195,8 +200,9 @@ Once set up and data is loaded, you can run the game using `main.py`.
     *   `/hint`: Consult the "Wise Guide" for advice.
     *   `/endhint`: Stop consulting the Wise Guide and return to your previous context.
     *   `/profile`: View your character's psychological profile.
-    *   `/stats`: Show LLM stats for the last turn.
-    *   `/session_stats`: Show aggregate LLM stats for the current conversation.
+    *   `/stats`: Show LLM stats for the last dialogue turn with status overview.
+    *   `/session_stats`: Show dialogue session stats plus comprehensive breakdown.
+    *   `/all_stats`: Show comprehensive statistics dashboard for all LLM types.
     *   `/clear`: Clears the current in-memory conversation history with the NPC.
     *   `/exit` or `/quit`: Exit the game.
 *   **Natural Language Commands:** The system attempts to interpret common phrases as commands (e.g., "vado in taverna" might become `/go Tavern`).
@@ -215,9 +221,24 @@ This profile can be viewed with `/profile` and is used by the LLM to subtly tail
 
 ### Hint System & Wise Guide
 The `/hint` command allows you to consult a "Wise Guide" NPC.
-*   The `wise_guide_selector.py` module uses an LLM to analyze the main storyboard and the list of available NPCs to determine who is best suited for this role (e.g., Lyra in "The Shattered Veil").
+*   The `wise_guide_selector.py` module uses a dedicated LLM to analyze the main storyboard and the list of available NPCs to determine who is best suited for this role (e.g., Lyra in "The Shattered Veil").
 *   When you use `/hint`, your current conversation is paused, and a new one begins with the Wise Guide. The guide is provided with context about your recent interactions and your player profile to give relevant advice.
 *   `/endhint` returns you to your previous conversation.
+*   Hint consultations are tracked separately from regular dialogue in the stats system.
+
+### Multi-Model LLM Statistics
+The system provides comprehensive tracking and monitoring of all LLM usage:
+*   **Real-time Status Indicators:** Color-coded emoji indicators show which LLM types are active
+*   **Performance Metrics:** Token usage, timing, throughput for each model type
+*   **Usage Categories:**
+    *   🟢 **Dialogue** - Regular NPC conversations
+    *   🟡 **Profile** - Player psychological analysis 
+    *   🔵 **Guide Selection** - Wise guide consultations
+    *   🟠 **Command Interpretation** - Natural language processing
+*   **Statistical Commands:**
+    *   `/stats` - Last dialogue turn + status overview
+    *   `/session_stats` - Current session + comprehensive breakdown
+    *   `/all_stats` - Complete multi-model dashboard with detailed breakdowns
 
 ### Inventory, Credits & Plot Flags
 *   **Inventory:** You can acquire items, which are stored in your inventory.
@@ -371,6 +392,7 @@ Let's create a minimal "Office Life" scenario.
 ├── command_processor.py # Dispatches commands to handlers or LLM
 ├── db_manager.py # Handles database (MySQL/mockup) interactions
 ├── hint_manager.py # Logic for providing hints via Wise Guide
+├── llm_stats_tracker.py # Multi-model LLM statistics tracking system
 ├── llm_wrapper.py # Interface to the LLM (OpenRouter)
 ├── load.py # Script to load story/NPC data
 ├── main.py # Main application entry point
