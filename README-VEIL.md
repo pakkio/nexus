@@ -1,140 +1,227 @@
-# 🌙 *The Weaving Veil* - L'Intreccio delle Memorie
+# 🌙 *The Shattered Veil* - Story & World Guide
 
-## 📖 STORIA DEL MONDO
+## 📖 WORLD LORE
 
-### Il Velo: Non una Barriera, ma un Sacrificio Vivente
+### The Veil: Not a Barrier, but a Living Sacrifice
 
-Eldoria non è protetta da una semplice barriera magica. Il Velo è un tessuto vivente, intessuto con le anime e le memorie di un’intera civiltà perduta: i **Tessitori**.
+Eldoria is not protected by a simple magical barrier. The Veil is a living fabric, woven from the souls and memories of an entire lost civilization: the **Weavers**.
 
-Millenni fa, quando gli **Oblivianti** – entità cosmiche che si nutrono dell’esistenza stessa – minacciarono di consumare la realtà, i Tessitori si sacrificarono volontariamente. Le loro anime vennero intrecciate in un arazzo protettivo di **memorie, sogni e rinunce**, avvolgendo Eldoria in un bozzolo invisibile.
-
----
-
-### La Crisi Attuale: Il Velo che Dimentica
-
-Il Velo non si sta spezzando: **si sta dimenticando**. I fili più antichi, quelli che custodivano il ricordo del Sacrificio Originale, iniziano a sfilacciarsi perché nessuno ricorda più *perché* esiste il Velo.
-
-Dove si aprono le lacerazioni, filtrano i **Sussurri dell’Oblio**: non mostri fisici, ma **frammenti di nulla** che cancellano storie, legami, intere identità. Famiglie scompaiono dalla memoria. I libri si svuotano. Le tradizioni si interrompono a metà frase.
+Millennia ago, when the **Oblivion** – cosmic entities that feed on existence itself – threatened to consume reality, the Weavers voluntarily sacrificed themselves. Their souls were interwoven into a protective tapestry of **memories, dreams, and sacrifices**, wrapping Eldoria in an invisible cocoon.
 
 ---
 
-## ⚔️ LE TRE FILOSOFIE IN CONFLITTO
+### The Current Crisis: The Veil that Forgets
 
-### 🏛️ Custodi della Memoria
+The Veil is not breaking: **it is forgetting**. The oldest threads, those that guarded the memory of the Original Sacrifice, begin to fray because no one remembers *why* the Veil exists.
 
-* **Leader:** Lyra, Tessitrice Suprema
-* **Filosofia:** Solo ricostruendo la storia dei Tessitori e rinnovando il ricordo del Sacrificio Originale si può salvare il Velo.
-* **Obiettivo:** Trovare i **Nodi Primordiali** e risvegliare la memoria dimenticata.
+Where tears open, the **Whispers of Oblivion** filter through: not physical monsters, but **fragments of nothingness** that erase stories, bonds, entire identities. Families disappear from memory. Books empty themselves. Traditions stop mid-sentence.
 
 ---
 
-### ⚡ Progressisti
+## ⚔️ THE THREE PHILOSOPHIES IN CONFLICT
 
-* **Leader:** Alto Giudice Theron
-* **Filosofia:** Il Velo è una prigione dorata. L’oblio è liberazione dal peso del passato.
-* **Obiettivo:** Lasciar dissolvere il Velo e affrontare gli Oblivianti con **tecnologia e volontà**.
+### 🏛️ Memory Keepers (Preservationists)
 
----
-
-### ⚖️ Viandanti dell’Equilibrio
-
-* **Leader:** Boros, Primo Monaco
-* **Filosofia:** Il Velo deve **evolvere**, non essere preservato né distrutto.
-* **Obiettivo:** Trasformarlo in qualcosa che onori il passato senza imprigionare il futuro.
+* **Leader:** Lyra, Supreme Weaver
+* **Philosophy:** Only by reconstructing the history of the Weavers and renewing the memory of the Original Sacrifice can the Veil be saved.
+* **Objective:** Find the **Primordial Nodes** and awaken forgotten memory.
 
 ---
 
-## 🗺️ AREE DEL MONDO
+### ⚡ Progressives (Future Seekers)
 
-| Luogo                       | Descrizione                                      |
-| --------------------------- | ------------------------------------------------ |
-| 🏛️ **Sanctum of Whispers** | Centro della memoria, sede di Lyra               |
-| 🏛️ **Ancient Ruins**       | Rovine dove dimora Syra, eco dei Tessitori       |
-| 🌆 **City**                 | Centro politico, sede di Theron, Cassian, Irenna |
-| 🌲 **Forest**               | Nodo Naturale custodito da Elira                 |
-| ⛰️ **Mountain**             | Ritiro monastico di Boros                        |
-| 🍺 **Tavern**               | Luogo d’incontro, sede di Jorin                  |
-| 🏘️ **Village**             | Comunità rurale con Garin e Mara                 |
-| 🌀 **Liminal Void**         | Spazio tra esistenza e oblio, dimora di Erasmus  |
-| ✨ **Nexus of Paths**        | Punto di convergenza finale, sede di Meridia     |
+* **Leader:** High Judge Theron
+* **Philosophy:** The Veil is a golden prison. Oblivion is liberation from the weight of the past.
+* **Objective:** Let the Veil dissolve and face the Oblivion with **technology and will**.
 
 ---
 
-## 👥 PERSONAGGI PRINCIPALI
+### ⚖️ Equilibrium Walkers (Balance Seekers)
 
-### 🔮 LYRA – Tessitrice Suprema *(Sanctum of Whispers)*
-
-* **Ruolo:** Guida saggia, Custode della Memoria Primordiale
-* **Chi è:** Ultima discendente dei Tessitori, ha sacrificato parte della propria memoria per mantenere vivo il ricordo del Sacrificio.
-* **Cosa vuole:** Che il Cercatore **viva la memoria**, non la studi.
-* **Interazione:**
-
-    * Chiedi della storia dei Tessitori
-    * Domanda sui Nodi Primordiali
-    * Usa `/hint` per suggerimenti strategici
-    * Mostra comprensione **emotiva**, non logica
-* **Ricompensa:** 🧵 *Telaio dell’Eco* – consente di comunicare con i Tessitori morti e leggere le memorie del Velo
+* **Leader:** Boros, First Monk
+* **Philosophy:** The Veil must **evolve**, not be preserved or destroyed.
+* **Objective:** Transform it into something that honors the past without imprisoning the future.
 
 ---
 
-### ⚖️ ALTO GIUDICE THERON – Rivoluzionario Filosofico *(City)*
+## 🗺️ WORLD AREAS
 
-* **Ruolo:** Antagonista ideologico, leader dei Progressisti
-* **Chi è:** Immune ai Sussurri dell’Oblio perché completamente proiettato nel futuro
-* **Cosa vuole:** Che il Cercatore provi l’oblio per scelta
-* **Interazione:**
-
-    * Discuti sul senso della memoria
-    * Chiedi delle sue esperienze con i Sussurri
-    * Metti in discussione le sue certezze
-* **Ricompensa:** 📜 *Codice della Tabula Rasa* – tecnica per cancellare selettivamente ricordi dolorosi
-
----
-
-### 🏔️ BOROS – Primo Monaco dell’Equilibrio *(Mountain)*
-
-* **Ruolo:** Testimone delle Ere, maestro del paradosso
-* **Chi è:** Sopravvissuto all’ultima dimenticanza del Velo, tre secoli fa
-* **Cosa vuole:** Che il Cercatore dimostri **saggezza**, non risposte
-* **Interazione:**
-
-    * Ascolta i suoi paradossi
-    * Mostra umiltà e visione molteplice
-* **Ricompensa:** 🪄 *Bastone del Viandante* – rivela le conseguenze future di ogni scelta
+| Location                    | Description                                        |
+| --------------------------- | -------------------------------------------------- |
+| 🏛️ **Sanctum of Whispers** | Center of memory, Lyra's domain                   |
+| 🏛️ **Ancient Ruins**       | Ruins where Syra dwells, echo of the Weavers      |
+| 🌆 **City**                 | Political center, domain of Theron, Cassian, Irenna |
+| 🌲 **Forest**               | Natural Node guarded by Elira                     |
+| ⛰️ **Mountain**             | Boros's monastic retreat                           |
+| 🍺 **Tavern**               | Meeting place, Jorin's domain                      |
+| 🏘️ **Village**             | Rural community with Garin and Mara               |
+| 🌀 **Liminal Void**         | Space between existence and oblivion, Erasmus's realm |
+| ✨ **Nexus of Paths**        | Final convergence point, Meridia's domain         |
 
 ---
 
-## 👥 PERSONAGGI SECONDARI
+## 👥 MAIN CHARACTERS
+
+### 🔮 LYRA – Supreme Weaver *(Sanctum of Whispers)*
+
+* **Role:** Wise Guide, Keeper of Primordial Memory
+* **Who she is:** Last descendant of the Weavers, sacrificed part of her own memory to keep alive the memory of the Sacrifice.
+* **What she wants:** For the Seeker to **live the memory**, not just study it.
+* **Interaction:**
+    * Ask about the history of the Weavers
+    * Inquire about Primordial Nodes
+    * Use `/hint` for strategic guidance
+    * Show **emotional** understanding, not logical
+* **Reward:** 🧵 *Echo Loom* – allows communication with dead Weavers and reading Veil memories
+
+---
+
+### ⚖️ HIGH JUDGE THERON – Philosophical Revolutionary *(City)*
+
+* **Role:** Ideological antagonist, leader of Progressives
+* **Who he is:** Immune to Whispers of Oblivion because completely projected into the future
+* **What he wants:** For the Seeker to experience oblivion by choice
+* **Interaction:**
+    * Discuss the meaning of memory
+    * Ask about his experiences with the Whispers
+    * Challenge his certainties
+* **Reward:** 📜 *Code of Tabula Rasa* – technique for selectively erasing painful memories
+
+---
+
+### 🏔️ BOROS – First Monk of Equilibrium *(Mountain)*
+
+* **Role:** Witness of Ages, master of paradox
+* **Who he is:** Survivor of the last forgetting of the Veil, three centuries ago
+* **What he wants:** For the Seeker to demonstrate **wisdom**, not answers
+* **Interaction:**
+    * Listen to his paradoxes
+    * Show humility and multiple perspectives
+* **Reward:** 🪄 *Wanderer's Staff* – reveals future consequences of every choice
+
+---
+
+## 👥 SECONDARY CHARACTERS
 
 * **👻 SYRA** *(Ancient Ruins)*
-  Tessitore incompleto. Chiede un *atto autentico di comprensione* per completarsi.
+  Incomplete Weaver. Asks for an *authentic act of understanding* to complete herself.
+  **Needs:** Sacred Offering Bowl (from Jorin) filled with pure water
 
 * **🌳 ELIRA** *(Forest)*
-  Simbiotica con la foresta. Cerca **empatia reale**, non risposte corrette.
+  Symbiotic with the forest. Seeks **real empathy**, not correct answers.
+  **Needs:** Healing Potion (from Mara) as proof of caring for the injured
 
 * **🍺 JORIN** *(Tavern)*
-  Locandiere che raccoglie sogni cancellati. Vuole una **storia mai raccontata**.
+  Innkeeper who collects erased dreams. Wants a **never-told story**.
+  **Needs:** Iron Shavings (from Garin) to forge the Sacred Offering Bowl
 
 * **⚒️ GARIN** *(Village)*
-  Fabbro delle Memorie. Cerca metallo che abbia "vissuto" emozioni.
+  Memory Smith. Seeks metal that has "lived" emotions.
+  **Needs:** Ancient Iron Ore (from Boros) to forge memory-resistant items
 
 * **🎭 IRENNA** *(City)*
-  Marionettista. Crea spettacoli da **testimonianze vere**.
+  Puppeteer. Creates shows from **true testimonies**.
+  **Needs:** Memory Thread (obtained through completing other quests)
 
 * **📊 CASSIAN** *(City)*
-  Burocrate cinico. Utile se **rispettato** e informato.
+  Cynical bureaucrat. Useful if **respected** and properly compensated.
+  **Needs:** 100 Credits for access to official documents and wisdom
 
 * **🌿 MARA** *(Village)*
-  Erborista. Cerca **semi dimenticati** per creare l’*Infuso della Persistenza* (immunità temporanea ai Sussurri).
+  Herbalist. Seeks **forgotten seeds** to create *Persistence Infusion* (temporary immunity to Whispers).
+  **Needs:** 50 Credits for rare healing materials
 
 ---
 
-## 👥 PERSONAGGI SPECIALI
+## 👥 SPECIAL CHARACTERS
 
 * **🌀 ERASMUS** *(Liminal Void)*
-  Ex-filosofo divenuto ambasciatore degli Oblivianti. Non chiede nulla. Offre una **visione cosmica inquietante**.
+  Former philosopher turned ambassador of the Oblivion. Asks for nothing. Offers a **disturbing cosmic vision**.
 
 * **✨ MERIDIA** *(Nexus of Paths)*
-  Tessitrice finale. Non si sacrificò mai. Appare solo al momento della **Scelta Ultima**.
+  Final Weaver. Never sacrificed herself. Appears only at the moment of **Ultimate Choice**.
 
 ---
+
+## 🤖 AI-POWERED EXPERIENCE
+
+### Multi-Model LLM System
+The game uses specialized AI models for different purposes:
+
+* **🟢 Dialogue LLM** - Powers dynamic NPC conversations
+* **🟡 Profile Analysis LLM** - Builds your psychological profile based on choices
+* **🔵 Guide Selection LLM** - Intelligently selects Lyra as the Wise Guide
+* **🟠 Command Interpretation LLM** - Processes natural language input
+
+### Real-Time Stats Monitoring
+Track your AI interaction with comprehensive statistics:
+
+```
+/stats           # Quick dialogue stats + AI status overview
+/session_stats   # Current session + all AI model breakdown  
+/all_stats       # Complete multi-model dashboard
+```
+
+**Status Indicators:**
+* 🟢 **Active** - AI model currently being used
+* 🔴 **Inactive** - AI model not yet used in session
+
+### Dynamic Character Profiling
+Your psychological profile evolves based on:
+* **Dialogue choices** with NPCs
+* **Philosophical positions** taken
+* **Decision patterns** in moral dilemmas
+* **Interaction style** (respectful, aggressive, curious, etc.)
+
+View your character development with `/profile` and see how NPCs respond differently based on your evolving personality.
+
+---
+
+## 🎯 QUEST INTERCONNECTIONS
+
+### The Memory Chain (Main Quest)
+**Village** → **Forest** → **Mountain** → **Village** → **Tavern** → **Ancient Ruins** → **Sanctum**
+
+Each step builds on the previous, creating items needed for the next phase while developing your character's understanding of the Veil crisis.
+
+### The Wisdom Path (Philosophy Quest)  
+**City (Cassian)** → **City (Theron)** → **Deep philosophical discussions**
+
+Explore the ideological conflict through direct engagement with opposing viewpoints.
+
+### The Ultimate Choice (Endgame)
+**Nexus of Paths (Meridia)** → **Final decision on the Veil's fate**
+
+Only accessible after proving understanding of all three philosophical factions.
+
+---
+
+## 🎭 ROLEPLAY APPROACHES
+
+### The Scholar
+* Focus on understanding all perspectives before choosing
+* Use `/hint` frequently for deeper insights
+* Engage in philosophical discussions with Theron and Boros
+* **AI Profile:** High Curiosity, Methodical decision-making
+
+### The Empath  
+* Prioritize emotional connections with NPCs
+* Help others before advancing personal quests
+* Show genuine care in dialogue choices
+* **AI Profile:** High Empathy, Trust-building interaction style
+
+### The Pragmatist
+* Focus on practical solutions and outcomes
+* Efficient quest completion and resource management
+* Strategic use of credits and items
+* **AI Profile:** Goal-oriented, Practical decision patterns
+
+### The Idealist
+* Follow philosophical principles regardless of cost
+* Challenge NPCs on their beliefs and motivations
+* Seek the "right" choice even when difficult
+* **AI Profile:** Strong conviction, Principle-driven choices
+
+---
+
+*The AI system adapts to your chosen approach, creating a unique narrative experience tailored to your personality and choices.*
