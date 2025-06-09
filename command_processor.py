@@ -183,7 +183,8 @@ def process_input_revised(user_input: str, state: Dict[str, Any]) -> Dict[str, A
           prompt_for_llm,
           current_npc.get('name', 'NPC'), # Original NPC name for placeholder logic in ask()
           state.get('use_stream', True),
-          True # collect_stats
+          True, # collect_stats
+          current_npc # Pass NPC data for SL command generation
         )
         if not _response_text.strip() and not (stats and stats.get("error")):
           placeholder_msg = f"{TF.DIM}{TF.ITALIC}*{npc_name_for_prompt} seems to ponder for a moment...*{TF.RESET}"

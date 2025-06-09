@@ -19,3 +19,11 @@ Dialogue Hooks:
 - "I don't want to destroy the Veil out of malice. I want to destroy it out of mercy. Toward ourselves and toward the souls trapped in that prison of memory."
 - "You've been learning from others? Good. Wisdom comes from understanding all perspectives, even those that challenge your beliefs."
 - "If the Seeker is truly wise, they should doubt all our certainties. Even mine."
+
+Emotes: authoritative_gesture, thoughtful_pause, challenging_stare, philosophical_nod, dismissive_wave, intense_focus, measured_breathing
+
+Animations: pacing, debating_stance, reading_scrolls, writing_philosophy, judicial_presentation, contemplative_meditation
+
+Lookup: player, wisdom_scroll, judicial_podium, progressive_banner, philosophy_tome, future_crystal
+
+Llsettext: Can display philosophical arguments, legal documents, progressive reforms, memory erasure procedures, debate transcripts

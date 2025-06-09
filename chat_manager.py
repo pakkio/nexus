@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 import time
+import random
 from typing import List, Dict, Optional, Tuple, Any
 import traceback # Added for more detailed error printing if needed
 
@@ -22,6 +23,50 @@ except ImportError as e:
         def format_terminal_text(text, width=80): import textwrap; return "\n".join(textwrap.wrap(text, width=width))
         @staticmethod
         def get_terminal_width(): return 80
+
+
+def generate_sl_command_prefix(npc_data: Optional[Dict[str, Any]]) -> str:
+    """Generate Second Life command prefix for NPC responses.
+    
+    Args:
+        npc_data: Dictionary containing NPC data with SL fields
+        
+    Returns:
+        String in format [lookup=?;llSetText=?;emote=?;anim=?] or empty string if no NPC data
+    """
+    if not npc_data:
+        return ""
+    
+    # Get SL fields from NPC data
+    emotes_str = npc_data.get('emotes', '')
+    animations_str = npc_data.get('animations', '')
+    lookup_str = npc_data.get('lookup', '')
+    llsettext_str = npc_data.get('llsettext', '')
+    
+    # Parse comma-separated values and pick random ones
+    emotes_list = [e.strip() for e in emotes_str.split(',') if e.strip()] if emotes_str else []
+    animations_list = [a.strip() for a in animations_str.split(',') if a.strip()] if animations_str else []
+    lookup_list = [l.strip() for l in lookup_str.split(',') if l.strip()] if lookup_str else []
+    
+    # Select random values from each category
+    selected_emote = random.choice(emotes_list) if emotes_list else ""
+    selected_animation = random.choice(animations_list) if animations_list else ""
+    selected_lookup = random.choice(lookup_list) if lookup_list else ""
+    
+    # For llsettext, we'll use the full string as it's more descriptive
+    selected_llsettext = llsettext_str
+    
+    # Build the command prefix
+    if any([selected_lookup, selected_llsettext, selected_emote, selected_animation]):
+        command_parts = [
+            f"lookup={selected_lookup}",
+            f"llSetText={selected_llsettext}",
+            f"emote={selected_emote}",
+            f"anim={selected_animation}"
+        ]
+        return f"[{';'.join(command_parts)}]"
+    
+    return ""
 
 
 def format_stats(stats: Optional[Dict[str, Any]], model_type: str = "dialogue") -> str:
@@ -113,7 +158,7 @@ class ChatSession:
         print(f"{TerminalFormatter.YELLOW}Memoria messaggi resettata (System Prompt e Hint NPC mantenuti, se impostati).{TerminalFormatter.RESET}")
 
 
-    def ask(self, prompt: str, current_npc_name_for_placeholder: str = "NPC", stream: bool = True, collect_stats: bool = True) -> Tuple[str, Optional[Dict[str, Any]]]:
+    def ask(self, prompt: str, current_npc_name_for_placeholder: str = "NPC", stream: bool = True, collect_stats: bool = True, npc_data: Optional[Dict[str, Any]] = None) -> Tuple[str, Optional[Dict[str, Any]]]:
         """Sends a prompt to the LLM and gets a response.
         MODIFIED: Added current_npc_name_for_placeholder for better empty response placeholders.
         """
@@ -157,6 +202,9 @@ class ChatSession:
         # MODIFICATION FOR EMPTY RESPONSE HANDLING - This part is mostly for history.
         # The *visual* placeholder is now handled in command_processor.
         if output_text is not None and not (stats and stats.get("error")):
+            # LLM now generates SL commands directly in the response based on system prompt instructions
+            # No need to automatically add SL prefix - the LLM chooses contextually appropriate commands
+            
             # If LLM returns empty or whitespace, we still add it to history as an empty assistant turn.
             # The visual placeholder is handled by command_processor.
             self.add_message("assistant", output_text)

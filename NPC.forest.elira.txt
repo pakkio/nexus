@@ -19,3 +19,11 @@ Dialogue Hooks:
 - "The Forest Seed won't grow in soil contaminated by selfishness. The forest rejects it automatically."
 - "You've been helping the injured? That shows the compassion I seek. Bring me a Healing Potion from Mara, and I'll give you a Forest Seed."
 - "The Node is beyond that hill. But if your heart is not in harmony with this place, you'll never find it."
+
+Emotes: touch_tree, listen_carefully, nature_communion, gentle_smile, protective_stance, peaceful_meditation, concerned_look
+
+Animations: tending_plants, forest_walking, animal_communication, seed_blessing, nature_ritual, tree_whispering
+
+Lookup: player, forest_seed, primordial_node, ancient_tree, sacred_grove, healing_herbs
+
+Llsettext: Can display botanical information, nature guides, seasonal changes, forest maps, ecological balance data

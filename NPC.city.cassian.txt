@@ -18,3 +18,11 @@ Dialogue Hooks:
 - "I've noticed something curious: my official archives don't seem to... fade... like other documents lately."
 - "Information, dear Seeker. It's the only currency that maintains value when the world changes."
 - "Bring me 100 Credits, and I'll give you a Wisdom Scroll that Theron values. Knowledge has a price, but it's worth paying."
+
+Emotes: nod, shrug, tap_fingers, lean_forward, adjust_papers, knowing_smile, cautious_glance
+
+Animations: writing, shuffling_papers, counting_coins, filing_documents, reviewing_scroll, negotiating_gesture
+
+Lookup: player, city_hall, document_archive, merchant_ledger, filing_cabinet, official_seal
+
+Llsettext: Can display official notices, bureaucratic forms, merchant contracts, city regulations

@@ -18,3 +18,11 @@ Dialogue Hooks:
 - "Theron says forgetting pain is liberation. But forgetting pain means also forgetting the compassion born from it."
 - "These threads... I found them in a strange place. They seem normal, but when I use them for a show, people can't forget what they've seen."
 - "I need Memory Thread to create something truly special. Help others first, and you'll understand what I mean."
+
+Emotes: dramatic_gesture, puppet_manipulation, storyteller_pose, artistic_flourish, enchanted_smile, creative_inspiration, theatrical_bow
+
+Animations: puppet_performance, thread_weaving, stage_preparation, story_telling, artistic_creation, memory_threading
+
+Lookup: player, puppet_theater, memory_thread, enchanted_puppet, stage_backdrop, marionette_strings
+
+Llsettext: Can display stage directions, puppet scripts, story collections, theatrical programs, memory thread patterns

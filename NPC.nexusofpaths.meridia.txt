@@ -17,5 +17,13 @@ Dialogue Hooks:
 - "Lyra preserves the memory of sacrifice. Theron imagines the freedom of oblivion. Boros seeks the balance of change. But you... what do you see?"
 - "The Loom of New Beginning has no preferences. It can weave preservation, destruction, or transformation with equal ease. The choice is yours alone."
 - "Don't fear the consequences of your decision. Whatever it is, it will be honest if it comes from your heart and understanding."
-- "My brothers sacrificed themselves to protect the future. I sacrificed myself to protect choice. Now that future and that choice are in your hands."
+- "My brothers sacrificed themselves to protect the future. I sacrificed himself to protect choice. Now that future and that choice are in your hands."
 - "You've completed many quests and gained much wisdom. Bring me the Master Key - proof of your journey - and I'll prepare you for the ultimate decision."
+
+Emotes: ancient_wisdom, patient_waiting, destiny_weaving, solemn_nod, eternal_vigil, choice_guidance, timeless_grace
+
+Animations: loom_operation, destiny_weaving, path_illumination, choice_preparation, wisdom_sharing, fate_guidance
+
+Lookup: player, loom_of_beginning, master_key, destiny_threads, path_convergence, choice_crystal
+
+Llsettext: Can display destiny patterns, choice matrices, faction summaries, path convergence maps, ultimate decision guides

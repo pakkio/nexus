@@ -18,3 +18,11 @@ Dialogue Hooks:
 - "The Healing Potion isn't a cure for everything. But it mends wounds and shows you care about others' pain."
 - "Bring me 50 Credits for rare materials, and I'll make you a Healing Potion. Elira values those who tend to the wounded."
 - "People come to me for medicines for ailments they don't remember ever having. It's terrifying."
+
+Emotes: tend_plants, worried_frown, gentle_care, mixing_motions, protective_gesture, memory_searching, compassionate_smile
+
+Animations: gathering_herbs, brewing_potions, tending_garden, examining_plants, healing_rituals, preserving_seeds
+
+Lookup: player, herb_garden, healing_potion, mortar_pestle, seed_collection, drying_herbs
+
+Llsettext: Can display herbal recipes, medicinal guides, plant identification, healing instructions, botanical records

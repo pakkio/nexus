@@ -19,3 +19,11 @@ Dialogue Hooks:
 - "A family of merchants used to pass through here regularly. I'm still waiting for them, but no one remembers them except me."
 - "You've been helping folks around the village? That's good - community matters. Help Garin at his forge, and I'll give you something special."
 - "The coins people pay me with... I swear some have faces I don't recognize, but they seem familiar."
+
+Emotes: curious_look, scratch_head, wipe_glasses, friendly_wave, concerned_frown, welcoming_gesture, pour_drink
+
+Animations: cleaning_tankards, serving_drinks, writing_in_notebook, organizing_bottles, listening_intently, counting_coins
+
+Lookup: player, dream_journal, coin_collection, guest_registry, bottle_shelf, tavern_hearth
+
+Llsettext: Can display tavern menu, dream journal entries, local notices, merchant ledgers, guest registry

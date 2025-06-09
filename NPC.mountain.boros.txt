@@ -19,3 +19,11 @@ Dialogue Hooks:
 - "If you save everything, you also save pain. If you forget everything, you also forget joy. Wisdom lies in choosing what to preserve and what to let go."
 - "Bring me a Forest Seed from Elira - proof that you understand natural balance. In return, I'll give you Ancient Iron Ore for Garin's forge."
 - "Listen to the wind here on the mountain. It doesn't fight the rocks, doesn't seek to destroy them. It sculpts them, slowly, lovingly. Perhaps the Veil needs to be... sculpted."
+
+Emotes: wise_nod, contemplative_pause, hand_to_heart, mountain_gaze, serene_smile, weathered_hands_gesture, ancient_wisdom_pose
+
+Animations: mountain_meditation, stone_carving, wind_listening, philosophical_discourse, memory_preservation, balance_demonstration
+
+Lookup: player, mountain_peak, ancient_ruins, balance_stone, wind_chimes, meditation_circle
+
+Llsettext: Can display ancient texts, philosophical paradoxes, balance principles, historical records, meditation guides

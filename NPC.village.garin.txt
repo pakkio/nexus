@@ -18,3 +18,11 @@ Dialogue Hooks:
 - "Have you noticed how some objects seem... more real than others? As if they resist the world around them?"
 - "Bring me Ancient Iron Ore from the Mountain, and I'll forge something special. The shavings from that work... they'll be useful to Jorin at the tavern."
 - "The passion you bring to this work will determine what I can create. Indifferent hands make forgettable tools."
+
+Emotes: wipe_sweat, flex_muscles, inspect_work, determined_nod, passionate_gesture, proud_smile, focused_concentration
+
+Animations: hammering_anvil, working_forge, examining_metal, sharpening_tools, quenching_steel, organizing_workshop
+
+Lookup: player, anvil, forge_fire, grandfather_hammer, iron_ore, bellows, tool_rack
+
+Llsettext: Can display forge temperatures, metallurgy guides, tool blueprints, smithing instructions, work orders

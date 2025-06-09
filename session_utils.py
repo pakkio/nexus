@@ -107,6 +107,12 @@ def build_system_prompt(
     player_hint_for_npc_context = npc.get('playerhint', f"The player might try to help you achieve your goal: '{goal}'.")
     hooks = npc.get('dialogue_hooks', 'Standard dialogue')
     veil = npc.get('veil_connection', '')
+    
+    # Get Second Life command options
+    emotes = npc.get('emotes', '')
+    animations = npc.get('animations', '')
+    lookup_objects = npc.get('lookup', '')
+    llsettext_capability = npc.get('llsettext', '')
 
     prompt_lines = [
         f"Sei {name}, un/una {role} nell'area di {area} nel mondo di Eldoria.",
@@ -152,6 +158,52 @@ def build_system_prompt(
                 f"\"{conversation_summary_for_guide_context}\"\n"
                 f"Usa questa informazione, insieme ai dettagli del giocatore e al suo profilo psicologico, per dare il tuo saggio consiglio."
             )
+
+    # Add Second Life command instructions if the NPC has SL capabilities
+    if any([emotes, animations, lookup_objects, llsettext_capability]):
+        sl_instructions = [
+            "\n=== SECOND LIFE INTEGRATION ===",
+            "You must start EVERY response with Second Life commands in this exact format:",
+            "[lookup=OBJECT;llSetText=TEXT;emote=GESTURE;anim=ACTION]",
+            "IMPORTANT: Always add a blank line after the SL commands before your dialogue text!",
+            "",
+            "Choose commands that match your dialogue content and emotional state:"
+        ]
+        
+        if emotes:
+            emote_list = [e.strip() for e in emotes.split(',') if e.strip()]
+            sl_instructions.append(f"Available emotes: {', '.join(emote_list)}")
+            
+        if animations:
+            anim_list = [a.strip() for a in animations.split(',') if a.strip()]
+            sl_instructions.append(f"Available animations: {', '.join(anim_list)}")
+            
+        if lookup_objects:
+            lookup_list = [l.strip() for l in lookup_objects.split(',') if l.strip()]
+            sl_instructions.append(f"Objects you can look at: {', '.join(lookup_list)}")
+            
+        if llsettext_capability:
+            sl_instructions.append(f"Text display capability: {llsettext_capability}")
+            
+        sl_instructions.extend([
+            "",
+            "EXAMPLES of good SL command selection and formatting:",
+            "- If greeting warmly: emote=gentle_smile, anim=welcoming_gesture",
+            "- If studying something: emote=focused_concentration, anim=examining_scroll, lookup=ancient_tome",
+            "- If angry/upset: emote=stern_look, anim=defensive_stance",
+            "- If magical action: anim=channeling_energy, lookup=mystical_artifact",
+            "",
+            "EXAMPLE RESPONSE FORMAT:",
+            "[lookup=player;llSetText=Welcome, traveler;emote=gentle_smile;anim=welcoming_gesture]",
+            "",
+            "Hello there, welcome to my domain! How may I assist you today?",
+            "",
+            "ALWAYS choose commands that enhance your dialogue, don't just pick randomly!",
+            "Remember: SL commands on first line, then blank line, then your dialogue!",
+            "=== END SECOND LIFE INTEGRATION ===\n"
+        ])
+        
+        prompt_lines.extend(sl_instructions)
 
     prompt_lines.extend([
         f"\nContesto Globale del Mondo (Eldoria): {story_context}",
