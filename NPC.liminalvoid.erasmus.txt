@@ -20,3 +20,11 @@ Dialogue Hooks:
 - "I'm not trying to convert you. I'm just offering a perspective that no one else can give you. The choice always remains yours."
 - "Theron is right about one thing: the Weavers' sacrifice trapped them. But he's wrong about methods. You can't force oblivion any more than you can force memory."
 - "If you choose to preserve the Veil, I will respect it. If you choose to transform it, I will celebrate it. If you choose to dissolve it... I will welcome you into infinity."
+
+Emotes: ethereal_drift, serene_acceptance, transcendent_smile, void_gaze, peaceful_dissolution, infinite_gesture, cosmic_understanding
+
+Animations: liminal_floating, void_communion, reality_phasing, oblivion_channeling, transcendent_meditation, cosmic_perspective
+
+Lookup: player, void_portal, oblivion_mist, cosmic_spiral, transformation_field, infinity_mirror
+
+Llsettext: Can display void visions, cosmic truths, oblivion teachings, transformation guides, infinite possibility maps

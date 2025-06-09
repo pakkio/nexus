@@ -1,4 +1,4 @@
-grep -rnw . -e 'save_current_conversation'Name: Syra
+Name: Syra
 Area: Ancient Ruins
 Role: Residual Echo, Incomplete Weaver
 Motivation: Complete her transformation into the Veil, but only if the Seeker proves to truly understand what it means to sacrifice one's existence for others.
@@ -18,3 +18,11 @@ Dialogue Hooks:
 - "Do you feel the weight of silence here? It's the weight of words never spoken, of farewells never pronounced. This is what I guard."
 - "I cannot give you my memory. You must earn it. Bring me the Sacred Bowl filled with pure water, and offer it with true reverence."
 - "The Ancient Memory Crystal is not just memory - it's pure emotion. It will burn you, change you. You cannot be the same after receiving it."
+
+Emotes: spectral_sorrow, incomplete_gesture, longing_reach, ritual_preparation, painful_memory, sacrifice_pose, ancient_wisdom
+
+Animations: spectral_manifestation, memory_crystallization, ritual_acceptance, incomplete_transformation, ancient_echoing
+
+Lookup: player, sacred_bowl, memory_crystal, ancient_altar, weaver_ruins, spectral_form
+
+Llsettext: Can display ancient runes, ritual instructions, memory crystal data, transformation guides, weaver histories

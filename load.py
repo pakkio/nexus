@@ -52,7 +52,8 @@ def parse_npc_file(filepath):
     data = {
         'name': '', 'area': '', 'role': '', 'motivation': '',
         'goal': '', 'needed_object': '', 'treasure': '',
-        'playerhint': '', 'dialogue_hooks': '', 'veil_connection': '', 'code': ''
+        'playerhint': '', 'dialogue_hooks': '', 'veil_connection': '', 'code': '',
+        'emotes': '', 'animations': '', 'lookup': '', 'llsettext': ''
     }
     known_keys_map = {
         'Name:': 'name', 'Area:': 'area', 'Role:': 'role',
@@ -60,10 +61,12 @@ def parse_npc_file(filepath):
         'Needed Object:': 'needed_object', 'Treasure:': 'treasure',
         'PlayerHint:': 'playerhint',
         'Veil Connection:': 'veil_connection',
-        'Dialogue Hooks:': 'dialogue_hooks_header' # Marker per iniziare a raccogliere i ganci
+        'Dialogue Hooks:': 'dialogue_hooks_header', # Marker per iniziare a raccogliere i ganci
+        'Emotes:': 'emotes', 'Animations:': 'animations',
+        'Lookup:': 'lookup', 'Llsettext:': 'llsettext'
     }
     # Campi che possono estendersi su più righe semplici (senza struttura interna complessa)
-    simple_multiline_fields = ['motivation', 'goal', 'playerhint', 'veil_connection']
+    simple_multiline_fields = ['motivation', 'goal', 'playerhint', 'veil_connection', 'emotes', 'animations', 'lookup', 'llsettext']
 
     current_field_being_parsed = None # Tiene traccia del campo corrente per il testo multiriga
 
@@ -189,13 +192,14 @@ def load_to_mysql(storyboard_filepath, db_config):
                 try:
                     npc_data = parse_npc_file(filepath) # Uses corrected parser
                     query = """
-                            INSERT INTO NPCs (code, name, area, role, motivation, goal, needed_object, treasure, playerhint, dialogue_hooks, veil_connection, storyboard_id)
-                            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+                            INSERT INTO NPCs (code, name, area, role, motivation, goal, needed_object, treasure, playerhint, dialogue_hooks, veil_connection, emotes, animations, lookup, llsettext, storyboard_id)
+                            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
                     values = (
                         npc_code, npc_data.get('name', ''), npc_data.get('area', ''), npc_data.get('role', ''),
                         npc_data.get('motivation', ''), npc_data.get('goal', ''), npc_data.get('needed_object', ''),
                         npc_data.get('treasure', ''), npc_data.get('playerhint', ''), npc_data.get('dialogue_hooks', ''),
-                        npc_data.get('veil_connection', ''), storyboard_id )
+                        npc_data.get('veil_connection', ''), npc_data.get('emotes', ''), npc_data.get('animations', ''),
+                        npc_data.get('lookup', ''), npc_data.get('llsettext', ''), storyboard_id )
                     cursor.execute(query, values)
                     npc_count += 1
                 except Exception as e: print(f"  ❌ Error processing/inserting NPC {npc_code} from {filename}: {e}"); conn.rollback()

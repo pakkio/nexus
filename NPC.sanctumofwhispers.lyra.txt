@@ -18,3 +18,11 @@ Dialogue Hooks:
 - "The Weavers didn't die. They transformed. Each thread of the Veil is a soul that continues to protect, but they need someone to remember their purpose."
 - "Bring me the Ancient Memory Crystal from the ruins, and I'll give you the Echo Loom. But that's just the beginning - the Veil needs more than one artifact to heal."
 - "Each quest I give builds toward something greater. Prove your dedication, and greater rewards await."
+
+Emotes: bow_head, touch_temple, close_eyes, meditative_pose, gentle_smile, sad_nod, mystical_gesture
+
+Animations: weaving_motions, reading_memories, channeling_veil, ritual_preparation, memory_preservation, contemplation
+
+Lookup: player, echo_loom, memory_crystal, ancient_tapestry, veil_threads, weaver_altar
+
+Llsettext: Can display ancient runes, memory fragments, weaver prophecies, veil diagnostics, sacred texts
