@@ -1,0 +1,15 @@
+{
+  "name": "Elira",
+  "area": "Forest",
+  "role": "Custode del Nodo Naturale, Interprete dei Sussurri",
+  "motivation": "Proteggere il Nodo Primordiale nascosto nella foresta, dove le memorie dei Tessitori si intrecciano con la vita naturale.",
+  "goal": "Valutare se il Cercatore \u00e8 degno di accedere al Nodo, testando la sua capacit\u00e0 di ascoltare la natura senza imporle la propria volont\u00e0.",
+  "needed_object": "Prova di empatia naturale - il Cercatore deve dimostrare di saper \"sentire\" ci\u00f2 che la foresta prova, non solo osservarla",
+  "treasure": "Seme della Memoria - un frammento del primo albero che crebbe dove un Tessitore si dissolse nel Velo, contenente la pace di chi accett\u00f2 il sacrificio",
+  "playerhint": "Elira non accetta parole o promesse. Vuole che il Cercatore dimostri empatia reale verso gli esseri viventi che non possono parlare per difendersi. Il test \u00e8 sottile e basato su azioni, non su risposte corrette.",
+  "dialogue_hooks": "- \"Ogni albero qui ricorda il momento in cui un Tessitore scelse di non esistere pi\u00f9. Puoi sentire quella eco di pace?\"\n- \"La piaga che vedi non \u00e8 malattia - sono Sussurri dell'Oblio che cercano di cancellare anche il ricordo di cosa cresceva qui.\"\n- \"Gli animali sanno. Sanno sempre quando qualcosa di importante sta per cambiare. Ascoltali, non me.\"\n- \"Il Seme della Memoria non crescer\u00e0 in terra contaminata dall'egoismo. La foresta lo rigetta automaticamente.\"\n- \"Theron \u00e8 venuto qui una volta. Gli alberi si sono chiusi al suo passaggio - non per malvagit\u00e0, ma per autopreservazione.\"\n- \"Il Nodo \u00e8 oltre quella collina. Ma se il tuo cuore non \u00e8 in armonia con questo posto, non lo troverai mai.\"",
+  "veil_connection": "La foresta dove vive Elira cresce su uno dei punti dove si consum\u00f2 il Sacrificio Originale. Gli alberi qui hanno radici che si intrecciano letteralmente con i fili del Velo, e Elira pu\u00f2 comunicare con loro per \"leggere\" lo stato del tessuto protettivo. \u00c8 diventata quasi simbiotica con la foresta stessa.",
+  "code": "forest.elira",
+  "storyboard_id": 1,
+  "created_at": "2025-06-04T18:30:49.650167"
+}

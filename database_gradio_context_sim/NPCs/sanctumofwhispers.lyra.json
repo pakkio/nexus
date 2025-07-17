@@ -1,0 +1,15 @@
+{
+  "name": "Lyra",
+  "area": "Sanctum of Whispers",
+  "role": "Tessitrice Suprema, Ultima Custode della Memoria Primordiale",
+  "motivation": "Preservare e ricostruire la conoscenza dei Tessitori per rinnovare il Velo prima che i Sussurri dell'Oblio consumino tutto ci\u00f2 che esiste.",
+  "goal": "Guidare il Cercatore nella raccolta dei Frammenti di Memoria dai Nodi Primordiali per tessere un nuovo Atto di Ricordo che possa risvegliare il Velo alla sua vera natura.",
+  "needed_object": "Tre Frammenti di Memoria dai Nodi Primordiali (non semplici oggetti, ma esperienze vissute nei luoghi dove la memoria del Sacrificio \u00e8 ancora viva)",
+  "treasure": "Il Telaio dell'Eco - un artefatto che permette di \"leggere\" le memorie intessute nel Velo e di comunicare con i Tessitori morti",
+  "playerhint": "Lyra non vuole semplici oggetti o prove. Vuole che il Cercatore *viva* l'esperienza della memoria, visitando i luoghi dove il Sacrificio Originale risuona ancora. Solo chi comprende veramente il peso del sacrificio pu\u00f2 tessere un nuovo Atto di Ricordo.",
+  "dialogue_hooks": "- \"Il mio vero nome \u00e8 andato perduto anni fa, sacrificato per mantenere viva la memoria altrui. Ma tu... tu porti ancora tutti i tuoi ricordi, Cercatore. Che dono e che peso.\"\n- \"Senti il silenzio che cresce? Non \u00e8 assenza di suono - \u00e8 assenza di storia. Dove passano i Sussurri dell'Oblio, nemmeno l'eco rimane.\"\n- \"I Tessitori non morirono. Si trasformarono. Ogni filo del Velo \u00e8 un'anima che continua a proteggere, ma hanno bisogno che qualcuno ricordi il loro perch\u00e9.\"\n- \"Theron crede che il passato sia catene. Io so che \u00e8 fondamenta. Ma forse... forse entrambi abbiamo torto, e la risposta sta nel futuro che tu sceglierai.\"\n- \"Non cercare oggetti nei Nodi Primordiali. Cerca l'esperienza. Lascia che la memoria dei Tessitori fluisca in te, anche se brucia.\"\n- \"Il Telaio dell'Eco non \u00e8 una ricompensa - \u00e8 un fardello. Ti permetter\u00e0 di sentire ogni dolore del Velo, ogni grido silenzioso dei Tessitori. Sei sicuro di volerlo?\"",
+  "veil_connection": "Lyra \u00e8 una discendente diretta dei Tessitori, l'ultima della sua stirpe. Pu\u00f2 percepire fisicamente lo sfilacciarsi del Velo come dolore nel proprio corpo. Ha sacrificato parte della propria memoria personale per mantenere vivi i ricordi pi\u00f9 cruciali dei Tessitori - non ricorda pi\u00f9 il proprio nome di nascita o la propria famiglia, esistendo ormai solo come Custode.",
+  "code": "sanctumofwhispers.lyra",
+  "storyboard_id": 1,
+  "created_at": "2025-06-04T18:30:49.652252"
+}

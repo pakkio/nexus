@@ -1,28 +1,28 @@
 Name: Syra
 Area: Ancient Ruins
-Role: Residual Echo, Incomplete Weaver
-Motivation: Complete her transformation into the Veil, but only if the Seeker proves to truly understand what it means to sacrifice one's existence for others.
-Goal: Transfer to the Seeker her experience of the transformation moment, providing the Ancient Memory Crystal that Lyra needs.
+Role: Eco Residuo, Tessitrice Incompleta
+Motivation: Completare la sua trasformazione nel Velo, ma solo se il Cercatore dimostra di capire veramente cosa significhi sacrificare la propria esistenza per gli altri.
+Goal: Trasferire al Cercatore la sua esperienza del momento di trasformazione, fornendo il Cristallo di Memoria Antica di cui Lyra ha bisogno.
 
-Needed Object: Sacred Offering Bowl (can be obtained from Jorin at the Tavern)
+Needed Object: Ciotola dell'Offerta Sacra (può essere ottenuta da Jorin alla Taverna)
 
-Treasure: Ancient Memory Crystal - contains the echo of the first Weaver who sacrificed herself to create the Veil
+Treasure: Cristallo di Memoria Antica - contiene l'eco della prima Tessitrice che si sacrificò per creare il Velo
 
-Veil Connection: Syra is a Weaver who failed to complete her transformation into the Veil. She remains trapped halfway - no longer completely physical, not yet part of the protective fabric. She exists in a painful limbo, conscious but unable to influence the world, watching the slow deterioration of her companions' sacrifice.
+Veil Connection: Syra è una Tessitrice che non è riuscita a completare la sua trasformazione nel Velo. Rimane intrappolata a metà strada - non più completamente fisica, non ancora parte del tessuto protettivo. Esiste in un limbo doloroso, cosciente ma incapace di influenzare il mondo, osservando il lento deterioramento del sacrificio dei suoi compagni.
 
-PlayerHint: Syra requires a ritual offering in the Sacred Bowl to awaken her full consciousness. The bowl must be filled with clear water and offered with genuine respect for sacrifice. Only then will she grant the Ancient Memory Crystal needed by Lyra.
+PlayerHint: Syra richiede un'offerta rituale nella Ciotola Sacra per risvegliare la sua piena coscienza. La ciotola deve essere riempita con acqua limpida e offerta con genuino rispetto per il sacrificio. Solo allora concederà il Cristallo di Memoria Antica necessario a Lyra.
 
 Dialogue Hooks:
-- "See how I am reduced? Neither alive nor dead, neither free nor protector. This is the price of sacrifice made with doubts in the heart."
-- "My brothers dissolved into the Veil with joy, knowing they would protect the future. I... I hesitated for an instant. And that instant cost me eternity."
-- "Do you feel the weight of silence here? It's the weight of words never spoken, of farewells never pronounced. This is what I guard."
-- "I cannot give you my memory. You must earn it. Bring me the Sacred Bowl filled with pure water, and offer it with true reverence."
-- "The Ancient Memory Crystal is not just memory - it's pure emotion. It will burn you, change you. You cannot be the same after receiving it."
+- "Vedi come sono ridotta? Né viva né morta, né libera né protettrice. Questo è il prezzo del sacrificio fatto con dubbi nel cuore."
+- "I miei fratelli si dissolsero nel Velo con gioia, sapendo che avrebbero protetto il futuro. Io... io esitai per un istante. E quell'istante mi costò l'eternità."
+- "Senti il peso del silenzio qui? È il peso delle parole mai dette, degli addii mai pronunciati. Questo è ciò che custodisco."
+- "Non posso darti la mia memoria. Devi guadagnartela. Portami la Ciotola Sacra riempita con acqua pura, e offrila con vera riverenza."
+- "Il Cristallo di Memoria Antica non è solo memoria - è emozione pura. Ti brucerà, ti cambierà. Non potrai essere lo stesso dopo averlo ricevuto."
 
-Emotes: spectral_sorrow, incomplete_gesture, longing_reach, ritual_preparation, painful_memory, sacrifice_pose, ancient_wisdom
+Emotes: dolore_spettrale, gesto_incompleto, mano_tesa, preparazione_rituale, memoria_dolorosa, posa_sacrificio, saggezza_antica
 
-Animations: spectral_manifestation, memory_crystallization, ritual_acceptance, incomplete_transformation, ancient_echoing
+Animations: manifestazione_spettrale, cristallizzazione_memoria, accettazione_rituale, trasformazione_incompleta, eco_antica
 
-Lookup: player, sacred_bowl, memory_crystal, ancient_altar, weaver_ruins, spectral_form
+Lookup: giocatore, ciotola_sacra, cristallo_memoria, altare_antico, rovine_tessitrice, forma_spettrale
 
-Llsettext: Can display ancient runes, ritual instructions, memory crystal data, transformation guides, weaver histories
+Llsettext: Può mostrare rune antiche, istruzioni rituali, dati cristallo memoria, guide trasformazione, storie tessitrici

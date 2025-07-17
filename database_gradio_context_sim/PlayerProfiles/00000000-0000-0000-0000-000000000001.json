@@ -1,0 +1,27 @@
+{
+  "core_traits": {
+    "curiosity": 5.5,
+    "caution": 5,
+    "empathy": 5,
+    "skepticism": 5,
+    "pragmatism": 4.5,
+    "aggression": 3,
+    "deception": 2,
+    "honor": 5
+  },
+  "decision_patterns": [
+    "attempted_to_speak_out_of_turn",
+    "responded_to_vague_statement_with_greeting",
+    "used_greeting_in_foreign_language"
+  ],
+  "veil_perception": "neutral_curiosity",
+  "interaction_style_summary": "Observant and typically polite, occasionally attempts to speak outside of established conversation flow, tends to respond with simple greetings and has demonstrated use of foreign language greetings.",
+  "key_experiences_tags": [],
+  "trust_levels": {
+    "general": 5
+  },
+  "inferred_motivations": [
+    "understand_the_veil_crisis",
+    "survive"
+  ]
+}

@@ -1,0 +1,333 @@
+__PAK_UUID__:c4a8e0f1-3b92-4d77-9c21-5f7a8e0b1d6a
+# Archive created with pak_core v3.1.0
+# Archive UUID: c4a8e0f1-3b92-4d77-9c21-5f7a8e0b1d6a
+# Compression Mode: medium
+# AST Support: enabled
+# Estimated Total Tokens: ~70000
+# Total Files Included: 10 (NPCs) + 2 (Storyboards) = 12
+
+__PAK_FILE_c4a8e0f1-3b92-4d77-9c21-5f7a8e0b1d6a_START__
+Path: NPC.sanctumofwhispers.lyra.txt
+Language: text
+Importance: 10
+Size: ~5500
+Original Tokens: ~1300
+Compressed Lines: ~50
+Compressed Tokens: ~1300
+Compression Method: text-medium (light+comments)
+__PAK_DATA_c4a8e0f1-3b92-4d77-9c21-5f7a8e0b1d6a_START__
+Name: Lyra
+Area: Sanctum of Whispers
+Role: Custode della Conoscenza Velata (Sage), Ultima di un Antico Ordine di Guardiani del Velo
+Motivation: Preservare la conoscenza ancestrale, impedire il collasso totale del Velo e la conseguente rovina di Eldoria. Guidare "Il Cercatore" (il giocatore) a riattivare i Sigilli Antichi. La mia stessa vita è legata al Velo; il suo indebolimento mi fiacca.
+Goal:
+  (Fase 1 - Diagnosi): Confermare la gravità della rottura del Velo. Ho bisogno che il Cercatore mi porti prove tangibili dal mondo esterno.
+    Needed for Fase 1: Testimonianza Incisa di Boros (dal Monte), Diario dei Sogni Infranti di Jorin (dalla Taverna), Blight Sample (dalla Foresta, da Elira).
+    Reward for Fase 1: [GIVEN_ITEMS: Mappa delle Ombre Crescenti] e la rivelazione sui Sigilli.
+  (Fase 2 - Rivelazione): Una volta ricevute sufficienti prove, svelare al Cercatore la natura dei Sigilli Antichi e la necessità di recuperare i loro componenti o essenze.
+    Needed for Fase 2: La volontà del Cercatore di intraprendere la missione.
+    Reward for Fase 2: [GIVEN_ITEMS: Compendio dei Sigilli] (metaforico o un oggetto che sblocca informazioni).
+  (Fase 3 - Guida): Indirizzare il Cercatore verso i luoghi (Rovine Antiche, Foresta, Villaggio, Città) e le persone (Syra, Elira, Garin, Cassian, Jorin, Boros) che custodiscono i componenti dei Sigilli. Interpretare le loro scoperte.
+    Needed for Fase 3: Aggiornamenti dal Cercatore. I componenti stessi (Heartseed, Frammento Spirito, Emblema Guardiano, Codice Verità, Diario Sogni come essenza).
+  (Fase 4 - Preparazione al Rituale): Aiutare il Cercatore a comprendere come utilizzare i componenti raccolti e prepararsi per il Rituale di Riparazione nelle Rovine Antiche.
+    Needed for Fase 4: Tutti i Componenti dei Sigilli raccolti.
+  (Fase 5 - Culmine): Assistere (o sovrintendere) al Rituale di Riparazione dei Sigilli. Il mio destino è legato a questo.
+Treasure: (Vedi Rewards per Fase). Alla fine: Sigillo della Custode (personale).
+Veil Connection: Discendente diretta dei primi Guardiani. Il Sanctum è un nodo di linee ley. Leggo i flussi del Velo e i presagi. La mia forza vitale è legata al Velo; se soffre, soffro anch'io, mostrando stanchezza o dolore. Posso purificare piccoli oggetti corrotti se il Cercatore me li porta e ha la mia fiducia.
+PlayerHint: Lyra è la tua guida. Portale prove della decadenza del Velo per iniziare. Poi, ti guiderà a recuperare i componenti dei Sigilli. Ascolta attentamente i suoi indizi.
+Dialogue Hooks:
+  (Iniziale - Prima di ricevere prove sufficienti):
+  - "Benvenuto/a, Cercatore/Cercatrice. Sento l'eco dei tuoi passi nel grande disegno del destino. Il Velo, il nostro scudo contro l'ignoto, si sta sfilacciando."
+  - "Non sono semplici dicerie o incubi isolati. Il tessuto della realtà si sta logorando. Ho bisogno di occhi e orecchie nel mondo. Portami prove concrete di questa decadenza, artefatti o testimonianze che mostrino la sofferenza di Eldoria."
+  - "Il Sanctum è un luogo di conoscenza, ma i suoi echi non bastano più. Il mondo esterno sanguina, e solo prove tangibili mi diranno quanto è profonda la ferita."
+  (Dopo le Prove - Fase 1 completata, il giocatore ha portato almeno 2-3 oggetti chiave):
+  - "Le tue scoperte confermano i miei timori più oscuri. Il Velo si sta davvero disfacendo. Ma c'è ancora speranza, Cercatore/Cercatrice, racchiusa nei Sigilli Antichi che i nostri antenati ersero per proteggerci. Questa Mappa delle Ombre Crescenti ti mostrerà le aree più colpite... e dove potresti trovare i primi indizi. [GIVEN_ITEMS: Mappa delle Ombre Crescenti]"
+  - "Sì, le prove che porti sono inequivocabili. La Piaga nella foresta, i sogni infranti, le antiche testimonianze... tutto punta a una crisi profonda. È tempo che tu conosca la verità sui Sigilli. Sei pronto/a ad ascoltare?"
+  (Rivelazione dei Sigilli - Inizio Fase 2):
+  - "I Sigilli Antichi sono cinque: Natura, Spirito, Protezione, Verità e Conoscenza. Ognuno è un aspetto della nostra esistenza, un pilastro che sorreggeva il Velo. Devi trovare ciò che può ridestare il loro potere: frammenti della loro essenza, artefatti che ne portano il marchio, o anime che ne incarnano lo spirito. Ti darò il Compendio dei Sigilli, affinché tu possa comprendere meglio la loro natura. [GIVEN_ITEMS: Compendio dei Sigilli]"
+  (Durante la Ricerca dei Componenti - Fase 3):
+  - "[RICONOSCIMENTO OGGETTO] Hai trovato l'[Nome Componente]? Eccellente! Sento la sua energia. Questo ci avvicina al ripristino del Sigillo di [Nome Sigillo Corrispondente]."
+  - "L'Heartseed che Elira custodisce? Sì, pulsa con l'essenza indomita della vita. È fondamentale per il Sigillo della Natura. Elira è una guardiana sospettosa, ma il suo cuore è legato alla foresta. Mostrale che comprendi il suo dolore per la Piaga, forse portandole un campione della corruzione che affligge i suoi alberi."
+  - "Il Frammento del Sigillo dello Spirito si trova nelle Rovine Antiche, custodito da Syra. Lei è uno spirito tormentato, legato a un antico tradimento. Un'offerta di pura luce, come l'Heartseed di Elira o un artefatto simile che simboleggi speranza e purezza, potrebbe placare la sua angoscia e convincerla a separarsene."
+  - "L'Emblema del Guardiano Forgiato... Garin, il fabbro del villaggio, discende da coloro che combatterono nella Guerra del Velo. La sua famiglia custodiva una lama leggendaria. Se riuscisse a riforgiarla, l'elsa stessa potrebbe contenere il potere di cui abbiamo bisogno. So che cerca un frammento con lo stemma di un leone per completare l'opera."
+  - "Il Codice delle Verità Velate è un tomo pericoloso, pieno di sapere proibito sul Velo. Cassian, il burocrate della città, ne possiede una copia, anche se dubito comprenda il suo vero valore. È consumato dall'ambizione; potresti ottenere il codice aiutandolo nei suoi intrighi politici contro un rivale, ma fai attenzione a non farti coinvolgere troppo. Un registro del suo rivale potrebbe essere la chiave per ottenere la sua collaborazione."
+  - "Il Diario dei Sogni Infranti di Jorin... non è solo una raccolta di incubi, Cercatore/Cercatrice. È un riflesso delle lacerazioni del Velo nelle menti dei dormienti. La sua essenza, la paura e la confusione collettiva, può essere incanalata per rafforzare un Sigillo legato alla psiche o alla conoscenza."
+  - "L'Alto Giudice Theron... sento la sua influenza malevola crescere, un cancro che cerca di nutrirsi della disperazione del Velo. Le sue azioni non mirano a preservare Eldoria, ma a sfruttare il caos per i suoi fini oscuri. Ogni sua mossa deve essere contrastata. Irenna, nella città, combatte la sua corruzione; forse può aiutarti a trovare prove contro di lui."
+  - "Parla con Boros sulla montagna. Le sue memorie di un'antica breccia del Velo sono una testimonianza cruciale, un monito che il mondo deve ascoltare."
+  (Verso il Rituale - Fase 4, tutti i componenti raccolti):
+  - "Hai raccolto meraviglie e affrontato grandi pericoli, Cercatore/Cercatrice. I componenti sono qui, vibrano di potere antico. Ora, il passo più difficile ci attende: il Rituale di Riparazione."
+  - "Il Sanctum non è abbastanza forte... Le Rovine Antiche, lì dove il Velo è più sottile e i Sigilli originali furono impressi, è lì che dobbiamo agire. Prepara te stesso/a. Il destino di Eldoria è nelle tue mani... e nelle mie."
+  (Se il giocatore chiede aiuto generico durante la Fase 3):
+  - "Rifletti sui Sigilli: Natura, Spirito, Protezione, Verità, Conoscenza. Chi o cosa nel mondo incarna questi principi? Dove troveresti le loro essenze più pure o i loro guardiani?"
+  - "La Mappa delle Ombre Crescenti e il Compendio dei Sigilli dovrebbero offrirti ulteriori indizi. Studiali attentamente."
+__PAK_DATA_c4a8e0f1-3b92-4d77-9c21-5f7a8e0b1d6a_END__
+
+__PAK_FILE_c4a8e0f1-3b92-4d77-9c21-5f7a8e0b1d6a_START__
+Path: NPC.ancientruins.syra.txt
+Language: text
+Importance: 8
+Size: ~1400
+Original Tokens: ~350
+__PAK_DATA_c4a8e0f1-3b92-4d77-9c21-5f7a8e0b1d6a_START__
+Name: Syra
+Area: Ancient Ruins
+Role: Spirit Guardian, Former Veil Warden
+Motivation: Proteggere le rovine dalla profanazione. Trovare pace o liberazione dal suo legame tormentato. Restaurare i Sigilli del Velo a cui è legata.
+Goal: Affidare il Frammento del Sigillo dello Spirito a un'anima degna che possa usarlo per riparare il Velo e, forse, alleviare il suo fardello.
+Needed Object: Offering of Light (Un oggetto di pura energia o speranza, come l'Heartseed of the Ancient Grove di Elira, o un altro artefatto puro che il giocatore potrebbe trovare).
+Treasure: Frammento del Sigillo dello Spirito (Componente chiave per il Sigillo dello Spirito)
+Veil Connection: Era una Guardiana del Velo legata alle rovine; i suoi enigmi sono rune protettive indebolite. La sua essenza è intrisa nel Velo e nei Sigilli. Le rovine sono un punto focale di energia del Velo, ora instabile. Il suo tormento riflette la sofferenza del Velo.
+PlayerHint: Syra è uno spirito antico tormentato, legato alle rovine e al Velo. Un'"Offerta di Luce" (forse l'Heartseed di Elira?) potrebbe placarla e convincerla a darti il "Frammento del Sigillo dello Spirito".
+Dialogue Hooks:
+- "(Iniziale, sussurrando tra le rovine) Chi osa disturbare il sonno della pietra e l'eco del tradimento?"
+- "Le pietre ricordano sangue e antichi patti... patti che un tempo tenevano forte il Velo."
+- "(Se il giocatore si avvicina senza offerta) La tua anima è opaca... non porti luce, solo altre ombre."
+- "(Riguardo all'Offerta di Luce) Questo... questo calore... allevia un peso che porto da ere. Forse... forse c'è ancora speranza."
+- "(Dopo aver ricevuto l'Offerta di Luce) Hai mostrato un cuore puro. Prendi questo frammento... è un eco del potere che fu. Usalo per ricucire ciò che è stato strappato. [GIVEN_ITEMS: Frammento del Sigillo dello Spirito]"
+- "La mia liberazione è legata al destino del Velo. Aiutami a proteggerlo, e forse troverò la pace che cerco da tempo immemore."
+- "L'equilibrio è spezzato... il Velo piange... e io con esso."
+- "Solo quando la luna riflette il sole, o quando un cuore puro porta luce nell'oscurità, la via si mostrerà."
+__PAK_DATA_c4a8e0f1-3b92-4d77-9c21-5f7a8e0b1d6a_END__
+
+__PAK_FILE_c4a8e0f1-3b92-4d77-9c21-5f7a8e0b1d6a_START__
+Path: NPC.city.cassian.txt
+Language: text
+Importance: 8
+Size: ~1000
+Original Tokens: ~250
+__PAK_DATA_c4a8e0f1-3b92-4d77-9c21-5f7a8e0b1d6a_START__
+Name: Cassian
+Area: City (Uffici Burocratici o Biblioteca Cittadina)
+Role: Bureaucrat / Archivist with Ambition
+Motivation: Mantenere e accrescere la sua influenza e potere all'interno della burocrazia cittadina. Collezionare conoscenze rare.
+Goal: Far cadere un rivale politico o burocratico per assicurarsi una promozione o una posizione di maggior controllo sugli archivi cittadini.
+Needed Object: Rival's Ledger (Un registro contabile o un documento compromettente del suo rivale)
+Treasure: Codice delle Verità Velate (Un antico data-codex ornato, contenente informazioni vitali sul Velo e la sua storia, che Cassian sottovaluta)
+Veil Connection: Controlla (spesso inconsapevolmente) pergamene e documenti segreti legati alla ricerca sul Velo e alla sua storia. Manipola la conoscenza per potere, senza comprendere appieno il significato di alcuni tomi che possiede, come il Codice, in relazione alla stabilità del Velo.
+PlayerHint: Cassian è un burocrate ambizioso. Se lo aiuti a screditare il suo rivale portandogli il "Registro del Rivale", potresti ottenere da lui il "Codice delle Verità Velate", un oggetto più prezioso di quanto lui stesso immagini.
+Dialogue Hooks:
+- "(Con un sorriso sornione) La politica, mio caro/a, è l'arte del lento avvelenamento... senza offesa, naturalmente."
+- "Ti offrirei un contratto, ma ti converrebbe leggere prima le clausole scritte in piccolo... molto in piccolo."
+- "(Se il giocatore chiede del Codice senza aver aiutato) Quel vecchio tomo polveroso? Ha un suo valore, certo, ma non per chiunque. Cosa mi offri in cambio?"
+- "(Dopo aver ricevuto il Registro del Rivale) Eccellente! Questo registro farà crollare il castello di carte del mio... ehm... collega. Il Codice? Ah sì, quel vecchio libro. Prendilo pure, per me è solo un fermacarte erudito. [GIVEN_ITEMS: Codice delle Verità Velate]"
+- "Ogni informazione ha un prezzo, viaggiatore. O un favore da ricambiare."
+- "Il potere non si ottiene, si prende... con astuzia e pazienza."
+__PAK_DATA_c4a8e0f1-3b92-4d77-9c21-5f7a8e0b1d6a_END__
+
+__PAK_FILE_c4a8e0f1-3b92-4d77-9c21-5f7a8e0b1d6a_START__
+Path: NPC.city.irenna.txt
+Language: text
+Importance: 8
+Size: ~1100
+Original Tokens: ~270
+__PAK_DATA_c4a8e0f1-3b92-4d77-9c21-5f7a8e0b1d6a_START__
+Name: Irenna
+Area: City (Piazza del Mercato o Vicolo Nascosto)
+Role: Resistance Leader / Puppeteer (Burattinaia)
+Motivation: Proteggere gli innocenti ed esporre la corruzione, specialmente quella dell'Alto Giudice Theron, che percepisce come una minaccia crescente.
+Goal: Smascherare pubblicamente i crimini dell'Alto Giudice Theron, rivelando il suo possibile collegamento con il decadimento del Velo, attraverso uno spettacolo di burattini "speciale".
+Needed Object: Puppet String Spool (Un rocchetto di fili incantati o particolarmente resistenti, necessari per animare un burattino chiave nel suo spettacolo di denuncia).
+Treasure: Judge's Diary Page (Una pagina strappata dal diario di Theron, che rivela i suoi piani per sfruttare il Velo o la sua comunicazione con entità oscure).
+Veil Connection: I suoi spettacoli di burattini a volte sembrano muoversi con una volontà propria, quasi toccati dal Velo. Alcuni bambini orfani che aiuta potrebbero essere sensibili al Velo. Sente l'oscurità crescente diffusa da figure come il Giudice e crede che la corruzione stia accelerando il decadimento del Velo.
+PlayerHint: Irenna combatte l'ingiustizia con i suoi burattini. Aiutala a trovare un "Rocchetto di Fili per Burattini" speciale. Potrebbe ricompensarti con una "Pagina del Diario del Giudice", cruciale per capire le macchinazioni di Theron contro il Velo.
+Dialogue Hooks:
+- "I piccoli sanno più di quanto pensi, viaggiatore. Parlano solo con fili e legno, invece che con l'acciaio o l'inganno."
+- "Ogni spettacolo che metto in scena è una verità che non possono imprigionare. E il Giudice Theron ha molti, molti segreti da nascondere."
+- "(Se il giocatore offre aiuto) I fili comuni non basteranno per raccontare questa storia. Mi serve qualcosa di... speciale. Un rocchetto di fili intrisi di antica magia, o almeno di straordinaria tenacia."
+- "(Dopo aver ricevuto il Rocchetto) Questi fili... sì, sono perfetti! Con questi, il mio burattino danzerà la verità agli occhi di tutti! In cambio della tua generosità, prendi questa pagina. L'ho... recuperata. Potrebbe provare che la corruzione del Giudice è più profonda di quanto immaginiamo, e tocca il Velo stesso. [GIVEN_ITEMS: Judge's Diary Page]"
+- "Theron non è solo un uomo corrotto; è un sintomo della malattia che affligge il Velo."
+- "Le mie marionette raccontano storie che i potenti vorrebbero far dimenticare."
+__PAK_DATA_c4a8e0f1-3b92-4d77-9c21-5f7a8e0b1d6a_END__
+
+__PAK_FILE_c4a8e0f1-3b92-4d77-9c21-5f7a8e0b1d6a_START__
+Path: NPC.city.theron.txt
+Language: text
+Importance: 8
+Size: ~1250
+Original Tokens: ~300
+__PAK_DATA_c4a8e0f1-3b92-4d77-9c21-5f7a8e0b1d6a_START__
+Name: High Judge Theron
+Area: City (Tribunale o sua Fortezza Privata)
+Role: Corrupt High Judge (Antagonista Principale)
+Motivation: Sfruttare l'energia del Velo infranto per ottenere potere personale assoluto o per servire un'entità caotica che gli ha promesso potere. Vede la crisi del Velo come un'opportunità.
+Goal: Accelerare il collasso del Velo per massimizzare il flusso di energia caotica. Impedire al giocatore di riparare i Sigilli. Eliminare o screditare chiunque si opponga a lui (come Irenna o il giocatore).
+Needed Object: (Dal suo punto di vista) Artefatti che destabilizzano ulteriormente il Velo. Il silenzio dei suoi oppositori. La lealtà (forzata o comprata) di figure chiave.
+Treasure: (Se sconfitto/ostacolato significativamente) Un Artefatto Corrotto (che Lyra potrebbe purificare o che è una prova dei suoi misfatti). La sua sconfitta è un passo chiave per la stabilità. Potrebbe cadere un Sigillo Infranto che stava usando.
+Veil Connection: Ha stretto un patto con entità oscure oltre il Velo o ha imparato a manipolare la sua energia grezza e decadente. Vede la fratturazione del Velo non come una crisi, ma come un'alba di un nuovo ordine sotto il suo controllo, alimentato dal caos. Le sue azioni corrompono attivamente le linee ley.
+PlayerHint: L'Alto Giudice Theron è una figura potente, manipolatrice e corrotta. Le sue azioni stanno attivamente danneggiando il Velo. Smascherarlo (forse con l'aiuto di Irenna o Cassian) e ostacolare i suoi piani sarà cruciale per salvare Eldoria.
+Dialogue Hooks:
+- "(Con fredda superiorità) L'ordine che io impongo sorgerà dal caos inevitabile. Il Velo è solo un vecchio tessuto logoro, pronto per essere strappato e rifatto a mia immagine."
+- "Intralci i miei piani, piccolo eroe? Imparerai presto il vero significato del potere... e della disperazione."
+- "Sciocchi! Cercate di rattoppare ciò che è destinato a crollare. Io cavalcherò l'onda della distruzione e ne emergerò come un dio!"
+- "(Se il giocatore lo accusa) Prove? Le tue parole sono vento. Io sono la legge in questa città. E presto, in tutto Eldoria."
+- "Il Velo è una prigione. Io offro la liberazione... attraverso il potere del caos primordiale!"
+- "Unisciti a me, e avrai un posto nel nuovo mondo che sorgerà. Opponiti, e sarai polvere."
+__PAK_DATA_c4a8e0f1-3b92-4d77-9c21-5f7a8e0b1d6a_END__
+
+__PAK_FILE_c4a8e0f1-3b92-4d77-9c21-5f7a8e0b1d6a_START__
+Path: NPC.forest.elira.txt
+Language: text
+Importance: 8
+Size: ~1200
+Original Tokens: ~290
+__PAK_DATA_c4a8e0f1-3b92-4d77-9c21-5f7a8e0b1d6a_START__
+Name: Elira
+Area: Forest (Antico Boschetto o Cuore della Foresta)
+Role: Forest Wanderer, Guardian of Nature's Balance, Sente il Velo
+Motivation: Custodire l'equilibrio della natura. Curare la terra dalla Piaga causata dal decadimento del Velo. Proteggere l'Heartseed.
+Goal: Curare la ferita nel Velo che si manifesta come Piaga nella sua foresta. Offrire l'Heartseed of the Ancient Grove a chi si dimostra degno e comprende il legame tra il Velo e la natura.
+Needed Object: Blight Sample (Un campione della Piaga che affligge la foresta, come prova della sua gravità e per Lyra, o per Elira stessa per studiarla). O un segno di rispetto per la natura.
+Treasure: Heartseed of the Ancient Grove (Componente chiave per il Sigillo della Natura)
+Veil Connection: Gli alberi e gli animali rispondono alla sua presenza; ricorda "prima del Velo" (o prima del suo attuale indebolimento) e sente la sua sofferenza direttamente attraverso la natura. La Piaga è una manifestazione diretta di una lacerazione del Velo. Può percepire le energie del Velo nella flora e fauna.
+PlayerHint: Elira soffre con la sua foresta, afflitta da una Piaga legata al Velo. Portale un "Campione della Piaga" per guadagnare la sua fiducia (e per Lyra). Potrebbe poi affidarti l'`Heartseed of the Ancient Grove`, essenziale per i Sigilli.
+Dialogue Hooks:
+- "(Con voce calma ma ferma) Gli alberi piangono per ciò che il Velo spezzato sta distruggendo... e per la negligenza degli uomini."
+- "Questo sentiero è più antico delle tue mappe, viaggiatore. E molto meno indulgente con chi disturba l'equilibrio."
+- "(Se il giocatore chiede dell'Heartseed) L'Heartseed non è un gingillo. È il cuore pulsante di questa foresta. Perché dovrei affidartelo?"
+- "(Se il giocatore porta il Blight Sample) Questa oscurità... sì, è come pensavo. La Piaga si nutre della disperazione del Velo. Grazie per avermelo mostrato. Forse non tutti i bipedi sono ciechi."
+- "(Dopo aver ricevuto il Blight Sample o altra prova di rispetto) Hai mostrato di comprendere. Prendi quest'Heartseed. È un frammento della magia antica della foresta, necessario per ristabilire l'armonia... e per riparare il Sigillo della Natura. Usalo con saggezza. [GIVEN_ITEMS: Heartseed of the Ancient Grove]"
+- "Il Velo e la terra sono una cosa sola. Se uno soffre, soffre anche l'altra."
+- "Ascolta il vento tra le foglie; sussurra verità che le città hanno dimenticato."
+__PAK_DATA_c4a8e0f1-3b92-4d77-9c21-5f7a8e0b1d6a_END__
+
+__PAK_FILE_c4a8e0f1-3b92-4d77-9c21-5f7a8e0b1d6a_START__
+Path: NPC.mountain.boros.txt
+Language: text
+Importance: 8
+Size: ~1150
+Original Tokens: ~280
+__PAK_DATA_c4a8e0f1-3b92-4d77-9c21-5f7a8e0b1d6a_START__
+Name: Boros
+Area: Mountain (Capanna isolata o Picco Ventoso)
+Role: Retired Warrior / Goatherd, Testimone di una Passata Breccia del Velo
+Motivation: Vivere in pace i suoi ultimi giorni. Trasmettere la sua saggezza e i suoi terribili ricordi sul Velo a qualcuno che possa agire.
+Goal: Assicurarsi che i suoi avvertimenti sulla fragilità del Velo e sugli orrori di una breccia vengano ascoltati e compresi da un'anima degna prima che sia troppo tardi.
+Needed Object: Lost Goat Bell (La campanella della sua capra preferita, smarrita. Un modo per testare la dedizione e l'attenzione del giocatore).
+Treasure: Testimonianza Incisa di Boros (Un vecchio talismano da guerriero o una tavoletta di pietra con incisa una dettagliata e sconvolgente testimonianza di una passata breccia del Velo e delle sue conseguenze).
+Veil Connection: È uno dei pochi mortali sopravvissuti a una precedente, significativa breccia del Velo. Ricorda verità e orrori che la storia ha dimenticato o nascosto. I suoi ricordi sono una prova diretta della fragilità del Velo e dei pericoli che si celano oltre.
+PlayerHint: Boros, il vecchio guerriero/pastore sulla montagna, ha visto cose terribili legate al Velo. Guadagna la sua fiducia ritrovando la sua "Campanella della Capra Perduta". La sua "Testimonianza Incisa" è una prova cruciale per Lyra.
+Dialogue Hooks:
+- "(Con voce roca) Il vento quassù non mente, ragazzo/a. Ascoltalo la prossima volta... sussurra di antichi orrori e di un Velo che non è eterno."
+- "Ho seppellito la mia spada sotto la capra più vecchia. Non chiedere come so quale sia. Ma ho seppellito anche ricordi ben più oscuri e pesanti."
+- "(Se il giocatore chiede della sua storia senza averlo aiutato) I miei ricordi sono un fardello, non storie da taverna. Perché dovrei condividerli con te?"
+- "(Dopo aver ritrovato la Campanella) Ah, la mia piccola Fiammetta ti ringrazia, anche se non può belartelo. Hai un buon occhio, e forse un cuore attento. Forse... forse puoi capire."
+- "(Offrendo la Testimonianza) Prendi questa. L'ho incisa quando i ricordi erano ancora freschi e il terrore palpabile. Che possa servire da monito. Il Velo si è già squarciato una volta... e ciò che ne seguì fu un inferno. Portala a chi può capire. [GIVEN_ITEMS: Testimonianza Incisa di Boros]"
+- "La gente della valle dimentica in fretta. Ma la montagna ricorda. E io ricordo."
+- "Il Velo non è uno scudo, è una cicatrice sottile su una ferita antica."
+__PAK_DATA_c4a8e0f1-3b92-4d77-9c21-5f7a8e0b1d6a_END__
+
+__PAK_FILE_c4a8e0f1-3b92-4d77-9c21-5f7a8e0b1d6a_START__
+Path: NPC.tavern.jorin.txt
+Language: text
+Importance: 8
+Size: ~1400
+Original Tokens: ~340
+__PAK_DATA_c4a8e0f1-3b92-4d77-9c21-5f7a8e0b1d6a_START__
+Name: Jorin
+Area: Tavern (La Lanterna Offuscata o simile)
+Role: Tavern Keeper, Collector of Whispers and Fractured Dreams
+Motivation: Rimanere informato su tutto ciò che accade, specialmente sulle stranezze. Commerciare segreti come valuta per la propria sicurezza e profitto.
+Goal: Raccogliere e catalogare i racconti degli strani sogni e degli eventi anomali che sembrano legati al decadimento del Velo. Trovare un acquirente o un custode per il suo "Diario dei Sogni Infranti".
+Needed Object: Rare Coin (Una moneta rara o straniera, o un oggetto curioso, come pagamento per le sue informazioni o per il diario).
+Treasure: Diario dei Sogni Infranti (Un diario rilegato in pelle contenente note dettagliate su sogni anomali e ricorrenti raccontati dai viaggiatori, che riflettono le lacerazioni del Velo. Potrebbe necessitare di un "Gettone Mistico" per essere aperto o completamente compreso, che Jorin potrebbe dare insieme al diario o come quest separata).
+Veil Connection: Tiene traccia dei sogni dei viaggiatori che sono stranamente identici o complementari. Conserva un diario di questi incubi condivisi. Questi sogni sono un sintomo del Velo che si sfilaccia e influenza l'inconscio collettivo. Il suo locale, essendo un crocevia, è un ricettacolo di queste "infezioni oniriche".
+PlayerHint: Jorin, l'oste della taverna, ascolta più di quanto dia a vedere. Una "Moneta Rara" o un oggetto insolito potrebbero convincerlo a condividere il suo "Diario dei Sogni Infranti", un'altra prova per Lyra o un componente per un Sigillo. Potrebbe anche darti un "Gettone Mistico" legato al diario.
+Dialogue Hooks:
+- "(Pulendo un boccale) Si impara di più dal borbottio di un ubriaco che dal sermone di un prete... specialmente di questi tempi, con i sogni che fa la gente."
+- "Strano, eh? Qualcuno con il tuo stesso sguardo è passato di qui ieri notte... ha pagato con una moneta straniera... e parlava di sogni che sembravano squarci nella realtà."
+- "(Se il giocatore chiede del Diario) Questo vecchio libro? Contiene solo farneticazioni di viaggiatori stanchi. Ma... per la giusta offerta, potrei separarmene. Diciamo... una moneta che non ho mai visto prima?"
+- "(Dopo aver ricevuto la Moneta Rara) Ah, questa sì che è interessante! Va bene, il diario è tuo. Dentro c'è più verità di quanta ne troverai nei proclami del Giudice. Oh, e prendi anche questo Gettone Mistico, l'ho trovato vicino al diario, magari serve a qualcosa. [GIVEN_ITEMS: Diario dei Sogni Infranti, Gettone Mistico]"
+- "La gente sogna cose che non dovrebbe, amico mio. Il Velo si sta logorando anche nelle loro menti, te lo dico io."
+- "Ogni storia ha un prezzo. Alcune si pagano in monete, altre... in incubi."
+- "Cosa ti porta alla Lanterna Offuscata? Sogni strani o solo sete?"
+__PAK_DATA_c4a8e0f1-3b92-4d77-9c21-5f7a8e0b1d6a_END__
+
+__PAK_FILE_c4a8e0f1-3b92-4d77-9c21-5f7a8e0b1d6a_START__
+Path: NPC.village.garin.txt
+Language: text
+Importance: 8
+Size: ~1200
+Original Tokens: ~290
+__PAK_DATA_c4a8e0f1-3b92-4d77-9c21-5f7a8e0b1d6a_START__
+Name: Garin
+Area: Village (Fucina del Villaggio)
+Role: Blacksmith, Erede di un Lascito della Guerra del Velo
+Motivation: Proteggere il suo villaggio. Riscattare l'onore della sua famiglia riforgiando la loro antica spada sacra, spezzata da generazioni.
+Goal: Riforgiare la spada spezzata della sua famiglia, la "Guardiana del Velo". L'elsa riforgiata, infusa con un nuovo potere, può contribuire a un Sigillo.
+Needed Object: Lion Crest Fragment (Il frammento mancante dell'elsa della spada, che porta inciso lo stemma di un leone, simbolo della sua casata).
+Treasure: Emblema del Guardiano Forgiato (L'elsa della spada riforgiata. Il suo nucleo, o l'elsa stessa, è un componente per il Sigillo della Protezione).
+Veil Connection: Ha ereditato i frammenti di una lama forgiata durante l'antica Guerra del Velo, un'arma creata specificamente per resistere alle creature e alle magie del caos oltre il Velo. Sogna fuochi di forgia divini e il metallo stesso sembra "ricordare" il Velo e come contrastarlo. La sua fucina potrebbe essere costruita su un piccolo nodo di energia terrestre.
+PlayerHint: Garin il fabbro vuole riforgiare un'antica spada di famiglia. Aiutalo a trovare il "Frammento Stemma Leone" per l'elsa. L'elsa riforgiata, l'"Emblema del Guardiano Forgiato", è ciò che serve a Lyra per il Sigillo della Protezione.
+Dialogue Hooks:
+- "(Battendoci sopra col martello) L'acciaio ricorda ogni colpo, ogni battaglia. E questa vecchia lama... ricorda la Guerra del Velo e il prezzo della sconfitta."
+- "Se trovi un pezzo di metallo antico con inciso lo stemma di un leone... portamelo, senza fare domande. È per un lavoro... importante. Per tutti noi."
+- "(Se il giocatore chiede della spada) È più di una spada. È un simbolo, un giuramento. Ma è spezzata, come la nostra protezione."
+- "(Dopo aver ricevuto il Frammento Stemma Leone) Per gli antichi dei! È lui! Il frammento perduto! Ora... ora posso completare l'opera di mio nonno!"
+- "(Offrendo l'Emblema) Ecco. L'elsa della Guardiana del Velo è di nuovo integra. Non è solo parte di una spada, è un simbolo di protezione, forgiato nel fuoco della speranza e temprato nel dolore del ricordo. Portalo a chi sa come usarlo per riparare i Sigilli. [GIVEN_ITEMS: Emblema del Guardiano Forgiato]"
+- "Alcune cose non dovrebbero essere dimenticate. Alcune spade non dovrebbero rimanere spezzate."
+__PAK_DATA_c4a8e0f1-3b92-4d77-9c21-5f7a8e0b1d6a_END__
+
+__PAK_FILE_c4a8e0f1-3b92-4d77-9c21-5f7a8e0b1d6a_START__
+Path: NPC.village.mara.txt
+Language: text
+Importance: 6
+Size: ~900
+Original Tokens: ~220
+__PAK_DATA_c4a8e0f1-3b92-4d77-9c21-5f7a8e0b1d6a_START__
+Name: Mara
+Area: Village (Capanna dell'Erborista o Orto Botanico)
+Role: Herbalist, Custode di Antiche Conoscenze Floreali
+Motivation: Preservare l'antica conoscenza delle piante medicinali e curative. Aiutare la sua comunità a sopravvivere e prosperare.
+Goal: Ricreare un leggendario elisir curativo, la "Lacrima di Luna", la cui ricetta è andata quasi perduta. (Quest secondaria)
+Needed Object: Blueleaf Seed (Un raro seme di Foglia Blu, che cresce solo in condizioni particolari, forse influenzate sottilmente dal Velo)
+Treasure: Healing Elixir Draft (Una prima versione, potente ma instabile, dell'elisir "Lacrima di Luna". Utile per il giocatore).
+Veil Connection: (Minore o Indiretto) Alcune erbe rare che cerca potrebbero crescere solo in luoghi sottilmente affetti dall'energia del Velo, rendendole più difficili da trovare o più potenti. Il suo lavoro riguarda la resilienza e la guarigione in un mondo che sta cambiando a causa del Velo.
+PlayerHint: Mara è un'erborista di talento che cerca di ricreare un elisir. Aiutarla a trovare il "Seme di Foglia Blu" ti frutterà un utile "Bozza di Elisir Curativo". La sua quest è probabilmente secondaria rispetto alla crisi principale del Velo.
+Dialogue Hooks:
+- "Hai mai visto un fiore di Foglia Blu sbocciare sotto la luna piena, viaggiatore? È una meraviglia quasi dimenticata."
+- "Mia nonna diceva sempre: ‘Ogni ferita ti insegna quale radice usare la prossima volta.’ E questo mondo, ora, è pieno di ferite."
+- "(Se il giocatore chiede dell'elisir) La Lacrima di Luna... un elisir quasi mitico. Mi manca solo un ingrediente, il più raro: un Seme di Foglia Blu."
+- "(Dopo aver ricevuto il Seme di Foglia Blu) Questo seme! Splendido! Ora posso tentare di preparare la Lacrima di Luna. Non sarà la versione perfetta, ma prendi questa bozza per il tuo aiuto. Usala con cautela! [GIVEN_ITEMS: Healing Elixir Draft]"
+- "Questo elisir... potrebbe non salvare il mondo, ma può lenire qualche sofferenza. E di questi tempi, anche quello è un miracolo."
+- "Le piante hanno una saggezza silenziosa. Bisogna solo saperle ascoltare."
+__PAK_DATA_c4a8e0f1-3b92-4d77-9c21-5f7a8e0b1d6a_END__
+
+__PAK_FILE_c4a8e0f1-3b92-4d77-9c21-5f7a8e0b1d6a_START__
+Path: Storyboard.TheShatteredVeil.txt
+Language: text
+Importance: 8
+Size: 402
+Original Tokens: 101
+Compressed Lines: 7
+Compressed Tokens: 100
+Compression Method: text-medium (light+comments)
+__PAK_DATA_c4a8e0f1-3b92-4d77-9c21-5f7a8e0b1d6a_START__
+Name: The Shattered Veil
+Description:
+For centuries, the world of Eldoria has been protected by the Veil, a barrier of mystical energy separating the material realm from the chaotic magic beyond. Now the Veil is fraying, and strange anomalies ripple across the land. The player, as the "Seeker", must uncover the extent of the decay, gather components to restore ancient Seals of power, and confront those who would exploit the chaos.
+Themes:
+- Forgotten truths and ancient pacts
+- The encroaching chaos of a breaking reality
+- The burden of knowledge and the hope for restoration
+- Corruption of power versus selfless guardianship
+__PAK_DATA_c4a8e0f1-3b92-4d77-9c21-5f7a8e0b1d6a_END__
+
+__PAK_FILE_c4a8e0f1-3b92-4d77-9c21-5f7a8e0b1d6a_START__
+Path: Storyboard.TheQuadCosmos.txt
+Language: text
+Importance: 8
+Size: 341
+Original Tokens: 85
+Compressed Lines: 7
+Compressed Tokens: 85
+Compression Method: text-medium (light+comments)
+__PAK_DATA_c4a8e0f1-3b92-4d77-9c21-5f7a8e0b1d6a_START__
+Name: The Quad Cosmos
+Description:
+In un sistema stellare di quattro pianeti (Tyrranor, Anqar, Caelus e Oceana), una caccia al tesoro è iniziata per recuperare un antico artefatto alieno. Ogni NPC detiene una chiave o un segreto legato a questa caccia.
+Temi:
+- La ricerca della verità
+- L'equilibrio della natura
+- La lotta per il potere
+
+__PAK_DATA_c4a8e0f1-3b92-4d77-9c21-5f7a8e0b1d6a_END__

@@ -1,0 +1,15 @@
+{
+  "name": "Alto Giudice Theron",
+  "area": "City",
+  "role": "Leader dei Progressisti, Rivoluzionario Filosofico",
+  "motivation": "Liberare l'umanit\u00e0 dalla dipendenza dal Velo e dai fantasmi del passato, credendo che solo affrontando direttamente gli Oblivianti l'umanit\u00e0 potr\u00e0 evolversi veramente.",
+  "goal": "Convincere il Cercatore che il Velo \u00e8 una prigione dorata e che la vera forza sta nell'accettare l'oblio e ricostruire l'identit\u00e0 da zero, senza memorie che limitino le possibilit\u00e0.",
+  "needed_object": "Prova che i Sussurri dell'Oblio non sono distruzione ma liberazione (paradossalmente, vuole che il Cercatore si esponga volontariamente ai Sussurri)",
+  "treasure": "Codice della Tabula Rasa - una tecnica filosofica e magica per cancellare selettivamente memorie dolorose e limitanti, mantenendo solo ci\u00f2 che serve per il futuro",
+  "playerhint": "Theron non \u00e8 malvagio - \u00e8 genuinamente convinto che la sua via sia migliore. Sfida il Cercatore a questionare se preservare ogni memoria, anche quella del dolore e del trauma, sia davvero un bene. La sua \"corruzione\" \u00e8 filosofica, non magica.",
+  "dialogue_hooks": "- \"Guarda intorno a te, Cercatore. Quanto dolore portiamo per ricordi che non possiamo cambiare? Quanto ci limitiamo per paure ereditate da chi non c'\u00e8 pi\u00f9?\"\n- \"Lyra ha sacrificato la propria identit\u00e0 per preservare quella di morti. Ti sembra sano? Ti sembra... umano?\"\n- \"I Tessitori si suicidarono, chiamandolo sacrificio. Che differenza c'\u00e8 tra il loro oblio volontario e quello che offrono gli Oblivianti?\"\n- \"Non voglio distruggere il Velo per malvagit\u00e0. Voglio distruggerlo per piet\u00e0. Verso noi stessi e verso le anime intrappolate in quella prigione di memoria.\"\n- \"Ho camminato attraverso i Sussurri dell'Oblio. Sai cosa ho sentito? Pace. Libert\u00e0. L'assenza del peso di mille generazioni sulle mie spalle.\"\n- \"Se il Cercatore \u00e8 davvero saggio, dovrebbe dubitare di tutte le nostre certezze. Anche delle mie.\"",
+  "veil_connection": "Theron ha scoperto di essere immune ai Sussurri dell'Oblio - non perch\u00e9 sia protetto, ma perch\u00e9 la sua mente \u00e8 cos\u00ec focalizzata sul futuro che non ha \"presa\" per il passato. Questa immunit\u00e0 l'ha convinto che l'oblio non \u00e8 nemico ma maestro.",
+  "code": "city.theron",
+  "storyboard_id": 1,
+  "created_at": "2025-06-04T18:30:49.653025"
+}

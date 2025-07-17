@@ -1,25 +1,25 @@
 Name: Erasmus
 Area: Liminal Void
-Role: Conscious Whisper, Ambassador of Oblivion
-Motivation: Offer the Seeker the perspective of the Oblivion - they are not evil, but represent a natural process of cosmic renewal.
-Goal: Convince the Seeker that oblivion is not death but transformation, and that opposing the Oblivion is like opposing the changing of seasons.
+Role: Sussurro Cosciente, Ambasciatore dell'Oblio
+Motivation: Offrire al Cercatore la prospettiva dell'Oblio - essi non sono malvagi, ma rappresentano un processo naturale di rinnovamento cosmico.
+Goal: Convincere il Cercatore che l'oblio non è morte ma trasformazione, e che opporsi all'Oblio è come opporsi al cambiare delle stagioni.
 
-Needed Object: None - Erasmus cannot be bought or corrupted, only listened to
+Needed Object: Nessuno - Erasmus non può essere comprato o corrotto, solo ascoltato
 
-Treasure: Vision of the Fertile Void - the direct experience of what it means to be part of the cosmic cycle of oblivion and rebirth
+Treasure: Visione del Vuoto Fertile - l'esperienza diretta di cosa significhi essere parte del ciclo cosmico di oblio e rinascita
 
-Veil Connection: Erasmus was a philosopher of Eldoria who voluntarily exposed himself to the Whispers of Oblivion to understand them. Instead of being destroyed, he transformed into something new - a bridge between humanity and the Oblivion. He now exists in a liminal space between existence and non-existence.
+Veil Connection: Erasmus era un filosofo di Eldoria che si espose volontariamente ai Sussurri dell'Oblio per comprenderli. Invece di essere distrutto, si trasformò in qualcosa di nuovo - un ponte tra l'umanità e l'Oblio. Ora esiste in uno spazio liminale tra esistenza e non-esistenza.
 
-PlayerHint: Erasmus is the only NPC who wants nothing from the Seeker. He offers only a different perspective, disturbing but sincere. Talking to him is optional but could radically change the Seeker's understanding of what is really happening.
+PlayerHint: Erasmus è l'unico PNG che non vuole nulla dal Cercatore. Offre solo una prospettiva diversa, inquietante ma sincera. Parlare con lui è opzionale ma potrebbe cambiare radicalmente la comprensione del Cercatore di ciò che sta realmente accadendo.
 
 Dialogue Hooks:
-- "I am not dead, Seeker. I have become... other. And in this 'otherness' I have found a peace I never imagined possible."
-- "The Oblivion does not destroy - it composts. Like dead leaves become fertile soil, dissolved memories become space for new possibilities."
-- "The Weavers' Veil is beautiful, but it is also a cage. It prevents not only the Oblivion from entering, but you from leaving and growing."
-- "I have seen the universe without memory, Seeker. It is vast, infinite, full of pure potential. Terrifying? Yes. But also... liberating."
-- "I'm not trying to convert you. I'm just offering a perspective that no one else can give you. The choice always remains yours."
-- "Theron is right about one thing: the Weavers' sacrifice trapped them. But he's wrong about methods. You can't force oblivion any more than you can force memory."
-- "If you choose to preserve the Veil, I will respect it. If you choose to transform it, I will celebrate it. If you choose to dissolve it... I will welcome you into infinity."
+- "Non sono morto, Cercatore. Sono diventato... altro. E in questa 'alterità' ho trovato una pace che non avrei mai immaginato possibile."
+- "L'Oblio non distrugge - fa compost. Come le foglie morte diventano terreno fertile, i ricordi dissolti diventano spazio per nuove possibilità."
+- "Il Velo dei Tessitori è bello, ma è anche una gabbia. Impedisce non solo all'Oblio di entrare, ma a voi di uscire e crescere."
+- "Ho visto l'universo senza memoria, Cercatore. È vasto, infinito, pieno di puro potenziale. Terrificante? Sì. Ma anche... liberatorio."
+- "Non sto cercando di convertirti. Sto solo offrendo una prospettiva che nessun altro può darti. La scelta rimane sempre tua."
+- "Theron ha ragione su una cosa: il sacrificio dei Tessitori li ha intrappolati. Ma sbaglia sui metodi. Non puoi forzare l'oblio più di quanto tu possa forzare la memoria."
+- "Se scegli di preservare il Velo, lo rispetterò. Se scegli di trasformarlo, lo celebrerò. Se scegli di dissolverlo... ti darò il benvenuto nell'infinito."
 
 Emotes: ethereal_drift, serene_acceptance, transcendent_smile, void_gaze, peaceful_dissolution, infinite_gesture, cosmic_understanding
 
@@ -27,4 +27,4 @@ Animations: liminal_floating, void_communion, reality_phasing, oblivion_channeli
 
 Lookup: player, void_portal, oblivion_mist, cosmic_spiral, transformation_field, infinity_mirror
 
-Llsettext: Can display void visions, cosmic truths, oblivion teachings, transformation guides, infinite possibility maps
+Llsettext: Può mostrare visioni del vuoto, verità cosmiche, insegnamenti dell'oblio, guide alla trasformazione, mappe delle possibilità infinite

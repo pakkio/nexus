@@ -1,12 +1,12 @@
-Name: The Shattered Veil
+Name: Il Velo Infranto
 Description:
-For centuries, the world of Eldoria has been protected by the Veil, a mystical barrier separating the material realm from the chaotic magic beyond. Now the Veil is fraying, and strange anomalies ripple across the land. Each NPC holds a clue, a key, or a curse connected to this unraveling.
+Per secoli, il mondo di Eldoria è stato protetto dal Velo, una barriera mistica che separa il regno materiale dalla magia caotica oltre. Ora il Velo si sta sfilacciando, e strane anomalie si propagano attraverso la terra. Ogni PNG custodisce un indizio, una chiave, o una maledizione collegata a questo disfacimento.
 
-To navigate this crisis, the Seeker will need profound wisdom. Many turn to Lyra, the Sage of the Sanctum of Whispers, for her deep understanding of the Veil and its history. Others might consult Boros, the old warrior of the Mountain, whose memories hold forgotten truths about past Veil breaches. Elira, the guardian of the Forest, also possesses ancient knowledge tied to the land's suffering. The choice of guide can shape the Seeker's path.
+Per navigare questa crisi, il Cercatore avrà bisogno di profonda saggezza. Molti si rivolgono a Lyra, la Saggia del Santuario dei Sussurri, per la sua profonda comprensione del Velo e della sua storia. Altri potrebbero consultare Boros, l'anziano guerriero della Montagna, le cui memorie custodiscono verità dimenticate sui precedenti squarci del Velo. Elira, la guardiana della Foresta, possiede anche conoscenze antiche legate alla sofferenza della terra. La scelta della guida può plasmare il percorso del Cercatore.
 
 Themes:
-- Forgotten truths
-- Leaking magic
-- Fractured dreams!
-- The burden of knowledge
-- Choosing one's path to wisdom
+- Verità dimenticate
+- Magia che trapela
+- Sogni frantumati!
+- Il peso della conoscenza
+- Scegliere il proprio percorso verso la saggezza

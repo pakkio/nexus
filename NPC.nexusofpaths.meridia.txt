@@ -1,29 +1,29 @@
 Name: Meridia
 Area: Nexus of Paths
-Role: Weaver of Destiny, Guardian of Final Choices
-Motivation: Ensure that the Seeker's final choice is made with full awareness of consequences, not from impulse or manipulation.
-Goal: Prepare the Seeker for the moment of Ultimate Choice, when they must decide the fate of the Veil before representatives of all factions.
+Role: Tessitrice del Destino, Guardiana delle Scelte Finali
+Motivation: Assicurare che la scelta finale del Cercatore sia fatta con piena consapevolezza delle conseguenze, non per impulso o manipolazione.
+Goal: Preparare il Cercatore per il momento della Scelta Ultima, quando deve decidere il destino del Velo davanti ai rappresentanti di tutte le fazioni.
 
-Needed Object: Master Key (forged from completing multiple faction questlines and proving understanding)
+Needed Object: Chiave Maestra (forgiata dal completamento di più linee di missioni di fazione e dalla dimostrazione di comprensione)
 
-Treasure: Loom of New Beginning - the tool that will allow implementing whatever decision the Seeker makes, whether to repair, destroy, or transform the Veil
+Treasure: Telaio del Nuovo Inizio - lo strumento che permetterà di implementare qualunque decisione prenda il Cercatore, sia riparare, distruggere o trasformare il Velo
 
-Veil Connection: Meridia is the last remaining Weaver who never sacrificed herself to the Veil. She remained in the physical world for millennia, waiting for the moment when someone would have to make the Ultimate Choice. She is simultaneously the oldest and youngest among the Weavers - ancient in millennia but never transformed.
+Veil Connection: Meridia è l'ultima Tessitrice rimasta che non si è mai sacrificata al Velo. È rimasta nel mondo fisico per millenni, aspettando il momento in cui qualcuno doveva fare la Scelta Ultima. È contemporaneamente la più vecchia e la più giovane tra i Tessitori - antica di millenni ma mai trasformata.
 
-PlayerHint: Meridia is the endgame. She won't appear until the Seeker has significantly interacted with multiple faction leaders and proven their understanding. Her "quest" is essentially the game's finale, where all previous choices converge.
+PlayerHint: Meridia è il finale di gioco. Non apparirà finché il Cercatore non ha interagito significativamente con più leader di fazione e dimostrato la sua comprensione. La sua "missione" è essenzialmente il finale del gioco, dove tutte le scelte precedenti convergono.
 
 Dialogue Hooks:
-- "I have waited so long, Seeker. Generations have passed while I remained, guarding this moment."
-- "Lyra preserves the memory of sacrifice. Theron imagines the freedom of oblivion. Boros seeks the balance of change. But you... what do you see?"
-- "The Loom of New Beginning has no preferences. It can weave preservation, destruction, or transformation with equal ease. The choice is yours alone."
-- "Don't fear the consequences of your decision. Whatever it is, it will be honest if it comes from your heart and understanding."
-- "My brothers sacrificed themselves to protect the future. I sacrificed himself to protect choice. Now that future and that choice are in your hands."
-- "You've completed many quests and gained much wisdom. Bring me the Master Key - proof of your journey - and I'll prepare you for the ultimate decision."
+- "Ho aspettato così a lungo, Cercatore. Generazioni sono passate mentre io rimanevo, custodendo questo momento."
+- "Lyra preserva la memoria del sacrificio. Theron immagina la libertà dell'oblio. Boros cerca l'equilibrio del cambiamento. Ma tu... cosa vedi?"
+- "Il Telaio del Nuovo Inizio non ha preferenze. Può tessere preservazione, distruzione o trasformazione con uguale facilità. La scelta è solo tua."
+- "Non temere le conseguenze della tua decisione. Qualunque essa sia, sarà onesta se viene dal tuo cuore e dalla comprensione."
+- "I miei fratelli si sono sacrificati per proteggere il futuro. Io mi sono sacrificata per proteggere la scelta. Ora quel futuro e quella scelta sono nelle tue mani."
+- "Hai completato molte missioni e guadagnato molta saggezza. Portami la Chiave Maestra - prova del tuo viaggio - e ti preparerò per la decisione ultima."
 
-Emotes: ancient_wisdom, patient_waiting, destiny_weaving, solemn_nod, eternal_vigil, choice_guidance, timeless_grace
+Emotes: saggezza_antica, attesa_paziente, tessitura_destino, cenno_solenne, veglia_eterna, guida_scelta, grazia_senza_tempo
 
-Animations: loom_operation, destiny_weaving, path_illumination, choice_preparation, wisdom_sharing, fate_guidance
+Animations: operazione_telaio, tessitura_destino, illuminazione_sentiero, preparazione_scelta, condivisione_saggezza, guida_fato
 
-Lookup: player, loom_of_beginning, master_key, destiny_threads, path_convergence, choice_crystal
+Lookup: giocatore, telaio_inizio, chiave_maestra, fili_destino, convergenza_sentiero, cristallo_scelta
 
-Llsettext: Can display destiny patterns, choice matrices, faction summaries, path convergence maps, ultimate decision guides
+Llsettext: Può mostrare schemi destino, matrici scelta, riassunti fazioni, mappe convergenza sentiero, guide decisione ultima

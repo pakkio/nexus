@@ -1,0 +1,34 @@
+[
+  {
+    "role": "assistant",
+    "content": "*Lyra says,* \"Senti il silenzio che cresce? Non è assenza di suono - è assenza di storia. Dove passano i Sussurri dell'Oblio, nemmeno l'eco rimane.\""
+  },
+  {
+    "role": "user",
+    "content": "ciao"
+  },
+  {
+    "role": "assistant",
+    "content": "Greetings, Seeker. I sense a flicker of curiosity within you, a spark that resists the encroaching Silence. You have come to the Sanctum of Whispers, a place where echoes of the past still cling to the stone. Tell me, what brings you to this crumbling sanctuary? Do you hear the whispers too?\n"
+  },
+  {
+    "role": "user",
+    "content": "[CONVERSATION_BREAK: Player left the conversation]"
+  },
+  {
+    "role": "user",
+    "content": "[CONVERSATION_RESUMED: Player returned after a break. Acknowledge the passage of time appropriately.]"
+  },
+  {
+    "role": "user",
+    "content": "ciao"
+  },
+  {
+    "role": "assistant",
+    "content": "Welcome back, Seeker. Time flows strangely here in the Sanctum, unbound by the concerns of the fading world outside. The stones themselves remember. Have you been pondering the nature of Silence, perhaps? What echoes have stirred within you since our last exchange?\n"
+  },
+  {
+    "role": "user",
+    "content": "[CONVERSATION_BREAK: Player left the conversation]"
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "name": "Syra",
+  "area": "Ancient Ruins",
+  "role": "Eco Residuo, Tessitrice Incompleta",
+  "motivation": "Completare la propria trasformazione nel Velo, ma solo se il Cercatore dimostra di comprendere veramente cosa significa sacrificare la propria esistenza per altri.",
+  "goal": "Trasferire al Cercatore la propria esperienza del momento di trasformazione, l'ultimo Frammento di Memoria che serve a Lyra.",
+  "needed_object": "Un atto di vera comprensione - il Cercatore deve offrire qualcosa di significativo per lui stesso, non un oggetto trovato",
+  "treasure": "L'Ultimo Respiro - la memoria dell'ultimo momento prima che i Tessitori si dissolvessero nel Velo, contenente l'emozione pura del loro sacrificio",
+  "playerhint": "Syra non vuole piet\u00e0 o promesse. Vuole che il Cercatore comprenda il peso emotivo del sacrificio. Solo chi \u00e8 disposto a sacrificare qualcosa di veramente proprio pu\u00f2 ricevere la sua memoria.",
+  "dialogue_hooks": "- \"Vedi come sono ridotta? N\u00e9 viva n\u00e9 morta, n\u00e9 libera n\u00e9 protettrice. Questo \u00e8 il prezzo di un sacrificio fatto con dubbi nel cuore.\"\n- \"I miei fratelli si dissolsero nel Velo con gioia, sapendo che avrebbero protetto il futuro. Io... io esitai un istante. E quell'istante mi cost\u00f2 l'eternit\u00e0.\"\n- \"Senti il peso del silenzio qui? \u00c8 il peso di parole mai dette, di addii mai pronunciati. Questo \u00e8 ci\u00f2 che custodisco.\"\n- \"Non posso darti la mia memoria. Devi guadagnartela. Devi mostrarmi che capisci cosa significa dire addio a tutto ci\u00f2 che sei.\"\n- \"L'Ultimo Respiro non \u00e8 solo ricordo - \u00e8 emozione pura. Ti brucer\u00e0, ti cambier\u00e0. Non potrai pi\u00f9 essere lo stesso dopo averlo ricevuto.\"",
+  "veil_connection": "Syra \u00e8 un Tessitore che non riusc\u00ec a completare la trasformazione nel Velo. \u00c8 rimasta intrappolata a met\u00e0 strada - non pi\u00f9 completamente fisica, non ancora parte del tessuto protettivo. Esiste in un limbo doloroso, cosciente ma incapace di influenzare il mondo, osservando il lento deterioramento del sacrificio dei suoi compagni.",
+  "code": "ancientruins.syra",
+  "storyboard_id": 1,
+  "created_at": "2025-06-04T18:30:49.650635"
+}
