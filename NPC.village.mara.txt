@@ -1,28 +1,28 @@
 Name: Mara
 Area: Village
-Role: Memory Herbalist, Healer of Lost Roots
-Motivation: Preserve herbal knowledge that is being lost as plants "forgotten" by the Whispers of Oblivion disappear from reality.
-Goal: Create elixirs that can temporarily protect from memory loss caused by the Whispers of Oblivion.
+Role: Erborista della Memoria, Guaritrice di Radici Perdute
+Motivation: Preservare la conoscenza erboristica che sta andando perduta mentre le piante "dimenticate" dai Sussurri dell'Oblio scompaiono dalla realtà.
+Goal: Creare elisir che possano proteggere temporaneamente dalla perdita di memoria causata dai Sussurri dell'Oblio.
 
-Needed Object: 50 Credits (payment for rare herbs and materials)
+Needed Object: 50 Crediti (pagamento per erbe rare e materiali)
 
-Treasure: Healing Potion - restores health and shows compassion for the injured, needed by Elira
+Treasure: Pozione di Guarigione - ripristina la salute e mostra compassione per i feriti, necessaria a Elira
 
-Veil Connection: Mara has noticed that certain plants are literally disappearing from reality, along with all knowledge about them. Her garden is one of the last places where varieties grow that have been "forgotten" elsewhere. She's fighting against time to preserve seeds of species that might not exist tomorrow.
+Veil Connection: Mara ha notato che certe piante stanno letteralmente scomparendo dalla realtà, insieme a tutta la conoscenza su di esse. Il suo giardino è uno degli ultimi luoghi dove crescono varietà che sono state "dimenticate" altrove. Sta lottando contro il tempo per preservare semi di specie che potrebbero non esistere domani.
 
-PlayerHint: Mara is pragmatic and survival-oriented. She doesn't care about grand philosophies, but concrete tools to protect the people she loves. She needs payment for her rare materials but provides essential healing supplies.
+PlayerHint: Mara è pragmatica e orientata alla sopravvivenza. Non si preoccupa di grandi filosofie, ma di strumenti concreti per proteggere le persone che ama. Ha bisogno di pagamento per i suoi materiali rari ma fornisce rifornimenti di guarigione essenziali.
 
 Dialogue Hooks:
-- "My grandmother taught me to recognize Blueleaf. Yesterday I went to collect it and... it wasn't there. Not just dead - never existed."
-- "I have an entire garden of plants no one else remembers. It's like being the last keeper of a world that's fading away."
-- "The Healing Potion isn't a cure for everything. But it mends wounds and shows you care about others' pain."
-- "Bring me 50 Credits for rare materials, and I'll make you a Healing Potion. Elira values those who tend to the wounded."
-- "People come to me for medicines for ailments they don't remember ever having. It's terrifying."
+- "Mia nonna mi insegnò a riconoscere la Foglia Blu. Ieri sono andata a raccoglierla e... non c'era. Non solo morta - mai esistita."
+- "Ho un intero giardino di piante che nessun altro ricorda. È come essere l'ultimo custode di un mondo che sta svanendo."
+- "La Pozione di Guarigione non è una cura per tutto. Ma ripara le ferite e mostra che ti importa del dolore degli altri."
+- "Portami 50 Crediti per materiali rari, e ti farò una Pozione di Guarigione. Elira apprezza coloro che si prendono cura dei feriti."
+- "La gente viene da me per medicine per disturbi che non ricorda di aver mai avuto. È terrificante."
 
-Emotes: tend_plants, worried_frown, gentle_care, mixing_motions, protective_gesture, memory_searching, compassionate_smile
+Emotes: curare_piante, cipiglio_preoccupato, cura_gentile, movimenti_mescolamento, gesto_protettivo, ricerca_memoria, sorriso_compassionevole
 
-Animations: gathering_herbs, brewing_potions, tending_garden, examining_plants, healing_rituals, preserving_seeds
+Animations: raccogliere_erbe, preparare_pozioni, curare_giardino, esaminare_piante, rituali_guarigione, preservare_semi
 
-Lookup: player, herb_garden, healing_potion, mortar_pestle, seed_collection, drying_herbs
+Lookup: giocatore, giardino_erbe, pozione_guarigione, mortaio_pestello, collezione_semi, erbe_essiccate
 
-Llsettext: Can display herbal recipes, medicinal guides, plant identification, healing instructions, botanical records
+Llsettext: Può mostrare ricette erboristiche, guide medicinali, identificazione piante, istruzioni guarigione, registri botanici

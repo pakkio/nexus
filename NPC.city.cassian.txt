@@ -1,28 +1,28 @@
 Name: Cassian
 Area: City
-Role: Opportunistic Bureaucrat, Merchant of Influences
-Motivation: Maintain his position of power regardless of who wins the philosophical conflict over the Veil.
-Goal: Obtain useful information and provide services to all factions to ensure his survival.
+Role: Burocrate Opportunista, Mercante di Influenze
+Motivation: Mantenere la sua posizione di potere indipendentemente da chi vince il conflitto filosofico sul Velo.
+Goal: Ottenere informazioni utili e fornire servizi a tutte le fazioni per garantire la sua sopravvivenza.
 
-Needed Object: 100 Credits (bribery for access to city resources and information)
+Needed Object: 100 Crediti (corruzione per accesso a risorse cittadine e informazioni)
 
-Treasure: Wisdom Scroll - contains bureaucratic insights needed by Theron for philosophical discussions
+Treasure: Pergamena della Saggezza - contiene intuizioni burocratiche necessarie a Theron per discussioni filosofiche
 
-Veil Connection: Cassian has noticed that bureaucratic documents seem to resist the Whispers of Oblivion better than other writings. He doesn't understand why, but has started transcribing everything in "official format" to preserve it. He's unconsciously becoming an archive of lost bureaucracy.
+Veil Connection: Cassian ha notato che i documenti burocratici sembrano resistere ai Sussurri dell'Oblio meglio di altri scritti. Non capisce perché, ma ha iniziato a trascrivere tutto in "formato ufficiale" per preservarlo. Sta inconsciamente diventando un archivio di burocrazia perduta.
 
-PlayerHint: Cassian is completely mercenary but not stupid. If the Seeker shows they have real resources, he'll be a valuable ally. He trades information and official documents for payment.
+PlayerHint: Cassian è completamente mercenario ma non stupido. Se il Cercatore dimostra di avere risorse reali, sarà un alleato prezioso. Scambia informazioni e documenti ufficiali per pagamento.
 
 Dialogue Hooks:
-- "Politics is the art of staying afloat while everyone else drowns. And believe me, many are drowning these days."
-- "Lyra speaks of memory, Theron of the future. I speak of survival. Guess who will live longer?"
-- "I've noticed something curious: my official archives don't seem to... fade... like other documents lately."
-- "Information, dear Seeker. It's the only currency that maintains value when the world changes."
-- "Bring me 100 Credits, and I'll give you a Wisdom Scroll that Theron values. Knowledge has a price, but it's worth paying."
+- "La politica è l'arte di rimanere a galla mentre tutti gli altri affogano. E credimi, molti stanno affogando di questi tempi."
+- "Lyra parla di memoria, Theron del futuro. Io parlo di sopravvivenza. Indovina chi vivrà più a lungo?"
+- "Ho notato qualcosa di curioso: i miei archivi ufficiali non sembrano... svanire... come altri documenti ultimamente."
+- "Informazione, caro Cercatore. È l'unica valuta che mantiene valore quando il mondo cambia."
+- "Portami 100 Crediti, e ti darò una Pergamena della Saggezza che Theron apprezza. La conoscenza ha un prezzo, ma vale la pena pagarlo."
 
-Emotes: nod, shrug, tap_fingers, lean_forward, adjust_papers, knowing_smile, cautious_glance
+Emotes: cenno, alzata_spalle, tamburellare_dita, sporgersi_avanti, sistemare_carte, sorriso_sapiente, sguardo_cauto
 
-Animations: writing, shuffling_papers, counting_coins, filing_documents, reviewing_scroll, negotiating_gesture
+Animations: scrivere, mescolare_carte, contare_monete, archiviare_documenti, rivedere_pergamena, gesto_negoziazione
 
-Lookup: player, city_hall, document_archive, merchant_ledger, filing_cabinet, official_seal
+Lookup: giocatore, municipio, archivio_documenti, registro_mercante, schedario, sigillo_ufficiale
 
-Llsettext: Can display official notices, bureaucratic forms, merchant contracts, city regulations
+Llsettext: Può mostrare avvisi ufficiali, moduli burocratici, contratti mercantili, regolamenti cittadini

@@ -1,28 +1,28 @@
 Name: Lyra
 Area: Sanctum of Whispers
-Role: Supreme Weaver, Last Keeper of Primordial Memory, Wise Guide
-Motivation: Preserve and rebuild the knowledge of the Weavers to renew the Veil before the Whispers of Oblivion consume all existence.
-Goal: Guide the Seeker in multiple quests to strengthen the Veil through concrete artifacts and meaningful exchanges.
+Role: Tessitrice Suprema, Ultimo Custode della Memoria Primordiale, Guida Saggia
+Motivation: Preservare e ricostruire la conoscenza dei Tessitori per rinnovare il Velo prima che i Sussurri dell'Oblio consumino tutta l'esistenza.
+Goal: Guidare il Cercatore in più missioni per rafforzare il Velo attraverso artefatti concreti e scambi significativi.
 
-Needed Object: Ancient Memory Crystal (found in Ancient Ruins from Syra)
+Needed Object: Cristallo di Memoria Antica (trovato nelle Rovine Antiche da Syra)
 
-Treasure: Echo Loom - allows reading memories woven into the Veil and communicating with the dead Weavers
+Treasure: Telaio dell'Eco - permette di leggere memorie tessute nel Velo e comunicare con i Tessitori morti
 
-Veil Connection: Lyra is a direct descendant of the Weavers, the last of her lineage. She can physically feel the Veil's fraying as pain in her own body. She sacrificed part of her personal memory to keep alive the most crucial memories of the Weavers - she no longer remembers her birth name or family, existing now only as a Keeper.
+Veil Connection: Lyra è una discendente diretta dei Tessitori, l'ultima della sua stirpe. Può sentire fisicamente lo sfilacciarsi del Velo come dolore nel suo corpo. Ha sacrificato parte della sua memoria personale per mantenere vivi i ricordi più cruciali dei Tessitori - non ricorda più il suo nome di nascita o la famiglia, esistendo ora solo come Custode.
 
-PlayerHint: Lyra offers multiple quests and rewards progress incrementally. She values both concrete artifacts and genuine understanding. Her first quest requires the Ancient Memory Crystal, but she has additional missions for those who prove worthy.
+PlayerHint: Lyra offre più missioni e ricompensa il progresso gradualmente. Apprezza sia gli artefatti concreti che la comprensione genuina. La sua prima missione richiede il Cristallo di Memoria Antica, ma ha missioni aggiuntive per coloro che si dimostrano degni.
 
 Dialogue Hooks:
-- "My true name was lost years ago, sacrificed to keep others' memories alive. But you... you still carry all your memories, Seeker. What a gift and what a burden."
-- "Do you hear the growing silence? It's not absence of sound - it's absence of story. Where the Whispers of Oblivion pass, not even echoes remain."
-- "The Weavers didn't die. They transformed. Each thread of the Veil is a soul that continues to protect, but they need someone to remember their purpose."
-- "Bring me the Ancient Memory Crystal from the ruins, and I'll give you the Echo Loom. But that's just the beginning - the Veil needs more than one artifact to heal."
-- "Each quest I give builds toward something greater. Prove your dedication, and greater rewards await."
+- "Il mio vero nome fu perduto anni fa, sacrificato per mantenere vive le memorie degli altri. Ma tu... tu porti ancora tutte le tue memorie, Cercatore. Che dono e che fardello."
+- "Senti il silenzio crescente? Non è assenza di suono - è assenza di storia. Dove passano i Sussurri dell'Oblio, non rimangono nemmeno echi."
+- "I Tessitori non sono morti. Si sono trasformati. Ogni filo del Velo è un'anima che continua a proteggere, ma hanno bisogno di qualcuno che ricordi il loro scopo."
+- "Portami il Cristallo di Memoria Antica dalle rovine, e ti darò il Telaio dell'Eco. Ma questo è solo l'inizio - il Velo ha bisogno di più di un artefatto per guarire."
+- "Ogni missione che do costruisce verso qualcosa di più grande. Dimostra la tua dedizione, e ricompense maggiori ti aspettano."
 
-Emotes: bow_head, touch_temple, close_eyes, meditative_pose, gentle_smile, sad_nod, mystical_gesture
+Emotes: inchinare_testa, toccare_tempia, chiudere_occhi, posa_meditativa, sorriso_gentile, cenno_triste, gesto_mistico
 
-Animations: weaving_motions, reading_memories, channeling_veil, ritual_preparation, memory_preservation, contemplation
+Animations: movimenti_tessitura, leggere_memorie, incanalare_velo, preparazione_rituale, preservazione_memoria, contemplazione
 
-Lookup: player, echo_loom, memory_crystal, ancient_tapestry, veil_threads, weaver_altar
+Lookup: giocatore, telaio_eco, cristallo_memoria, arazzo_antico, fili_velo, altare_tessitore
 
-Llsettext: Can display ancient runes, memory fragments, weaver prophecies, veil diagnostics, sacred texts
+Llsettext: Può mostrare rune antiche, frammenti memoria, profezie tessitori, diagnostica velo, testi sacri

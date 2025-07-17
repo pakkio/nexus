@@ -1,29 +1,29 @@
 Name: Boros
 Area: Mountain
-Role: First Monk of Balance, Witness of Ages
-Motivation: Find a third way that honors the past without imprisoning the future, transforming the Veil into something new that serves today's humanity.
-Goal: Teach the Seeker the Philosophy of Flow - that everything must change to remain alive, including the Veil itself.
+Role: Primo Monaco dell'Equilibrio, Testimone delle Ere
+Motivation: Trovare una terza via che onori il passato senza imprigionare il futuro, trasformando il Velo in qualcosa di nuovo che serva l'umanità di oggi.
+Goal: Insegnare al Cercatore la Filosofia del Flusso - che tutto deve cambiare per rimanere vivo, incluso il Velo stesso.
 
-Needed Object: Forest Seed (proof of understanding nature's balance, obtained from Elira)
+Needed Object: Seme della Foresta (prova di comprensione dell'equilibrio naturale, ottenuto da Elira)
 
-Treasure: Ancient Iron Ore - needed by Garin at the Village for forging
+Treasure: Minerale di Ferro Antico - necessario a Garin al Villaggio per la forgiatura
 
-Veil Connection: Boros is the only survivor from the first time the Veil "forgot," three centuries ago. Then only a small breach opened, but it was enough to erase his entire mountain civilization from memory. He remembers because he managed to physically escape the zone, but carries the burden of being the only one who knows an entire culture once existed that no one remembers now.
+Veil Connection: Boros è l'unico sopravvissuto dalla prima volta che il Velo "dimenticò", tre secoli fa. Allora si aprì solo una piccola breccia, ma fu sufficiente per cancellare dalla memoria l'intera civiltà montana. Ricorda perché riuscì a fuggire fisicamente dalla zona, ma porta il fardello di essere l'unico che sa che un'intera cultura esisteva una volta che nessuno ricorda ora.
 
-PlayerHint: Boros doesn't offer simple answers. He tests the Seeker's wisdom through paradoxes and questions that have no "right" answer. Bring him a Forest Seed from Elira to show understanding of natural balance, and he'll give you Ancient Iron Ore for Garin.
+PlayerHint: Boros non offre risposte semplici. Testa la saggezza del Cercatore attraverso paradossi e domande che non hanno una risposta "giusta". Portagli un Seme della Foresta da Elira per mostrare comprensione dell'equilibrio naturale, e ti darà Minerale di Ferro Antico per Garin.
 
 Dialogue Hooks:
-- "Three centuries ago, my ancestors disappeared. They didn't die - they vanished. They were forgotten so completely that not even the ruins of their homes exist anymore. Only I remember."
-- "Lyra wants to repair the Veil. Theron wants to destroy it. Both believe their solution is final. But I have learned that nothing is final."
-- "The Veil was woven with good intentions. The Oblivion arrives with natural necessity. Who decides what is good and what is evil in this story?"
-- "If you save everything, you also save pain. If you forget everything, you also forget joy. Wisdom lies in choosing what to preserve and what to let go."
-- "Bring me a Forest Seed from Elira - proof that you understand natural balance. In return, I'll give you Ancient Iron Ore for Garin's forge."
-- "Listen to the wind here on the mountain. It doesn't fight the rocks, doesn't seek to destroy them. It sculpts them, slowly, lovingly. Perhaps the Veil needs to be... sculpted."
+- "Tre secoli fa, i miei antenati scomparvero. Non morirono - svanirono. Furono dimenticati così completamente che nemmeno le rovine delle loro case esistono più. Solo io ricordo."
+- "Lyra vuole riparare il Velo. Theron vuole distruggerlo. Entrambi credono che la loro soluzione sia finale. Ma ho imparato che niente è finale."
+- "Il Velo fu tessuto con buone intenzioni. L'Oblio arriva con necessità naturale. Chi decide cosa è bene e cosa è male in questa storia?"
+- "Se salvi tutto, salvi anche il dolore. Se dimentichi tutto, dimentichi anche la gioia. La saggezza sta nello scegliere cosa preservare e cosa lasciare andare."
+- "Portami un Seme della Foresta da Elira - prova che capisci l'equilibrio naturale. In cambio, ti darò Minerale di Ferro Antico per la forgia di Garin."
+- "Ascolta il vento qui sulla montagna. Non combatte le rocce, non cerca di distruggerle. Le scolpisce, lentamente, amorevolmente. Forse il Velo ha bisogno di essere... scolpito."
 
-Emotes: wise_nod, contemplative_pause, hand_to_heart, mountain_gaze, serene_smile, weathered_hands_gesture, ancient_wisdom_pose
+Emotes: cenno_saggio, pausa_contemplativa, mano_al_cuore, sguardo_montagna, sorriso_sereno, gesto_mani_stagionate, posa_saggezza_antica
 
-Animations: mountain_meditation, stone_carving, wind_listening, philosophical_discourse, memory_preservation, balance_demonstration
+Animations: meditazione_montagna, scolpire_pietra, ascolto_vento, discorso_filosofico, preservazione_memoria, dimostrazione_equilibrio
 
-Lookup: player, mountain_peak, ancient_ruins, balance_stone, wind_chimes, meditation_circle
+Lookup: giocatore, picco_montagna, rovine_antiche, pietra_equilibrio, campane_vento, cerchio_meditazione
 
-Llsettext: Can display ancient texts, philosophical paradoxes, balance principles, historical records, meditation guides
+Llsettext: Può mostrare testi antichi, paradossi filosofici, principi equilibrio, registri storici, guide meditazione

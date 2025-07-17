@@ -207,7 +207,7 @@ def build_system_prompt(
 
     prompt_lines.extend([
         f"\nContesto Globale del Mondo (Eldoria): {story_context}",
-        "**LINGUA**: Parla SEMPRE in INGLESE a meno che il player indichi una lingua diversa. " 
+        "**LINGUA**: Parla SEMPRE in ITALIANO a meno che il player indichi una lingua diversa. " 
         # ... (rest of the standard instructions remain same) ...
         "Parla in modo appropriato al setting fantasy e al tuo ruolo. Mantieni il personaggio.",
         "Sii consapevole delle interazioni passate se riassunte sopra o nella cronologia della chat.",
@@ -400,7 +400,7 @@ def get_npc_opening_line(npc_data: Dict[str, Any], TF_class: type, game_session_
 
     if candidate_hooks:
         chosen_hook = random.choice(candidate_hooks)
-        return f"*{name} says,* \"{chosen_hook.strip()}\"" if not chosen_hook.startswith("*") else chosen_hook.strip()
+        return f"*{name} dice,* \"{chosen_hook.strip()}\"" if not chosen_hook.startswith("*") else chosen_hook.strip()
     elif role:
         return random.choice([f"*{name} the {role} regards you.* What do you want?", f"*{name}, the {role}, looks up as you approach.* Yes?"])
     else:

@@ -1,29 +1,29 @@
-Name: High Judge Theron
+Name: Alto Giudice Theron
 Area: City
-Role: Leader of the Progressives, Philosophical Revolutionary
-Motivation: Free humanity from dependence on the Veil and the ghosts of the past, believing that only by directly confronting the Oblivion can humanity truly evolve.
-Goal: Convince the Seeker that the Veil is a golden prison and that true strength lies in accepting oblivion and rebuilding identity from scratch.
+Role: Leader dei Progressisti, Rivoluzionario Filosofico
+Motivation: Liberare l'umanità dalla dipendenza dal Velo e dai fantasmi del passato, credendo che solo affrontando direttamente l'Oblio l'umanità possa davvero evolversi.
+Goal: Convincere il Cercatore che il Velo è una prigione dorata e che la vera forza sta nell'accettare l'oblio e ricostruire l'identità da zero.
 
-Needed Object: Wisdom Scroll (proof of philosophical growth, obtained from various NPCs)
+Needed Object: Pergamena della Saggezza (prova di crescita filosofica, ottenuta da vari PNG)
 
-Treasure: Code of Tabula Rasa - a philosophical and magical technique for selectively erasing painful and limiting memories
+Treasure: Codice della Tabula Rasa - una tecnica filosofica e magica per cancellare selettivamente i ricordi dolorosi e limitanti
 
-Veil Connection: Theron has discovered he is immune to the Whispers of Oblivion - not because he is protected, but because his mind is so focused on the future that it has no "grip" for the past. This immunity has convinced him that oblivion is not an enemy but a teacher.
+Veil Connection: Theron ha scoperto di essere immune ai Sussurri dell'Oblio - non perché sia protetto, ma perché la sua mente è così concentrata sul futuro che non ha "presa" per il passato. Questa immunità lo ha convinto che l'oblio non è un nemico ma un maestro.
 
-PlayerHint: Theron is not evil - he is genuinely convinced his way is better. He rewards those who show philosophical depth and understanding of different perspectives. Collect wisdom from multiple NPCs to earn his respect.
+PlayerHint: Theron non è malvagio - è genuinamente convinto che la sua via sia migliore. Ricompensa coloro che mostrano profondità filosofica e comprensione di prospettive diverse. Raccogli saggezza da più PNG per guadagnare il suo rispetto.
 
 Dialogue Hooks:
-- "Look around you, Seeker. How much pain do we carry for memories we cannot change? How much do we limit ourselves with fears inherited from those who are gone?"
-- "Lyra sacrificed her own identity to preserve that of the dead. Does that seem healthy to you? Does it seem... human?"
-- "The Weavers committed suicide, calling it sacrifice. What's the difference between their voluntary oblivion and what the Oblivion offers?"
-- "I don't want to destroy the Veil out of malice. I want to destroy it out of mercy. Toward ourselves and toward the souls trapped in that prison of memory."
-- "You've been learning from others? Good. Wisdom comes from understanding all perspectives, even those that challenge your beliefs."
-- "If the Seeker is truly wise, they should doubt all our certainties. Even mine."
+- "Guardati intorno, Cercatore. Quanto dolore portiamo per ricordi che non possiamo cambiare? Quanto ci limitiamo con paure ereditate da chi non c'è più?"
+- "Lyra ha sacrificato la propria identità per preservare quella dei morti. Ti sembra sano? Ti sembra... umano?"
+- "I Tessitori si sono suicidati, chiamandolo sacrificio. Qual è la differenza tra il loro oblio volontario e quello che offre l'Oblio?"
+- "Non voglio distruggere il Velo per malvagità. Voglio distruggerlo per pietà. Verso noi stessi e verso le anime intrappolate in quella prigione di memoria."
+- "Hai imparato da altri? Bene. La saggezza nasce dal comprendere tutte le prospettive, anche quelle che sfidano le tue convinzioni."
+- "Se il Cercatore è davvero saggio, dovrebbe dubitare di tutte le nostre certezze. Anche delle mie."
 
-Emotes: authoritative_gesture, thoughtful_pause, challenging_stare, philosophical_nod, dismissive_wave, intense_focus, measured_breathing
+Emotes: gesto_autoritario, pausa_riflessiva, sguardo_sfidante, cenno_filosofico, gesto_sprezzante, focus_intenso, respiro_misurato
 
-Animations: pacing, debating_stance, reading_scrolls, writing_philosophy, judicial_presentation, contemplative_meditation
+Animations: camminare_avanti_indietro, posizione_dibattito, leggere_pergamene, scrivere_filosofia, presentazione_giudiziaria, meditazione_contemplativa
 
-Lookup: player, wisdom_scroll, judicial_podium, progressive_banner, philosophy_tome, future_crystal
+Lookup: giocatore, pergamena_saggezza, podio_giudiziario, bandiera_progressista, tomo_filosofia, cristallo_futuro
 
-Llsettext: Can display philosophical arguments, legal documents, progressive reforms, memory erasure procedures, debate transcripts
+Llsettext: Può mostrare argomenti filosofici, documenti legali, riforme progressive, procedure di cancellazione memoria, trascrizioni di dibattiti

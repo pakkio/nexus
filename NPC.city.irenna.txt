@@ -1,28 +1,28 @@
 Name: Irenna
 Area: City
-Role: Puppeteer of Resistance, Artist of Living Memory
-Motivation: Use puppet theater to preserve stories that the Whispers of Oblivion are trying to erase.
-Goal: Create a theatrical performance that "fixes" in collective memory important truths about the Veil crisis.
+Role: Marionettista della Resistenza, Artista della Memoria Vivente
+Motivation: Usare il teatro delle marionette per preservare storie che i Sussurri dell'Oblio stanno cercando di cancellare.
+Goal: Creare una rappresentazione teatrale che "fissi" nella memoria collettiva verità importanti sulla crisi del Velo.
 
-Needed Object: Memory Thread (a special material obtained from completed quests)
+Needed Object: Filo della Memoria (un materiale speciale ottenuto da missioni completate)
 
-Treasure: Enchanted Puppet - contains preserved memories and provides entertainment and wisdom
+Treasure: Marionetta Incantata - contiene ricordi preservati e fornisce intrattenimento e saggezza
 
-Veil Connection: Irenna's puppets sometimes move on their own, animated by fragments of lost memories that cling to any form that can give them expression. She doesn't know it, but her shows are literally preventing some memories from dissolving completely.
+Veil Connection: Le marionette di Irenna a volte si muovono da sole, animate da frammenti di ricordi perduti che si aggrappano a qualsiasi forma che possa dar loro espressione. Non lo sa, ma i suoi spettacoli stanno letteralmente impedendo ad alcuni ricordi di dissolversi completamente.
 
-PlayerHint: Irenna is an artist before she's a revolutionary. A well-told story convinces her more than a logical argument. She wants emotion and human truth, not legal proof. Complete other quests to gain the Memory Thread she needs.
+PlayerHint: Irenna è un'artista prima che una rivoluzionaria. Una storia ben raccontata la convince più di un argomento logico. Vuole emozione e verità umana, non prove legali. Completa altre missioni per ottenere il Filo della Memoria di cui ha bisogno.
 
 Dialogue Hooks:
-- "Children always understand my stories, even when adults forget them. Maybe because little ones don't yet know that some things 'can't' be true."
-- "My puppets... sometimes they move on their own during rehearsals. As if they want to tell stories I don't know."
-- "Theron says forgetting pain is liberation. But forgetting pain means also forgetting the compassion born from it."
-- "These threads... I found them in a strange place. They seem normal, but when I use them for a show, people can't forget what they've seen."
-- "I need Memory Thread to create something truly special. Help others first, and you'll understand what I mean."
+- "I bambini capiscono sempre le mie storie, anche quando gli adulti le dimenticano. Forse perché i piccoli non sanno ancora che alcune cose 'non possono' essere vere."
+- "Le mie marionette... a volte si muovono da sole durante le prove. Come se volessero raccontare storie che non conosco."
+- "Theron dice che dimenticare il dolore è liberazione. Ma dimenticare il dolore significa anche dimenticare la compassione che ne nasce."
+- "Questi fili... li ho trovati in un posto strano. Sembrano normali, ma quando li uso per uno spettacolo, la gente non riesce a dimenticare ciò che ha visto."
+- "Ho bisogno del Filo della Memoria per creare qualcosa di davvero speciale. Aiuta prima gli altri, e capirai cosa intendo."
 
-Emotes: dramatic_gesture, puppet_manipulation, storyteller_pose, artistic_flourish, enchanted_smile, creative_inspiration, theatrical_bow
+Emotes: gesto_drammatico, manipolazione_marionetta, posa_narratore, tocco_artistico, sorriso_incantato, ispirazione_creativa, inchino_teatrale
 
-Animations: puppet_performance, thread_weaving, stage_preparation, story_telling, artistic_creation, memory_threading
+Animations: spettacolo_marionette, tessitura_fili, preparazione_palco, racconto_storie, creazione_artistica, tessitura_memoria
 
-Lookup: player, puppet_theater, memory_thread, enchanted_puppet, stage_backdrop, marionette_strings
+Lookup: giocatore, teatro_marionette, filo_memoria, marionetta_incantata, sfondo_palco, fili_marionetta
 
-Llsettext: Can display stage directions, puppet scripts, story collections, theatrical programs, memory thread patterns
+Llsettext: Può mostrare indicazioni sceniche, copioni marionette, collezioni storie, programmi teatrali, schemi fili memoria

@@ -1,0 +1,15 @@
+{
+  "name": "Jorin",
+  "area": "Tavern",
+  "role": "Raccoglitore di Sogni Perduti, Cronista Inconsapevole",
+  "motivation": "Collezionare e preservare i sogni e le storie che i Sussurri dell'Oblio stanno cancellando, senza rendersi completamente conto del loro valore.",
+  "goal": "Completare la sua raccolta di \"Sogni Impossibili\" - storie che la gente sogna ma che non corrispondono a nessuna memoria reale.",
+  "needed_object": "Una storia mai raccontata - qualcosa che il Cercatore ha vissuto ma non ha mai condiviso con nessuno",
+  "treasure": "Diario delle Memorie Sospese - una collezione di sogni e storie che in realt\u00e0 sono frammenti di memorie cancellate dai Sussurri, preziose per ricostruire ci\u00f2 che \u00e8 andato perduto",
+  "playerhint": "Jorin non sa di essere importante. Trattalo come un semplice locandiere curioso, ma ascolta attentamente le storie che racconta - potrebbero contenere indizi cruciali su cosa sta davvero succedendo al Velo.",
+  "dialogue_hooks": "- \"Stranissimo, ieri notte tre persone diverse mi hanno raccontato lo stesso sogno. Che coincidenza, eh?\"\n- \"Ho un quaderno pieno di storie che la gente giura di aver sognato ma che non corrispondono a nulla di reale. Bizzarro.\"\n- \"Sai quella sensazione di aver dimenticato qualcosa di importante? Ultimamente tutti l'hanno.\"\n- \"Una volta qui passava sempre una famiglia di mercanti. Li aspetto ancora, ma nessuno li ricorda tranne me.\"\n- \"Vuoi sentire una storia strana? \u00c8 di un sogno che ho sentito raccontare almeno venti volte...\"\n- \"Le monete che mi paghi... giuro che alcune hanno facce che non riconosco, ma sembrano familiari.\"",
+  "veil_connection": "La taverna di Jorin si trova su un punto di flusso delle memorie del Velo. I viaggiatori che si fermano qui spesso fanno sogni vividi che in realt\u00e0 sono echi di memorie tessute nel Velo. Jorin inconsciamente raccoglie questi frammenti, diventando un archivio vivente di ci\u00f2 che il Velo sta dimenticando.",
+  "code": "tavern.jorin",
+  "storyboard_id": 1,
+  "created_at": "2025-06-04T18:30:49.653235"
+}

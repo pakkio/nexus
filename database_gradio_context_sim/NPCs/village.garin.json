@@ -1,0 +1,15 @@
+{
+  "name": "Garin",
+  "area": "Village",
+  "role": "Fabbro delle Memorie, Artigiano dell'Impossibile",
+  "motivation": "Forgiare oggetti che \"ricordano\" le loro origini e i loro scopi, resistendo cos\u00ec ai Sussurri dell'Oblio.",
+  "goal": "Creare l'Ancora della Persistenza - un'arma o strumento che non pu\u00f2 essere dimenticato una volta forgiato.",
+  "needed_object": "Metallo che ha \"visto\" qualcosa di significativo - non importa cosa, ma deve avere una storia emotiva forte",
+  "treasure": "Lama della Memoria Incisa - una spada che \"ricorda\" ogni battaglia combattuta e ogni vita salvata, diventando pi\u00f9 forte con l'uso altruistico",
+  "playerhint": "Garin valuta le persone dalla passione che mettono nei loro scopi. Non gli interessa se sei buono o cattivo, ma se credi davvero in ci\u00f2 che fai. La sua ricompensa riflette l'intensit\u00e0 delle emozioni che il Cercatore porta nel loro rapporto.",
+  "dialogue_hooks": "- \"Il metallo ha memoria, sai. Ogni martellata lascia un'eco. E quelle che vengono dal cuore... quelle non si dimenticano mai.\"\n- \"Mio nonno diceva sempre: 'Forgia con amore o non forgiare affatto.' Ora capisco perch\u00e9 il suo martello \u00e8 l'unica cosa che i silenzi non riescono a toccare.\"\n- \"Hai mai notato come alcuni oggetti sembrano... pi\u00f9 reali di altri? Come se resistessero al mondo che li circonda?\"\n- \"La Lama della Memoria? Sar\u00e0 forte quanto la passione di chi la impugna. In mani indifferenti, \u00e8 solo acciaio.\"\n- \"Portami qualcosa che ha visto lacrime di gioia o di dolore. Solo quello pu\u00f2 diventare qualcosa di veramente imperishabile.\"",
+  "veil_connection": "Garin ha scoperto per caso che gli oggetti forgiati con vera passione e scopo resistono parzialmente ai Sussurri dell'Oblio. Il suo martello da fabbro apparteneva a suo nonno, ed \u00e8 l'unico oggetto nel villaggio che i Sussurri non riescono a \"cancellare\" dalla realt\u00e0.",
+  "code": "village.garin",
+  "storyboard_id": 1,
+  "created_at": "2025-06-04T18:30:49.652631"
+}

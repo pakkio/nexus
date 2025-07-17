@@ -1,28 +1,28 @@
 Name: Garin
 Area: Village
-Role: Memory Smith, Craftsman of the Impossible
-Motivation: Forge objects that "remember" their origins and purposes, thus resisting the Whispers of Oblivion.
-Goal: Create tools and weapons that can help defend against the Veil's deterioration.
+Role: Fabbro della Memoria, Artigiano dell'Impossibile
+Motivation: Forgiare oggetti che "ricordano" le loro origini e scopi, resistendo così ai Sussurri dell'Oblio.
+Goal: Creare strumenti e armi che possano aiutare a difendersi dal deterioramento del Velo.
 
-Needed Object: Ancient Iron Ore (can be found in the Mountain area from Boros)
+Needed Object: Minerale di Ferro Antico (può essere trovato nell'area Montagna da Boros)
 
-Treasure: Iron Shavings - needed by Jorin at the Tavern for the Sacred Offering Bowl
+Treasure: Trucioli di Ferro - necessari a Jorin alla Taverna per la Ciotola dell'Offerta Sacra
 
-Veil Connection: Garin has discovered by accident that objects forged with true passion and purpose partially resist the Whispers of Oblivion. His grandfather's smithing hammer is the only object in the village that the Whispers cannot "erase" from reality.
+Veil Connection: Garin ha scoperto per caso che gli oggetti forgiati con vera passione e scopo resistono parzialmente ai Sussurri dell'Oblio. Il martello da fabbro di suo nonno è l'unico oggetto nel villaggio che i Sussurri non possono "cancellare" dalla realtà.
 
-PlayerHint: Garin judges people by the passion they put into their purposes. He doesn't care if you're good or evil, but whether you truly believe in what you do. Help him by bringing Ancient Iron Ore from the Mountain, and he'll give you Iron Shavings for Jorin.
+PlayerHint: Garin giudica le persone dalla passione che mettono nei loro scopi. Non gli importa se sei buono o cattivo, ma se credi veramente in quello che fai. Aiutalo portando Minerale di Ferro Antico dalla Montagna, e ti darà Trucioli di Ferro per Jorin.
 
 Dialogue Hooks:
-- "Metal has memory, you know. Every hammer blow leaves an echo. And those that come from the heart... those are never forgotten."
-- "My grandfather always said: 'Forge with love or don't forge at all.' Now I understand why his hammer is the only thing the silences can't touch."
-- "Have you noticed how some objects seem... more real than others? As if they resist the world around them?"
-- "Bring me Ancient Iron Ore from the Mountain, and I'll forge something special. The shavings from that work... they'll be useful to Jorin at the tavern."
-- "The passion you bring to this work will determine what I can create. Indifferent hands make forgettable tools."
+- "Il metallo ha memoria, sai. Ogni colpo di martello lascia un'eco. E quelli che vengono dal cuore... quelli non vengono mai dimenticati."
+- "Mio nonno diceva sempre: 'Forgia con amore o non forgiare affatto.' Ora capisco perché il suo martello è l'unica cosa che i silenzi non possono toccare."
+- "Hai notato come alcuni oggetti sembrano... più reali di altri? Come se resistessero al mondo intorno a loro?"
+- "Portami Minerale di Ferro Antico dalla Montagna, e forgierò qualcosa di speciale. I trucioli di quel lavoro... saranno utili a Jorin alla taverna."
+- "La passione che porti a questo lavoro determinerà cosa posso creare. Le mani indifferenti fanno strumenti dimenticabili."
 
-Emotes: wipe_sweat, flex_muscles, inspect_work, determined_nod, passionate_gesture, proud_smile, focused_concentration
+Emotes: asciugare_sudore, flettere_muscoli, ispezionare_lavoro, cenno_determinato, gesto_appassionato, sorriso_orgoglioso, concentrazione_focalizzata
 
-Animations: hammering_anvil, working_forge, examining_metal, sharpening_tools, quenching_steel, organizing_workshop
+Animations: martellare_incudine, lavorare_forgia, esaminare_metallo, affilare_strumenti, temprare_acciaio, organizzare_officina
 
-Lookup: player, anvil, forge_fire, grandfather_hammer, iron_ore, bellows, tool_rack
+Lookup: giocatore, incudine, fuoco_forgia, martello_nonno, minerale_ferro, mantice, scaffale_strumenti
 
-Llsettext: Can display forge temperatures, metallurgy guides, tool blueprints, smithing instructions, work orders
+Llsettext: Può mostrare temperature forgia, guide metallurgia, progetti strumenti, istruzioni fabbro, ordini lavoro
