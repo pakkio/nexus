@@ -4,7 +4,11 @@ import traceback
 import re
 import hashlib
 import time
+import threading
+import logging
 from typing import Dict, List, Any, Optional, Tuple, Callable
+
+logger = logging.getLogger(__name__)
 
 # MODIFIED: Explicitly import new/changed handlers
 from command_handlers.handle_exit import handle_exit
@@ -38,6 +42,123 @@ except ImportError:
   print("Warning: command_interpreter.py not found. Natural language command interpretation disabled.")
   def interpret_user_intent(user_input, game_state, llm_wrapper_func, model_name, confidence_threshold=0.7):
     return {'is_command': False, 'confidence': 0.0, 'original_input': user_input, 'reasoning': 'Fallback: interpreter missing'}
+
+def _speculative_nlp_interpretation(user_input: str, state: Dict[str, Any], result_container: Dict[str, Any]):
+  """Run NLP interpretation in background thread, storing result in container."""
+  try:
+    llm_wrapper_func = state.get('llm_wrapper_func')
+    nlp_model_name = state.get('nlp_command_model_name') or \
+                     state.get('profile_analysis_model_name') or \
+                     state.get('model_name')
+    nlp_confidence_threshold = state.get('nlp_command_confidence_threshold', 0.7)
+    
+    if llm_wrapper_func and nlp_model_name:
+      logger.info(f"[NLP-SPECULATIVE] Starting interpretation for: '{user_input[:30]}...'")
+      start_time = time.time()
+      
+      # Use cached NPCs if available from game system
+      state_copy = state.copy()
+      game_system_instance = state.get('game_system_instance')
+      if game_system_instance and hasattr(game_system_instance, '_get_cached_areas_list'):
+        try:
+          state_copy['available_areas'] = game_system_instance._get_cached_areas_list()
+        except Exception as e:
+          logger.warning(f"[NLP-SPECULATIVE] Cache access failed, using fallback: {e}")
+          # Fallback to original method
+          db = state.get('db')
+          if db:
+            all_known_npcs = session_utils.refresh_known_npcs_list(db, state.get('TerminalFormatter'))
+            available_areas = session_utils.get_known_areas_from_list(all_known_npcs)
+            state_copy['available_areas'] = available_areas
+      else:
+        db = state.get('db')
+        if db:
+          all_known_npcs = session_utils.refresh_known_npcs_list(db, state.get('TerminalFormatter'))
+          available_areas = session_utils.get_known_areas_from_list(all_known_npcs)
+          state_copy['available_areas'] = available_areas
+      
+      intent_result = interpret_user_intent(
+        user_input, state_copy, llm_wrapper_func, nlp_model_name, nlp_confidence_threshold
+      )
+      
+      elapsed_ms = int((time.time() - start_time) * 1000)
+      logger.info(f"[NLP-SPECULATIVE] Completed in {elapsed_ms}ms: is_command={intent_result['is_command']}, confidence={intent_result['confidence']:.2f}")
+      
+      result_container['intent_result'] = intent_result
+      result_container['completed'] = True
+    else:
+      result_container['intent_result'] = {'is_command': False, 'confidence': 0.0, 'original_input': user_input}
+      result_container['completed'] = True
+      
+  except Exception as e:
+    logger.error(f"[NLP-SPECULATIVE] Error: {str(e)}")
+    result_container['intent_result'] = {'is_command': False, 'confidence': 0.0, 'original_input': user_input, 'error': str(e)}
+    result_container['completed'] = True
+
+def _speculative_dialogue_generation(user_input: str, state: Dict[str, Any], result_container: Dict[str, Any]):
+  """Run dialogue generation in background thread for simple chat messages."""
+  try:
+    current_npc = state.get('current_npc')
+    chat_session = state.get('chat_session')
+    
+    if not current_npc or not chat_session:
+      result_container['dialogue_result'] = None
+      result_container['completed'] = True
+      return
+    
+    logger.info(f"[DIALOGUE-SPECULATIVE] Starting dialogue generation for: '{user_input[:30]}...'")
+    start_time = time.time()
+    
+    # Create a temporary copy of chat session to avoid side effects
+    import copy
+    temp_session = copy.deepcopy(chat_session)
+    
+    # Generate NPC response using temporary session
+    npc_name_for_prompt = current_npc.get('name', 'NPC')
+    temp_session.add_message("user", user_input)
+    
+    response_text, response_stats = temp_session.ask(
+      prompt=user_input,
+      current_npc_name_for_placeholder=npc_name_for_prompt,
+      stream=state.get('use_stream', False),
+      collect_stats=True,
+      npc_data=current_npc
+    )
+    
+    elapsed_ms = int((time.time() - start_time) * 1000)
+    logger.info(f"[DIALOGUE-SPECULATIVE] Completed in {elapsed_ms}ms for NPC: {npc_name_for_prompt}")
+    
+    result_container['dialogue_result'] = {
+      'response_text': response_text,
+      'response_stats': response_stats,
+      'npc_name': npc_name_for_prompt,
+      'temp_session': temp_session  # Include the session with the conversation
+    }
+    result_container['completed'] = True
+    
+  except Exception as e:
+    elapsed_ms = int((time.time() - time.time()) * 1000)  # Will be 0 but keeps format
+    logger.error(f"[DIALOGUE-SPECULATIVE] Error: {str(e)}")
+    result_container['dialogue_result'] = None
+    result_container['completed'] = True
+
+def _build_dialogue_response(state: Dict[str, Any], dialogue_data: Dict[str, Any]) -> Dict[str, Any]:
+  """Build a properly formatted response from speculative dialogue generation."""
+  TF = state.get('TerminalFormatter')
+  response_text = dialogue_data['response_text']
+  npc_name = dialogue_data['npc_name']
+  temp_session = dialogue_data.get('temp_session')
+  
+  # Format and display the response
+  if response_text:
+    npc_color = session_utils.get_npc_color(npc_name, TF)
+    print(f"{npc_color}{npc_name} > {TF.RESET}{response_text}")
+    
+    # Replace the current chat session with the completed one
+    if temp_session and state.get('chat_session'):
+      state['chat_session'] = temp_session
+  
+  return state
 
 command_handlers_map: Dict[str, Callable] = {
   'exit': handle_exit, 'quit': handle_exit,
@@ -76,6 +197,36 @@ def process_input_revised(user_input: str, state: Dict[str, Any]) -> Dict[str, A
   debug_mode = state.get('debug_mode', False)
   command_processed_this_turn = False
 
+  # Start speculative processing for non-slash inputs immediately
+  nlp_thread = None
+  dialogue_thread = None
+  nlp_result_container = {'completed': False, 'intent_result': None}
+  dialogue_result_container = {'completed': False, 'dialogue_result': None}
+  
+  if not user_input.startswith('/'):
+    nlp_enabled = state.get('nlp_command_interpretation_enabled', True)
+    current_npc = state.get('current_npc')
+    chat_session = state.get('chat_session')
+    
+    if nlp_enabled:
+      # Always start NLP interpretation
+      nlp_thread = threading.Thread(
+        target=_speculative_nlp_interpretation,
+        args=(user_input, state, nlp_result_container),
+        daemon=True
+      )
+      nlp_thread.start()
+      
+      # For simple conversations, also start dialogue generation speculatively
+      if current_npc and chat_session and not state.get('in_hint_mode', False):
+        dialogue_thread = threading.Thread(
+          target=_speculative_dialogue_generation,
+          args=(user_input, state, dialogue_result_container),
+          daemon=True
+        )
+        dialogue_thread.start()
+        logger.info(f"[PARALLEL-PROCESSING] Started both NLP and dialogue threads")
+
   if user_input.startswith('/'):
     parts = user_input[1:].split(None, 1)
     command = parts[0].lower() if parts else ""
@@ -101,46 +252,53 @@ def process_input_revised(user_input: str, state: Dict[str, Any]) -> Dict[str, A
         traceback.print_exc()
       command_processed_this_turn = True
 
-  # Natural Language Processing for commands if not an explicit command
-  elif not user_input.startswith('/'):
-    llm_wrapper_func = state.get('llm_wrapper_func')
-    # Use NLP command model if defined, else main dialogue model or profile model
-    nlp_model_name = state.get('nlp_command_model_name') or \
-                     state.get('profile_analysis_model_name') or \
-                     state.get('model_name')
-    nlp_confidence_threshold = state.get('nlp_command_confidence_threshold', 0.7)
-    nlp_enabled = state.get('nlp_command_interpretation_enabled', True)
+  # Smart parallel processing results handling
+  elif nlp_thread:
+    # Wait a short time to see if NLP completes quickly
+    nlp_thread.join(timeout=0.3)  # Quick check - 300ms
+    
+    if nlp_result_container['completed']:
+      intent_result = nlp_result_container['intent_result']
+      nlp_confidence_threshold = state.get('nlp_command_confidence_threshold', 0.7)
+      
+      if state.get('nlp_command_debug', False) or debug_mode:
+        reasoning = intent_result.get('reasoning', 'N/A')
+        print(f"{TF.DIM}[NLP-PARALLEL] Intent: {intent_result['is_command']}, Conf: {intent_result['confidence']:.2f}, Cmd: {intent_result.get('inferred_command')}, Reason: {reasoning}{TF.RESET}")
 
-    if llm_wrapper_func and nlp_model_name and nlp_enabled:
-      try:
-        db = state.get('db')
-        if db: # Refresh areas for interpreter context
-          all_known_npcs = session_utils.refresh_known_npcs_list(db, TF)
-          available_areas = session_utils.get_known_areas_from_list(all_known_npcs)
-          state['available_areas'] = available_areas # Ensure interpreter has up-to-date areas
-
-        intent_result = interpret_user_intent(
-          user_input, state, llm_wrapper_func, nlp_model_name, nlp_confidence_threshold
-        )
-        if state.get('nlp_command_debug', False) or debug_mode:
-          reasoning = intent_result.get('reasoning', 'N/A')
-          print(f"{TF.DIM}[NLP] Intent: {intent_result['is_command']}, Conf: {intent_result['confidence']:.2f}, Cmd: {intent_result.get('inferred_command')}, Reason: {reasoning}{TF.RESET}")
-
-        if intent_result['is_command'] and intent_result['confidence'] >= nlp_confidence_threshold:
-          inferred_command_full = intent_result.get('inferred_command')
-          if inferred_command_full:
-            print(f"{TF.DIM}[Interpreted as: {inferred_command_full}]{TF.RESET}")
-            _add_profile_action(state, f"Used natural language: '{user_input}' → '{inferred_command_full}'")
-            # Reprocess with the inferred command
-            return process_input_revised(inferred_command_full, state)
-            # This recursive call handles the inferred command as if typed directly.
-            # command_processed_this_turn will be set true by that recursive call.
-      except Exception as e:
-        if debug_mode or state.get('nlp_command_debug', False):
-          print(f"{TF.YELLOW}Warning: NLP command interpretation failed: {type(e).__name__} - {e}{TF.RESET}")
-          traceback.print_exc()
-    # If NLP didn't result in a command, or NLP is off, it's dialogue.
-    # This block is now reached if it's dialogue (not a typed command, and NLP didn't convert it to one)
+      # High confidence command - cancel dialogue and execute command
+      if intent_result['is_command'] and intent_result['confidence'] >= nlp_confidence_threshold:
+        if dialogue_thread and dialogue_thread.is_alive():
+          logger.info(f"[PARALLEL-PROCESSING] NLP detected command, dialogue thread will be ignored")
+        
+        inferred_command_full = intent_result.get('inferred_command')
+        if inferred_command_full:
+          print(f"{TF.DIM}[Interpreted as: {inferred_command_full}]{TF.RESET}")
+          _add_profile_action(state, f"Used natural language: '{user_input}' → '{inferred_command_full}'")
+          return process_input_revised(inferred_command_full, state)
+      
+      # Low confidence - proceed with dialogue (use speculative result if available)
+      elif dialogue_thread:
+        dialogue_thread.join(timeout=1.5)  # Wait for dialogue to complete
+        
+        if dialogue_result_container['completed'] and dialogue_result_container['dialogue_result']:
+          # Use the pre-generated dialogue response!
+          dialogue_data = dialogue_result_container['dialogue_result']
+          logger.info(f"[PARALLEL-PROCESSING] Using speculative dialogue result")
+          
+          state['npc_made_new_response_this_turn'] = True
+          _add_profile_action(state, f"Said to NPC: '{user_input[:50]}{'...' if len(user_input) > 50 else ''}'")
+          
+          # Return early with the pre-generated response
+          return _build_dialogue_response(state, dialogue_data)
+        else:
+          logger.info(f"[PARALLEL-PROCESSING] Dialogue not ready, falling back to normal processing")
+    else:
+      # NLP didn't complete quickly - wait longer or timeout
+      nlp_thread.join(timeout=1.0)
+      if debug_mode and not nlp_result_container['completed']:
+        print(f"{TF.YELLOW}[NLP-PARALLEL] Timeout, proceeding as dialogue{TF.RESET}")
+    
+    # If we reach here, proceed with normal dialogue processing
 
   # LLM call for dialogue or forced NPC reaction
   force_npc_turn_after_command = state.get('force_npc_turn_after_command', False)
