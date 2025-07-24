@@ -443,6 +443,125 @@ def get_available_commands():
         logger.error(f"Error getting commands: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
+@app.route('/sense', methods=['POST'])
+def sense_player():
+    """Handle player arrival - NPC notices and greets the player."""
+    try:
+        if not game_system:
+            return jsonify({'error': GAME_SYSTEM_NOT_INITIALIZED}), 500
+        
+        data = request.get_json()
+        if not data or 'name' not in data:
+            return jsonify({'error': 'Missing name field'}), 400
+        
+        player_name = data['name'].strip()
+        if not player_name:
+            return jsonify({'error': 'Player name cannot be empty'}), 400
+        
+        # Get player system
+        player_system = game_system.get_player_system(player_name)
+        
+        # Get current NPC info
+        current_npc = player_system.game_state.get('current_npc')
+        if not current_npc:
+            return jsonify({
+                'message': f"No NPC is currently present to notice {player_name}'s arrival.",
+                'player_name': player_name
+            })
+        
+        npc_name = current_npc.get('name', 'Unknown NPC')
+        
+        # Generate contextual greeting based on NPC card
+        greeting_prompt = f"*{player_name} has just arrived and you notice them*"
+        
+        # Process as player input to generate NPC response
+        response = player_system.process_player_input(greeting_prompt)
+        
+        npc_response = response.get('npc_response', f"*{npc_name} notices {player_name} has arrived*")
+        
+        return jsonify({
+            'message': npc_response,
+            'npc_name': npc_name,
+            'player_name': player_name,
+            'current_area': response.get('current_area'),
+            'system_messages': response.get('system_messages', [])
+        })
+    
+    except Exception as e:
+        logger.error(f"Error in sense endpoint: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/unsense', methods=['POST'])
+def unsense_player():
+    """Handle player departure - save conversation and register player leaving."""
+    try:
+        if not game_system:
+            return jsonify({'error': GAME_SYSTEM_NOT_INITIALIZED}), 500
+        
+        data = request.get_json()
+        if not data or 'name' not in data:
+            return jsonify({'error': 'Missing name field'}), 400
+        
+        player_name = data['name'].strip()
+        if not player_name:
+            return jsonify({'error': 'Player name cannot be empty'}), 400
+        
+        # Get player system
+        player_system = game_system.get_player_system(player_name)
+        
+        # Get current NPC and conversation info
+        current_npc = player_system.game_state.get('current_npc')
+        chat_session = player_system.game_state.get('chat_session')
+        
+        if current_npc and chat_session:
+            # Save current conversation (like in goto area command)
+            from session_utils import save_current_conversation
+            from terminal_formatter import TerminalFormatter
+            
+            try:
+                save_current_conversation(
+                    game_system.db, 
+                    player_name, 
+                    current_npc, 
+                    chat_session, 
+                    TerminalFormatter, 
+                    player_system.game_state
+                )
+                
+                npc_name = current_npc.get('name', 'Unknown NPC')
+                departure_message = f"*{npc_name} notices {player_name} is leaving*"
+                
+                # Clear current NPC and session
+                player_system.game_state['current_npc'] = None
+                player_system.game_state['chat_session'] = None
+                
+                return jsonify({
+                    'message': departure_message,
+                    'npc_name': npc_name,
+                    'player_name': player_name,
+                    'conversation_saved': True
+                })
+                
+            except Exception as save_error:
+                logger.error(f"Error saving conversation for {player_name}: {str(save_error)}")
+                return jsonify({
+                    'message': f"*{player_name} has left*",
+                    'player_name': player_name,
+                    'conversation_saved': False,
+                    'error': f"Could not save conversation: {str(save_error)}"
+                })
+        else:
+            return jsonify({
+                'message': f"*{player_name} has left*",
+                'player_name': player_name,
+                'conversation_saved': False,
+                'note': 'No active conversation to save'
+            })
+    
+    except Exception as e:
+        logger.error(f"Error in unsense endpoint: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/api/admin/reload', methods=['POST'])
 def reload_game_data():
     """Reload game data from files (admin endpoint)."""
