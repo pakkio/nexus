@@ -132,7 +132,11 @@ class _SinglePlayerGameSystem:
         sys.stdout = CaptureStdout(self.output_buffer)
 
         try:
-            self.game_state = command_processor.process_input_revised(player_input, self.game_state)
+            result = command_processor.process_input_revised(player_input, self.game_state)
+            if result is None:
+                self.game_state['system_messages_buffer'].append("Error: Command processor returned None")
+                return None
+            self.game_state = result
 
             if 'system_message_for_ui' in self.game_state:
                 self.game_state['system_messages_buffer'].append(self.game_state.pop('system_message_for_ui'))
@@ -206,6 +210,8 @@ class _SinglePlayerGameSystem:
                     msg = self.game_state['chat_session'].messages[i]
                     if msg.get('role') == 'assistant':
                         final_npc_dialogue_for_return = msg.get('content', '')
+                        if self.game_state['debug_mode']:
+                            self.game_state['system_messages_buffer'].append(f"[Debug] NPC response length: {len(final_npc_dialogue_for_return)}")
                         if self.game_state.get('current_npc'):
                             last_speaker_for_suffix = self.game_state.get('current_npc',{}).get('name')
                         break

@@ -11,6 +11,7 @@ import os
 from typing import Dict, Any, Optional
 
 from game_system_api import GameSystem
+from llm_stats_tracker import get_global_stats_tracker
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -274,8 +275,8 @@ def get_conversation_history(player_id: str):
         logger.error(f"Error getting conversation history for {player_id}: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
-@app.route('/api/chat/<player_id>', methods=['POST'])
-def chat_with_npc(player_id: str):
+@app.route('/api/chat', methods=['POST'])
+def chat_with_npc():
     """Direct chat endpoint for NPC interaction."""
     try:
         if not game_system:
@@ -285,23 +286,125 @@ def chat_with_npc(player_id: str):
         if not data or 'message' not in data:
             return jsonify({'error': 'Missing message field'}), 400
         
-        message = data['message']
+        if 'player_name' not in data:
+            return jsonify({'error': 'Missing player_name field'}), 400
         
-        # Get player system and process chat message
-        player_system = game_system.get_player_system(player_id)
-        response = player_system.process_player_input(message)
+        message = data['message']
+        player_name = data['player_name']
+        npc_name = data.get('npc_name')  # Optional NPC name parameter
+        area = data.get('area')  # Optional area parameter
+        
+        # Validate player_name
+        if not player_name or not isinstance(player_name, str) or len(player_name.strip()) == 0:
+            return jsonify({'error': 'Invalid player_name: must be a non-empty string'}), 400
+        
+        player_name = player_name.strip()
+        
+        # Get player system
+        player_system = game_system.get_player_system(player_name)
+        
+        # Ensure player_system is valid
+        if not player_system:
+            return jsonify({
+                'error': f'Could not create or retrieve player system for: {player_name}'
+            }), 500
+        
+        # If area is specified, go to that area first
+        if area:
+            go_command = f"/go {area}"
+            try:
+                area_response = player_system.process_player_input(go_command)
+                if not area_response:
+                    return jsonify({
+                        'error': f'Invalid response when trying to go to area: {area}'
+                    }), 500
+            except Exception as e:
+                return jsonify({
+                    'error': f'Error going to area {area}: {str(e)}'
+                }), 500
+        
+        # If NPC name is specified, try to switch to that NPC
+        if npc_name:
+            # Format as a /talk command to switch to the specific NPC
+            talk_command = f"/talk {npc_name}"
+            try:
+                switch_response = player_system.process_player_input(talk_command)
+            except Exception as e:
+                return jsonify({
+                    'error': f'Error switching to NPC {npc_name}: {str(e)}'
+                }), 500
+            
+            # Ensure switch_response is not None
+            if not switch_response:
+                return jsonify({
+                    'error': f'Invalid response when trying to switch to NPC: {npc_name}'
+                }), 500
+            
+            # Check if the switch was successful
+            if switch_response.get('current_npc_name', '').lower() != npc_name.lower():
+                return jsonify({
+                    'error': f'Could not find or switch to NPC: {npc_name}',
+                    'available_npcs': switch_response.get('system_messages', [])
+                }), 400
+        
+        # Process the actual chat message
+        try:
+            response = player_system.process_player_input(message)
+        except Exception as e:
+            return jsonify({
+                'error': f'Error processing message: {str(e)}'
+            }), 500
+        
+        # Ensure response is not None
+        if not response:
+            return jsonify({
+                'error': 'Invalid response from game system'
+            }), 500
+        
+        # Get LLM statistics with better formatting
+        stats_tracker = get_global_stats_tracker()
+        llm_stats = {}
+        total_llm_time = 0
+        
+        # Get stats for each model type with clearer metrics
+        for model_type in ['dialogue', 'profile', 'guide_selection', 'command_interpretation']:
+            type_stats = stats_tracker.type_stats.get(model_type)
+            if type_stats:
+                last_call = type_stats.last_call_stats
+                call_time = round(last_call.total_time, 3) if last_call else 0
+                total_llm_time += call_time
+                
+                llm_stats[model_type] = {
+                    'model': type_stats.current_model,
+                    'last_call_time_ms': int(call_time * 1000),
+                    'last_tokens_in': last_call.input_tokens if last_call else 0,
+                    'last_tokens_out': last_call.output_tokens if last_call else 0,
+                    'tokens_per_sec': round(last_call.output_tokens / last_call.total_time, 1) if last_call and last_call.total_time > 0 else 0,
+                    'session_calls': type_stats.total_calls,
+                    'session_time_ms': int(type_stats.total_time * 1000)
+                }
+        
+        # Add performance summary
+        llm_stats['summary'] = {
+            'total_llm_time_ms': int(total_llm_time * 1000),
+            'active_calls': len([k for k in llm_stats.keys() if k != 'summary']),
+            'performance_note': 'Slow due to profile analysis + command interpretation + free tier models'
+        }
         
         return jsonify({
-            'player_id': player_id,
+            'player_name': player_name,
             'player_message': message,
+            'npc_name': npc_name,
             'npc_response': response.get('npc_response', ''),
             'system_messages': response.get('system_messages', []),
             'current_npc': response.get('current_npc_name'),
-            'current_area': response.get('current_area')
+            'current_area': response.get('current_area'),
+            'llm_stats': llm_stats
         })
     
     except Exception as e:
-        logger.error(f"Error in chat for {player_id}: {str(e)}")
+        player_name_for_log = locals().get('player_name', 'unknown_player')
+        logger.error(f"Error in chat for {player_name_for_log}: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
 @app.route('/api/commands', methods=['GET'])
