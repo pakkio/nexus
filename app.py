@@ -313,7 +313,7 @@ def chat_with_npc():
         if area:
             go_command = f"/go {area}"
             try:
-                area_response = player_system.process_player_input(go_command)
+                area_response = player_system.process_player_input(go_command, skip_profile_update=True)
                 if not area_response:
                     return jsonify({
                         'error': f'Invalid response when trying to go to area: {area}'
@@ -328,7 +328,7 @@ def chat_with_npc():
             # Format as a /talk command to switch to the specific NPC
             talk_command = f"/talk {npc_name}"
             try:
-                switch_response = player_system.process_player_input(talk_command)
+                switch_response = player_system.process_player_input(talk_command, skip_profile_update=True)
             except Exception as e:
                 return jsonify({
                     'error': f'Error switching to NPC {npc_name}: {str(e)}'
@@ -366,8 +366,8 @@ def chat_with_npc():
         llm_stats = {}
         total_llm_time = 0
         
-        # Get stats for each model type with clearer metrics
-        for model_type in ['dialogue', 'profile', 'guide_selection', 'command_interpretation']:
+        # Get stats for each model type with clearer metrics (excluding async profile analysis)
+        for model_type in ['dialogue', 'guide_selection', 'command_interpretation']:
             type_stats = stats_tracker.type_stats.get(model_type)
             if type_stats:
                 last_call = type_stats.last_call_stats
@@ -384,11 +384,11 @@ def chat_with_npc():
                     'session_time_ms': int(type_stats.total_time * 1000)
                 }
         
-        # Add performance summary
+        # Add performance summary (without async profile analysis)
         llm_stats['summary'] = {
             'total_llm_time_ms': int(total_llm_time * 1000),
             'active_calls': len([k for k in llm_stats.keys() if k != 'summary']),
-            'performance_note': 'Slow due to profile analysis + command interpretation + free tier models'
+            'performance_note': 'Response time optimized with async profile analysis'
         }
         
         return jsonify({
