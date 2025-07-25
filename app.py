@@ -147,7 +147,7 @@ def initialize_game_system():
     # Configuration from environment variables
     use_mockup = os.getenv('NEXUS_USE_MOCKUP', 'true').lower() == 'true'
     mockup_dir = os.getenv('NEXUS_MOCKUP_DIR', 'database')
-    model_name = os.getenv('NEXUS_MODEL_NAME', 'google/gemma-2-9b-it:free')
+    model_name = os.getenv('NEXUS_MODEL_NAME') or os.getenv('OPENROUTER_DEFAULT_MODEL', 'google/gemini-2.0-flash-exp:free')
     profile_analysis_model = os.getenv('NEXUS_PROFILE_MODEL_NAME')
     wise_guide_model = os.getenv('NEXUS_WISE_GUIDE_MODEL_NAME')
     debug_mode = os.getenv('NEXUS_DEBUG_MODE', 'false').lower() == 'true'
