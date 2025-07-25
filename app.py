@@ -302,10 +302,13 @@ def get_npcs():
         area = request.args.get('area')
         
         # Get NPCs from database
+        all_npcs = game_system.db.list_npcs_by_area()
+        
         if area:
-            npcs = game_system.db.get_npcs_by_area(area)
+            # Filter NPCs by area (case-insensitive)
+            npcs = [npc for npc in all_npcs if npc.get('area', '').lower() == area.lower()]
         else:
-            npcs = game_system.db.get_all_npcs()
+            npcs = all_npcs
         
         return jsonify({
             'npcs': npcs,
@@ -474,6 +477,17 @@ def chat_with_npc():
                 'error': 'Invalid response from game system'
             }), 500
         
+        # Generate Second Life commands if there's a current NPC
+        sl_commands = ""
+        try:
+            current_npc = player_system.game_state.get('current_npc')
+            if current_npc:
+                from chat_manager import generate_sl_command_prefix
+                sl_commands = generate_sl_command_prefix(current_npc)
+        except Exception as sl_error:
+            logger.warning(f"Error generating SL commands: {str(sl_error)}")
+            sl_commands = ""
+        
         # Get LLM statistics with better formatting
         stats_tracker = get_global_stats_tracker()
         llm_stats = {}
@@ -509,6 +523,7 @@ def chat_with_npc():
             'player_message': message,
             'npc_name': npc_name,
             'npc_response': response.get('npc_response', ''),
+            'sl_commands': sl_commands,
             'system_messages': response.get('system_messages', []),
             'current_npc': response.get('current_npc_name'),
             'current_area': response.get('current_area'),
@@ -659,11 +674,21 @@ def sense_player():
         
         npc_response = response.get('npc_response', f"*{current_npc_name} notices {player_name} has arrived*")
         
+        # Generate Second Life commands for the current NPC
+        sl_commands = ""
+        try:
+            from chat_manager import generate_sl_command_prefix
+            sl_commands = generate_sl_command_prefix(current_npc)
+        except Exception as sl_error:
+            logger.warning(f"Error generating SL commands in sense: {str(sl_error)}")
+            sl_commands = ""
+        
         return jsonify({
             'message': npc_response,
             'npc_name': current_npc_name,
             'player_name': player_name,
             'current_area': response.get('current_area'),
+            'sl_commands': sl_commands,
             'system_messages': response.get('system_messages', [])
         })
     
@@ -686,55 +711,44 @@ def leave_player():
         if not player_name:
             return jsonify({'error': 'Player name cannot be empty'}), 400
         
-        npc_name = data.get('npcname', '').strip()
-        area = data.get('area', '').strip()
-        
-        # Get player system
-        player_system = game_system.get_player_system(player_name)
-        
-        # If area is specified, go to that area first
-        if area:
-            go_command = f"/go {area}"
-            try:
-                area_response = player_system.process_player_input(go_command, skip_profile_update=True)
-                if not area_response:
-                    # For fresh player state after reset, this might be normal, continue anyway
-                    logger.warning(f"Got None response when going to area {area} for fresh player {player_name}")
-            except Exception as e:
+        # Get player system safely
+        try:
+            player_system = game_system.get_player_system(player_name)
+            if not player_system or not hasattr(player_system, 'game_state'):
                 return jsonify({
-                    'error': f'Error going to area {area}: {str(e)}'
-                }), 500
+                    'message': f"*{player_name} has left*",
+                    'player_name': player_name,
+                    'conversation_saved': False,
+                    'note': 'No active session found'
+                })
+        except Exception as e:
+            logger.error(f"Error getting player system for {player_name}: {str(e)}")
+            return jsonify({
+                'message': f"*{player_name} has left*",
+                'player_name': player_name,
+                'conversation_saved': False,
+                'error': f"Could not access player session: {str(e)}"
+            })
         
-        # If NPC name is specified, try to switch to that NPC
-        if npc_name:
-            talk_command = f"/talk {npc_name}"
-            try:
-                switch_response = player_system.process_player_input(talk_command, skip_profile_update=True)
-                if not switch_response:
-                    # For fresh player state after reset, this might be normal, continue anyway
-                    logger.warning(f"Got None response when switching to NPC {npc_name} for fresh player {player_name}")
-                else:
-                    # Check if the switch was successful
-                    if switch_response.get('current_npc_name', '').lower() != npc_name.lower():
-                        return jsonify({
-                            'error': f'Could not find or switch to NPC: {npc_name}',
-                            'available_npcs': switch_response.get('system_messages', [])
-                        }), 400
-            except Exception as e:
-                return jsonify({
-                    'error': f'Error switching to NPC {npc_name}: {str(e)}'
-                }), 500
+        # Get current NPC and conversation info safely
+        current_npc = player_system.game_state.get('current_npc') if player_system.game_state else None
+        chat_session = player_system.game_state.get('chat_session') if player_system.game_state else None
+        current_area = player_system.game_state.get('current_area') if player_system.game_state else 'Unknown'
         
-        # Get current NPC and conversation info
-        current_npc = player_system.game_state.get('current_npc')
-        chat_session = player_system.game_state.get('chat_session')
+        departure_message = f"*{player_name} has left*"
+        current_npc_name = None
+        conversation_saved = False
         
+        # If there's an active conversation, save it and create departure message
         if current_npc and chat_session:
-            # Save current conversation (like in goto area command)
-            from session_utils import save_current_conversation
-            from terminal_formatter import TerminalFormatter
+            current_npc_name = current_npc.get('name', 'Unknown NPC')
+            departure_message = f"*{current_npc_name} notices {player_name} is leaving*"
             
+            # Try to save conversation
             try:
+                from session_utils import save_current_conversation
+                from terminal_formatter import TerminalFormatter
+                
                 save_current_conversation(
                     game_system.db, 
                     player_name, 
@@ -743,42 +757,40 @@ def leave_player():
                     TerminalFormatter, 
                     player_system.game_state
                 )
-                
-                current_npc_name = current_npc.get('name', 'Unknown NPC')
-                departure_message = f"*{current_npc_name} notices {player_name} is leaving*"
-                
-                # Clear current NPC and session
-                player_system.game_state['current_npc'] = None
-                player_system.game_state['chat_session'] = None
-                
-                return jsonify({
-                    'message': departure_message,
-                    'npc_name': current_npc_name,
-                    'player_name': player_name,
-                    'conversation_saved': True
-                })
+                conversation_saved = True
+                logger.info(f"Saved conversation for {player_name} with {current_npc_name}")
                 
             except Exception as save_error:
                 logger.error(f"Error saving conversation for {player_name}: {str(save_error)}")
-                return jsonify({
-                    'message': f"*{player_name} has left*",
-                    'player_name': player_name, 
-                    'npc_name': current_npc.get('name', 'Unknown NPC') if current_npc else None,
-                    'conversation_saved': False,
-                    'error': f"Could not save conversation: {str(save_error)}"
-                })
-        else:
-            return jsonify({
-                'message': f"*{player_name} has left*",
-                'player_name': player_name,
-                'npc_name': current_npc.get('name', 'Unknown NPC') if current_npc else None,
-                'conversation_saved': False,
-                'note': 'No active conversation to save'
-            })
+                # Don't fail the whole operation, just log the error
+                conversation_saved = False
+        
+        # Clean up session state safely - only clear NPC/chat, preserve player data
+        if player_system.game_state:
+            try:
+                player_system.game_state['current_npc'] = None
+                player_system.game_state['chat_session'] = None
+                # Keep current_area, inventory, profile, etc.
+                logger.info(f"Cleaned up session state for {player_name}")
+            except Exception as cleanup_error:
+                logger.error(f"Error cleaning up session for {player_name}: {str(cleanup_error)}")
+        
+        return jsonify({
+            'message': departure_message,
+            'npc_name': current_npc_name,
+            'player_name': player_name,
+            'current_area': current_area,
+            'conversation_saved': conversation_saved
+        })
     
     except Exception as e:
         logger.error(f"Error in leave endpoint: {str(e)}")
-        return jsonify({'error': str(e)}), 500
+        return jsonify({
+            'message': f"*{player_name} has left*",
+            'player_name': player_name if 'player_name' in locals() else 'unknown',
+            'conversation_saved': False,
+            'error': str(e)
+        }), 500
 
 @app.route('/reset', methods=['POST'])
 def reset_database():

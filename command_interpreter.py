@@ -236,12 +236,41 @@ def interpret_user_intent(
     
     try:
       cleaned_response = response_text.strip()
+      
+      # Handle various response formats
       if cleaned_response.startswith("```json"):
         cleaned_response = re.sub(r"```json\s*", "", cleaned_response)
       if cleaned_response.endswith("```"):
         cleaned_response = re.sub(r"\s*```$", "", cleaned_response)
       
-      interpretation = json.loads(cleaned_response)
+      # Handle cases where LLM returns empty or whitespace-only responses
+      if not cleaned_response or cleaned_response.isspace():
+        print(f"{TF.YELLOW}Warning: Empty LLM response for command interpretation{TF.RESET}")
+        return _fallback_interpretation(user_input, game_state)
+      
+      # Try to extract JSON from response if it's embedded in text
+      json_match = re.search(r'\{.*\}', cleaned_response, re.DOTALL)
+      if json_match:
+        cleaned_response = json_match.group(0)
+      
+      try:
+        interpretation = json.loads(cleaned_response)
+      except json.JSONDecodeError as json_err:
+        # Try to fix common JSON issues
+        try:
+          # Fix single quotes to double quotes
+          fixed_response = cleaned_response.replace("'", '"')
+          interpretation = json.loads(fixed_response)
+        except json.JSONDecodeError:
+          # Try to parse partial JSON
+          try:
+            # Extract key-value pairs manually for simple cases
+            if "is_command" in cleaned_response and "confidence" in cleaned_response:
+              interpretation = _extract_json_manually(cleaned_response)
+            else:
+              raise json_err
+          except:
+            raise json_err
       
       if not isinstance(interpretation, dict):
         raise ValueError("Response is not a dict")
@@ -261,12 +290,41 @@ def interpret_user_intent(
       
     except (json.JSONDecodeError, ValueError) as e:
       print(f"{TF.YELLOW}Warning: Could not parse LLM response for command interpretation: {e}{TF.RESET}")
-      print(f"{TF.DIM}LLM Response was: {response_text[:100]}...{TF.RESET}")
+      print(f"{TF.DIM}LLM Response was: {response_text[:200]}...{TF.RESET}")
       return _fallback_interpretation(user_input, game_state)
     
   except Exception as e:
     print(f"{TF.RED}Error during command interpretation: {e}{TF.RESET}")
     return _fallback_interpretation(user_input, game_state)
+
+def _extract_json_manually(text: str) -> Dict[str, Any]:
+  """Extract JSON fields manually from malformed response."""
+  result = {}
+  
+  # Extract is_command
+  is_command_match = re.search(r'"?is_command"?\s*:\s*([^,}\s]+)', text, re.IGNORECASE)
+  if is_command_match:
+    value = is_command_match.group(1).strip().strip('"').lower()
+    result['is_command'] = value in ['true', '1', 'yes']
+  else:
+    result['is_command'] = False
+  
+  # Extract confidence
+  confidence_match = re.search(r'"?confidence"?\s*:\s*([0-9.]+)', text, re.IGNORECASE)
+  if confidence_match:
+    try:
+      result['confidence'] = float(confidence_match.group(1))
+    except ValueError:
+      result['confidence'] = 0.5
+  else:
+    result['confidence'] = 0.5
+  
+  # Extract reasoning if present
+  reasoning_match = re.search(r'"?reasoning"?\s*:\s*"([^"]*)"', text, re.IGNORECASE)
+  if reasoning_match:
+    result['reasoning'] = reasoning_match.group(1)
+  
+  return result
 
 def _fallback_interpretation(user_input: str, game_state: Dict[str, Any]) -> Dict[str, Any]:
   """Interpretazione di fallback basata su regole semplici con aree disponibili."""
