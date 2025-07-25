@@ -12,6 +12,8 @@ from typing import Dict, Any, Optional
 
 from game_system_api import GameSystem
 from llm_stats_tracker import get_global_stats_tracker
+import json
+from datetime import datetime
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -26,6 +28,117 @@ game_system: Optional[GameSystem] = None
 
 # Constants
 GAME_SYSTEM_NOT_INITIALIZED = 'Game system not initialized'
+
+def parse_npc_file(filepath):
+    """Parse NPC file and return NPC data dictionary."""
+    data = {
+        'name': '', 'area': '', 'role': '', 'motivation': '',
+        'goal': '', 'needed_object': '', 'treasure': '',
+        'playerhint': '', 'dialogue_hooks': '', 'veil_connection': '', 'code': '',
+        'emotes': '', 'animations': '', 'lookup': '', 'llsettext': ''
+    }
+    known_keys_map = {
+        'Name:': 'name', 'Area:': 'area', 'Role:': 'role',
+        'Motivation:': 'motivation', 'Goal:': 'goal',
+        'Needed Object:': 'needed_object', 'Treasure:': 'treasure',
+        'PlayerHint:': 'playerhint',
+        'Veil Connection:': 'veil_connection',
+        'Dialogue Hooks:': 'dialogue_hooks_header',
+        'Emotes:': 'emotes', 'Animations:': 'animations',
+        'Lookup:': 'lookup', 'Llsettext:': 'llsettext'
+    }
+    simple_multiline_fields = ['motivation', 'goal', 'playerhint', 'veil_connection', 'emotes', 'animations', 'lookup', 'llsettext']
+    
+    current_field_being_parsed = None
+    dialogue_hooks_lines = []
+    parsing_dialogue_hooks = False
+    
+    try:
+        with open(filepath, 'r', encoding='utf-8') as file:
+            lines = file.readlines()
+        
+        for line_raw in lines:
+            line_stripped = line_raw.strip()
+            original_line_content_for_hooks = line_raw.rstrip('\n\r')
+            
+            matched_new_key = False
+            for key_prefix, field_name_target in known_keys_map.items():
+                if line_stripped.lower().startswith(key_prefix.lower()):
+                    parsing_dialogue_hooks = False
+                    content_after_key = line_stripped[len(key_prefix):].strip()
+                    
+                    if field_name_target == 'dialogue_hooks_header':
+                        parsing_dialogue_hooks = True
+                        current_field_being_parsed = None
+                    else:
+                        data[field_name_target] = content_after_key
+                        if field_name_target in simple_multiline_fields:
+                            current_field_being_parsed = field_name_target
+                        else:
+                            current_field_being_parsed = None
+                    matched_new_key = True
+                    break
+            
+            if not matched_new_key:
+                if parsing_dialogue_hooks:
+                    dialogue_hooks_lines.append(original_line_content_for_hooks)
+                elif current_field_being_parsed:
+                    if data[current_field_being_parsed]:
+                        data[current_field_being_parsed] += "\n" + line_stripped
+                    else:
+                        data[current_field_being_parsed] = line_stripped
+        
+        data['dialogue_hooks'] = "\n".join(dialogue_hooks_lines)
+        return data
+        
+    except Exception as e:
+        logger.error(f"Error parsing NPC file {filepath}: {e}")
+        raise
+
+def preload_npcs():
+    """Preload NPCs from .txt files into the database after reset."""
+    try:
+        if not game_system:
+            return False
+            
+        npc_count = 0
+        base_dir = '.'  # Current directory where NPC files are located
+        
+        # Get all NPC files
+        for filename in os.listdir(base_dir):
+            if filename.startswith('NPC.') and filename.endswith('.txt'):
+                filepath = os.path.join(base_dir, filename)
+                path_parts = filename.replace('NPC.', '', 1).replace('.txt', '').split('.')
+                npc_code = ".".join(path_parts) if path_parts else filename.replace('NPC.','').replace('.txt','')
+                
+                try:
+                    npc_data = parse_npc_file(filepath)
+                    npc_data['code'] = npc_code
+                    npc_data['storyboard_id'] = 1
+                    npc_data['created_at'] = datetime.now().isoformat()
+                    
+                    # Save NPC to database
+                    if game_system.db.use_mockup:
+                        npc_dir_path = os.path.join(game_system.db.mockup_dir, "NPCs")
+                        os.makedirs(npc_dir_path, exist_ok=True)
+                        with open(os.path.join(npc_dir_path, f"{npc_code}.json"), 'w', encoding='utf-8') as f:
+                            json.dump(npc_data, f, indent=2)
+                    else:
+                        # For real database, would need to implement NPC insertion logic
+                        logger.warning("Real database NPC preloading not implemented yet")
+                    
+                    npc_count += 1
+                    logger.info(f"Loaded NPC: {npc_code}")
+                    
+                except Exception as e:
+                    logger.error(f"Error processing NPC {filename}: {e}")
+        
+        logger.info(f"Preloaded {npc_count} NPCs")
+        return True
+        
+    except Exception as e:
+        logger.error(f"Error preloading NPCs: {e}")
+        return False
 
 def initialize_game_system():
     """Initialize the game system with configuration from environment variables."""
@@ -458,8 +571,71 @@ def sense_player():
         if not player_name:
             return jsonify({'error': 'Player name cannot be empty'}), 400
         
+        npc_name = data.get('npcname', '').strip()
+        area = data.get('area', '').strip()
+        
         # Get player system
         player_system = game_system.get_player_system(player_name)
+        
+        # Check if player has a current area, if not, set default starting area
+        current_area = player_system.game_state.get('current_area')
+        if not current_area:
+            # Set default starting area to 'village' if no area specified, otherwise use specified area
+            default_area = area if area else 'village'
+            player_system.game_state['current_area'] = default_area
+            logger.info(f"Set initial area for fresh player {player_name} to {default_area}")
+        
+        # Initialize other game state if missing
+        if 'current_npc' not in player_system.game_state:
+            player_system.game_state['current_npc'] = None
+        if 'chat_session' not in player_system.game_state:
+            player_system.game_state['chat_session'] = None
+        
+        # If area is specified, go to that area first (unless already there)
+        if area:
+            current_area = player_system.game_state.get('current_area')
+            if current_area != area:
+                go_command = f"/go {area}"
+                try:
+                    area_response = player_system.process_player_input(go_command, skip_profile_update=True)
+                    if not area_response:
+                        # For fresh player state after reset, this might be normal, continue anyway
+                        logger.warning(f"Got None response when going to area {area} for fresh player {player_name}")
+                except Exception as e:
+                    return jsonify({
+                        'error': f'Error going to area {area}: {str(e)}'
+                    }), 500
+            else:
+                logger.info(f"Player {player_name} already in area {area}, skipping /go command")
+        
+        # If NPC name is specified, try to set that NPC directly
+        if npc_name:
+            try:
+                # Get the current area for NPC lookup
+                current_area = player_system.game_state.get('current_area', 'village')
+                
+                # Try to get the NPC data directly from database
+                npc_data = game_system.db.get_npc(current_area, npc_name)
+                
+                if npc_data:
+                    # Set the NPC directly in game state
+                    player_system.game_state['current_npc'] = npc_data
+                    
+                    # Initialize a chat session for the NPC
+                    from chat_manager import ChatSession
+                    chat_session = ChatSession()
+                    player_system.game_state['chat_session'] = chat_session
+                    
+                    logger.info(f"Directly set NPC {npc_name} for player {player_name} in area {current_area}")
+                else:
+                    return jsonify({
+                        'error': f'Could not find NPC {npc_name} in area {current_area}'
+                    }), 400
+                    
+            except Exception as e:
+                return jsonify({
+                    'error': f'Error setting NPC {npc_name}: {str(e)}'
+                }), 500
         
         # Get current NPC info
         current_npc = player_system.game_state.get('current_npc')
@@ -469,19 +645,23 @@ def sense_player():
                 'player_name': player_name
             })
         
-        npc_name = current_npc.get('name', 'Unknown NPC')
+        current_npc_name = current_npc.get('name', 'Unknown NPC')
         
-        # Generate contextual greeting based on NPC card
-        greeting_prompt = f"*{player_name} has just arrived and you notice them*"
+        # Generate contextual greeting based on NPC's character and role
+        npc_role = current_npc.get('role', 'resident')
+        npc_area = current_npc.get('area', 'this place')
+        
+        # Create a more natural greeting prompt that fits the character  
+        greeting_prompt = f"*{player_name} approaches you*"
         
         # Process as player input to generate NPC response
         response = player_system.process_player_input(greeting_prompt)
         
-        npc_response = response.get('npc_response', f"*{npc_name} notices {player_name} has arrived*")
+        npc_response = response.get('npc_response', f"*{current_npc_name} notices {player_name} has arrived*")
         
         return jsonify({
             'message': npc_response,
-            'npc_name': npc_name,
+            'npc_name': current_npc_name,
             'player_name': player_name,
             'current_area': response.get('current_area'),
             'system_messages': response.get('system_messages', [])
@@ -491,8 +671,8 @@ def sense_player():
         logger.error(f"Error in sense endpoint: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
-@app.route('/unsense', methods=['POST'])
-def unsense_player():
+@app.route('/leave', methods=['POST'])
+def leave_player():
     """Handle player departure - save conversation and register player leaving."""
     try:
         if not game_system:
@@ -506,8 +686,44 @@ def unsense_player():
         if not player_name:
             return jsonify({'error': 'Player name cannot be empty'}), 400
         
+        npc_name = data.get('npcname', '').strip()
+        area = data.get('area', '').strip()
+        
         # Get player system
         player_system = game_system.get_player_system(player_name)
+        
+        # If area is specified, go to that area first
+        if area:
+            go_command = f"/go {area}"
+            try:
+                area_response = player_system.process_player_input(go_command, skip_profile_update=True)
+                if not area_response:
+                    # For fresh player state after reset, this might be normal, continue anyway
+                    logger.warning(f"Got None response when going to area {area} for fresh player {player_name}")
+            except Exception as e:
+                return jsonify({
+                    'error': f'Error going to area {area}: {str(e)}'
+                }), 500
+        
+        # If NPC name is specified, try to switch to that NPC
+        if npc_name:
+            talk_command = f"/talk {npc_name}"
+            try:
+                switch_response = player_system.process_player_input(talk_command, skip_profile_update=True)
+                if not switch_response:
+                    # For fresh player state after reset, this might be normal, continue anyway
+                    logger.warning(f"Got None response when switching to NPC {npc_name} for fresh player {player_name}")
+                else:
+                    # Check if the switch was successful
+                    if switch_response.get('current_npc_name', '').lower() != npc_name.lower():
+                        return jsonify({
+                            'error': f'Could not find or switch to NPC: {npc_name}',
+                            'available_npcs': switch_response.get('system_messages', [])
+                        }), 400
+            except Exception as e:
+                return jsonify({
+                    'error': f'Error switching to NPC {npc_name}: {str(e)}'
+                }), 500
         
         # Get current NPC and conversation info
         current_npc = player_system.game_state.get('current_npc')
@@ -528,8 +744,8 @@ def unsense_player():
                     player_system.game_state
                 )
                 
-                npc_name = current_npc.get('name', 'Unknown NPC')
-                departure_message = f"*{npc_name} notices {player_name} is leaving*"
+                current_npc_name = current_npc.get('name', 'Unknown NPC')
+                departure_message = f"*{current_npc_name} notices {player_name} is leaving*"
                 
                 # Clear current NPC and session
                 player_system.game_state['current_npc'] = None
@@ -537,7 +753,7 @@ def unsense_player():
                 
                 return jsonify({
                     'message': departure_message,
-                    'npc_name': npc_name,
+                    'npc_name': current_npc_name,
                     'player_name': player_name,
                     'conversation_saved': True
                 })
@@ -546,7 +762,8 @@ def unsense_player():
                 logger.error(f"Error saving conversation for {player_name}: {str(save_error)}")
                 return jsonify({
                     'message': f"*{player_name} has left*",
-                    'player_name': player_name,
+                    'player_name': player_name, 
+                    'npc_name': current_npc.get('name', 'Unknown NPC') if current_npc else None,
                     'conversation_saved': False,
                     'error': f"Could not save conversation: {str(save_error)}"
                 })
@@ -554,12 +771,46 @@ def unsense_player():
             return jsonify({
                 'message': f"*{player_name} has left*",
                 'player_name': player_name,
+                'npc_name': current_npc.get('name', 'Unknown NPC') if current_npc else None,
                 'conversation_saved': False,
                 'note': 'No active conversation to save'
             })
     
     except Exception as e:
-        logger.error(f"Error in unsense endpoint: {str(e)}")
+        logger.error(f"Error in leave endpoint: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/reset', methods=['POST'])
+def reset_database():
+    """Reset the database by deleting all player data and reloading NPC/story data."""
+    try:
+        if not game_system:
+            return jsonify({'error': GAME_SYSTEM_NOT_INITIALIZED}), 500
+        
+        data = request.get_json()
+        if not data or 'key' not in data:
+            return jsonify({'error': 'Missing key field'}), 400
+        
+        if data['key'] != '1234':
+            return jsonify({'error': 'Invalid key'}), 403
+        
+        # Reset database (delete all player data)
+        game_system.db.reset_database()
+        
+        # Reload NPC and story data
+        game_system.db.reload_data()
+        
+        # Preload NPCs from text files
+        npc_preload_success = preload_npcs()
+        
+        return jsonify({
+            'success': True,
+            'message': 'Database reset and game data reloaded successfully',
+            'npcs_preloaded': npc_preload_success
+        })
+    
+    except Exception as e:
+        logger.error(f"Error resetting database: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
 @app.route('/api/admin/reload', methods=['POST'])

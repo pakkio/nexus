@@ -549,6 +549,77 @@ class DbManager:
                 if cursor: cursor.close()
                 if conn and conn.is_connected(): conn.close()
 
+    # --- Database Reset Methods ---
+    def reset_database(self):
+        """Reset the entire database by clearing all player data."""
+        if self.use_mockup:
+            self._reset_mockup_database()
+        else:
+            self._reset_real_database()
+    
+    def _reset_mockup_database(self):
+        """Reset mockup database by deleting all player data files."""
+        import shutil
+        
+        # Remove player-specific directories and files
+        dirs_to_clear = [
+            os.path.join(self.mockup_dir, "ConversationHistory"),
+            os.path.join(self.mockup_dir, "PlayerState"),
+            os.path.join(self.mockup_dir, "PlayerProfiles")
+        ]
+        
+        for dir_path in dirs_to_clear:
+            if os.path.exists(dir_path):
+                shutil.rmtree(dir_path)
+                os.makedirs(dir_path, exist_ok=True)
+        
+        # Remove inventory files
+        try:
+            for file in os.listdir(self.mockup_dir):
+                if file.endswith("_inventory.json"):
+                    os.remove(os.path.join(self.mockup_dir, file))
+        except FileNotFoundError:
+            # Directory doesn't exist, nothing to clean
+            pass
+    
+    def _reset_real_database(self):
+        """Reset real database by truncating all player data tables."""
+        conn = None
+        try:
+            conn = self.connect()
+            cursor = conn.cursor()
+            
+            # Truncate all player data tables
+            tables_to_truncate = [
+                "PlayerState",
+                "PlayerInventory", 
+                "ConversationHistory",
+                "PlayerProfiles"
+            ]
+            
+            for table in tables_to_truncate:
+                try:
+                    cursor.execute(f"TRUNCATE TABLE {table}")
+                except Exception as e:
+                    print(f"Warning: Could not truncate table {table}: {e}")
+            
+            conn.commit()
+            
+        except Exception as e:
+            if conn:
+                conn.rollback()
+            raise e
+        finally:
+            if conn and conn.is_connected():
+                conn.close()
+    
+    def reload_data(self):
+        """Reload NPC and story data from files."""
+        # This method doesn't need to do anything special since NPCs and storyboards
+        # are loaded dynamically from files. The caching mechanisms will pick up
+        # any file changes on the next access.
+        pass
+
     # --- DB Schema ---
     def ensure_db_schema(self):
         if self.use_mockup: return
