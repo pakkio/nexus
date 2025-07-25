@@ -511,7 +511,53 @@ def refresh_known_npcs_list(db, TF_class: type) -> List[Dict[str, Any]]:
     print(f"{TF_class.RED}Error refreshing NPC list: {e}{TF_class.RESET}")
     return []
 
+def normalize_area_name(area_raw: str) -> str:
+  """Normalize area name from NPC file format to display format.
+  
+  Handles cases like:
+  - 'sanctumofwhispers' -> 'Sanctum of Whispers'  
+  - 'ancientruins' -> 'Ancient Ruins'
+  - 'village' -> 'Village'
+  """
+  if not area_raw:
+    return ""
+  
+  area_clean = area_raw.strip()
+  
+  # If already properly formatted (has spaces/capitals), return as-is
+  if ' ' in area_clean or area_clean != area_clean.lower():
+    return area_clean
+  
+  # Convert known lowercase-concatenated names to proper format
+  area_mappings = {
+    'sanctumofwhispers': 'Sanctum of Whispers',
+    'ancientruins': 'Ancient Ruins',
+    'liminalvoid': 'Liminal Void',
+    'nexusofpaths': 'Nexus of Paths',
+    'village': 'Village',
+    'tavern': 'Tavern',
+    'forest': 'Forest',
+    'mountain': 'Mountain',
+    'city': 'City'
+  }
+  
+  normalized = area_mappings.get(area_clean.lower())
+  if normalized:
+    return normalized
+  
+  # Fallback: capitalize first letter
+  return area_clean.title()
+
 def get_known_areas_from_list(all_known_npcs: List[Dict[str, Any]]) -> List[str]:
   if not all_known_npcs:
     return []
-  return sorted(list(set(n.get('area', '').strip() for n in all_known_npcs if n.get('area', '').strip())), key=str.lower)
+  
+  areas = []
+  for npc in all_known_npcs:
+    area_raw = npc.get('area', '').strip()
+    if area_raw:
+      normalized_area = normalize_area_name(area_raw)
+      if normalized_area not in areas:
+        areas.append(normalized_area)
+  
+  return sorted(areas, key=str.lower)

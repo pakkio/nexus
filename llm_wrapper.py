@@ -9,6 +9,24 @@ from typing import List, Dict, Optional, Tuple, Any
 
 from dotenv import load_dotenv
 
+# Create a session with connection pooling for better performance
+_request_session = None
+
+def get_request_session():
+    """Get a requests session with connection pooling."""
+    global _request_session
+    if _request_session is None:
+        _request_session = requests.Session()
+        # Configure connection pooling
+        adapter = requests.adapters.HTTPAdapter(
+            pool_connections=5,
+            pool_maxsize=10,
+            max_retries=1
+        )
+        _request_session.mount('http://', adapter)
+        _request_session.mount('https://', adapter)
+    return _request_session
+
 # Configure basic logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s')
 
@@ -246,9 +264,10 @@ def llm_wrapper(messages: List[Dict[str, str]],
         "X-Title": app_title,
     }
     payload = { "model": model_name, "messages": messages, "stream": stream }
-    # Add common generation parameters, ensure they are supported by OpenRouter/model
-    # payload["max_tokens"] = 1024 # Example
-    # payload["temperature"] = 0.7 # Example
+    # Performance-optimized parameters
+    payload["max_tokens"] = 512  # Limit response length for faster generation
+    payload["temperature"] = 0.7  # Good balance of creativity vs speed
+    payload["top_p"] = 0.9  # Nucleus sampling for faster token selection
 
     start_time = time.time()
     first_token_time = None
@@ -260,12 +279,19 @@ def llm_wrapper(messages: List[Dict[str, str]],
         #logging.info(f"llm_wrapper: Calling model {model_name}. Stream: {stream}.")
         # logging.debug(f"llm_wrapper: Payload: {json.dumps(payload, indent=2)[:500]}...") # Careful with logging full payload
 
-        response = requests.post(
+        # Optimize timeout based on request type
+        if stream:
+            timeout = 120  # Shorter timeout for streaming (more responsive)
+        else:
+            timeout = 60   # Even shorter for non-streaming requests
+        
+        session = get_request_session()
+        response = session.post(
             f"{api_base}/chat/completions",
             headers=headers,
             json=payload,
             stream=stream,
-            timeout=180 # seconds
+            timeout=timeout
         )
 
         if stream:
