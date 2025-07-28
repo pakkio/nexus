@@ -616,7 +616,11 @@ def sense_player():
                     if not area_response:
                         # For fresh player state after reset, this might be normal, continue anyway
                         logger.warning(f"Got None response when going to area {area} for fresh player {player_name}")
+                        # Don't fail, just continue with the rest of the logic
+                    else:
+                        logger.info(f"Successfully moved player {player_name} to area {area}")
                 except Exception as e:
+                    logger.error(f"Exception in /go command for area {area}: {str(e)}", exc_info=True)
                     return jsonify({
                         'error': f'Error going to area {area}: {str(e)}'
                     }), 500
@@ -630,11 +634,14 @@ def sense_player():
                 current_area = player_system.game_state.get('current_area', 'village')
                 
                 # Try to get the NPC data directly from database
+                logger.info(f"Looking for NPC {npc_name} in area {current_area}")
                 npc_data = game_system.db.get_npc(current_area, npc_name)
+                logger.info(f"NPC lookup result: {npc_data is not None}")
                 
                 if npc_data:
                     # Set the NPC directly in game state
                     player_system.game_state['current_npc'] = npc_data
+                    logger.info(f"Successfully set NPC {npc_name} for player {player_name}")
                     
                     # Initialize a chat session for the NPC
                     from chat_manager import ChatSession
