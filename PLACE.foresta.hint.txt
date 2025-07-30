@@ -1,0 +1,69 @@
+# SUGGERIMENTI PER LA COSTRUZIONE - Foresta (Compatibile OpenSim)
+
+## TERRENO E PAESAGGIO
+- **Terreno Base**: Usa gli strumenti di terraforming per creare colline e valli dolci
+- **Texture del Terreno**: Combina texture di erba, terra e muschio con alpha blending
+- **Variazione Altezza**: Utilizza l'altezza terrain di 256m per ondulazione naturale
+- **Elementi Acquatici**: Aggiungi piccoli ruscelli usando prim trasparenti con animazione texture fluente
+
+## ALBERI E VEGETAZIONE
+- **Alberi Antichi**: Usa sculpted mega-prim (limite 64m altezza) per alberi antichi imponenti
+- **Varietà Alberi**: Mescola sculpt di quercia, pino, salice con texture corteccia personalizzate
+- **Sistema Chioma**: Crea chiome fogliari multi-strato usando sistemi particellari
+- **Bosco Sacro**: Raggruppa 7-9 alberi antichi in cerchio per il Nodo Primordiale
+- **Sottobosco**: Spargi cespugli e felci low-prim usando script ripetitori
+
+## ELEMENTI MISTICI
+- **Nodo Primordiale**: Formazione cristallina centrale usando prim trasparenti/luminosi
+- **Radura di Guarigione**: Area circolare libera con effetti glow particellari soft
+- **Alberi della Memoria**: Alberi con particelle di rune fluttuanti sopra di essi
+- **Sentieri degli Spiriti**: Tracce appena visibili usando texture glow sui prim del terreno
+- **Luci Fluttuanti**: Luci fatate animate usando piccole sfere prim con script
+
+## ILLUMINAZIONE E ATMOSFERA
+- **Impostazioni Windlight**: Forest_Light o simile con tinte verdi/dorate
+- **Sistemi Particellari**: Foglie che cadono, lucciole, effetti polline
+- **Ambiente Sonoro**: Ambiente forestale con canti di uccelli e fruscio del vento
+- **Effetti Nebbia**: Nebbia leggera usando sistemi particellari nelle radure
+- **Illuminazione Dinamica**: Ciclo giorno/notte che influenza l'intensità del bagliore mistico
+
+## ELEMENTI INTERATTIVI
+- **Script Touch**: Pannelli informativi sugli alberi antichi
+- **Stazioni di Guarigione**: Macchie di erbe cliccabili che danno pozioni salute
+- **NPC Animali**: Cervi, conigli, uccelli scriptati con comportamenti vaganti
+- **Punti Meditazione**: Target sedute su radici di alberi e rocce
+- **Passaggi Nascosti**: Tunnel segreti dietro cascate o in cavità degli alberi
+
+## OTTIMIZZAZIONE PRESTAZIONI
+- **Modelli LOD**: Usa livello-di-dettaglio appropriato per oggetti distanti
+- **Dimensioni Texture**: 512x512 max per la maggior parte degli elementi, 1024x1024 per oggetti in primo piano
+- **Conteggio Prim**: Punta a 15-20k prim totali per regione completa
+- **Script**: Minimizza script sempre-attivi, usa cambi stato efficientemente
+- **Prim Phantom**: Usa per elementi decorativi che non necessitano collisione
+
+## ZONE SPECIALI
+- **Bosco dei Ricordi**: Boschetto memoriale con forme alberi uniche e suoni sussurro
+- **Radura di Guarigione**: Spazio aperto con giardini erbe magiche e fasci di luce
+- **Dominio del Guardiano**: Area di Elira con effetti mistici più intensi
+- **Punti Connessione Velo**: Aree dove la realtà sembra tremolare e piegarsi
+
+## TECNICHE DI COSTRUZIONE
+- **Sculpted Prim**: Essenziali per forme organiche alberi e formazioni rocciose
+- **Oggetti Mesh**: Usa con parsimonia per forme organiche complesse (se il viewer supporta)
+- **Animazione Texture**: Acqua fluente, foglie ondeggianti, magia scintillante
+- **Ordinamento Alpha**: Stratifica elementi trasparenti correttamente per evitare glitch visivi
+- **Prim Flessibili**: Per rampicanti pendenti e rami ondeggianti
+
+## SCRIPT CONSIGLIATI
+- **Oscillazione Alberi**: Animazione rotazione dolce per rami
+- **Controllore Particelle**: Sistema centralizzato per effetti forestali
+- **AI Animali**: Comportamenti semplici vagare/fuggire per fauna selvatica
+- **Gestore Suoni**: Audio ambientale con attenuazione distanza
+- **Oggetti Interattivi**: Erbe curative e pietre memoria sensibili al tocco
+
+## DETTAGLI IMMERSIVI
+- **Effetti Meteo**: Particelle pioggia occasionali e riflessi pozzanghere
+- **Cambi Stagionali**: Script opzionale per cambiare colori foglie
+- **Suoni Fauna**: Richiami uccelli randomizzati e cespugli fruscio
+- **Geometria Sacra**: Arrangia elementi chiave in pattern significativi
+- **Livelli Profondità**: Crea profondità visiva con elementi primo piano, medio piano, sfondo

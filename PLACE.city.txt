@@ -1,0 +1,51 @@
+Name: City
+Type: Urban Settlement  
+Atmosphere: Political, Intellectual, Progressive
+
+Description: La City è il centro politico e intellettuale di Eldoria, dove i Progressisti hanno stabilito la loro base di potere. È una metropoli in fermento, piena di dibattiti filosofici, riforme sociali e sperimentazione con nuove forme di governo e pensiero.
+
+Physical Characteristics:
+- Podi giudiziari dove si tengono dibattiti pubblici
+- Bandiere progressiste che sventolano dagli edifici
+- Biblioteche piene di tomi filosofici e trattati politici
+- Cristalli del futuro che mostrano visioni di progresso
+- Aule per la presentazione di riforme e nuove leggi
+- Centri di ricerca sulla cancellazione selettiva dei ricordi
+
+Atmosphere:
+L'atmosfera della City è carica di energia intellettuale e tensione politica. È un luogo dove le idee si scontrano e dove il futuro di Eldoria viene dibattuto quotidianamente. C'è un senso di urgenza e determinazione, ma anche di divisione filosofica.
+
+Connection to the Veil:
+La City rappresenta la posizione più radicale riguardo al Velo: i Progressisti credono che sia diventato una prigione che impedisce all'umanità di evolversi. Qui si sviluppano teorie e tecniche per liberarsi dalla dipendenza dal Velo e affrontare direttamente l'Oblio.
+
+Inhabitants:
+- Alto Giudice Theron: Leader carismatico dei Progressisti
+- Filosofi e teorici politici
+- Riformatori sociali e rivoluzionari del pensiero
+- Cittadini che supportano il progresso e il cambiamento
+- Giuristi specializzati in nuove forme di governo
+
+Key Locations:
+- Palazzo di Giustizia: Sede del potere progressista
+- Università della Nuova Filosofia: Centro di ricerca intellettuale
+- Piazza del Dibattito: Spazio pubblico per discussioni
+- Laboratori di Trasformazione Memoria: Ricerca sulla cancellazione ricordi
+
+Significance:
+La City è il cuore dell'opposizione al sistema tradizionale basato sul Velo. Rappresenta la convinzione che l'umanità possa e debba evolversi oltre la protezione dei Tessitori, affrontando l'Oblio con forza propria.
+
+Political Climate:
+- Governo basato su principi democratici progressisti
+- Dibattiti pubblici costanti su riforme e cambiamenti
+- Tensione con le fazioni conservatrici
+- Sperimentazione con nuove forme di organizzazione sociale
+
+Dangers:
+- Polarizzazione estrema del pensiero politico
+- Rischio di perdere l'equilibrio nella corsa al progresso
+- Possibili conseguenze impreviste degli esperimenti con la memoria
+
+Resources:
+- Pergamene della Saggezza (ricompense per crescita filosofica)
+- Codice della Tabula Rasa (tecnica per cancellare ricordi limitanti)
+- Accesso a conoscenze avanzate su filosofia e politica

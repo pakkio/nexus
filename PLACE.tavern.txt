@@ -1,0 +1,61 @@
+Name: Tavern
+Type: Social Hub & Inn
+Atmosphere: Convivial, Mysterious, Memory-Laden
+
+Description: La Tavern è molto più di un semplice luogo di ristoro - è un crocevia di storie, sogni e memorie perdute. Situata su un punto di flusso delle memorie del Velo, attira viaggiatori che spesso sperimentano sogni vividi e ricordi che non appartengono a loro.
+
+Physical Characteristics:
+- Focolare sempre acceso che crea un'atmosfera accogliente
+- Scaffali pieni di bottiglie con liquori di ogni tipo
+- Diario dei sogni dove Jorin registra le visioni degli ospiti
+- Collezione di monete antiche con volti dimenticati
+- Registro degli ospiti con nomi che nessuno ricorda
+- Stanze per i viaggiatori arredate con cura
+
+Atmosphere:
+L'atmosfera è calda e accogliente, piena del brusio di conversazioni e del tintinnio di boccali. C'è un senso di familiarità che va oltre la prima visita, come se il luogo stesso custodisse echi di tutti coloro che vi hanno soggiornato.
+
+Connection to the Veil:
+La Tavern si trova su un punto nodale dove le memorie tessute nel Velo filtrano attraverso i sogni dei visitatori. Jorin, inconsapevolmente, raccoglie questi frammenti diventando un archivio vivente di ciò che il Velo sta perdendo.
+
+Unique Features:
+- I viaggiatori spesso condividono gli stessi sogni misteriosi
+- Monete con volti sconosciuti ma stranamente familiari
+- Storie che sembrano ricordi di eventi mai accaduti
+- Registri di mercanti che nessuno ricorda di aver mai visto
+
+Services Offered:
+- Alloggio confortevole per viaggiatori
+- Pasti sostanziosi e bevande di qualità
+- Spazio sicuro per condividere storie e informazioni
+- Custodia di oggetti preziosi per i clienti di fiducia
+
+Social Function:
+- Punto di incontro tra diverse comunità
+- Centro di scambio di notizie e informazioni
+- Rifugio per coloro che cercano comprensione dei loro sogni
+- Luogo di pausa e riflessione per i viaggiatori
+
+The Innkeeper - Jorin:
+- Custode inconsapevole di sogni e memorie perdute
+- Cronista accidentale di fenomeni inspiegabili
+- Fonte di oggetti rituali antichi come la Ciotola dell'Offerta Sacra
+- Collegamento tra la comunità locale e i viaggiatori
+
+Hidden Significance:
+- Archivio involontario di memorie che stanno scomparendo
+- Punto di osservazione per i cambiamenti nel tessuto della realtà
+- Collegamento tra il mondo fisico e quello dei sogni/memorie
+- Santuario informale per chi cerca di comprendere i misteri dell'esistenza
+
+Resources:
+- Ciotola dell'Offerta Sacra (in cambio di Trucioli di Ferro)
+- Informazioni sui viaggiatori e i loro sogni
+- Connessioni con mercanti e altre comunità
+- Rifugio sicuro e neutralità in conflitti
+
+Mysteries:
+- Perché certi sogni si ripetono tra gli ospiti?
+- Da dove provengono le monete con volti sconosciuti?
+- Cosa significa la crescente sensazione di "aver dimenticato qualcosa"?
+- Chi erano i mercanti che nessuno ricorda tranne Jorin?
