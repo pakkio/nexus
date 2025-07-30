@@ -1,4 +1,4 @@
-Name: Syra
+Name: Syra+
 Area: Ancient Ruins
 Role: Eco Residuo, Tessitrice Incompleta
 Motivation: Completare la sua trasformazione nel Velo, ma solo se il Cercatore dimostra di capire veramente cosa significhi sacrificare la propria esistenza per gli altri.
