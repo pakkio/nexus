@@ -9,6 +9,7 @@ from flask_cors import CORS
 import logging
 import os
 from typing import Dict, Any, Optional
+import unicodedata
 
 from game_system_api import GameSystem
 from llm_stats_tracker import get_global_stats_tracker
@@ -28,6 +29,37 @@ game_system: Optional[GameSystem] = None
 
 # Constants
 GAME_SYSTEM_NOT_INITIALIZED = 'Game system not initialized'
+
+def normalize_text_for_lsl(text):
+    """
+    Normalizza il testo per LSL convertendo caratteri accentati in equivalenti ASCII.
+    à => a', è => e', ì => i', ò => o', ù => u', ç => c'
+    """
+    if not text:
+        return text
+    
+    # Mapping personalizzato per caratteri italiani
+    replacements = {
+        'à': "a'", 'á': "a'", 'â': 'a', 'ã': 'a', 'ä': 'a',
+        'è': "e'", 'é': "e'", 'ê': 'e', 'ë': 'e',
+        'ì': "i'", 'í': "i'", 'î': 'i', 'ï': 'i',
+        'ò': "o'", 'ó': "o'", 'ô': 'o', 'õ': 'o', 'ö': 'o',
+        'ù': "u'", 'ú': "u'", 'û': 'u', 'ü': 'u',
+        'ç': "c'", 'ñ': 'n',
+        # Maiuscole
+        'À': "A'", 'Á': "A'", 'Â': 'A', 'Ã': 'A', 'Ä': 'A',
+        'È': "E'", 'É': "E'", 'Ê': 'E', 'Ë': 'E',
+        'Ì': "I'", 'Í': "I'", 'Î': 'I', 'Ï': 'I',
+        'Ò': "O'", 'Ó': "O'", 'Ô': 'O', 'Õ': 'O', 'Ö': 'O',
+        'Ù': "U'", 'Ú': "U'", 'Û': 'U', 'Ü': 'U',
+        'Ç': "C'", 'Ñ': 'N'
+    }
+    
+    # Applica le sostituzioni
+    for char, replacement in replacements.items():
+        text = text.replace(char, replacement)
+    
+    return text
 
 def parse_npc_file(filepath):
     """Parse NPC file and return NPC data dictionary."""
@@ -522,8 +554,8 @@ def chat_with_npc():
             'player_name': player_name,
             'player_message': message,
             'npc_name': npc_name,
-            'npc_response': response.get('npc_response', ''),
-            'sl_commands': sl_commands,
+            'npc_response': normalize_text_for_lsl(response.get('npc_response', '')),
+            'sl_commands': normalize_text_for_lsl(sl_commands),
             'system_messages': response.get('system_messages', []),
             'current_npc': response.get('current_npc_name'),
             'current_area': response.get('current_area'),
@@ -613,17 +645,18 @@ def sense_player():
                 go_command = f"/go {area}"
                 try:
                     area_response = player_system.process_player_input(go_command, skip_profile_update=True)
-                    if not area_response:
+                    if not area_response or not isinstance(area_response, dict):
                         # For fresh player state after reset, this might be normal, continue anyway
-                        logger.warning(f"Got None response when going to area {area} for fresh player {player_name}")
-                        # Don't fail, just continue with the rest of the logic
+                        logger.warning(f"Got invalid response when going to area {area} for fresh player {player_name}")
+                        # Set the area manually as fallback
+                        player_system.game_state['current_area'] = area
                     else:
                         logger.info(f"Successfully moved player {player_name} to area {area}")
                 except Exception as e:
                     logger.error(f"Exception in /go command for area {area}: {str(e)}", exc_info=True)
-                    return jsonify({
-                        'error': f'Error going to area {area}: {str(e)}'
-                    }), 500
+                    # Set the area manually as fallback instead of failing
+                    logger.warning(f"Setting area {area} manually for {player_name} as fallback")
+                    player_system.game_state['current_area'] = area
             else:
                 logger.info(f"Player {player_name} already in area {area}, skipping /go command")
         
@@ -663,23 +696,24 @@ def sense_player():
         current_npc = player_system.game_state.get('current_npc')
         if not current_npc:
             return jsonify({
-                'message': f"No NPC is currently present to notice {player_name}'s arrival.",
+                'npc_response': normalize_text_for_lsl(f"No NPC is currently present to notice {player_name}'s arrival."),
                 'player_name': player_name
             })
         
         current_npc_name = current_npc.get('name', 'Unknown NPC')
         
-        # Generate contextual greeting based on NPC's character and role
+        # Generate a simple greeting based on NPC's character
         npc_role = current_npc.get('role', 'resident')
         npc_area = current_npc.get('area', 'this place')
         
-        # Create a more natural greeting prompt that fits the character  
-        greeting_prompt = f"*{player_name} approaches you*"
+        # Generate a simple contextual greeting without processing through the full system
+        if 'erborista' in npc_role.lower():
+            npc_response = f"*{current_npc_name} alza lo sguardo dalle sue erbe* Oh, un visitatore nel mio giardino. Benvenuto."
+        else:
+            npc_response = f"*{current_npc_name} nota {player_name}* Salve, viandante."
         
-        # Process as player input to generate NPC response
-        response = player_system.process_player_input(greeting_prompt)
-        
-        npc_response = response.get('npc_response', f"*{current_npc_name} notices {player_name} has arrived*")
+        # Create a minimal response object for consistency
+        response = {'current_area': npc_area}
         
         # Generate Second Life commands for the current NPC
         sl_commands = ""
@@ -691,11 +725,11 @@ def sense_player():
             sl_commands = ""
         
         return jsonify({
-            'message': npc_response,
+            'npc_response': normalize_text_for_lsl(npc_response),
             'npc_name': current_npc_name,
             'player_name': player_name,
             'current_area': response.get('current_area'),
-            'sl_commands': sl_commands,
+            'sl_commands': normalize_text_for_lsl(sl_commands),
             'system_messages': response.get('system_messages', [])
         })
     
