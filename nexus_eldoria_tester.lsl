@@ -7,11 +7,15 @@
 // USAGE:
 // 1. Rez object in OpenSim/SL
 // 2. Configure NEXUS_SERVER_URL
-// 3. Touch to simulate arrival (or walk within sensor range)
-// 4. Touch again to simulate departure
-// 5. Chat commands are automatically processed
+// 3. FIRST TOUCH - simulate arrival (greeted by NPC)
+// 4. Chat in public chat with the NPC
+// 5. SECOND TOUCH - simulate departure
+// 6. Use /leave command to manually trigger departure
 //
 // Performance verified: Sub-3s responses, SL commands working
+//
+// NOTE: This script simulates player interactions with the Nexus/Eldoria RPG system
+//       for testing purposes in Second Life/OpenSim environments.
 // =============================================================================
 
 // Configuration
@@ -20,6 +24,7 @@ string NPC_NAME = "mara";                           // Default NPC to interact w
 string AREA_NAME = "Village";                       // Default area
 float SENSOR_RANGE = 5.0;                          // Range for auto-detection
 float SENSOR_REPEAT = 3.0;                         // Sensor scan frequency
+integer MAX_RESPONSE_LENGTH = 0;                   // Maximum response length (0 = no limit)
 
 // State tracking
 list avatar_sessions = [];        // Active avatar sessions [avatar_key, avatar_name, session_active]
@@ -44,8 +49,11 @@ default
         llOwnerSay("👆 Touch to simulate arrival/departure or walk within " + (string)SENSOR_RANGE + "m");
         
         // Visual setup
-        llSetText("🏰 Eldoria RPG Tester\n✅ Ready\n👆 Touch or approach", COLOR_READY, 1.0);
+        llSetText("🏰 Eldoria RPG Tester\n✅ Ready\n👆 Touch to begin", COLOR_READY, 1.0);
         llSetColor(COLOR_READY, ALL_SIDES);
+        
+        // Start listening to public chat (channel 0)
+        llListen(0, "", NULL_KEY, "");
         
         // Start avatar detection
         llSensorRepeat("", NULL_KEY, AGENT, SENSOR_RANGE, PI, SENSOR_REPEAT);
@@ -75,9 +83,9 @@ default
     
     no_sensor()
     {
-        // Check for avatars that left the area
+        // Check for avatars that left the sensor range and auto-depart them
         integer i;
-        list avatars_to_remove = [];
+        list avatars_to_depart = [];
         
         for (i = 0; i < llGetListLength(avatar_sessions); i += 3)
         {
@@ -87,24 +95,28 @@ default
             
             if (session_active)
             {
-                // Check if avatar still in range
-                vector avatar_pos = llList2Vector(llGetObjectDetails(avatar_key, [OBJECT_POS]), 0);
-                vector my_pos = llGetPos();
-                
-                if (llVecDist(avatar_pos, my_pos) > SENSOR_RANGE || avatar_pos == ZERO_VECTOR)
-                {
-                    llOwnerSay("👋 Auto-detected departure: " + avatar_name);
-                    handle_avatar_departure(avatar_key, avatar_name);
-                    avatars_to_remove += [i];
-                }
+                // Mark for auto-departure
+                avatars_to_depart += [avatar_key, avatar_name];
             }
         }
         
-        // Remove departed avatars (reverse order to maintain indices)
-        for (i = llGetListLength(avatars_to_remove) - 1; i >= 0; i--)
+        // Process auto-departures
+        for (i = 0; i < llGetListLength(avatars_to_depart); i += 2)
         {
-            integer index = llList2Integer(avatars_to_remove, i);
-            avatar_sessions = llDeleteSubList(avatar_sessions, index, index + 2);
+            key avatar_key = llList2Key(avatars_to_depart, i);
+            string avatar_name = llList2String(avatars_to_depart, i + 1);
+            llOwnerSay("👋 Auto-detected departure: " + avatar_name);
+            handle_avatar_departure(avatar_key, avatar_name);
+        }
+        
+        // End any conversations if no active sessions remain
+        if (llGetListLength(avatar_sessions) == 0 || llGetListLength(avatars_to_depart) > 0)
+        {
+            llOwnerSay("📡 No avatars in range - ending conversation");
+            // Could send a final message to NPCs about being alone
+            string url = NEXUS_SERVER_URL + "/sense";
+            string json_data = "{\"name\":\"\",\"npcname\":\"" + NPC_NAME + "\",\"area\":\"" + AREA_NAME + "\"}";
+            llHTTPRequest(url, [HTTP_METHOD, "POST", HTTP_MIMETYPE, "application/json"], json_data);
         }
     }
     
@@ -123,9 +135,21 @@ default
         }
         else
         {
-            // Existing session - simulate departure
-            llOwnerSay("👋 Touch departure: " + toucher_name);
-            handle_avatar_departure(toucher, toucher_name);
+            integer session_active = llList2Integer(avatar_sessions, session_index + 2);
+            if (session_active)
+            {
+                // Existing active session - simulate departure
+                llOwnerSay("👋 Touch departure: " + toucher_name);
+                handle_avatar_departure(toucher, toucher_name);
+            }
+            else
+            {
+                // Previous session was deactivated - create new arrival
+                llOwnerSay("🆕 New touch arrival: " + toucher_name);
+                // Remove the old session entry first
+                avatar_sessions = llDeleteSubList(avatar_sessions, session_index, session_index + 2);
+                handle_avatar_arrival(toucher, toucher_name);
+            }
         }
     }
     
@@ -172,10 +196,38 @@ default
     
     listen(integer channel, string name, key id, string message)
     {
-        // Handle chat commands from avatars
-        if (get_avatar_session_index(id) != -1)
+        // Handle chat from any avatar in range
+        llOwnerSay("👂 Heard chat from " + name + ": " + message);
+        
+        // Check if avatar has an active session
+        integer session_index = get_avatar_session_index(id);
+        if (session_index != -1)
         {
-            handle_chat_message(id, name, message);
+            integer session_active = llList2Integer(avatar_sessions, session_index + 2);
+            if (session_active)
+            {
+                llOwnerSay("💬 Processing chat from active session: " + name);
+                handle_chat_message(id, name, message);
+            }
+            else
+            {
+                llOwnerSay("⚠️ Chat from inactive session: " + name + " (ignoring)");
+            }
+        }
+        else
+        {
+            // Avatar not in session - auto-add them if in range
+            list avatars = llGetAgentList(AGENT_LIST_REGION, []);
+            if (llListFindList(avatars, [id]) != -1)
+            {
+                llOwnerSay("🆕 Auto-adding " + name + " to session for chat");
+                handle_avatar_arrival(id, name);
+                // Chat will be processed in next listen event
+            }
+            else
+            {
+                llOwnerSay("⚠️ Chat from avatar not in range: " + name);
+            }
         }
     }
 }
@@ -202,9 +254,6 @@ handle_avatar_arrival(key avatar_key, string avatar_name)
     
     // Add to sessions list
     avatar_sessions += [avatar_key, avatar_name, TRUE];
-    
-    // Start listening to this avatar's chat
-    llListen(0, "", avatar_key, "");
     
     // Call /sense API endpoint
     string url = NEXUS_SERVER_URL + "/sense";
@@ -267,7 +316,7 @@ handle_chat_message(key avatar_key, string avatar_name, string message)
     
     // Call /api/chat endpoint
     string url = NEXUS_SERVER_URL + "/api/chat";
-    string json_data = "{\"player_name\":\"" + avatar_name + "\",\"message\":\"" + message + "\"}";
+    string json_data = "{\"player_name\":\"" + avatar_name + "\",\"message\":\"" + message + "\",\"npc_name\":\"" + NPC_NAME + "\",\"area\":\"" + AREA_NAME + "\"}";
     
     key request_id = llHTTPRequest(url, [
         HTTP_METHOD, "POST",
@@ -293,8 +342,33 @@ process_system_command(key avatar_key, string avatar_name, string command)
         return;
     }
     
-    // Send as regular chat message to API
-    handle_chat_message(avatar_key, avatar_name, command);
+    // Handle manual departure command
+    if (command == "/leave")
+    {
+        llOwnerSay("👋 Manual departure command: " + avatar_name);
+        handle_avatar_departure(avatar_key, avatar_name);
+        return;
+    }
+    
+    // For unknown commands, send to API as regular chat
+    llSetColor(COLOR_PROCESSING, ALL_SIDES);
+    llSetText("💬 Processing Command\n" + avatar_name, COLOR_PROCESSING, 1.0);
+    
+    // Call /api/chat endpoint directly to avoid recursion
+    string url = NEXUS_SERVER_URL + "/api/chat";
+    string json_data = "{\"player_name\":\"" + avatar_name + "\",\"message\":\"" + command + "\",\"npc_name\":\"" + NPC_NAME + "\",\"area\":\"" + AREA_NAME + "\"}";
+    
+    key request_id = llHTTPRequest(url, [
+        HTTP_METHOD, "POST",
+        HTTP_MIMETYPE, "application/json",
+        HTTP_BODY_MAXLENGTH, 16384,
+        HTTP_VERIFY_CERT, FALSE
+    ], json_data);
+    
+    // Track request
+    pending_requests += [request_id, avatar_key, "chat", llGetTime()];
+    
+    llOwnerSay("💬 Processing unknown command: " + command);
 }
 
 // =============================================================================
@@ -323,9 +397,9 @@ process_api_response(key avatar_key, string request_type, string body, float res
     {
         // Clean up response (remove excessive newlines)
         npc_response = llStringTrim(npc_response, STRING_TRIM);
-        if (llStringLength(npc_response) > 200)
+        if (MAX_RESPONSE_LENGTH > 0 && llStringLength(npc_response) > MAX_RESPONSE_LENGTH)
         {
-            npc_response = llGetSubString(npc_response, 0, 197) + "...";
+            npc_response = llGetSubString(npc_response, 0, MAX_RESPONSE_LENGTH - 3) + "...";
         }
         
         llOwnerSay("🗣️ " + npc_name + " (" + current_area + "): " + npc_response);

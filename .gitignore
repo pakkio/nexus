@@ -5,3 +5,6 @@ database/
 # Ignore Python cache and compiled files
 __pycache__/
 compiled/
+
+# Ignore crush directory
+.crush/

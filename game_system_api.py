@@ -234,7 +234,8 @@ class _SinglePlayerGameSystem:
         self.game_state['actions_this_turn_for_profile'] = []
 
         # Pre-load context for better performance
-        current_npc_name = self.game_state.get('current_npc', {}).get('name')
+        current_npc = self.game_state.get('current_npc', {})
+        current_npc_name = current_npc.get('name') if current_npc else None
         if not player_input.startswith('/'):  # Only for dialogue interactions
             self._preload_context_for_dialogue(current_npc_name)
 
