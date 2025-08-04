@@ -73,7 +73,9 @@ Il Cercatore capì che avrebbe innanzitutto dovuto cercare di scoprire chi fosse
 Vagavano nell'aria tiepida della taverna, come si è detto, le parole degli avventori, alcune gridate, altre sussurrate, ricorrevano gli appellativi "Custode di Sogni Perduti", "Cronista Inconsapevole", accompagnato da sguardi obliqui, chiaramente diretti verso il locandiere. Attivò il suo database frontale mal volentieri, gli sembrava d'essere una spia dei Comori, gli extrasiderali che avevano assalito l'Yperverso nel tempo prima del tempo prima del tempo. Ma a volte le scorciatoie servono, ed era uno di quei momenti. Sentì pulsare la sua retina, associò Jorin a "Custode di Sogni Perduti", "Cronista Inconsapevole" e vide aprirsi un elenco di punti chiave del racconto. Forse Syra gli aveva già dato un acconto su quanto gli aveva promesso, fornendogli quell'elenco? Lei sì che manteneva, pensò, e per un attimo vi si lanciò dentro quella bozza di racconto. 
 
 ---
-
+```
+01001100
+```
 Motivazione: Raccogliere e preservare sogni e storie che i Sussurri dell'Oblio 
 stanno cancellando, senza rendersi pienamente conto del loro valore.
 Goal: Completare la sua collezione di "Sogni Impossibili" - storie che la 
