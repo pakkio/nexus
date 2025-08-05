@@ -33,6 +33,7 @@ Cosa rispondere, pensò il Cercatore, non era il caso di sbilanciarsi, così al 
 > "Se scegliete di preservare il Velo, lo rispetterò. Se sceglierete di trasformarlo, lo celebrerò. Se sceglierai di dissolverlo... ti accoglierò nell'infinito".  
 
 Certo parlava per enigmi, ma presto li avrebbe risolti, ne era certo. Forse.
+
 ![nexusisolamappa](https://github.com/user-attachments/assets/af1417a1-c69e-4a10-9efd-3ca51eaabad7)
 ---
 
