@@ -36,6 +36,7 @@ Certo parlava per enigmi, ma presto li avrebbe risolti, ne era certo. Forse.
 
 ![Image](Icon-pictures.png "<img width="1024" height="1024" alt="nexusisolamappa" src="https://github.com/user-attachments/assets/af1417a1-c69e-4a10-9efd-3ca51eaabad7" />")
 ---
+
  Oltre il Vuoto Liminale
 
 Oltre il Vuoto Liminale, Eldoria giaceva cullata dal respiro silenzioso del Velo. Il Cercatore, nel suo volo deciso, si sentì respinto con un rimbalzo improvviso, e così comprese quanto fosse invisibile e potente al tempo stesso quel Velo. Nel tentativo di superarne il divieto, il Cercatore ruotò attorno ad esso e … qualcosa si era spezzato, evidentemente, un refolo d'aria odorosa d'umano fuorusciva da un lembo strappato … Non c'era da fare altro che accettare quell'invito implicito, forse un inganno? un tranello? 
