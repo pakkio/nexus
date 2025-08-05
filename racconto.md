@@ -112,6 +112,7 @@ ma nessuno se li ricorda tranne me."
 alla sua forgia, e ti darò qualcosa di speciale."
 - "Le monete con cui mi pagano... giuro che alcune hanno facce che non 
 riconosco, ma sembrano familiari."]
+---
 
 *Avrete capito facilmente, forse, lettori, lettrici, su quale parte della scheda di gioco il Cercatore si soffermasse. La Ciotola dell'Offerta Sacra era lì, da qualche parte. La missione prese d'improvviso il sopravvento. Poi avrebbe cercato di mettere al loro posto i fili del racconto. Non poteva ancora saperlo, ma in un luogo imprecisato dell'Yperverso, c'era una donna, una scrittrice, che, intanto, stava facendo il lavoro per lui. Si sarebbero mai incontrati?*
 
@@ -180,6 +181,7 @@ La bussola che il Cercatore esibiva sul suo display gli indicava di dirigersi a 
 > FINCHÉ LA CIOTOLA SACRA RICOLMA D'ACQUA PURA NON GIUNGERA' NELLE MANI DI LYRA NULLA POTRA' ACCADERE. DAL TEMPO AL TEMPO. OGNI TASSELLO DOVRA' ANDARE AL SUO POSTO E SOLO ALLORA SI RIACCENDERA' LA MEMORIA E RISUONERANNO PER SEMPRE E IN OGNI DOVE LE VOCI DELL'YPERVERSO
 
 ---
+
 Stava per riporre il display, quando esso cominciò a pulsare in modo anomalo, o forse non ricordare quel passaggio era parte dell'esperienza dell'Oblio?  Fatto sta che, come in una sorta di volume le cui pagine scorrevano in loop (ah! La bellezza incommensurabile della tecnologia, pensò il Cercatore in quell'istante!), gli si squadernò tutto ciò che da viaggiatore di un luogo sconosciuto era utile sapere. Per ogni luogo una scheda dettagliata, per ogni personaggio una scheda identificativa. E dove si era nascosta **Meridia**? Era forse anche cercarla una parte delle missioni? Da buon cercatore andò subito al punto chiave: le missioni. Cercò, ma invano, le schede delle missioni non comparivano. Che ci fosse un bug nel sistema?
 Ogni cosa a suo tempo, si disse, ripescando nel dizionario dei luoghi comuni, e pur in qualche caso risolutivi. Il Cercatore, fidando, dunque, sul potere dei luoghi comuni, si tranquillizzò, attese che ripassare sul display la scheda della città per muoversi rapidamente verso di essa con qualche curiosità in meno e qualche certezza in più.
 
@@ -281,7 +283,8 @@ Il Cercatore ascoltava, a capo basso, quasi a nascondere i suoi pensieri, le sue
 
 Lyra capì lo stato d'animo del Cercatore. Il gioco non poteva andare oltre, le ombre sempre più rapidamente si allungavano. Sorridendo, gli porse una scacchiera.
 
-> "Sai giocare a scacchi?" - gli chiese con un tono che gli ricordò sua madre -
+> "Sai giocare a scacchi?" - gli chiese con un tono che gli ricordò sua madre.
+
 
 > "Disponi su questa scacchiera Syra, Jorin, Garin, me, Lyra, Boros, Elira da un lato e gli oggetti delle missioni dall'altro. Fai le tue mosse, il pensiero profondo le asseconderà e ciascuno riceverà il suo oggetto necessario. Oggi non hai più tempo per le missioni. Ora è il momento cruciale. Ricordi gli interrogativi di Erasmus sul Velo e i Sussurri dell'Oblio?"
 
@@ -301,13 +304,13 @@ Quello che seguì, i ragionamenti che Lyra, Boros e il Cercatore intrecciarono n
 
 > "Boros, - disse Lyra con l'autorevolezza che le era propria - non ha molto tempo, accompagnamolo al Nesso dei Sentieri, dove Meridia sta aspettando che si compia il destino del Velo. Ha chiamato Irenna e tutti i rappresentanti delle fazioni, per dare inizio al suo spettacolo e dargli finalmente una fine. Chiederà a te, Cercatore, di suggerirle il finale. Ciò che hai vissuto finora non era che il prologo del suo spettacolo. Andiamo, vieni, ora ciascuno interpreterà la sua parte e tu sceglierai il finale."
 
-Li ritrovò tutti sulla scena del teatrino di Irenna, pronti a recitare la loro parte, li trovò festanti, l'unico preoccupato pareva Cassian che continuava a distribuire Crediti a tutti pur di cercare di sopravvivere. Le fazioni erano in attesa. Soprattutto... si attendeva il verdetto.
+Li ritrovò tutti sulla scena del teatrino di Irenna, che ora troneggiama al centro del Nesso dei Sentieri. Il Cercatore si chiese come il muro dal quale era stato respinto si foffe trasformato in un rosso panneggio che fugeva da sipario. A volte. pensò, a che serve chedere? Non era forse quello un vezzo da filosofi persi nel Flusso del pensiero, mentre in quel momento poteva affidarsi all'energia magmatica della creatività? Eccoli, dunque, pronti a recitare la loro parte, gioiosi, festanti, esultanti, l'unico preoccupato pareva Cassian che continuava a distribuire Crediti a tutti pur di cercare di sopravvivere. Le fazioni erano in attesa. Soprattutto... si attendeva il verdetto.
 
 Quando giunse il momento Lyra ripropose i tre finali possibili, che già il Cercatore aveva sentito da Erasmus:
 
-> "Se scegliete di preservare il Velo, lo rispetterò.  
-> Se sceglierete di trasformarlo, lo celebrerò.  
-> Se sceglierai di dissolverlo... ti accoglierò nell'infinito".
+> **"Se scegliete di preservare il Velo, lo rispetterò.**  
+> **Se sceglierete di trasformarlo, lo celebrerò.**  
+> **Se sceglierai di dissolverlo... ti accoglierò nell'infinito"**
 
 Lyra gli rivolse la domanda cruciale: 
 
