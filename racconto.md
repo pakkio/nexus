@@ -16,7 +16,7 @@ Il Cercatore, dunque, ormai ben avvezzo all'oblio, ne aveva compreso il senso pi
 
 Il Cercatore scavò nella memoria fino allo spasimo, ed ecco apparire come una linea sottile, invisibile, il Vuoto Liminale al confine tra il mondo tangibile e il vago caos dell'aldilà. Chi aveva tessuto quella linea sottile? Forse un patto tra la luce e l'ombra, o forse soltanto una ferita non rimarginata del Cosmos? 
 
-Non ebbe, dunque, paura dell'Oblio, se sentiva quei Sussurri essi non potevano portare al nulla, forse a un nuovo Lete, ma si sarebbe difeso, avrebbe intrapreso qualsiasi missione pur di salvarsi dall'Oblio Assoluto, quello da cui non si ritorna, barattandolo con il Sussurro Cosciente, di cui era ambasciatore Erasmus. 
+Non ebbe, dunque, paura dell'Oblio, se sentiva quei Sussurri essi non potevano portare al nulla, forse a un nuovo Lete, ma si sarebbe difeso, avrebbe intrapreso qualsiasi missione pur di salvarsi dall'Oblio Assoluto, quello da cui non si ritorna, barattandolo con il Sussurro Cosciente, di cui era ambasciatore **Erasmus**. 
 
 Di lui il Cercatore, dotato di una potenza visiva non dissimile da quella uditiva, aveva intravisto formarsi e disfarsi il profilo sulla linea del Vuoto Liminale. Gli sarebbe forse servito aver decodificato e salvato nella Biblioteca Interstellare il suo Elogio della Follia? Forse. Nessuna certezza, ma infinite possibilità l'attendevano. 
 
