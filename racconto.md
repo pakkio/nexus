@@ -308,19 +308,19 @@ Li ritrovò tutti sulla scena del teatrino di Irenna, che ora troneggiama al cen
 
 Quando giunse il momento Lyra ripropose i tre finali possibili, che già il Cercatore aveva sentito da Erasmus:
 
-> **"Se scegliete di preservare il Velo, lo rispetterò.**  
+> **Se scegliete di preservare il Velo, lo rispetterò.**  
 > **Se sceglierete di trasformarlo, lo celebrerò.**  
-> **Se sceglierai di dissolverlo... ti accoglierò nell'infinito"**
+> **Se sceglierai di dissolverlo... ti accoglierò nell'infinito.**
 
 Lyra gli rivolse la domanda cruciale: 
 
-> "In piena coscienza e consapevolezza qual è il verdetto, Cercatore?"
+> "In piena coscienza e consapevolezza, qual è il verdetto, Cercatore?"
 
 Il Cercatore ora era pronto per pronunciare il verdetto.
 
 ---
 
-[Il testo originale si interrompe qui, ma sembra che il Cercatore abbia scelto di dissolvere il Velo, come suggerito dalla frase che segue]
+*[Il testo originale si interrompe qui, ma sembra che il Cercatore abbia scelto di dissolvere il Velo, come suggerito dalla frase che segue]*
 
 ---
 
@@ -334,4 +334,4 @@ Sull'orizzonte dell'Yperverso non tardò a levarsi un'alba tersa e luminosa. Le 
 
 ---
 
-Una storia di scelte difficili, di memorie perdute e ritrovate, dove la narrazione stessa diventa il filo che tiene insieme l'universo. Il Cercatore ha scelto la libertà dell'oblio contro la prigione dorata della memoria, permettendo all'Yperverso di rinascere in una nuova forma di consapevolezza.
+*Una storia di scelte difficili, di memorie perdute e ritrovate, dove la narrazione stessa diventa il filo che tiene insieme l'universo. Il Cercatore ha scelto la libertà dell'oblio contro la prigione dorata della memoria, permettendo all'Yperverso di rinascere in una nuova forma di consapevolezza-*
