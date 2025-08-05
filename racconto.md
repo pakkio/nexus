@@ -181,7 +181,7 @@ La bussola che il Cercatore esibiva sul suo display gli indicava di dirigersi a 
 
 ---
 Stava per riporre il display, quando esso cominciò a pulsare in modo anomalo, o forse non ricordare quel passaggio era parte dell'esperienza dell'Oblio?  Fatto sta che, come in una sorta di volume le cui pagine scorrevano in loop (ah! La bellezza incommensurabile della tecnologia, pensò il Cercatore in quell'istante!), gli si squadernò tutto ciò che da viaggiatore di un luogo sconosciuto era utile sapere. Per ogni luogo una scheda dettagliata, per ogni personaggio una scheda identificativa. E dove si era nascosta **Meridia**? Era forse anche cercarla una parte delle missioni? Da buon cercatore andò subito al punto chiave: le missioni. Cercò, ma invano, le schede delle missioni non comparivano. Che ci fosse un bug nel sistema?
-Ogni cosa a suo tempo, si disse, ripescando nel dizionario dei luoghi comuni, e pur in qualche caso risolutivi. Il Cercatore, fidando, dunque, sul potere dei luoghi comuni, si tranquillizzo, attese che ripassare sul display la scheda della città per muoversi rapidamente verso di essa con qualche curiosità in meno e qualche certezza in più.
+Ogni cosa a suo tempo, si disse, ripescando nel dizionario dei luoghi comuni, e pur in qualche caso risolutivi. Il Cercatore, fidando, dunque, sul potere dei luoghi comuni, si tranquillizzò, attese che ripassare sul display la scheda della città per muoversi rapidamente verso di essa con qualche curiosità in meno e qualche certezza in più.
 
 Ne valeva la pena, pensò il Cercatore.
 
