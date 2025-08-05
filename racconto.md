@@ -113,7 +113,7 @@ alla sua forgia, e ti darò qualcosa di speciale."
 - "Le monete con cui mi pagano... giuro che alcune hanno facce che non 
 riconosco, ma sembrano familiari."]
 
-Avrete capito facilmente, forse, lettori, lettrici, su quale parte della scheda di gioco il Cercatore si soffermasse. La Ciotola dell'Offerta Sacra era lì, da qualche parte. La missione prese d'improvviso il sopravvento. Poi avrebbe cercato di mettere al loro posto i fili del racconto. Non poteva ancora saperlo, ma in un luogo imprecisato dell'Yperverso, c'era una donna, una scrittrice, che, intanto, stava facendo il lavoro per lui. Si sarebbero mai incontrati? 
+*Avrete capito facilmente, forse, lettori, lettrici, su quale parte della scheda di gioco il Cercatore si soffermasse. La Ciotola dell'Offerta Sacra era lì, da qualche parte. La missione prese d'improvviso il sopravvento. Poi avrebbe cercato di mettere al loro posto i fili del racconto. Non poteva ancora saperlo, ma in un luogo imprecisato dell'Yperverso, c'era una donna, una scrittrice, che, intanto, stava facendo il lavoro per lui. Si sarebbero mai incontrati?*
 
 Il Cercatore sfruttò uno dei ganci di dialogo per riprendere il discorso con il locandiere. 
 
