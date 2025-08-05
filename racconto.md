@@ -1,16 +1,16 @@
  **Il velo infranto**
 
- Antefatto
+ **Antefatto**
 
 C'era stato un tempo nel quale il Narratore non doveva fare altro che scuotere un tantino il capo e le storie cominciavano a fluire come un fiume in piena, tanto che, poi, fermarne il corso era davvero un'impresa, ma questo accadeva nel tempo prima del tempo, quando le stelle parlavano e il vento narrava storie perdute e non bisognava far altro che registrarle nel proprio database frontale. 
 
 Ormai da tempo, nel silenzio siderale, il Narratore, anzi il Grande Narratore, come era solito farsi chiamare, aveva dovuto scegliersi un'altra strada, un'altra identità, ed era diventato il Cercatore, non ancora il Grande Cercatore che tuttavia sperava di diventare. Non era mai stato un tipo dalle poche pretese, in effetti. 
 
-Ora che il suo capo si reggeva immobile tra le costellazioni ormai mute, il Cercatore aveva appreso ad affidarsi al suo udito cosmico, con il quale poteva addentrarsi tra le galassie fino a coglierne i sussurri. Eh, sì, i sussurri erano soffi di vento cosmico impastati di qualche residuo di mondi tramontati, di memorie, di narrazioni, ahiloro!, ormai estinte come le sue. Forse. 
+Ora che il suo capo si reggeva immobile tra le costellazioni ormai mute, **il Cercatore** aveva appreso ad affidarsi al suo udito cosmico, con il quale poteva addentrarsi tra le galassie fino a coglierne i sussurri. Eh, sì, i sussurri erano soffi di vento cosmico impastati di qualche residuo di mondi tramontati, di memorie, di narrazioni, ahiloro!, ormai estinte come le sue. Forse. 
 
 I sussurri, una volta intercettati, diventavano come guide esperte di viaggi siderali, certo bisognava decodificarli, soprattutto comprenderli, ecco, la parola magica era "comprendere", in quel caso essi si svelavano nella loro identità di Sussurri dell'Oblio e allora diventava ancora più difficile comprenderne il senso, anche per chi fosse riuscito a decifrarli, il Cercatore, come s'è detto ormai esperto dell'oblio, una cosa l'aveva compresa, e cioè che l'oblio è un andare oltre, non un finire.
 
- Il Cercatore
+ **Il Cercatore**
 
 Il Cercatore, dunque, ormai ben avvezzo all'oblio, ne aveva compreso il senso più vero; l'oblio era l'annuncio di una nuova narrazione, come era stato per Er, cui era stato consentito di non bere dal Lete per poter narrare l'aldilà e le responsabilità della reincarnazione. Come sempre accade, la memoria si serve di piccole scosse per riaccendersi, almeno come strumento, e quella sillaba, "Er", cominciò a sortire il suo effetto rigeneratore. 
 
@@ -37,13 +37,13 @@ Certo parlava per enigmi, ma presto li avrebbe risolti, ne era certo. Forse.
 ![Image](Icon-pictures.png "<img width="1024" height="1024" alt="nexusisolamappa" src="https://github.com/user-attachments/assets/af1417a1-c69e-4a10-9efd-3ca51eaabad7" />")
 ---
 
- Oltre il Vuoto Liminale
+ **Oltre il Vuoto Liminale**
 
-Oltre il Vuoto Liminale, Eldoria giaceva cullata dal respiro silenzioso del Velo. Il Cercatore, nel suo volo deciso, si sentì respinto con un rimbalzo improvviso, e così comprese quanto fosse invisibile e potente al tempo stesso quel Velo. Nel tentativo di superarne il divieto, il Cercatore ruotò attorno ad esso e … qualcosa si era spezzato, evidentemente, un refolo d'aria odorosa d'umano fuorusciva da un lembo strappato … Non c'era da fare altro che accettare quell'invito implicito, forse un inganno? un tranello? 
+Oltre il Vuoto Liminale, **Eldoria** giaceva cullata dal respiro silenzioso del Velo. Il Cercatore, nel suo volo deciso, si sentì respinto con un rimbalzo improvviso, e così comprese quanto fosse invisibile e potente al tempo stesso quel Velo. Nel tentativo di superarne il divieto, il Cercatore ruotò attorno ad esso e … qualcosa si era spezzato, evidentemente, un refolo d'aria odorosa d'umano fuorusciva da un lembo strappato … Non c'era da fare altro che accettare quell'invito implicito, forse un inganno? un tranello? 
 
 I Sussurri venivano di lì, non c'era dubbio, e lì doveva cercare.
 
- Le antiche rovine
+ **Le antiche rovine**
 
 Il Cercatore aveva più volte tentato di oltrepassare il varco che si era aperto nel Velo, ma i fili della trama sgranata, pur così sottili, si abbarbicavano al suo collo e al viso, con la consistenza di radici che tendevano a trattenerlo all'esterno. A mezzo tra il dentro e il fuori, il suo sguardo vagò tra le antiche rovine, dalle quali si levavano schegge di luce, come riflessi di cristalli nascosti nelle pieghe della terra. 
 
@@ -51,7 +51,7 @@ Il Cercatore si sentì respinto, deluso dal suo poco coraggio o dalla sua scarsa
 
 Sii forte! La voce della Grande Madre risuonava ancora in una parte segreta di sé, e sapeva che non l'avrebbe mai, mai tradita. Mentre con rinnovata energia cercava di allentare il groviglio dei fili del Velo per proseguire il cammino, un'eco flebile ma distintamente percepibile, come un residuo di un grido umano o di un tuono disperso nello spazio delle rovine, raggiunse il Velo e come per incanto i fili si slegarono si sollevarono, lasciando filtrare più intenso l'odore inconfondibile della umana fatica. 
 
-In quel momento Syra gli si avvicinò e insieme a lei l'Eco Residuo di un telaio che, da Tessitrice Incompleta, si portava dietro per non dimenticarsi di se stessa. 
+In quel momento **Syra** gli si avvicinò e insieme a lei l'Eco Residuo di un telaio che, da Tessitrice Incompleta, si portava dietro per non dimenticarsi di se stessa. 
 
 > "Dunque vuoi entrare in Eldoria? Che cerchi? Scommetto che hai finito le storie e vieni qui a rinfrescarti la memoria! Senti il peso del silenzio qui? È il peso delle parole mai dette, degli addii mai pronunciati. Questo è ciò che custodisco. Non posso darti la mia memoria. Forse potrei anche dartene una porzioncina … Ah ah ah, ma devi guadagnartela, caro. Portami la Ciotola Sacra riempita con acqua pura, e offrimela con vera riverenza. Solo allora ti aiuterò a impossessarti del Cristallo di Memoria Antica, solo allora lo restituirò a Lyra e completerò finalmente la mia trasformazione. Sai, esso non è solo memoria. è emozione pura. Ti brucerà, ti cambierà. Non potrai essere lo stesso dopo averlo ricevuto. Ma so che in fondo tu sai che bisogna cambiare per poter raccontare … per poter esistere … Io sono la trasformazione che attende il suo momento, se grazie a te sarò libera di completarmi nel Velo ti darò quella porzioncina di memoria. Affare fatto? Patto stabilito?"
 
@@ -63,7 +63,7 @@ Non sapeva bene, sinceramente, cosa stesse promettendo in quel momento, ma fuori
 
 Syra, intanto, lo accompagnava con lo sguardo, mentre si allontanava un po' curvo sotto il peso di una promessa azzardata.
 
- La taverna di Jorin
+ **La taverna di Jorin**
 
 Il Cercatore cercò invano un sentiero, comunque un tappeto di orme tra cespugli e ciottoli gli indicò almeno la direzione – verso cosa era tutt'altro che chiaro - e, del resto, l'effluvio odoroso d'umano che già prima gli aveva fatto da guida, diventando sempre più odoroso, gli indicava un dove allettante. Ed ecco che oltre il fitto sottobosco gli apparvero le case basse e sparute di un villaggio. 
 
@@ -125,15 +125,15 @@ Il Cercatore sfruttò uno dei ganci di dialogo per riprendere il discorso con il
 
 > "Che ti porto, allora?" 
 
-Era diventato sbrigativo, Jorin. che sospettasse qualcosa? Ma forse era stato ingenuo pensare che Jorin potesse ricostruire i fili delle storie che ascoltava, era stato anche più ingenuo pensare che potesse essere così facile impossessarsi della Ciotola dell'Offerta Sacra. Riprese a leggere lo schema di gioco da dove lo aveva lasciato, preso dall'illusione che la ciotola fosse lì, a portata di mano … dunque era Garin, il fabbro, a custodire la Ciotola, e i Trucioli di Ferro che si era ritrovato nel piatto non erano altro che i trucioli della memoria di Jorin, indizi utili, forse, per trovare la Ciotola dell'Offerta Sacra. 
+Era diventato sbrigativo, **Jorin**. che sospettasse qualcosa? Ma forse era stato ingenuo pensare che Jorin potesse ricostruire i fili delle storie che ascoltava, era stato anche più ingenuo pensare che potesse essere così facile impossessarsi della Ciotola dell'Offerta Sacra. Riprese a leggere lo schema di gioco da dove lo aveva lasciato, preso dall'illusione che la ciotola fosse lì, a portata di mano … dunque era Garin, il fabbro, a custodire la Ciotola, e i Trucioli di Ferro che si era ritrovato nel piatto non erano altro che i trucioli della memoria di Jorin, indizi utili, forse, per trovare la Ciotola dell'Offerta Sacra. 
 
 Uscì dalla taverna. Il ciclo della sera stava ormai sostituendo quello del giorno, ma ancora tutto era immerso in un'aria chiara e restavano ancora distinti i contorni del paesaggio. 
 
 Quei colpi, comunque, erano inequivocabili. Il sottobosco inghiottì nuovamente il Cercatore.
 
- Il villaggio di Garin
+ **Il villaggio di Garin**
 
-Garin, il Fabbro della Memoria, l'Artigiano dell'Impossibile forgiava oggetti che "ricordavano" origini e scopi, resistendo ai Sussurri dell'Oblio. Creare strumenti e armi che potessero aiutare a difendersi dal deterioramento del Velo era il suo scopo, ma per questo gli serviva il Minerale di ferro antico, che si trovava nella zona della Montagna da Boros. Scoprire come i trucioli di ferro arrivassero alla taverna di Jorin dalla montagna ai margini del Velo, era l'unico modo per giungere alla Ciotola, pensò il Cercatore. Doveva seguire i trucioli, come Pollicino le molliche di pane. Trovare la strada non era che uno stratagemma per non dimenticare e così sopravvivere. Ringraziò Pollicino e, occhi a terra, proseguì. 
+**Garin**, il Fabbro della Memoria, l'Artigiano dell'Impossibile forgiava oggetti che "ricordavano" origini e scopi, resistendo ai Sussurri dell'Oblio. Creare strumenti e armi che potessero aiutare a difendersi dal deterioramento del Velo era il suo scopo, ma per questo gli serviva il Minerale di ferro antico, che si trovava nella zona della Montagna da Boros. Scoprire come i trucioli di ferro arrivassero alla taverna di Jorin dalla montagna ai margini del Velo, era l'unico modo per giungere alla Ciotola, pensò il Cercatore. Doveva seguire i trucioli, come Pollicino le molliche di pane. Trovare la strada non era che uno stratagemma per non dimenticare e così sopravvivere. Ringraziò Pollicino e, occhi a terra, proseguì. 
 
 Il soffio della forgia e i colpi dell'incudine producevano una strana armonia sonora, il Cercatore si aspettava un luogo cupo, addirittura orroroso, da chissà quale narrazione veniva a lui quella sensazione di tenebra e violenza. Dovette ricredersi. La bottega di Garin aveva ampie finestre sul villaggio, un ordine perfetto dava un senso ad ogni oggetto o strumento o materiale, sì, certo qualche truciolo sfuggito a quell'ordine perfetto segnava il pavimento di cotto rosso scurito dal tempo, ma, poi, soprattutto Garin, lui era l'accoglienza fatta persona!
 
@@ -171,7 +171,7 @@ Il Cercatore s'era chiuso in se stesso, quasi a difendersi dal moltiplicarsi del
 
 Mara gli era piaciuta, in fondo, diretta, pragmatica, aveva chiesto, è vero, ma al contrario degli altri aveva anche dato, e in contanti. Il Cercatore capì quanto essere pragmatici aiuti nella sopravvivenza. Più della filosofia? Più della retorica? 50 crediti lo avrebbero aiutato più che gli sbiaditi trattati di Platone o di Aristotele? Comparò il tintinnio sonoro dei crediti con i sussurri dei filosofi. Non era tema da liquidare così, su due piedi.
 
- Il nesso dei sentieri
+ **Il nesso dei sentieri**
 
 La bussola che il Cercatore esibiva sul suo display gli indicava di dirigersi a est. Così fece. Ma proprio sul sentiero che pensava conducesse alla città gli si presentò un ostacolo. Una sorta di muraglia invisibile fino a quando non le sbattevi contro. Ogni pietra conteneva una lettera o un numero, era chiaramente un enigma. Se l'avesse risolto avrebbe superato l'ostacolo? Doveva provarci, a tutti i costi, era lì la soluzione di tutto? Estrasse dal suo polso sinistro il Piccolo Schermo, lo accese e lo rivolse verso la muraglia. Non fu difficile. Alla fine non era proprio l'ultimo arrivato! Ma la soluzione dell'enigma non lo tranquillizzò affatto. 
 
@@ -185,13 +185,13 @@ Ogni cosa a suo tempo, si disse, ripescando nel dizionario dei luoghi comuni, e 
 
 Ne valeva la pena, pensò il Cercatore.
 
- La città 
+ **La città** 
 
 Ben presto la città apparve in tutta la sua imponenza, con la City che si stagliava contro il Velo. Chi l'aveva costruita non aveva badato né ai costi né ai compromessi che potevano o dovevano intrecciarsi perché nessuno si opponesse alla costruzione di così alti palazzi in un contesto a mezzo tra città e campagna. Segni di un potere assoluto che non temeva né i colpi della giustizia, né quelli dei resistenti, dei rivoluzionari, le costruzioni esibivano i loro Grandi Occhi aperti sulle vite di tutti, private o pubbliche che fossero, programmate per sapere tutto di tutti, tranne che di coloro, ovviamente, che le avevano inventate e installate proprio per controllare che nessuno li controllasse nella gestione del potere. 
 
 Tuttavia c'era sempre un angolo oscuro, dove i Grandi Occhi non arrivavano, e lì agivano i resistenti, i rivoluzionari. 
 
-La città come ogni città mostrava il suo doppio volto di potere e contropotere. I Cancellatori erano i più impegnati. Il loro tempo era dedicato a cancellare le scritte dei rivoluzionari, erano da sempre al servizio di Cassian, il Burocrate Opportunista, il Mercante di Influenze, che aveva un solo obiettivo: mantenere la sua posizione di potere indipendentemente da chi vincesse il conflitto filosofico sul Velo. Se ne impipava, lui, delle diatribe filosofiche sul destino del Velo. Un'alzata di spalle, e via, un tamburellare delle dita, e via, uno sporgersi in avanti a prendere contatto con l'interlocutore e inglobarlo subito nel suo "sistema", e via, un sistemare carte, anzi confonderle, e via, con quel sorriso sapiente e quello sguardo cauto. 
+La città come ogni città mostrava il suo doppio volto di potere e contropotere. I Cancellatori erano i più impegnati. Il loro tempo era dedicato a cancellare le scritte dei rivoluzionari, erano da sempre al servizio di **Cassian**, il Burocrate Opportunista, il Mercante di Influenze, che aveva un solo obiettivo: mantenere la sua posizione di potere indipendentemente da chi vincesse il conflitto filosofico sul Velo. Se ne impipava, lui, delle diatribe filosofiche sul destino del Velo. Un'alzata di spalle, e via, un tamburellare delle dita, e via, uno sporgersi in avanti a prendere contatto con l'interlocutore e inglobarlo subito nel suo "sistema", e via, un sistemare carte, anzi confonderle, e via, con quel sorriso sapiente e quello sguardo cauto. 
 
 Fu inevitabile incontrarlo, il suo arrivo aveva messo in subbuglio le opposte fazioni. Chi era costui che veniva dal nulla e forse dal tutto? Quali scopi aveva? A quale fazione avrebbe offerto supporto o a quale fazione l'avrebbe chiesto? 
 
@@ -219,7 +219,7 @@ Cassian, tuttavia, da buon simulatore, fece finta di nulla, lo accompagnò fino 
 
 Cosa era accaduto al Cercatore che Cassian non sapeva, anche se il suo fiuto fino qualcosa pur aveva subdorato? 
 
-Era appena entrato in città, la città bassa, situata ai piedi della city, e in uno angolo buio era stato avvicinato dall'Alto Giudice Theron, costretto a vivere in incognito, ai margini della società, per sfuggire al controllo di Cassian e proseguire nella sua battaglia. Era il Leader dei Progressisti, Rivoluzionario Filosofico, che voleva liberare l'umanità dalla dipendenza dal Velo e dai fantasmi del passato, ritenendo che solo affrontando direttamente l'Oblio l'umanità avrebbe potuto veramente evolversi. 
+Era appena entrato in città, la città bassa, situata ai piedi della city, e in uno angolo buio era stato avvicinato dall'**Alto Giudice Theron**, costretto a vivere in incognito, ai margini della società, per sfuggire al controllo di Cassian e proseguire nella sua battaglia. Era il Leader dei Progressisti, Rivoluzionario Filosofico, che voleva liberare l'umanità dalla dipendenza dal Velo e dai fantasmi del passato, ritenendo che solo affrontando direttamente l'Oblio l'umanità avrebbe potuto veramente evolversi. 
 
 Convincere il Cercatore che il Velo non era altro che una prigione dorata, al servizio di Cassian e della sua fazione, che la vera forza era nell'accettare l'Oblio e ricostruire l'identità da zero era il suo obiettivo. Mancava un solo tassello alla sconfitta di Cassian, la Pergamena della saggezza, costruita con i contributi derivanti dalla crescita filosofica dei suoi compagni di pensiero e di azione, ma tenuta in ostaggio da Cassian. Merce preziosa per i suoi traffici. 
 
@@ -245,13 +245,13 @@ Il Cercatore stava lasciando Theron libero di andare – aveva già rischiato tr
 
 > "Sì…" - gli rispose il Cercatore, non senza sentire imbarazzo nell'aver scoperto qualcosa che doveva necessariamente rimanere segreto.
 
-> "Quello è il regno sotterraneo di Irenna, Burattinaia della Resistenza, Artista della Memoria Vivente, usa il teatro dei burattini per preservare le storie che i Sussurri dell'Oblio stanno cercando di cancellare. Sta creando uno spettacolo teatrale che "fissi" nella memoria collettiva importanti verità sulla crisi del Velo. Sai che se non si trova il Filo della Memoria, un materiale speciale ottenuto dalle missioni completate, lo spettacolo non potrà mai avere un finale? Lei detiene la Marionetta incantata, che conserva ricordi e offre intrattenimento e saggezza. Le marionette di Irenna a volte si muovono da sole, animate da frammenti di ricordi perduti che si aggrappano a qualsiasi forma che possa dare loro espressione. Lei non lo sa, ma sono i suoi spettacoli che impediscono letteralmente ad alcuni ricordi di dissolversi completamente. Irenna, tuttavia, benché abbia scelto la missione dei rivoluzionari, dei resistenti, dei progressisti, è un'artista, una storia ben raccontata la convince più di un'argomentazione logica. Vuole emozioni e verità umane, non prove legali. Racconti, non battaglie. Del resto, ciascuno di noi ha una ragione per contrastare Cassian, siamo diversi, perché abbiamo scelto di essere liberi. Irenna, ad esempio, non accetta la mia tesi che dimenticare il dolore sia una liberazione. Lei dice che dimenticare il dolore significherebbe anche dimenticare la compassione che nasce da esso …"
+> "Quello è il regno sotterraneo di **Irenna**, Burattinaia della Resistenza, Artista della Memoria Vivente, usa il teatro dei burattini per preservare le storie che i Sussurri dell'Oblio stanno cercando di cancellare. Sta creando uno spettacolo teatrale che "fissi" nella memoria collettiva importanti verità sulla crisi del Velo. Sai che se non si trova il Filo della Memoria, un materiale speciale ottenuto dalle missioni completate, lo spettacolo non potrà mai avere un finale? Lei detiene la Marionetta incantata, che conserva ricordi e offre intrattenimento e saggezza. Le marionette di Irenna a volte si muovono da sole, animate da frammenti di ricordi perduti che si aggrappano a qualsiasi forma che possa dare loro espressione. Lei non lo sa, ma sono i suoi spettacoli che impediscono letteralmente ad alcuni ricordi di dissolversi completamente. Irenna, tuttavia, benché abbia scelto la missione dei rivoluzionari, dei resistenti, dei progressisti, è un'artista, una storia ben raccontata la convince più di un'argomentazione logica. Vuole emozioni e verità umane, non prove legali. Racconti, non battaglie. Del resto, ciascuno di noi ha una ragione per contrastare Cassian, siamo diversi, perché abbiamo scelto di essere liberi. Irenna, ad esempio, non accetta la mia tesi che dimenticare il dolore sia una liberazione. Lei dice che dimenticare il dolore significherebbe anche dimenticare la compassione che nasce da esso …"
 
 Theron si allontanò rapidamente, il Cercatore sentì alle sue spalle i passi delle Guardie di Cassian. Con calma, per non destare sospetti, si avviò alle porte della città per raggiungere il Santuario dei Sussurri.
 
- Il Santuario dei Sussurri
+ **Il Santuario dei Sussurri**
 
-Era giunto al Santuario che già tramontava. Lyra era seduta su uno dei grandi scanni in pietra infissi nel prato antistante l'edificio. L'aveva raggiunta da poco Boros. Erano essenziali l'uno all'altra, per rinnovare attraverso ragionamenti e memorie sulle Antiche Ere il fuoco che pareva spegnersi sotto il carico del tempo. Ma che il fuoco fosse vivo lo dimostrava il confronto serrato, addirittura provocatorio dei loro dibattiti, al punto che per lungo tempo decidevano di non confrontarsi, a meno che non accadesse qualcosa di nuovo … ed era quello uno dei momenti per cui valeva la pena riprendere il confronto. 
+Era giunto al Santuario che già tramontava. **Lyra** era seduta su uno dei grandi scanni in pietra infissi nel prato antistante l'edificio. L'aveva raggiunta da poco **Boros**. Erano essenziali l'uno all'altra, per rinnovare attraverso ragionamenti e memorie sulle Antiche Ere il fuoco che pareva spegnersi sotto il carico del tempo. Ma che il fuoco fosse vivo lo dimostrava il confronto serrato, addirittura provocatorio dei loro dibattiti, al punto che per lungo tempo decidevano di non confrontarsi, a meno che non accadesse qualcosa di nuovo … ed era quello uno dei momenti per cui valeva la pena riprendere il confronto. 
 
 Il Cercatore, dunque, era atteso, a un gesto di Lyra si sedette accanto a loro. Sentì una sensazione di benessere, era il tramonto, era stanco, e aveva più dubbi che certezze su cosa ne avrebbe fatto del tempo che gli rimaneva. 
 
@@ -265,7 +265,7 @@ Boros era stato il primo a dare inizio al racconto. Era il Primo Monaco dell'Equ
 
 Il cercatore notò il suo pugno chiuso e non poté fare a meno di chiedergli cosa stringesse tra le dita. 
 
-> "È il dono di Elira, il Seme di Foresta, mi ha insegnato l'equilibrio della natura, senza il quale nulla è in equilibrio. Il Flusso del Pensiero, da cui nasce quello della Filosofia, per sua natura è precario, ma se il seme della Foresta resterà saldamente nella mia mano reggerà alle tensioni contrapposte del Passato e del Futuro. Custodisco anche l'Antico minerale di ferro, necessario a Garin al Villaggio per la forgiatura. Scommetto che ti ha mandato qui a cercarlo!"
+> "È il dono di **Elira**, il Seme di Foresta, mi ha insegnato l'equilibrio della natura, senza il quale nulla è in equilibrio. Il Flusso del Pensiero, da cui nasce quello della Filosofia, per sua natura è precario, ma se il seme della Foresta resterà saldamente nella mia mano reggerà alle tensioni contrapposte del Passato e del Futuro. Custodisco anche l'Antico minerale di ferro, necessario a Garin al Villaggio per la forgiatura. Scommetto che ti ha mandato qui a cercarlo!"
 
 Sinceramente il Cercatore non sapeva se fosse in grado di arrossire, ma sì, dentro di sé arrossì, perché era vero, Garin gli aveva chiesto il Minerale di ferro, ma ora che aveva conosciuto Boros non avrebbe mai avuto il coraggio di sottrarglielo furtivamente. Era un vecchio sapiente, un filosofo, un custode dell'equilibrio...
 
