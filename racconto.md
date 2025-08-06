@@ -341,3 +341,5 @@ Sull'orizzonte dell'Yperverso non tardò a levarsi un'alba tersa e luminosa. Le 
 ---
 
 *Una storia di scelte difficili, di memorie perdute e ritrovate, dove la narrazione stessa diventa il filo che tiene insieme l'universo. Il Cercatore ha scelto la libertà dell'oblio contro la prigione dorata della memoria, permettendo all'Yperverso di rinascere in una nuova forma di consapevolezza-*
+
+**Cari lettori, care lettrici, vi ricordate di quella donna, quella scrittrice che, in un luogo imprecisato dell'Yperverso, stava facendo il lavoro per il Cercatore, il lavoro di completare il racconto per lui? Eccomi, non avrò mai occasione di incontrare il Cercatore e forse neanche voi, ognuno seguirà la sua strada. Sarei curiosa di sapere quale finale scegliereste. La scrittrice, o la storyteller, se preferite, a questo punto, si ritira in buon ordine e lascia a voi l'occasione di scegliere il "verdetto". Ciascuno, ciascuna secondo la propria storia, le prorie idee, la propria visione del mondo. Buon lavoro! Buona scrittura! Buon finale a tutti e a tutte!**
