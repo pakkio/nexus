@@ -1,0 +1,69 @@
+Name: Forest
+ID: location_forest
+Area_Type: Wilderness_Zone
+Access_Level: Open
+
+# CORE DESCRIPTION
+Setting_Description: Una foresta antica e misteriosa dove alberi secolari si ergono come guardiani silenziosi. La luce del sole filtra attraverso le foglie creando giochi d'ombra che danzano sul terreno coperto di muschio. Il profumo di terra umida e resina si mescola con il mormorio del vento tra le fronde.
+
+Veil_Connection: La foresta è un luogo dove il Velo si manifesta attraverso i sussurri del vento e le ombre che sembrano muoversi di vita propria. Gli alberi più antichi custodiscono memorie di ere passate, e chi sa ascoltare può sentire gli echi delle storie dimenticate.
+
+# INHABITANTS
+Primary_NPC: None
+Secondary_NPCs: ["forest_spirits", "ancient_dryads", "lost_travelers", "woodland_creatures"]
+NPC_Density: Low_scattered_encounters
+
+# ENVIRONMENTAL FEATURES
+Interactive_Objects: [
+  "albero_dei_sussurri",
+  "circolo_di_pietre_antiche",
+  "ruscello_cristallino",
+  "capanna_abbandonata",
+  "sentieri_intrecciati",
+  "funghi_luminescenti"
+]
+
+Atmospheric_Elements: [
+  "filtered_sunlight",
+  "whispers_in_wind",
+  "rustling_leaves",
+  "mysterious_shadows",
+  "ancient_tree_presence"
+]
+
+# GAMEPLAY MECHANICS
+Location_Purpose: [
+  "Exploration",
+  "Resource_gathering",
+  "Hidden_path_discovery",
+  "Spirit_encounters",
+  "Memory_fragment_collection"
+]
+
+Special_Properties: {
+  "Memory_Echoes": "Ancient_trees_whisper_fragments_of_forgotten_stories",
+  "Path_Shifting": "Forest_paths_change_based_on_travelers_intent",
+  "Spirit_Sanctuary": "Safe_haven_for_forest_spirits_and_nature_entities"
+}
+
+# SECOND LIFE INTEGRATION
+SL_Environment: {
+  "Build_Style": "Mystical_forest_with_ancient_trees",
+  "Interactive_Elements": ["ancient_trees", "stone_circle", "stream", "hidden_clearings"],
+  "Atmospheric_Settings": ["dappled_lighting", "forest_sounds", "particle_effects_for_spirits"],
+  "Exploration_Features": ["multiple_pathways", "hidden_areas", "climbing_elements"]
+}
+
+# STORY CONNECTIONS
+Connected_Locations: [
+  "village_outskirts",
+  "ancient_ruins_entrance",
+  "mountain_foothills",
+  "tavern_back_path"
+]
+
+Quest_Relevance: {
+  "Primary_Quest": "Memory_Fragment_Collection",
+  "Secondary_Quests": ["Spirit_Communication", "Lost_Artifact_Discovery", "Nature_Preservation"],
+  "Exploration_Value": "Gateway_to_hidden_areas_and_forgotten_paths"
+}
