@@ -1,0 +1,68 @@
+Name: Tavern
+ID: location_tavern
+Area_Type: Social_Hub
+Access_Level: Public
+
+# CORE DESCRIPTION
+Setting_Description: Una taverna accogliente con tavoli di legno scuro, un focolare sempre acceso, e scaffali pieni di bottiglie dai riflessi dorati. L'atmosfera è calda e invitante, con il profumo di cibo speziato e il mormorio di conversazioni.
+
+Veil_Connection: La taverna si trova su un punto di flusso delle memorie del Velo. I viaggiatori qui spesso hanno sogni vividi che sono echi di ricordi tessuti nel Velo stesso.
+
+# INHABITANTS
+Primary_NPC: jorin_tavern
+Secondary_NPCs: ["traveling_merchants", "local_villagers", "dream_sharers"]
+NPC_Density: High_social_traffic
+
+# ENVIRONMENTAL FEATURES
+Interactive_Objects: [
+  "focolare_taverna",
+  "diario_sogni", 
+  "scaffale_bottiglie",
+  "registro_ospiti",
+  "collezione_monete_misteriose",
+  "tavoli_racconto"
+]
+
+Atmospheric_Elements: [
+  "warm_lighting",
+  "storytelling_ambiance", 
+  "dream_whispers_in_corners",
+  "memory_echoes_from_veil"
+]
+
+# GAMEPLAY MECHANICS
+Location_Purpose: [
+  "Information_gathering",
+  "Story_collection", 
+  "Dream_interpretation",
+  "Social_networking",
+  "Quest_item_trading"
+]
+
+Special_Properties: {
+  "Dream_Enhancement": "Visitors_experience_vivid_dreams_containing_veil_memories",
+  "Story_Preservation": "Tales_told_here_resist_oblivion_whispers_longer",
+  "Memory_Nexus": "Junction_point_for_scattered_veil_memories"
+}
+
+# SECOND LIFE INTEGRATION
+SL_Environment: {
+  "Build_Style": "Medieval_fantasy_warm_inviting",
+  "Interactive_Elements": ["fireplace", "bar_counter", "storytelling_circle", "dream_journal"],
+  "Atmospheric_Settings": ["warm_lighting", "ambient_tavern_sounds", "particle_effects_for_memory_wisps"],
+  "Social_Features": ["group_seating", "performance_area", "private_conversation_nooks"]
+}
+
+# STORY CONNECTIONS
+Connected_Locations: [
+  "village_garin_forge",
+  "ancient_ruins_syra", 
+  "paths_to_city",
+  "forest_edge"
+]
+
+Quest_Relevance: {
+  "Primary_Quest": "Sacred_Bowl_Trading_Hub",
+  "Secondary_Quests": ["Dream_Collection", "Story_Preservation", "Traveler_Information"],
+  "Faction_Neutrality": "Safe_meeting_ground_for_all_factions"
+}

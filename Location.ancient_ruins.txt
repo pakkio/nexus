@@ -1,0 +1,79 @@
+Name: Rovine Antiche
+ID: location_ancient_ruins
+Area_Type: Sacred_Ruins
+Safety_Level: Haunted_Dangerous
+Accessibility: Requires_Courage_and_Respect
+
+# CORE DESCRIPTION
+Setting_Description: Rovine di un tempio dei Tessitori con un'aura di sacrificio incompiuto. Syra si manifesta qui come presenza spettrale, né viva né morta. Colonne spezzate si stagliano contro il cielo, mentre un altare sacrificale incompleto domina il centro delle rovine.
+
+Veil_Connection: Luogo dove un sacrificio dei Tessitori non è riuscito a completarsi, creando una zona instabile tra vita, morte e Velo.
+
+# PHYSICAL DESCRIPTION
+Atmosphere: Haunting and melancholic with ethereal manifestations
+Visual_Elements: ["colonne_spezzate", "altare_sacrificio", "eco_residuo_syra", "cristalli_memoria", "telaio_incompleto"]
+Architecture: Crumbling_weaver_temple_with_incomplete_transformation_apparatus
+Lighting: Dim_ethereal_glow_from_incomplete_weaver_transformation
+Sounds: ["gemiti_spettrali", "eco_sacrificio_fallito", "sussurri_rimpianto", "vento_tra_rovine"]
+Scents: ["pietra_umida", "sacrificio_antico", "tempo_perduto", "rimpianto_eterno"]
+
+# LOCATION MECHANICS
+NPCs_Present: ["syra"]
+Available_Services: ["memoria_antica_exchange", "weaver_transformation_knowledge", "ritual_guidance"]
+Quest_Relevance: "Source_of_cristallo_memoria_antica_required_for_lyra_missions"
+Hidden_Elements: ["failed_transformation_apparatus", "incomplete_weaver_memories", "ritual_requirements"]
+
+# HAUNTED PROPERTIES
+Spectral_Presence: Syra_exists_here_in_limbo_between_life_death_and_veil_transformation
+Failed_Sacrifice: Site_of_incomplete_weaver_transformation_creating_ongoing_spiritual_disturbance
+Ritual_Echoes: Phantom_memories_of_the_transformation_ritual_replay_constantly
+
+# MYSTICAL PROPERTIES
+Veil_Stability: Highly_unstable_due_to_incomplete_weaver_sacrifice
+Transformation_Remnants: Incomplete_weaving_apparatus_still_contains_powerful_transformation_energy
+
+# RITUAL REQUIREMENTS
+Sacred_Bowl_Ceremony: Proper_offering_with_ciotola_offerta_sacra_can_complete_syras_transformation
+Respect_Demonstration: Player_must_show_genuine_understanding_of_sacrifice_cost_to_gain_crystal
+Purification_Process: Water_must_be_pure_offering_must_be_genuine_reverence_required
+
+# AI BEHAVIOR GUIDANCE
+Mood_Setting: Haunting_melancholic_testing_with_underlying_hope_for_redemption
+Interaction_Style: Syra_tests_player_worthiness_through_understanding_of_sacrifice_not_just_item_exchange
+Environmental_Responses: {
+  "player_enters": "Spectral_wind_stirs_syra_manifests_with_mixture_hope_and_wariness",
+  "shows_disrespect": "Temperature_drops_ruins_become_hostile_syra_becomes_angry",
+  "demonstrates_understanding": "Warm_light_emanates_from_ruins_syra_becomes_more_corporeal",
+  "ritual_completed": "Blinding_light_transformation_completion_peaceful_resolution"
+}
+
+# SECOND LIFE INTEGRATION
+SL_Environmental_Commands: {
+  "Particle_Effects": ["spectral_manifestation", "incomplete_transformation_energy", "ritual_completion_light"],
+  "Sound_Triggers": ["haunting_whispers", "spectral_moans", "ritual_echoes", "transformation_completion"],
+  "Interactive_Objects": ["broken_altar", "incomplete_telaio", "ritual_circle", "memory_crystal_formation"],
+  "Lighting_Changes": ["spectral_glow_varies_with_syra_mood", "ritual_completion_brilliant_flash"]
+}
+
+# TRANSFORMATION MECHANICS
+Syra_States: {
+  "initial_encounter": "Barely_visible_spectral_form_full_of_torment",
+  "respect_shown": "More_corporeal_begins_to_hope_for_completion",
+  "ritual_preparation": "Anticipation_mixed_with_ancient_fear",
+  "ritual_completion": "Peaceful_transformation_into_veil_final_rest"
+}
+
+Ritual_Process: {
+  "requirements": ["ciotola_offerta_sacra", "pure_water", "genuine_reverence"],
+  "failure_conditions": ["disrespect", "impure_motives", "incomplete_understanding"],
+  "success_result": "Syra_completes_transformation_grants_cristallo_memoria_antica"
+}
+
+# STORY INTEGRATION
+Role_in_Campaign: Essential_stop_for_lyra_questline_teaches_player_about_weaver_sacrifice_cost
+Key_Events_Possible: ["syra_initial_manifestation", "understanding_demonstration", "sacred_ritual_completion", "crystal_granting"]
+Progression_Triggers: {
+  "ritual_completed": "unlock_cristallo_memoria_antica_for_lyra",
+  "understanding_gained": "deeper_appreciation_of_weaver_sacrifice",
+  "syra_redeemed": "completion_of_failed_transformation_storyline"
+}

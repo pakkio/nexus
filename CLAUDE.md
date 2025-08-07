@@ -25,7 +25,25 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ### Development Tools
 - `python <module>.py` - Many modules include self-tests when run directly
 - `poetry install` - Install dependencies (Poetry is configured)
+- `poetry run python <command>` - Run commands within Poetry environment
 - `black .` - Code formatting (configured in pyproject.toml)
+
+### Game Commands
+- `/areas` - Show all available areas with access levels and location information
+- `/describe <area_name>` - Get detailed description of a specific location including NPCs, objects, and lore
+- `/go <area>` - Move to a different area
+- `/talk <npc_name>` - Start conversation with an NPC
+- `/who` - Show NPCs in current area
+- `/whereami` - Show current location and status
+- `/npcs` - List all known NPCs across areas
+- `/hint` - Consult with wise guide for guidance
+- `/inventory` or `/inv` - Show player inventory and credits
+- `/give <item> [to <npc>]` - Give item to NPC
+- `/stats` - Show conversation statistics
+- `/profile` - Show player psychological profile
+- `/history` - Show conversation history
+- `/help` - Show all available commands
+- `/exit` or `/quit` - Exit the game
 
 ## Architecture Overview
 
@@ -74,18 +92,36 @@ This is an **AI-powered text RPG engine** called "Eldoria" that creates dynamic 
 
 ### Data-Driven Content
 
-**NPCs**: Defined in `NPC.<area>.<name>.txt` files with structured data including motivation, goals, dialogue hooks, quest items, and Second Life integration fields:
+**NPCs**: Defined in `NPC.<area>.<name>.txt` files with standardized AI-friendly schema:
+
+*New Standardized Schema Structure:*
+- `# CORE PERSONALITY` - Basic character traits and behavior patterns
+- `# QUEST MECHANICS` - Trading rules, required items, success/failure conditions  
+- `# AI BEHAVIOR INSTRUCTIONS` - Conversation tracking and conditional responses
+- `# SECOND LIFE INTEGRATION` - SL-specific commands and environment data
+- `# TRADING MECHANICS` - Item exchange and credit systems
+
+*Legacy Schema Fields (still supported):*
 - `Emotes:` - Available gesture animations for SL
 - `Animations:` - Character animations and actions
 - `Lookup:` - In-world objects that can be referenced
 - `Llsettext:` - Floating text display capabilities
 
+**Locations**: Defined in `Location.<name>.txt` files with comprehensive area data:
+- `Setting_Description:` - Rich environmental descriptions
+- `Veil_Connection:` - Mystical/lore significance
+- `Interactive_Objects:` - Items players can interact with
+- `Special_Properties:` - Unique location mechanics
+- `Connected_Locations:` - Navigation pathways
+- `Quest_Relevance:` - Role in story progression
+
 **Storyboards**: Game narratives in `Storyboard.<name>.txt` files defining world lore, themes, and overarching story.
 
 **Dynamic Systems**:
 - Item giving/receiving through `[GIVEN_ITEMS: item1, X Credits]` tags in NPC responses
-- Plot flags and player state persistence
-- Multi-area exploration with area-based NPC organization
+- Plot flags and player state persistence  
+- Multi-area exploration with both NPC areas and detailed Location data
+- Enhanced `/describe` command for rich location exploration
 - Second Life command generation: `[lookup=object;llSetText=message;emote=gesture;anim=action]`
 
 ### Environment Configuration

@@ -1,12 +1,93 @@
 Name: Il Velo Infranto
-Description:
-Per secoli, il mondo di Eldoria è stato protetto dal Velo, una barriera mistica che separa il regno materiale dalla magia caotica oltre. Ora il Velo si sta sfilacciando, e strane anomalie si propagano attraverso la terra. Ogni PNG custodisce un indizio, una chiave, o una maledizione collegata a questo disfacimento.
+ID: storyboard_shattered_veil
+Campaign_Type: Narrative_Choice_Driven
+Difficulty_Level: Intermediate_to_Advanced
+Estimated_Duration: 8-12_sessions
 
-Per navigare questa crisi, il Cercatore avrà bisogno di profonda saggezza. Molti si rivolgono a Lyra, la Saggia del Santuario dei Sussurri, per la sua profonda comprensione del Velo e della sua storia. Altri potrebbero consultare Boros, l'anziano guerriero della Montagna, le cui memorie custodiscono verità dimenticate sui precedenti squarci del Velo. Elira, la guardiana della Foresta, possiede anche conoscenze antiche legate alla sofferenza della terra. La scelta della guida può plasmare il percorso del Cercatore.
+# CORE NARRATIVE
+Central_Premise: Per secoli, il mondo di Eldoria è stato protetto dal Velo, una barriera mistica che separa il regno materiale dalla magia caotica oltre. Ora il Velo si sta sfilacciando, e strane anomalie si propagano attraverso la terra.
 
-Themes:
-- Verità dimenticate
-- Magia che trapela
-- Sogni frantumati!
-- Il peso della conoscenza
-- Scegliere il proprio percorso verso la saggezza
+Crisis_Description: I Sussurri dell'Oblio stanno cancellando memorie, storie e persino l'esistenza stessa. Ogni PNG custodisce un indizio, una chiave, o una maledizione collegata a questo disfacimento.
+
+Player_Role: Il Cercatore - un narratore cosmico che ha perso il potere di creare storie e deve recuperarlo per salvare l'Yperverso dalla dissoluzione nel silenzio assoluto.
+
+# NARRATIVE STRUCTURE
+Act_1: ["Discovery_of_Crisis", "Meeting_Key_NPCs", "Understanding_Veil_Nature"]
+Act_2: ["Gathering_Artifacts", "Faction_Interactions", "Philosophical_Choices"]
+Act_3: ["Final_Choice_Preparation", "Convergence_at_Nexus", "Veil_Destiny_Decision"]
+
+# FACTION DYNAMICS
+Factions: {
+  "Preservationists": {
+    "leader": "Lyra",
+    "goal": "Repair_and_strengthen_Veil",
+    "philosophy": "Memory_and_sacrifice_preserve_civilization"
+  },
+  "Progressionists": {
+    "leader": "Theron", 
+    "goal": "Destroy_Veil_embrace_Oblivion",
+    "philosophy": "Forgetting_pain_enables_growth_and_freedom"
+  },
+  "Balancists": {
+    "leader": "Boros",
+    "goal": "Transform_Velo_into_something_new",
+    "philosophy": "Change_and_flow_are_necessary_for_life"
+  },
+  "Opportunists": {
+    "leader": "Cassian",
+    "goal": "Survive_and_profit_regardless_outcome",
+    "philosophy": "Information_and_adaptation_ensure_survival"
+  }
+}
+
+# CORE THEMES
+Primary_Themes: [
+  "Memory_vs_Forgetting",
+  "Sacrifice_vs_Self_Preservation", 
+  "Order_vs_Chaos",
+  "Individual_Choice_vs_Collective_Good",
+  "The_Power_and_Burden_of_Stories"
+]
+
+Philosophical_Questions: [
+  "What_is_worth_preserving_at_any_cost?",
+  "Can_forgetting_trauma_be_a_form_of_healing?",
+  "Who_has_the_right_to_decide_what_is_remembered?",
+  "Is_it_better_to_suffer_with_memory_or_be_free_through_oblivion?"
+]
+
+# PROGRESSION MECHANICS
+Player_Growth: {
+  "Wisdom_Points": "Earned_through_philosophical_understanding",
+  "Artifact_Collection": "Physical_items_enable_story_progression",
+  "Faction_Relationships": "NPC_trust_levels_affect_available_choices",
+  "Memory_Fragments": "Recovered_stories_strengthen_narrative_power"
+}
+
+# CLIMAX STRUCTURE
+Final_Choice_Options: [
+  "Preserve_Veil": "Maintain_current_system_honor_Weaver_sacrifice",
+  "Transform_Veil": "Reshape_barrier_allow_controlled_change", 
+  "Dissolve_Veil": "Embrace_Oblivion_start_fresh_without_painful_memories"
+]
+
+Choice_Consequences: {
+  "Preserve": "Stability_but_stagnation_existing_pain_preserved",
+  "Transform": "Balanced_outcome_some_loss_some_gain_uncertainty",
+  "Dissolve": "Freedom_but_loss_of_all_history_complete_restart"
+}
+
+# AI GUIDANCE
+DM_Notes: {
+  "Tone": "Philosophical_introspective_high_stakes_emotional",
+  "Pacing": "Allow_time_for_reflection_between_major_revelations",
+  "NPC_Behavior": "Each_faction_leader_should_present_compelling_arguments",
+  "Player_Agency": "No_choice_should_feel_obviously_correct_all_have_merit_and_cost"
+}
+
+# INTEGRATION NOTES
+Second_Life_Adaptation: {
+  "Environmental_Storytelling": "Use_visual_anomalies_to_show_Veil_deterioration",
+  "NPC_Interactions": "Leverage_SL_social_dynamics_for_faction_roleplay",
+  "Immersive_Elements": "Weather_lighting_changes_reflect_Veil_stability"
+}

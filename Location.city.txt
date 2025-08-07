@@ -1,0 +1,119 @@
+Name: City
+ID: location_city
+Area_Type: Urban_Hub
+Access_Level: Controlled_Access
+
+# CORE DESCRIPTION
+Setting_Description: Una metropoli imponente con grattacieli che si stagliano contro il Velo. La City domina lo skyline mentre la città bassa si estende ai suoi piedi. Grandi Occhi di sorveglianza sorvegliano ogni angolo, ma esistono sempre zone d'ombra dove i ribelli si nascondono.
+
+Veil_Connection: La città rappresenta il tentativo dell'umanità di controllare e sfruttare il Velo per il potere. I documenti burocratici resistono misteriosamente ai Sussurri dell'Oblio, creando un archivio involontario di memoria.
+
+# INHABITANTS
+Primary_NPCs: ["cassian_bureaucrat", "theron_revolutionary", "irenna_underground"]
+Secondary_NPCs: ["city_guards", "bureaucrats", "citizens", "rebels", "merchants"]
+NPC_Density: Very_High_Urban_Population
+
+# ENVIRONMENTAL FEATURES
+Interactive_Objects: [
+  "grandi_occhi_surveillance",
+  "municipi_buildings",
+  "underground_tunnels",
+  "rebel_hideouts",
+  "bureaucratic_archives",
+  "puppet_theater_hidden"
+]
+
+Atmospheric_Elements: [
+  "surveillance_oppression",
+  "urban_noise_bustle",
+  "hidden_rebellion_whispers",
+  "bureaucratic_maze_confusion",
+  "technology_vs_magic_tension"
+]
+
+# GAMEPLAY MECHANICS
+Location_Purpose: [
+  "Faction_conflict_hub",
+  "Political_intrigue",
+  "Information_trading",
+  "Revolutionary_planning",
+  "Bureaucratic_navigation"
+]
+
+Special_Properties: {
+  "Surveillance_State": "Great_Eyes_monitor_most_activities_limiting_freedom",
+  "Document_Resistance": "Official_papers_resist_Oblivion_Whispers_better",
+  "Underground_Network": "Hidden_passages_connect_resistance_sites",
+  "Information_Economy": "Knowledge_and_secrets_are_primary_currency"
+}
+
+# DISTRICT BREAKDOWN
+City_Districts: {
+  "Upper_City": {
+    "description": "Corporate_towers_and_government_buildings",
+    "access": "Restricted_high_security",
+    "inhabitants": ["cassian", "high_officials", "corporate_elite"],
+    "features": ["surveillance_control_room", "data_archives", "luxury_offices"]
+  },
+  "Middle_City": {
+    "description": "Commercial_and_residential_areas",
+    "access": "Monitored_but_public",
+    "inhabitants": ["merchants", "citizens", "minor_officials"],
+    "features": ["markets", "apartments", "public_squares", "surveillance_points"]
+  },
+  "Lower_City": {
+    "description": "Industrial_and_underground_areas",
+    "access": "Less_monitored_more_freedom",
+    "inhabitants": ["workers", "rebels", "artists", "outcasts"],
+    "features": ["factories", "tunnels", "hidden_meeting_spots", "irenna_theater"]
+  }
+}
+
+# FACTION TERRITORIES
+Faction_Control: {
+  "Cassian_Bureaucrats": {
+    "territory": "Upper_City_administrative_buildings",
+    "influence": "Legal_system_surveillance_network",
+    "resources": ["information", "credits", "official_documents"]
+  },
+  "Theron_Revolutionaries": {
+    "territory": "Underground_tunnels_Lower_City_shadows",
+    "influence": "Rebel_network_philosophical_movement",
+    "resources": ["hidden_knowledge", "revolutionary_fervor", "sabotage_capabilities"]
+  },
+  "Irenna_Artists": {
+    "territory": "Underground_theater_cultural_spaces",
+    "influence": "Memory_preservation_cultural_resistance",
+    "resources": ["stories", "artistic_expression", "hidden_meeting_spaces"]
+  }
+}
+
+# SECOND LIFE INTEGRATION
+SL_Environment: {
+  "Build_Style": "Cyberpunk_dystopian_with_fantasy_elements",
+  "Interactive_Elements": ["surveillance_cameras", "government_buildings", "underground_entrances", "puppet_theater"],
+  "Atmospheric_Settings": ["urban_ambient_sounds", "surveillance_alerts", "rebel_graffiti", "holographic_displays"],
+  "Social_Features": ["faction_roleplay_areas", "secret_meeting_rooms", "public_forums", "information_trading_posts"]
+}
+
+# STORY CONNECTIONS
+Connected_Locations: [
+  "nexus_of_paths",
+  "sanctum_of_whispers",
+  "village_and_surrounding_areas",
+  "underground_resistance_network"
+]
+
+Quest_Relevance: {
+  "Primary_Quests": ["Faction_Choice_Hub", "Information_Gathering", "Revolutionary_Planning"],
+  "Secondary_Quests": ["Document_Acquisition", "Surveillance_Evasion", "Underground_Network_Navigation"],
+  "Endgame_Significance": "Final_faction_decisions_made_here_before_nexus_convergence"
+}
+
+# CONFLICT DYNAMICS
+Political_Tensions: {
+  "Surveillance_vs_Privacy": "Great_Eyes_vs_Underground_Resistance",
+  "Order_vs_Change": "Bureaucratic_stability_vs_Revolutionary_transformation", 
+  "Memory_vs_Progress": "Preserving_past_vs_Building_future",
+  "Individual_vs_System": "Personal_freedom_vs_Collective_security"
+}

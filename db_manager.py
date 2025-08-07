@@ -68,7 +68,7 @@ class DbManager:
                 base_dir_path = os.path.dirname(subdir_tmpl.format(player_id="dummy").rstrip(os.sep))
                 if base_dir_path:
                     os.makedirs(base_dir_path, exist_ok=True)
-            for static_dir in ["NPCs", "Storyboards"]:
+            for static_dir in ["NPCs", "Storyboards", "Locations"]:
                 os.makedirs(os.path.join(self.mockup_dir, static_dir), exist_ok=True)
         elif self.db_config and self.db_config.get('host'):
             pass # print(f"DbManager: Configured for Real Database.")
@@ -211,6 +211,86 @@ class DbManager:
                 if cursor: cursor.close()
                 if conn and conn.is_connected(): conn.close()
 
+    # --- Location Methods ---
+    def get_location(self, location_id: str) -> Optional[Dict[str, Any]]:
+        if self.use_mockup:
+            location_dir_path = os.path.join(self.mockup_dir, "Locations")
+            location_file = os.path.join(location_dir_path, f"{location_id}.json")
+            if os.path.exists(location_file):
+                try:
+                    with open(location_file, 'r', encoding='utf-8') as f:
+                        return json.load(f)
+                except Exception:
+                    pass
+            return None
+        else: # DB
+            conn = None; cursor = None
+            try:
+                conn = self.connect(); cursor = conn.cursor(dictionary=True)
+                query = "SELECT * FROM Locations WHERE id = %s LIMIT 1"
+                cursor.execute(query, (location_id,))
+                return cursor.fetchone()
+            except Exception as e:
+                return None
+            finally:
+                if cursor: cursor.close()
+                if conn and conn.is_connected(): conn.close()
+
+    def get_location_by_name(self, name: str) -> Optional[Dict[str, Any]]:
+        if self.use_mockup:
+            location_dir_path = os.path.join(self.mockup_dir, "Locations")
+            if os.path.exists(location_dir_path):
+                for filename in os.listdir(location_dir_path):
+                    if filename.endswith(".json"):
+                        try:
+                            with open(os.path.join(location_dir_path, filename), 'r', encoding='utf-8') as f:
+                                location_data = json.load(f)
+                            if location_data.get('name','').strip().lower() == name.strip().lower():
+                                return location_data
+                        except Exception: pass
+            return None
+        else: # DB
+            conn = None; cursor = None
+            try:
+                conn = self.connect(); cursor = conn.cursor(dictionary=True)
+                query = "SELECT * FROM Locations WHERE LOWER(name) = LOWER(%s) LIMIT 1"
+                cursor.execute(query, (name.strip(),))
+                return cursor.fetchone()
+            except Exception as e:
+                return None
+            finally:
+                if cursor: cursor.close()
+                if conn and conn.is_connected(): conn.close()
+
+    def list_locations(self) -> List[Dict[str, str]]:
+        locations_list = []
+        if self.use_mockup:
+            location_dir = os.path.join(self.mockup_dir, "Locations")
+            if os.path.exists(location_dir):
+                for filename in os.listdir(location_dir):
+                    if filename.endswith(".json"):
+                        try:
+                            with open(os.path.join(location_dir, filename), 'r', encoding='utf-8') as f:
+                                data = json.load(f)
+                                locations_list.append({
+                                    "id": data.get("id", filename.replace(".json","")),
+                                    "name": data.get("name","Unknown Location"),
+                                    "area_type": data.get("area_type","Unknown Type"),
+                                    "access_level": data.get("access_level","Unknown Access")
+                                })
+                        except Exception: pass
+            return sorted(locations_list, key=lambda x: x.get('name','').lower())
+        else: # DB
+            conn = None; cursor = None
+            try:
+                conn = self.connect(); cursor = conn.cursor(dictionary=True)
+                cursor.execute("SELECT id, name, area_type, access_level FROM Locations ORDER BY name")
+                return cursor.fetchall()
+            except Exception as e:
+                return []
+            finally:
+                if cursor: cursor.close()
+                if conn and conn.is_connected(): conn.close()
 
     # --- Conversation History ---
     def save_conversation(self, player_id: str, npc_code: str, conversation_history: List[Dict[str, str]]) -> None:

@@ -12,6 +12,6 @@ def handle_help(state: Dict[str, Any]) -> HandlerResult:
         print(get_help_text())
     except ImportError:
         print(f"{TF.RED}Error: Help utility (main_utils.get_help_text) not found.{TF.RESET}")
-        print("Basic commands: /exit, /go, /areas, /talk, /who, /whereami, /npcs, /hint, /endhint, /inventory, /give, /stats, /clear, /history, /profile, /profile_for_npc")
+        print("Basic commands: /exit, /go, /areas, /describe, /talk, /who, /whereami, /npcs, /hint, /endhint, /inventory, /give, /stats, /clear, /history, /profile, /profile_for_npc")
     _add_profile_action(state, "Used /help command")
     return {**state, 'status': 'ok', 'continue_loop': True}

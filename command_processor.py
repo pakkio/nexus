@@ -19,6 +19,7 @@ from command_handlers.handle_who import handle_who
 from command_handlers.handle_whereami import handle_whereami
 from command_handlers.handle_npcs import handle_npcs
 from command_handlers.handle_areas import handle_areas
+from command_handlers.handle_describe import handle_describe
 from command_handlers.handle_listareas import handle_listareas
 from command_handlers.handle_stats import handle_stats
 from command_handlers.handle_session_stats import handle_session_stats
@@ -169,6 +170,7 @@ command_handlers_map: Dict[str, Callable] = {
   'whereami': handle_whereami,
   'npcs': handle_npcs,
   'areas': handle_areas,
+  'describe': handle_describe,
   'listareas': handle_listareas,
   'stats': handle_stats,
   'session_stats': handle_session_stats,
@@ -235,7 +237,7 @@ def process_input_revised(user_input: str, state: Dict[str, Any]) -> Dict[str, A
       if command in command_handlers_map:
         handler_func = command_handlers_map[command]
         # Pass args_str only to handlers that expect it
-        if command in ['go', 'talk', 'give', 'receive']:
+        if command in ['go', 'talk', 'give', 'receive', 'describe']:
           state = handler_func(args_str, state)
         else:
           state = handler_func(state)
