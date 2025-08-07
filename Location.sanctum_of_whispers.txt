@@ -1,0 +1,86 @@
+Name: Sanctum of Whispers
+ID: location_sanctum_whispers
+Area_Type: Sacred_Site
+Access_Level: Open_but_Reverent
+
+# CORE DESCRIPTION
+Setting_Description: Un antico santuario costruito con pietre bianche che sembrano brillare di luce propria. Grandi archi si aprono verso il cielo, e il vento che passa attraverso le colonne produce suoni melodici. Al centro si trova un altare tessitore coperto di simboli antichi.
+
+Veil_Connection: Il Sanctum è uno dei punti dove il Velo è più sottile. Qui Lyra può sentire direttamente i Sussurri dell'Oblio e comunicare con i Tessitori morti attraverso il tessuto stesso del Velo.
+
+# INHABITANTS
+Primary_NPC: lyra_sanctum
+Secondary_NPCs: ["weaver_spirits", "memory_echoes", "pilgrims"]
+NPC_Density: Low_sacred_presence
+
+# ENVIRONMENTAL FEATURES
+Interactive_Objects: [
+  "altare_tessitore",
+  "telaio_eco",
+  "cristallo_memoria_display",
+  "arazzo_antico",
+  "fili_velo_visibili",
+  "cerchio_meditazione"
+]
+
+Atmospheric_Elements: [
+  "ethereal_lighting",
+  "whispers_of_weavers",
+  "memory_fragments_floating",
+  "sacred_silence",
+  "veil_shimmer_effects"
+]
+
+# GAMEPLAY MECHANICS
+Location_Purpose: [
+  "Primary_quest_hub",
+  "Weaver_communication",
+  "Memory_restoration",
+  "Veil_diagnosis",
+  "Spiritual_guidance"
+]
+
+Special_Properties: {
+  "Veil_Sensitivity": "Direct_connection_to_veil_allows_sensing_deterioration",
+  "Memory_Amplification": "Ancient_memories_are_stronger_and_clearer_here",
+  "Weaver_Communication": "Portal_for_speaking_with_sacrificed_weavers",
+  "Healing_Presence": "Restores_mental_energy_and_clarity_to_visitors"
+}
+
+# SACRED MECHANICS
+Sanctum_Rules: {
+  "Respect_Required": "Disrespectful_visitors_may_be_rejected_by_veil_itself",
+  "Memory_Resonance": "Strong_memories_and_emotions_may_manifest_visually",
+  "Weaver_Presence": "Spirits_of_dead_weavers_occasionally_appear_to_guide",
+  "Veil_Fluctuations": "Location_stability_reflects_overall_veil_health"
+}
+
+# SECOND LIFE INTEGRATION
+SL_Environment: {
+  "Build_Style": "Ancient_temple_ethereal_mystical",
+  "Interactive_Elements": ["weaver_altar", "memory_crystals", "sacred_tapestries", "meditation_circles"],
+  "Atmospheric_Settings": ["mystical_lighting", "wind_chime_sounds", "particle_effects_for_memories", "floating_text_for_whispers"],
+  "Sacred_Features": ["teleportation_restrictions", "quiet_zones", "reverent_behavior_prompts"]
+}
+
+# STORY CONNECTIONS
+Connected_Locations: [
+  "ancient_ruins_syra",
+  "nexus_of_paths_meridia",
+  "mountain_boros",
+  "pathways_to_all_areas"
+]
+
+Quest_Relevance: {
+  "Primary_Quest": "Veil_Restoration_Central_Hub",
+  "Secondary_Quests": ["Memory_Crystal_Integration", "Weaver_Communication", "Veil_Diagnosis"],
+  "Faction_Role": "Preservationist_Stronghold_Neutral_Sacred_Ground"
+}
+
+# LORE SIGNIFICANCE
+Historical_Importance: {
+  "Original_Purpose": "Built_by_first_weavers_as_veil_monitoring_station",
+  "Weaver_Sacrifice_Site": "Where_many_weavers_transformed_into_veil_threads",
+  "Memory_Archive": "Contains_echoes_of_all_major_historical_events",
+  "Spiritual_Center": "Pilgrimage_destination_for_those_seeking_wisdom"
+}
