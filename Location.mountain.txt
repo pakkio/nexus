@@ -1,0 +1,71 @@
+Name: Mountain
+ID: location_mountain
+Area_Type: Highland_Wilderness
+Access_Level: Open_challenging
+
+# CORE DESCRIPTION
+Setting_Description: Imponenti vette rocciose che si ergono verso il cielo, con sentieri serpentini che si inerpicano tra dirupi e crepacci. L'aria è sottile e pura, e il vento trasporta echi di antiche leggende. Caverne nascoste e altipiani nascosti custodiscono segreti di epoche remote, mentre il panorama offre una vista mozzafiato su tutto il mondo sottostante.
+
+Veil_Connection: Le montagne sono pilastri che sostengono il Velo stesso, luoghi dove le memorie più profonde e durature trovano rifugio. Le cime più alte toccano quasi il tessuto della realtà, e chi raggiunge queste vette può percepire la vastità delle storie che il Velo contiene.
+
+# INHABITANTS
+Primary_NPC: mountain_sage
+Secondary_NPCs: ["stone_guardians", "mountain_spirits", "hermit_monks", "crystal_miners", "wind_speakers"]
+NPC_Density: Low_isolated_encounters
+
+# ENVIRONMENTAL FEATURES
+Interactive_Objects: [
+  "osservatorio_delle_stelle",
+  "ponte_di_pietra_antico",
+  "caverna_dei_cristalli",
+  "altare_del_vento",
+  "monastero_abbandonato",
+  "sentiero_dei_pellegrini"
+]
+
+Atmospheric_Elements: [
+  "thin_mountain_air",
+  "echoing_winds",
+  "crystalline_silence",
+  "starlit_nights",
+  "ancient_stone_presence"
+]
+
+# GAMEPLAY MECHANICS
+Location_Purpose: [
+  "Meditation_and_wisdom_seeking",
+  "High_altitude_exploration",
+  "Crystal_and_mineral_collection",
+  "Spiritual_enlightenment",
+  "Panoramic_world_observation"
+]
+
+Special_Properties: {
+  "Veil_Proximity": "Closer_to_the_fabric_of_reality_enhanced_perception",
+  "Ancient_Wisdom": "Mountain_spirits_share_knowledge_of_deep_memories",
+  "Crystal_Resonance": "Mountain_crystals_amplify_veil_connections",
+  "Weather_Mastery": "Mountain_winds_carry_messages_across_distances"
+}
+
+# SECOND LIFE INTEGRATION
+SL_Environment: {
+  "Build_Style": "Majestic_mountain_peaks_with_ancient_structures",
+  "Interactive_Elements": ["climbing_paths", "observation_platforms", "crystal_caves", "wind_altars"],
+  "Atmospheric_Settings": ["mountain_weather_effects", "elevation_lighting", "crystal_particle_effects"],
+  "Challenge_Features": ["difficult_terrain", "weather_challenges", "endurance_requirements"]
+}
+
+# STORY CONNECTIONS
+Connected_Locations: [
+  "forest_mountain_path",
+  "ancient_ruins_highland_entrance",
+  "village_mountain_trade_route",
+  "sky_bridges_to_nexus"
+]
+
+Quest_Relevance: {
+  "Primary_Quest": "Wisdom_of_the_Peaks",
+  "Secondary_Quests": ["Crystal_Harmonics", "Wind_Message_Delivery", "Ancient_Observatory_Activation"],
+  "Spiritual_Growth": "Location_for_character_development_and_enlightenment",
+  "Veil_Understanding": "Deep_insights_into_the_nature_of_memory_and_reality"
+}
