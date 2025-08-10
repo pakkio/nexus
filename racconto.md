@@ -160,9 +160,11 @@ Garin giudicava le persone in base alla passione che mettono nei loro scopi.
 
 Restava da capire dove fosse realmente la Ciotola. Sentiva incrinarsi in lui lo stereotipo del villaggio come luogo di comunità. Ora, infatti, si sentiva solo uno strumento usato da Jorin e da Garin, e non di meno da Syra, benché gli fossero apparsi così naturalmente amichevoli. La missione si complicava. Syra doveva attendere. 
 
+**La foresta**
+
 Mentre si allontanava dalla bottega del fabbro, discettando tra sé e sé sulla complessità della natura umana, l'emergere dal folto della vegetazione di una figura per metà umana e per metà albero lo bloccò. Ecco Dafne, pensò, che emerse dall'eco di una narrazione estinta, almeno per me. La foresta cominciò ad animarsi, tante Dafne salvate dalla violenza del dio l'abitavano, o forse era un'allucinazione? Cosa aveva assunto nella taverna? 
 
-Mara gli si era avvicinata frusciando, con il suo naturale affabile gentile atteggiamento di protezione. Era un'erborista, l'Erborista della Memoria, la Guaritrice di Radici Perdute. Lo vide così scosso dalla vista di quella sintesi di femmina e albero che non poté non donargli la Pozione di Guarigione. 
+Mara gli si era avvicinata frusciando, con il suo naturale affabile gentile atteggiamento di protezione. Elira, la signora della Foresta, non avrebbe potuto fare a meno di lei. Era un'erborista, l'Erborista della Memoria, la Guaritrice di Radici Perdute. Lo vide così scosso dalla vista di quella sintesi di femmina e albero che non poté non donargli la Pozione di Guarigione. 
 
 > "A un patto!" -gli disse – "che mi aiuti a far giungerne una boccettina a Elira, le serve per curare le ferite e ridare salute a chi è vittima del potere dei Dominatori, dei Burocrati che vivono in città. È mio compito preservare la conoscenza erboristica che sta andando perduta, mentre le piante "dimenticate" dai Sussurri dell'Oblio scompaiono dalla realtà. Il mio destino è creare elisir che possano proteggere temporaneamente dalla perdita di memoria causata dai Sussurri dell'Oblio."
 
