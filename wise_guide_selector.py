@@ -71,8 +71,10 @@ def get_wise_guide_npc_name(story_description: str, db: Any, llm_model_name: Opt
 And these available NPCs:
 {', '.join(npc_names)}
 
-Which single NPC from the list is best suited to the role of the player's 'wise guide' for providing hints and advice?
-Consider NPCs whose roles or descriptions suggest wisdom, knowledge, or a central guiding purpose.
+The story explicitly states that Lyra is the leader of the "Preservationists" faction. Look for an NPC named "Lyra" who has titles like "Guida Saggia" (Wise Guide), "Custode" (Keeper/Guardian), or "Tessitrice" (Weaver).
+
+Which single NPC from the list is the player's 'wise guide'? 
+PRIORITY: If "Lyra" is in the list and has wisdom-related titles, she should be the wise guide as the Preservationist faction leader.
 Reply ONLY with the exact NPC name from the list. If no NPC seems clearly suitable, reply with "NONE".
 """
         }
