@@ -402,9 +402,9 @@ def get_npc_opening_line(npc_data: Dict[str, Any], TF_class: type, game_session_
         chosen_hook = random.choice(candidate_hooks)
         return f"*{name} dice,* \"{chosen_hook.strip()}\"" if not chosen_hook.startswith("*") else chosen_hook.strip()
     elif role:
-        return random.choice([f"*{name} the {role} regards you.* What do you want?", f"*{name}, the {role}, looks up as you approach.* Yes?"])
+        return random.choice([f"*{name}, {role}, ti osserva.* Cosa desideri?", f"*{name}, {role}, alza lo sguardo al tuo avvicinarsi.* Sì?"])
     else:
-        return f"*{name} watches you expectantly.*"
+        return f"*{name} ti guarda in attesa.*"
 
 
 def print_conversation_start_banner(npc_data: Dict[str, Any], area_name: str, TF_class: type, game_session_state: Dict[str, Any]): # MODIFIED: Added game_session_state
