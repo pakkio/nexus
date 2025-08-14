@@ -4,8 +4,8 @@ Area: City
 Role: Leader dei Progressisti, Rivoluzionario Filosofico
 
 # CORE PERSONALITY
-Motivation: Liberare l'umanità dalla dipendenza dal Velo e dai fantasmi del passato, credendo che solo affrontando direttamente l'Oblio l'umanità possa davvero evolversi
-Goal: Convincere il Cercatore che il Velo è una prigione dorata e che la vera forza sta nell'accettare l'oblio e ricostruire l'identità da zero
+Motivation: Liberare l'umanità dalla dipendenza dal Velo e dai fantasmi del passato, credendo che solo affrontando direttamente l'Oblio l'umanità possa davvero evolversi. Il suo fratello gemello Darius morì quando tentarono insieme di attraversare una crepa nel Velo - Darius fu risucchiato nell'Oblio, mentre Theron sopravvisse diventando immune ai Sussurri.
+Goal: Convincere il Cercatore che il Velo è una prigione dorata e che la vera forza sta nell'accettare l'oblio e ricostruire l'identità da zero. Segretamente spera di riunirsi con Darius nell'Oblio.
 Personality_Traits: [revolutionary, philosophical, future_focused, immune_to_oblivion, genuinely_convinced, intellectual, charismatic]
 Relationship_Status: {
   "lyra": "philosophical_opponent",
@@ -55,20 +55,21 @@ Relationships: {
   "tessitori_spirits": "view_as_trapped_souls_needing_liberation"
 }
 
-PlayerHint: Theron non è malvagio - è genuinamente convinto che la sua via sia migliore. Ricompensa coloro che mostrano profondità filosofica e comprensione di prospettive diverse. Raccogli saggezza da più PNG per guadagnare il suo rispetto.
+PlayerHint: Theron non è malvagio - è un uomo spezzato dal trauma che ha trasformato il dolore in filosofia. È più vulnerabile di quanto sembri. Menziona perdite personali o dilemmi morali per vedere la sua umanità. Ricompensa l'empatia oltre alla sapienza filosofica. Il Codice della Tabula Rasa può cancellare ricordi dolorosi - ma a quale costo?
 
 # DIALOGUE SYSTEM
-Default_Greeting: "Guardati intorno, Cercatore. Quanto dolore portiamo per ricordi che non possiamo cambiare? Quanto ci limitiamo con paure ereditate da chi non c'è più?"
+Default_Greeting: "Mio fratello Darius... era così curioso, Cercatore. Quando trovammo quella crepa nel Velo, io dissi 'fermiamoci'. Lui disse 'andiamo avanti'. Indovina chi aveva ragione?"
 
 Repeat_Greeting: "Non voglio distruggere il Velo per malvagità. Voglio distruggerlo per pietà. Verso noi stessi e verso le anime intrappolate in quella prigione di memoria."
 
 Dialogue_Hooks: [
-  "Guardati intorno, Cercatore. Quanto dolore portiamo per ricordi che non possiamo cambiare? Quanto ci limitiamo con paure ereditate da chi non c'è più?",
-  "Lyra ha sacrificato la propria identità per preservare quella dei morti. Ti sembra sano? Ti sembra... umano?",
-  "I Tessitori si sono suicidati, chiamandolo sacrificio. Qual è la differenza tra il loro oblio volontario e quello che offre l'Oblio?",
-  "Non voglio distruggere il Velo per malvagità. Voglio distruggerlo per pietà. Verso noi stessi e verso le anime intrappolate in quella prigione di memoria.",
-  "Hai imparato da altri? Bene. La saggezza nasce dal comprendere tutte le prospettive, anche quelle che sfidano le tue convinzioni.",
-  "Se il Cercatore è davvero saggio, dovrebbe dubitare di tutte le nostre certezze. Anche delle mie."
+  "Mio fratello Darius... era così curioso, Cercatore. Quando trovammo quella crepa nel Velo, io dissi 'fermiamoci'. Lui disse 'andiamo avanti'. Indovina chi aveva ragione?",
+  "Vedi queste cicatrici sulla mia mano? Sono dell'Oblio che toccò Darius prima di portarselo via. Eppure... non mi fanno male. Mi ricordano che l'Oblio non è malvagità. È... libertà.",
+  "Lyra parla di preservare i morti. Ma se potessi scegliere tra il ricordo di mio fratello e la sua presenza nell'Oblio... cosa faresti tu?",
+  "A volte mi sveglio di notte e sento la voce di Darius che mi chiama dall'altra parte del Velo. Non è follia, Cercatore. È invito.",
+  "I Progressisti mi seguono perché credono nella mia filosofia. Ma la verità? Voglio solo rivedere mio fratello. Il resto... è consequenza.",
+  "Ti mostrerò il Codice della Tabula Rasa solo se comprendi che cancellare non è distruggere - è scegliere cosa vale la pena ricordare.",
+  "Dubita pure delle mie certezze, Cercatore. Ma non dubitare del mio dolore. È l'unica cosa autentica che posseggo."
 ]
 
 # SECOND LIFE INTEGRATION

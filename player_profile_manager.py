@@ -31,7 +31,10 @@ DEFAULT_PROFILE = {
     "interaction_style_summary": "Observant and typically polite.",
     "key_experiences_tags": [],
     "trust_levels": {"general": 5},
-    "inferred_motivations": ["understand_the_veil_crisis", "survive"]
+    "inferred_motivations": ["understand_the_veil_crisis", "survive"],
+    "philosophical_leaning": "neutral",
+    "recent_changes_log": [],
+    "llm_analysis_notes": ""
 }
 
 def get_default_player_profile() -> Dict[str, Any]:
@@ -114,7 +117,8 @@ Based *only* on the RECENT interaction log and actions, analyze the player's beh
 Suggest updates to their 'core_traits' (values between 1-10, suggest incremental changes like "+1", "-0.5"),
 new 'decision_patterns' (short descriptive strings, e.g., "expressed_anger_to_npc_X", "showed_skepticism_about_Y"),
 and new 'key_experiences_tags' (short descriptive tags, e.g., "confronted_theron_verbally", "aided_syra_with_offering").
-Also, consider if 'interaction_style_summary' or 'veil_perception' should be subtly updated based on recent events.
+Also, consider if 'interaction_style_summary', 'veil_perception', or 'philosophical_leaning' should be subtly updated based on recent events.
+Analyze if player shows alignment towards 'progressist' (pro-Oblivion), 'conservator' (pro-Veil), or stays 'neutral'.
 Do NOT invent NPCs or extensive new motivations unless directly implied by actions.
 Focus on direct implications of the provided log and actions.
 
@@ -126,6 +130,7 @@ Example of desired JSON output format:
   "new_key_experiences_tags": ["questioned_npc_authority_X", "expressed_anger_to_Lyra_about_Theron"],
   "updated_interaction_style_summary": "More inquisitive and slightly more assertive.",
   "updated_veil_perception": "slightly_more_concerned",
+  "updated_philosophical_leaning": "progressist",
   "analysis_notes": "Player asked multiple probing questions to Lyra regarding Theron, indicating increased skepticism and emerging anger. Player stated 'sono arrabbiato con l'alto giudice'."
 }}
 If no significant changes are warranted for a category, omit it or provide an empty list/dict for it.
@@ -267,6 +272,24 @@ def apply_llm_suggestions_to_profile(
     if updated_veil and isinstance(updated_veil, str) and updated_profile.get("veil_perception") != updated_veil:
         updated_profile["veil_perception"] = updated_veil
         changes_made_descriptions.append(f"Veil perception updated to: '{updated_veil}'.")
+        
+    updated_philosophy = suggestions.get("updated_philosophical_leaning")
+    if updated_philosophy and isinstance(updated_philosophy, str) and updated_profile.get("philosophical_leaning") != updated_philosophy:
+        updated_profile["philosophical_leaning"] = updated_philosophy
+        changes_made_descriptions.append(f"Philosophical leaning updated to: '{updated_philosophy}'.")
+        
+    # Store analysis notes and recent changes log for debug mode
+    analysis_notes = suggestions.get("analysis_notes")
+    if analysis_notes and isinstance(analysis_notes, str):
+        updated_profile["llm_analysis_notes"] = analysis_notes
+        
+    # Add recent changes to log
+    if "recent_changes_log" not in updated_profile:
+        updated_profile["recent_changes_log"] = []
+    for change_desc in changes_made_descriptions:
+        updated_profile["recent_changes_log"].append(change_desc)
+    # Keep only last 10 changes
+    updated_profile["recent_changes_log"] = updated_profile["recent_changes_log"][-10:]
 
     if "decision_patterns" in updated_profile: updated_profile["decision_patterns"] = sorted(list(set(updated_profile["decision_patterns"])))
     if "key_experiences_tags" in updated_profile: updated_profile["key_experiences_tags"] = sorted(list(set(updated_profile["key_experiences_tags"])))

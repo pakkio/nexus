@@ -1,14 +1,15 @@
 from typing import Dict, Any
 from command_handler_utils import HandlerResult, _add_profile_action
+import json
 
-def handle_profile(state: Dict[str, Any]) -> HandlerResult:
+def handle_profile(args_str: str, state: Dict[str, Any]) -> HandlerResult:
     TF = state['TerminalFormatter']
     db = state['db']
     player_id = state['player_id']
-    _add_profile_action(state, "Used /profile command")
+    debug_mode = "--debug" in args_str.lower()
+    _add_profile_action(state, f"Used /profile command{' (debug)' if debug_mode else ''}")
 
     # Load fresh profile from DB for display, but keep state's cache consistent if needed
-
     profile_data = db.load_player_profile(player_id) # Fresh
     state['player_profile_cache'] = profile_data # Update cache with fresh data
 
@@ -48,6 +49,30 @@ def handle_profile(state: Dict[str, Any]) -> HandlerResult:
                 print(f"  {TF.DIM}- {m.replace('_', ' ').capitalize()}{TF.RESET}")
         else:
             print(f"  {TF.DIM}(Primary quest focus assumed){TF.RESET}")
+            
+        # Debug mode: show philosophical alignment and LLM analysis details
+        if debug_mode:
+            print(f"\n{TF.BRIGHT_CYAN}{TF.BOLD}--- DEBUG INFO ---{TF.RESET}")
+            
+            # Show philosophical leaning if tracked
+            philo_leaning = profile_data.get("philosophical_leaning", "neutral")
+            print(f"{TF.CYAN}Philosophical Alignment:{TF.RESET} {TF.DIM}{philo_leaning.replace('_', ' ').title()}{TF.RESET}")
+            
+            # Show recent profile changes with reasoning
+            recent_changes = profile_data.get("recent_changes_log", [])
+            if recent_changes:
+                print(f"\n{TF.CYAN}Recent Profile Changes:{TF.RESET}")
+                for change in recent_changes[-3:]:  # Last 3 changes
+                    print(f"  {TF.DIM}- {change}{TF.RESET}")
+            
+            # Show raw LLM analysis if available
+            llm_notes = profile_data.get("llm_analysis_notes", "")
+            if llm_notes:
+                print(f"\n{TF.CYAN}LLM Analysis Notes:{TF.RESET}")
+                print(f"  {TF.DIM}{llm_notes[:200]}{'...' if len(llm_notes) > 200 else ''}{TF.RESET}")
+            
+            print(f"\n{TF.CYAN}Raw Profile Data:{TF.RESET}")
+            print(f"{TF.DIM}{json.dumps(profile_data, indent=2)[:500]}{'...' if len(str(profile_data)) > 500 else ''}{TF.RESET}")
 
     else:
         print(f" {TF.DIM}(No profile data available. This is unexpected.){TF.RESET}")
