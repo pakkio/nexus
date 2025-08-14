@@ -31,7 +31,8 @@ def get_available_commands() -> Dict[str, str]:
     '/profile': 'Mostra il tuo profilo psicologico',
     '/stats': 'Mostra statistiche dell\'ultima risposta',
     '/clear': 'Cancella la cronologia conversazione corrente',
-    '/history': 'Mostra la cronologia in formato JSON'
+    '/history': 'Mostra la cronologia in formato JSON',
+    '/sussurri': 'Debug: controlla/attiva effetti decadimento memoria'
   }
 
 def get_italian_area_mapping() -> Dict[str, str]:

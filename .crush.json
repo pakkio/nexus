@@ -1,0 +1,1 @@
+{"$schema": "https://charm.land/crush.json","mcp": {"lsl-mcp-server": {"type": "stdio","command": "bash","args": ["/home/pakkio/IdeaProjects/oslsl/run-server.sh"],"env": {"NODE_ENV": "production"}}}}

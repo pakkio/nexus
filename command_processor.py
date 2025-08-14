@@ -33,9 +33,11 @@ from command_handlers.handle_receive import handle_receive
 from command_handlers.handle_profile import handle_profile
 from command_handlers.heandle_profile_for_npc import handle_profile_for_npc
 from command_handlers.handle_history import handle_history
+from command_handlers.handle_sussurri import handle_sussurri
 
 import session_utils # Keep for other utilities like get_npc_color
 from command_handler_utils import HandlerResult, _add_profile_action, hint_manager, get_distilled_profile_insights_for_npc
+from consequence_system import show_philosophical_consequences, track_relationship_changes
 
 try:
   from command_interpreter import interpret_user_intent
@@ -184,6 +186,7 @@ command_handlers_map: Dict[str, Callable] = {
   'profile': handle_profile,
   'profile_for_npc': handle_profile_for_npc,
   'history': handle_history,
+  'sussurri': handle_sussurri,
 }
 
 def process_input_revised(user_input: str, state: Dict[str, Any]) -> Dict[str, Any]:
@@ -237,7 +240,7 @@ def process_input_revised(user_input: str, state: Dict[str, Any]) -> Dict[str, A
       if command in command_handlers_map:
         handler_func = command_handlers_map[command]
         # Pass args_str only to handlers that expect it
-        if command in ['go', 'talk', 'give', 'receive', 'describe']:
+        if command in ['go', 'talk', 'give', 'receive', 'describe', 'profile', 'sussurri']:
           state = handler_func(args_str, state)
         else:
           state = handler_func(state)
@@ -355,6 +358,11 @@ def process_input_revised(user_input: str, state: Dict[str, Any]) -> Dict[str, A
         state['npc_made_new_response_this_turn'] = True
         if _response_text.strip():
           _add_profile_action(state, f"NPC Response from {npc_name_for_prompt}: '{_response_text[:50]}{'...' if len(_response_text) > 50 else ''}'")
+          
+        # Show philosophical consequences for the interaction
+        if not is_in_hint_mode and user_input:
+            show_philosophical_consequences(state, npc_name_for_prompt, user_input)
+            track_relationship_changes(state, npc_name_for_prompt, _response_text)
 
         if state.get('auto_show_stats', False) and stats and fmt_stats_func:
           print(fmt_stats_func(stats))
