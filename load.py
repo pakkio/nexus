@@ -283,7 +283,7 @@ def wait_for_db(db_config, max_retries=5, delay=3):
     print(f"Attempting to connect to database {db_config['host']}...")
     while retries < max_retries:
         try:
-            conn = mysql.connector.connect(**db_config, connection_timeout=5)
+            conn = mysql.connector.connect(**db_config)
             conn.close()
             print("Database connection successful!")
             return True
