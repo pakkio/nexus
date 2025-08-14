@@ -98,11 +98,11 @@ def calculate_sussurri_resistance(veil_perception: str, philosophical_leaning: s
         'active_skepticism': -20
     }
     
-    # Philosophical leaning affects resistance
+    # Philosophical leaning affects resistance (balanced for fairer gameplay)
     philosophy_bonuses = {
-        'conservator': 25,  # Pro-Veil = strong resistance
+        'conservator': 15,  # Pro-Veil = strong resistance (reduced from 25)
         'neutral': 0,
-        'progressist': -25  # Pro-Oblivion = weak resistance
+        'progressist': -15  # Pro-Oblivion = weak resistance (reduced from -25)
     }
     
     resistance = base_resistance
