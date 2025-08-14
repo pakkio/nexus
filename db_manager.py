@@ -82,7 +82,7 @@ class DbManager:
             if not self.db_config or not all([self.db_config.get('host'), self.db_config.get('user'), self.db_config.get('database')]):
                 raise ValueError("Database configuration incomplete for real DB connection.")
             try:
-                if 'mysql.connector' not in sys.modules: import mysql.connector
+                import mysql.connector
                 return mysql.connector.connect(**self.db_config)
             except mysql.connector.Error as err:
                 raise

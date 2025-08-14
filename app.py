@@ -213,6 +213,24 @@ def handle_exception(e):
         'message': str(e)
     }), 500
 
+@app.route('/', methods=['GET'])
+def index():
+    """Root endpoint with API information."""
+    return jsonify({
+        'service': 'nexus-api',
+        'version': '1.0.0',
+        'status': 'running',
+        'description': 'AI-powered text-based RPG engine',
+        'endpoints': {
+            'health': '/health',
+            'chat': '/api/chat',
+            'commands': '/api/commands',
+            'player': '/api/player/<player_id>/*',
+            'game': '/api/game/*',
+            'admin': '/reset'
+        }
+    })
+
 @app.route('/health', methods=['GET'])
 def health_check():
     """Health check endpoint."""
@@ -567,6 +585,72 @@ def chat_with_npc():
         logger.error(f"Error in chat for {player_name_for_log}: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
+@app.route('/api', methods=['GET'])
+def api_info():
+    """API information endpoint."""
+    return jsonify({
+        'api': 'nexus-rpg',
+        'version': '1.0.0',
+        'status': 'active',
+        'endpoints': {
+            'player_management': {
+                'create_session': 'POST /api/player/<player_id>/session',
+                'close_session': 'DELETE /api/player/<player_id>/session', 
+                'process_input': 'POST /api/player/<player_id>/input',
+                'get_state': 'GET /api/player/<player_id>/state',
+                'get_profile': 'GET /api/player/<player_id>/profile',
+                'get_inventory': 'GET /api/player/<player_id>/inventory',
+                'get_history': 'GET /api/player/<player_id>/conversation'
+            },
+            'game_data': {
+                'get_areas': 'GET /api/game/areas',
+                'get_npcs': 'GET /api/game/npcs',
+                'get_storyboard': 'GET /api/game/storyboard',
+                'process_command': 'POST /api/game/command'
+            },
+            'interaction': {
+                'chat': 'POST /api/chat',
+                'sense': 'POST /sense',
+                'leave': 'POST /leave'
+            },
+            'system': {
+                'health': 'GET /health',
+                'commands': 'GET /api/commands',
+                'reset': 'POST /reset',
+                'reload': 'POST /api/admin/reload'
+            }
+        }
+    })
+
+@app.route('/api/game/command', methods=['POST'])
+def process_game_command():
+    """Process a game command - similar to player input endpoint."""
+    try:
+        if not game_system:
+            return jsonify({'error': GAME_SYSTEM_NOT_INITIALIZED}), 500
+        
+        data = request.get_json()
+        if not data or 'command' not in data:
+            return jsonify({'error': 'Missing command field'}), 400
+        
+        player_name = data.get('player_name')
+        if not player_name:
+            return jsonify({'error': 'Missing player_name field'}), 400
+        
+        command = data['command']
+        
+        # Get player system
+        player_system = game_system.get_player_system(player_name)
+        
+        # Process command
+        response = player_system.process_player_input(command)
+        
+        return jsonify(response)
+    
+    except Exception as e:
+        logger.error(f"Error processing game command: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/api/commands', methods=['GET'])
 def get_available_commands():
     """Get list of available game commands."""
@@ -884,6 +968,28 @@ def reload_game_data():
     except Exception as e:
         logger.error(f"Error reloading data: {str(e)}")
         return jsonify({'error': str(e)}), 500
+
+@app.route('/game', methods=['GET'])
+def game_interface():
+    """Basic game interface information."""
+    return jsonify({
+        'title': 'Nexus RPG - Eldoria',
+        'description': 'AI-powered text-based RPG engine',
+        'version': '1.0.0',
+        'features': [
+            'Dynamic AI NPCs with unique personalities',
+            'Player psychological profiling',
+            'Second Life integration',
+            'Multi-area exploration',
+            'Item trading and quest mechanics'
+        ],
+        'getting_started': {
+            'create_session': 'POST /api/player/<your_name>/session',
+            'chat_with_npcs': 'POST /api/chat',
+            'explore_areas': 'Use /go <area> command',
+            'get_help': 'Use /help command'
+        }
+    })
 
 if __name__ == '__main__':
     # Initialize game system
