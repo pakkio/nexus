@@ -345,6 +345,385 @@ class DbManager:
                 if cursor: cursor.close()
                 if conn and conn.is_connected(): conn.close()
 
+    def get_conversation_history(self, player_id: str) -> List[Dict[str, Any]]:
+        """Get all conversation history for a player."""
+        if not player_id: return []
+        
+        if self.use_mockup:
+            conversations = []
+            player_conv_dir = self.conversation_dir_template.format(player_id=player_id)
+            if os.path.exists(player_conv_dir):
+                try:
+                    for filename in os.listdir(player_conv_dir):
+                        if filename.endswith('.json'):
+                            npc_code = filename[:-5]  # Remove .json extension
+                            file_path = os.path.join(player_conv_dir, filename)
+                            with open(file_path, 'r', encoding='utf-8') as f:
+                                history = json.load(f)
+                                if history:
+                                    conversations.append({
+                                        'npc_code': npc_code,
+                                        'history': history,
+                                        'last_updated': os.path.getmtime(file_path)
+                                    })
+                except Exception as e:
+                    print(f"Error getting conversation history for {player_id}: {e}")
+            return conversations
+        else:  # DB
+            conn = None; cursor = None
+            try:
+                conn = self.connect(); cursor = conn.cursor()
+                cursor.execute("""
+                    SELECT npc_code, history, last_updated 
+                    FROM ConversationHistory 
+                    WHERE player_id = %s 
+                    ORDER BY last_updated DESC
+                """, (player_id,))
+                results = cursor.fetchall()
+                conversations = []
+                for row in results:
+                    npc_code, history_json, last_updated = row
+                    history = json.loads(history_json) if history_json else []
+                    conversations.append({
+                        'npc_code': npc_code,
+                        'history': history,
+                        'last_updated': last_updated.isoformat() if last_updated else None
+                    })
+                return conversations
+            except Exception as e:
+                print(f"DB error getting conversation history for {player_id}: {e}")
+                return []
+            finally:
+                if cursor: cursor.close()
+                if conn and conn.is_connected(): conn.close()
+
+    def clear_conversations(self, player_id: str) -> bool:
+        """Clear all conversation history for a player."""
+        if not player_id: return False
+        
+        if self.use_mockup:
+            try:
+                player_conv_dir = self.conversation_dir_template.format(player_id=player_id)
+                if os.path.exists(player_conv_dir):
+                    import shutil
+                    shutil.rmtree(player_conv_dir)
+                    os.makedirs(player_conv_dir, exist_ok=True)
+                return True
+            except Exception as e:
+                print(f"Error clearing conversation history for {player_id}: {e}")
+                return False
+        else:  # DB
+            conn = None; cursor = None
+            try:
+                conn = self.connect(); cursor = conn.cursor()
+                cursor.execute("DELETE FROM ConversationHistory WHERE player_id = %s", (player_id,))
+                conn.commit()
+                return True
+            except Exception as e:
+                print(f"DB error clearing conversation history for {player_id}: {e}")
+                if conn: conn.rollback()
+                return False
+            finally:
+                if cursor: cursor.close()
+                if conn and conn.is_connected(): conn.close()
+
+    def get_player_storage_info(self, player_id: str) -> Dict[str, Any]:
+        """Get detailed storage information for a player."""
+        if not player_id:
+            return {}
+        
+        info = {
+            'player_id': player_id,
+            'conversations': {
+                'total_size_kb': 0,
+                'npc_count': 0,
+                'npcs_talked_to': [],
+                'conversation_details': []
+            },
+            'profile': {
+                'size_kb': 0,
+                'exists': False
+            },
+            'inventory': {
+                'size_kb': 0,
+                'item_count': 0
+            },
+            'total_storage_kb': 0
+        }
+        
+        if self.use_mockup:
+            # Get conversation info
+            player_conv_dir = self.conversation_dir_template.format(player_id=player_id)
+            if os.path.exists(player_conv_dir):
+                try:
+                    total_conv_size = 0
+                    for filename in os.listdir(player_conv_dir):
+                        if filename.endswith('.json'):
+                            npc_code = filename[:-5]
+                            file_path = os.path.join(player_conv_dir, filename)
+                            file_size = os.path.getsize(file_path)
+                            total_conv_size += file_size
+                            
+                            # Get conversation length
+                            try:
+                                with open(file_path, 'r', encoding='utf-8') as f:
+                                    history = json.load(f)
+                                    message_count = len(history) if isinstance(history, list) else 0
+                            except:
+                                message_count = 0
+                            
+                            info['conversations']['npcs_talked_to'].append(npc_code)
+                            info['conversations']['conversation_details'].append({
+                                'npc_code': npc_code,
+                                'size_kb': round(file_size / 1024, 2),
+                                'message_count': message_count,
+                                'last_modified': os.path.getmtime(file_path)
+                            })
+                    
+                    info['conversations']['total_size_kb'] = round(total_conv_size / 1024, 2)
+                    info['conversations']['npc_count'] = len(info['conversations']['npcs_talked_to'])
+                except Exception as e:
+                    print(f"Error getting conversation info for {player_id}: {e}")
+            
+            # Get profile info
+            profile_file = self.player_profile_file_template.format(player_id=player_id)
+            if os.path.exists(profile_file):
+                try:
+                    profile_size = os.path.getsize(profile_file)
+                    info['profile']['size_kb'] = round(profile_size / 1024, 2)
+                    info['profile']['exists'] = True
+                except Exception as e:
+                    print(f"Error getting profile info for {player_id}: {e}")
+            
+            # Get inventory info
+            inv_file = self.inventory_file_path_template.format(player_id=player_id)
+            if os.path.exists(inv_file):
+                try:
+                    inv_size = os.path.getsize(inv_file)
+                    info['inventory']['size_kb'] = round(inv_size / 1024, 2)
+                    
+                    # Get item count
+                    with open(inv_file, 'r', encoding='utf-8') as f:
+                        inventory = json.load(f)
+                        info['inventory']['item_count'] = len(inventory) if isinstance(inventory, list) else 0
+                except Exception as e:
+                    print(f"Error getting inventory info for {player_id}: {e}")
+        
+        else:  # DB mode
+            conn = None; cursor = None
+            try:
+                conn = self.connect(); cursor = conn.cursor()
+                
+                # Get conversation info
+                cursor.execute("""
+                    SELECT npc_code, history, last_updated,
+                           LENGTH(history) as size_bytes
+                    FROM ConversationHistory 
+                    WHERE player_id = %s 
+                    ORDER BY last_updated DESC
+                """, (player_id,))
+                conv_results = cursor.fetchall()
+                
+                total_conv_size = 0
+                for row in conv_results:
+                    npc_code, history_json, last_updated, size_bytes = row
+                    size_bytes = size_bytes or 0
+                    total_conv_size += size_bytes
+                    
+                    # Count messages
+                    try:
+                        history = json.loads(history_json) if history_json else []
+                        message_count = len(history) if isinstance(history, list) else 0
+                    except:
+                        message_count = 0
+                    
+                    info['conversations']['npcs_talked_to'].append(npc_code)
+                    info['conversations']['conversation_details'].append({
+                        'npc_code': npc_code,
+                        'size_kb': round(size_bytes / 1024, 2),
+                        'message_count': message_count,
+                        'last_modified': last_updated.isoformat() if last_updated else None
+                    })
+                
+                info['conversations']['total_size_kb'] = round(total_conv_size / 1024, 2)
+                info['conversations']['npc_count'] = len(info['conversations']['npcs_talked_to'])
+                
+                # Get profile info
+                cursor.execute("SELECT LENGTH(profile_data) FROM PlayerProfiles WHERE player_id = %s", (player_id,))
+                profile_result = cursor.fetchone()
+                if profile_result and profile_result[0]:
+                    info['profile']['size_kb'] = round(profile_result[0] / 1024, 2)
+                    info['profile']['exists'] = True
+                
+                # Get inventory info (approximate)
+                cursor.execute("SELECT COUNT(*), GROUP_CONCAT(item_name) FROM PlayerInventory WHERE player_id = %s", (player_id,))
+                inv_result = cursor.fetchone()
+                if inv_result and inv_result[0]:
+                    item_count = inv_result[0]
+                    items_text = inv_result[1] or ""
+                    info['inventory']['item_count'] = item_count
+                    info['inventory']['size_kb'] = round(len(items_text.encode('utf-8')) / 1024, 2)
+                
+            except Exception as e:
+                print(f"DB error getting storage info for {player_id}: {e}")
+            finally:
+                if cursor: cursor.close()
+                if conn and conn.is_connected(): conn.close()
+        
+        # Calculate total storage
+        info['total_storage_kb'] = round(
+            info['conversations']['total_size_kb'] + 
+            info['profile']['size_kb'] + 
+            info['inventory']['size_kb'], 2
+        )
+        
+        return info
+
+    def get_all_conversations_for_analysis(self, player_id: str) -> List[Dict[str, Any]]:
+        """Get all conversations for a player formatted for LLM analysis."""
+        if not player_id:
+            return []
+        
+        conversations = []
+        
+        if self.use_mockup:
+            player_conv_dir = self.conversation_dir_template.format(player_id=player_id)
+            if os.path.exists(player_conv_dir):
+                try:
+                    for filename in os.listdir(player_conv_dir):
+                        if filename.endswith('.json'):
+                            npc_code = filename[:-5]
+                            file_path = os.path.join(player_conv_dir, filename)
+                            
+                            with open(file_path, 'r', encoding='utf-8') as f:
+                                history = json.load(f)
+                                if history and isinstance(history, list):
+                                    conversations.append({
+                                        'npc_code': npc_code,
+                                        'history': history,
+                                        'last_modified': os.path.getmtime(file_path)
+                                    })
+                except Exception as e:
+                    print(f"Error getting conversations for analysis for {player_id}: {e}")
+        else:  # DB
+            conn = None; cursor = None
+            try:
+                conn = self.connect(); cursor = conn.cursor()
+                cursor.execute("""
+                    SELECT npc_code, history, last_updated 
+                    FROM ConversationHistory 
+                    WHERE player_id = %s 
+                    ORDER BY last_updated ASC
+                """, (player_id,))
+                results = cursor.fetchall()
+                
+                for row in results:
+                    npc_code, history_json, last_updated = row
+                    if history_json:
+                        try:
+                            history = json.loads(history_json)
+                            if history and isinstance(history, list):
+                                conversations.append({
+                                    'npc_code': npc_code,
+                                    'history': history,
+                                    'last_modified': last_updated.isoformat() if last_updated else None
+                                })
+                        except json.JSONDecodeError:
+                            continue
+            except Exception as e:
+                print(f"DB error getting conversations for analysis for {player_id}: {e}")
+            finally:
+                if cursor: cursor.close()
+                if conn and conn.is_connected(): conn.close()
+        
+        return conversations
+
+    def save_conversation_analysis(self, player_id: str, analysis: str) -> bool:
+        """Save LLM conversation analysis for a player."""
+        if not player_id or not analysis:
+            return False
+        
+        if self.use_mockup:
+            try:
+                analysis_dir = os.path.join(self.mockup_dir, "ConversationAnalysis")
+                os.makedirs(analysis_dir, exist_ok=True)
+                analysis_file = os.path.join(analysis_dir, f"{player_id}_analysis.txt")
+                
+                with open(analysis_file, 'w', encoding='utf-8') as f:
+                    f.write(f"Analysis generated on: {datetime.now().isoformat()}\n")
+                    f.write("="*80 + "\n\n")
+                    f.write(analysis)
+                return True
+            except Exception as e:
+                print(f"Error saving conversation analysis for {player_id}: {e}")
+                return False
+        else:  # DB
+            conn = None; cursor = None
+            try:
+                conn = self.connect(); cursor = conn.cursor()
+                sql = """
+                    INSERT INTO ConversationAnalysis (player_id, analysis, created_at)
+                    VALUES (%s, %s, NOW())
+                    ON DUPLICATE KEY UPDATE 
+                        analysis = VALUES(analysis), 
+                        created_at = NOW()
+                """
+                cursor.execute(sql, (player_id, analysis))
+                conn.commit()
+                return True
+            except Exception as e:
+                print(f"DB error saving conversation analysis for {player_id}: {e}")
+                if conn: conn.rollback()
+                return False
+            finally:
+                if cursor: cursor.close()
+                if conn and conn.is_connected(): conn.close()
+
+    def get_conversation_analysis(self, player_id: str) -> Optional[Dict[str, Any]]:
+        """Get saved conversation analysis for a player."""
+        if not player_id:
+            return None
+        
+        if self.use_mockup:
+            try:
+                analysis_file = os.path.join(self.mockup_dir, "ConversationAnalysis", f"{player_id}_analysis.txt")
+                if os.path.exists(analysis_file):
+                    with open(analysis_file, 'r', encoding='utf-8') as f:
+                        content = f.read()
+                    return {
+                        'player_id': player_id,
+                        'analysis': content,
+                        'created_at': os.path.getmtime(analysis_file)
+                    }
+            except Exception as e:
+                print(f"Error getting conversation analysis for {player_id}: {e}")
+            return None
+        else:  # DB
+            conn = None; cursor = None
+            try:
+                conn = self.connect(); cursor = conn.cursor()
+                cursor.execute("""
+                    SELECT analysis, created_at 
+                    FROM ConversationAnalysis 
+                    WHERE player_id = %s
+                """, (player_id,))
+                result = cursor.fetchone()
+                
+                if result:
+                    analysis, created_at = result
+                    return {
+                        'player_id': player_id,
+                        'analysis': analysis,
+                        'created_at': created_at.isoformat() if created_at else None
+                    }
+            except Exception as e:
+                print(f"DB error getting conversation analysis for {player_id}: {e}")
+            finally:
+                if cursor: cursor.close()
+                if conn and conn.is_connected(): conn.close()
+        
+        return None
+
     # --- Inventory Management (Player Specific) ---
     def _clean_item_name(self, item_name: str) -> str:
         return str(item_name).strip().lower()
