@@ -382,7 +382,7 @@ class _SinglePlayerGameSystem:
                                 if credits_given != 0 and player_id and db:
                                     logger.info(f"[ITEM-PROCESSING] Processing {credits_given} credits for {player_id}")
                                     try:
-                                        db.update_player_credits(player_id, credits_given)
+                                        db.update_player_credits(player_id, credits_given, self.game_state)
                                         logger.info(f"[ITEM-PROCESSING] Successfully updated credits by {credits_given}")
                                         # Update cached credits in game state
                                         if 'player_info' in self.game_state:
