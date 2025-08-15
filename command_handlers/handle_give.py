@@ -52,11 +52,15 @@ def handle_give(args: str, state: Dict[str, Any]) -> HandlerResult:
     else:
         # Giving an item
         item_name_to_give = input_str # User's raw input for the item name
-        cleaned_item_name_for_check = db._clean_item_name(item_name_to_give) # For DB consistency
-
-        if not db.check_item_in_inventory(player_id, cleaned_item_name_for_check):
+        
+        # Try to find item by partial name (handles both exact and partial matches)
+        matched_item_name = db.find_item_by_partial_name(player_id, item_name_to_give)
+        
+        if not matched_item_name:
             print(f"{TF.YELLOW}You don't have '{item_name_to_give}' (or similar) in your inventory.{TF.RESET}")
             return {**state, 'status': 'ok', 'continue_loop': True}
+        
+        cleaned_item_name_for_check = matched_item_name  # Use the matched exact name
 
         if db.remove_item_from_inventory(player_id, cleaned_item_name_for_check, state): # game_state (state here) for inv cache update
             item_name_for_log_and_action = item_name_to_give.strip() # Use original user input for log/action message clarity
