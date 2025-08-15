@@ -816,6 +816,26 @@ class DbManager:
             # print(f"{TF.DIM}'{item_name.strip()}' (as '{cleaned_item_name}') is already in your inventory.{TF.RESET}")
             return False
 
+    def find_item_by_partial_name(self, player_id: str, partial_name: str) -> str:
+        """Find an item in inventory by partial name. Returns exact name if unique match found, empty string otherwise."""
+        cleaned_partial = self._clean_item_name(partial_name)
+        if not cleaned_partial or not player_id: 
+            return ""
+        
+        inventory = self.load_inventory(player_id)
+        matches = [item for item in inventory if cleaned_partial in item]
+        
+        # Return exact match if found
+        if cleaned_partial in inventory:
+            return cleaned_partial
+        
+        # Return unique partial match
+        if len(matches) == 1:
+            return matches[0]
+        
+        # No match or multiple matches
+        return ""
+
     def check_item_in_inventory(self, player_id: str, item_name: str) -> bool:
         cleaned_item_name = self._clean_item_name(item_name)
         if not cleaned_item_name or not player_id: return False
