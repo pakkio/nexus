@@ -441,6 +441,179 @@ def get_conversation_history(player_id: str):
         logger.error(f"Error getting conversation history for {player_id}: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
+@app.route('/api/player/<player_id>/conversation/reset', methods=['DELETE'])
+def reset_conversation_history(player_id: str):
+    """Reset/clear all conversation history for a player."""
+    try:
+        if not game_system:
+            return jsonify({'error': GAME_SYSTEM_NOT_INITIALIZED}), 500
+        
+        # Clear conversation history from database
+        success = game_system.db.clear_conversations(player_id)
+        
+        if success:
+            return jsonify({
+                'message': f'All conversation history cleared for player {player_id}',
+                'player_id': player_id,
+                'success': True
+            })
+        else:
+            return jsonify({
+                'error': f'Failed to clear conversation history for player {player_id}',
+                'success': False
+            }), 500
+    
+    except Exception as e:
+        logger.error(f"Error clearing conversation history for {player_id}: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/player/<player_id>/storage-info', methods=['GET'])
+def get_player_storage_info(player_id: str):
+    """Get detailed storage information for a player including size, NPCs talked to, etc."""
+    try:
+        if not game_system:
+            return jsonify({'error': GAME_SYSTEM_NOT_INITIALIZED}), 500
+        
+        # Get storage info from database
+        storage_info = game_system.db.get_player_storage_info(player_id)
+        
+        if not storage_info:
+            return jsonify({
+                'error': f'No data found for player {player_id}',
+                'player_id': player_id
+            }), 404
+        
+        return jsonify(storage_info)
+    
+    except Exception as e:
+        logger.error(f"Error getting storage info for {player_id}: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/player/<player_id>/conversation/analyze', methods=['POST'])
+def analyze_conversations(player_id: str):
+    """Generate LLM analysis of all conversations for a player."""
+    try:
+        if not game_system:
+            return jsonify({'error': GAME_SYSTEM_NOT_INITIALIZED}), 500
+        
+        # Get all conversations for analysis
+        conversations = game_system.db.get_all_conversations_for_analysis(player_id)
+        
+        if not conversations:
+            return jsonify({
+                'error': f'No conversations found for player {player_id}',
+                'player_id': player_id
+            }), 404
+        
+        # Prepare conversation data for LLM analysis
+        conversation_text = f"Player: {player_id}\n\n"
+        conversation_text += "=== CONVERSATION HISTORY ANALYSIS ===\n\n"
+        
+        for conv in conversations:
+            npc_code = conv['npc_code']
+            history = conv['history']
+            conversation_text += f"--- Conversation with {npc_code} ---\n"
+            
+            for msg in history:
+                role = msg.get('role', 'unknown')
+                content = msg.get('content', '')
+                if role == 'user':
+                    conversation_text += f"Player: {content}\n"
+                elif role == 'assistant':
+                    conversation_text += f"{npc_code}: {content}\n"
+            
+            conversation_text += f"\n"
+        
+        # Create analysis prompt
+        analysis_prompt = f"""Analyze the complete conversation history for player '{player_id}' in this fantasy RPG.
+
+{conversation_text}
+
+Please provide a comprehensive analysis covering:
+
+1. **Character Development**: How has the player's character evolved through their interactions?
+
+2. **Interaction Patterns**: What are the player's communication styles, preferences, and behavioral patterns?
+
+3. **Relationship Dynamics**: How does the player relate to different NPCs? Any notable relationship developments?
+
+4. **Quest Progress & Decisions**: What major decisions has the player made? How do they approach challenges?
+
+5. **Personality Insights**: What can we infer about the player's personality, motivations, and values?
+
+6. **Narrative Themes**: What recurring themes or interests emerge from their conversations?
+
+7. **Social Dynamics**: How does the player engage socially? Are they cooperative, cautious, adventurous?
+
+8. **Growth Areas**: What areas of character development or gameplay might benefit from attention?
+
+Provide specific examples from the conversations to support your analysis. Keep the tone professional but engaging, as if writing a character study for a game master."""
+
+        # Call LLM for analysis
+        from llm_wrapper import llm_wrapper
+        
+        messages = [
+            {"role": "user", "content": analysis_prompt}
+        ]
+        
+        # Use a more capable model for analysis
+        analysis_model = os.environ.get("PROFILE_ANALYSIS_MODEL", "mistralai/mistral-7b-instruct:free")
+        analysis_result, stats = llm_wrapper(
+            messages=messages,
+            model_name=analysis_model,
+            stream=False,
+            collect_stats=True
+        )
+        
+        if not analysis_result or analysis_result.startswith("[Errore"):
+            return jsonify({
+                'error': 'Failed to generate conversation analysis',
+                'details': analysis_result
+            }), 500
+        
+        # Save the analysis
+        save_success = game_system.db.save_conversation_analysis(player_id, analysis_result)
+        
+        response_data = {
+            'player_id': player_id,
+            'analysis': analysis_result,
+            'conversation_count': len(conversations),
+            'npcs_analyzed': [conv['npc_code'] for conv in conversations],
+            'analysis_saved': save_success,
+            'generated_at': datetime.now().isoformat()
+        }
+        
+        if stats:
+            response_data['llm_stats'] = stats
+        
+        return jsonify(response_data)
+    
+    except Exception as e:
+        logger.error(f"Error analyzing conversations for {player_id}: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/player/<player_id>/conversation/analysis', methods=['GET'])
+def get_conversation_analysis(player_id: str):
+    """Get saved conversation analysis for a player."""
+    try:
+        if not game_system:
+            return jsonify({'error': GAME_SYSTEM_NOT_INITIALIZED}), 500
+        
+        analysis = game_system.db.get_conversation_analysis(player_id)
+        
+        if not analysis:
+            return jsonify({
+                'error': f'No conversation analysis found for player {player_id}',
+                'player_id': player_id,
+                'suggestion': f'Use POST /api/player/{player_id}/conversation/analyze to generate analysis'
+            }), 404
+        
+        return jsonify(analysis)
+    
+    except Exception as e:
+        logger.error(f"Error getting conversation analysis for {player_id}: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/api/chat', methods=['POST'])
 def chat_with_npc():
     """Direct chat endpoint for NPC interaction."""
