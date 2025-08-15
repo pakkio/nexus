@@ -345,8 +345,8 @@ class DbManager:
                 if cursor: cursor.close()
                 if conn and conn.is_connected(): conn.close()
 
-    def get_conversation_history(self, player_id: str) -> List[Dict[str, Any]]:
-        """Get all conversation history for a player."""
+    def get_conversation_history(self, player_id: str, npc_name: str = None) -> List[Dict[str, Any]]:
+        """Get conversation history for a player, optionally filtered by NPC."""
         if not player_id: return []
         
         if self.use_mockup:
@@ -357,6 +357,9 @@ class DbManager:
                     for filename in os.listdir(player_conv_dir):
                         if filename.endswith('.json'):
                             npc_code = filename[:-5]  # Remove .json extension
+                            # Filter by NPC if specified
+                            if npc_name and npc_code != npc_name:
+                                continue
                             file_path = os.path.join(player_conv_dir, filename)
                             with open(file_path, 'r', encoding='utf-8') as f:
                                 history = json.load(f)
@@ -373,12 +376,20 @@ class DbManager:
             conn = None; cursor = None
             try:
                 conn = self.connect(); cursor = conn.cursor()
-                cursor.execute("""
-                    SELECT npc_code, history, last_updated 
-                    FROM ConversationHistory 
-                    WHERE player_id = %s 
-                    ORDER BY last_updated DESC
-                """, (player_id,))
+                if npc_name:
+                    cursor.execute("""
+                        SELECT npc_code, history, last_updated 
+                        FROM ConversationHistory 
+                        WHERE player_id = %s AND npc_code = %s
+                        ORDER BY last_updated DESC
+                    """, (player_id, npc_name))
+                else:
+                    cursor.execute("""
+                        SELECT npc_code, history, last_updated 
+                        FROM ConversationHistory 
+                        WHERE player_id = %s 
+                        ORDER BY last_updated DESC
+                    """, (player_id,))
                 results = cursor.fetchall()
                 conversations = []
                 for row in results:

@@ -344,6 +344,52 @@ class _SinglePlayerGameSystem:
                             final_npc_dialogue_for_return = final_npc_dialogue_for_return[:tag_start_idx].strip()
                             if given_items_str:
                                 self.game_state['system_messages_buffer'].append(f"You received: {given_items_str}")
+                                
+                                # Process items and credits (similar to main_core.py)
+                                items_given_names = []
+                                credits_given = 0
+                                potential_items = [item.strip() for item in given_items_str.split(',') if item.strip()]
+                                logger.info(f"[ITEM-PROCESSING] Processing items: {potential_items}")
+                                
+                                for item_str in potential_items:
+                                    credit_match = re.match(r"(-?\d+)\s+credits?", item_str, re.IGNORECASE)
+                                    if credit_match:
+                                        credits_given += int(credit_match.group(1))
+                                        logger.info(f"[ITEM-PROCESSING] Found credits: {credit_match.group(1)}")
+                                    else:
+                                        items_given_names.append(item_str)
+                                        logger.info(f"[ITEM-PROCESSING] Found item: {item_str}")
+                                
+                                # Add items to inventory
+                                player_id = self.game_state.get('player_id')
+                                db = self.game_state.get('db')
+                                current_npc = self.game_state.get('current_npc', {})
+                                
+                                if items_given_names and player_id and db:
+                                    for item_name in items_given_names:
+                                        logger.info(f"[ITEM-PROCESSING] Adding '{item_name}' to inventory for {player_id}")
+                                        if db.add_item_to_inventory(player_id, item_name, self.game_state):
+                                            logger.info(f"[ITEM-PROCESSING] Successfully added '{item_name}' to inventory")
+                                            # Update profile actions
+                                            npc_name = current_npc.get('name', 'NPC')
+                                            if 'actions_this_turn_for_profile' not in self.game_state:
+                                                self.game_state['actions_this_turn_for_profile'] = []
+                                            self.game_state['actions_this_turn_for_profile'].append(f"Received '{item_name}' from {npc_name}")
+                                        else:
+                                            logger.error(f"[ITEM-PROCESSING] Failed to add '{item_name}' to inventory")
+                                
+                                # Handle credits
+                                if credits_given != 0 and player_id and db:
+                                    logger.info(f"[ITEM-PROCESSING] Processing {credits_given} credits for {player_id}")
+                                    try:
+                                        db.update_player_credits(player_id, credits_given)
+                                        logger.info(f"[ITEM-PROCESSING] Successfully updated credits by {credits_given}")
+                                        # Update cached credits in game state
+                                        if 'player_info' in self.game_state:
+                                            current_credits = self.game_state['player_info'].get('credits', 0)
+                                            self.game_state['player_info']['credits'] = current_credits + credits_given
+                                    except Exception as e:
+                                        logger.error(f"[ITEM-PROCESSING] Failed to update credits: {e}")
             elif self.game_state['debug_mode']:
                  self.game_state['system_messages_buffer'].append("[Debug] No new NPC response marked this turn for API return construction.")
 
