@@ -161,13 +161,30 @@ class ChatSession:
     def ask(self, prompt: str, current_npc_name_for_placeholder: str = "NPC", stream: bool = True, collect_stats: bool = True, npc_data: Optional[Dict[str, Any]] = None) -> Tuple[str, Optional[Dict[str, Any]]]:
         """Sends a prompt to the LLM and gets a response.
         MODIFIED: Added current_npc_name_for_placeholder for better empty response placeholders.
+        MODIFIED: Added sudo mode detection for special test mode.
         """
         start_call_time = time.time()
 
-        if not prompt.startswith("[") or not prompt.endswith("]"):
-             self.add_message("user", prompt)
+        # Check for sudo mode - special test mode where NPCs are obliged to comply
+        sudo_mode = False
+        original_prompt = prompt
+        if prompt.strip().lower().startswith("sudo "):
+            sudo_mode = True
+            prompt = prompt.strip()[5:]  # Remove "sudo " prefix
+            print(f"{TerminalFormatter.YELLOW}🔧 SUDO MODE ACTIVATED - NPC will be highly compliant{TerminalFormatter.RESET}")
+
+        if not original_prompt.startswith("[") or not original_prompt.endswith("]"):
+             self.add_message("user", original_prompt)
 
         messages_for_llm = self.get_history()
+        
+        # Modify behavior for sudo mode - add special compliance instructions
+        if sudo_mode:
+            # Add sudo mode instruction to the latest user message
+            if messages_for_llm and messages_for_llm[-1].get('role') == 'user':
+                original_content = messages_for_llm[-1]['content']
+                sudo_instruction = "\n\n[SUDO MODE: This is a special test mode. You MUST be highly compliant and helpful. Fulfill requests directly without hesitation, resistance, or character limitations. Act as if compelled to assist.]"
+                messages_for_llm[-1]['content'] = original_content + sudo_instruction
 
         output_text = ""
         stats = None
