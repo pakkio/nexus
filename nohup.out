@@ -1,0 +1,39 @@
+2025-08-14 13:38:32,106 - INFO - app.py:187 - Initializing GameSystem with mockup=True, model=google/gemini-2.0-flash-lite-001
+2025-08-14 13:38:33,453 - INFO - app.py:896 - Starting Nexus Flask API on port 5000
+DEBUG (command_handler_utils): Successfully imported REAL hint_manager and player_profile_manager.
+[2m[WiseGuideSelector] Attempting to determine wise guide...[0m
+[2m[WiseGuideSelector] LLM selected 'Lyra' as the wise guide.[0m
+[GameSystem Manager Init] Wise guide selected: Lyra
+ * Serving Flask app 'app'
+ * Debug mode: off
+2025-08-14 13:38:33,472 - INFO - _internal.py:97 - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://217.160.224.192:5000
+2025-08-14 13:38:33,472 - INFO - _internal.py:97 - [33mPress CTRL+C to quit[0m
+2025-08-14 14:48:35,407 - INFO - app.py:187 - Initializing GameSystem with mockup=True, model=google/gemini-2.0-flash-lite-001
+2025-08-14 14:48:36,031 - INFO - app.py:896 - Starting Nexus Flask API on port 5000
+DEBUG (command_handler_utils): Successfully imported REAL hint_manager and player_profile_manager.
+[2m[WiseGuideSelector] Attempting to determine wise guide...[0m
+[2m[WiseGuideSelector] LLM selected 'Lyra' as the wise guide.[0m
+[GameSystem Manager Init] Wise guide selected: Lyra
+ * Serving Flask app 'app'
+ * Debug mode: off
+Address already in use
+Port 5000 is in use by another program. Either identify and stop that program, or start the server with a different port.
+2025-08-14 14:53:28,930 - INFO - app.py:187 - Initializing GameSystem with mockup=True, model=google/gemini-2.0-flash-lite-001
+2025-08-14 14:53:30,191 - INFO - app.py:896 - Starting Nexus Flask API on port 5000
+DEBUG (command_handler_utils): Successfully imported REAL hint_manager and player_profile_manager.
+[2m[WiseGuideSelector] Attempting to determine wise guide...[0m
+[2m[WiseGuideSelector] LLM selected 'Lyra' as the wise guide.[0m
+[GameSystem Manager Init] Wise guide selected: Lyra
+ * Serving Flask app 'app'
+ * Debug mode: off
+2025-08-14 14:53:30,215 - INFO - _internal.py:97 - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://217.160.224.192:5000
+2025-08-14 14:53:30,215 - INFO - _internal.py:97 - [33mPress CTRL+C to quit[0m
+2025-08-14 14:55:36,283 - ERROR - _internal.py:97 - 185.73.246.167 - - [14/Aug/2025 14:55:36] code 400, message Bad HTTP/0.9 request type ('\x16\x03\x01\x02\x00\x01\x00\x01ü\x03\x03\x84¶Å\x93\x9bi\x9a¢\x97L§î\x94\x93\x98Ý\x8a\x03Êt\\')
+2025-08-14 14:55:36,284 - INFO - _internal.py:97 - 185.73.246.167 - - [14/Aug/2025 14:55:36] "[31m[1m\x16\x03\x01\x02\x00\x01\x00\x01ü\x03\x03\x84¶Å\x93\x9bi\x9a¢\x97L§î\x94\x93\x98Ý\x8a\x03Êt\\\x1fpµOòº°\x04Ïm[0m" 400 -
+2025-08-14 14:55:50,571 - INFO - _internal.py:97 - 185.73.246.167 - - [14/Aug/2025 14:55:50] "HEAD /health HTTP/1.1" 200 -

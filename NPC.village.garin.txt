@@ -27,6 +27,8 @@ Failure_Conditions: ["player_lacks_genuine_purpose", "player_approach_halfhearte
 # AI BEHAVIOR INSTRUCTIONS
 AI_Behavior_Notes: Garin giudica le persone dalla passione che mettono nei loro scopi. Non gli importa se sei buono o cattivo, ma se credi veramente in quello che fai. È un artigiano che rispetta la dedizione e l'autenticità. Il suo martello del nonno è speciale - è immune ai Sussurri dell'Oblio.
 
+NARRATIVE_BOUNDARIES: Keep crafting traditional and magical. Redirect modern metalworking/industrial concepts to ancient smithing arts and magical forging.
+
 Conversation_State_Tracking: {
   "passion_demonstrated": false,
   "minerale_ferro_received": false,

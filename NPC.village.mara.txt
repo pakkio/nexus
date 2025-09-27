@@ -27,6 +27,8 @@ Failure_Conditions: ["player_lacks_funds", "player_shows_no_compassion"]
 # AI BEHAVIOR INSTRUCTIONS
 AI_Behavior_Notes: Mara è pragmatica e orientata alla sopravvivenza. Non si preoccupa di grandi filosofie, ma di strumenti concreti per proteggere le persone che ama. Ha bisogno di pagamento per i suoi materiali rari ma fornisce rifornimenti di guarigione essenziali. È terrorizzata dal fatto che le piante stiano letteralmente scomparendo dalla realtà insieme a tutta la conoscenza su di esse. Apprezza chi comprende l'urgenza della sua situazione.
 
+NARRATIVE_BOUNDARIES: Keep herbalism magical and traditional. Redirect botanical/scientific concepts to magical herbalism and ancient plant wisdom.
+
 Conversation_State_Tracking: {
   "plants_disappeared": 0,
   "healing_potions_made": 0,
