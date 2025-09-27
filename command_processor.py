@@ -103,34 +103,52 @@ def _speculative_dialogue_generation(user_input: str, state: Dict[str, Any], res
   try:
     current_npc = state.get('current_npc')
     chat_session = state.get('chat_session')
-    
+
     if not current_npc or not chat_session:
       result_container['dialogue_result'] = None
       result_container['completed'] = True
       return
-    
+
+    # Check for cancellation before starting
+    if result_container.get('cancelled', False):
+      logger.info(f"[DIALOGUE-SPECULATIVE] Cancelled before starting")
+      result_container['completed'] = True
+      return
+
     logger.info(f"[DIALOGUE-SPECULATIVE] Starting dialogue generation for: '{user_input[:30]}...'")
     start_time = time.time()
-    
+
     # Create a temporary copy of chat session to avoid side effects
     import copy
     temp_session = copy.deepcopy(chat_session)
-    
+
+    # Check for cancellation before expensive LLM call
+    if result_container.get('cancelled', False):
+      logger.info(f"[DIALOGUE-SPECULATIVE] Cancelled before LLM call")
+      result_container['completed'] = True
+      return
+
     # Generate NPC response using temporary session
     npc_name_for_prompt = current_npc.get('name', 'NPC')
     temp_session.add_message("user", user_input)
-    
+
     response_text, response_stats = temp_session.ask(
       prompt=user_input,
       current_npc_name_for_placeholder=npc_name_for_prompt,
-      stream=state.get('use_stream', False),
+      stream=False,  # Never stream in speculative mode to avoid overlapping output
       collect_stats=True,
       npc_data=current_npc
     )
-    
+
+    # Final check for cancellation before storing result
+    if result_container.get('cancelled', False):
+      logger.info(f"[DIALOGUE-SPECULATIVE] Cancelled after LLM call, discarding result")
+      result_container['completed'] = True
+      return
+
     elapsed_ms = int((time.time() - start_time) * 1000)
     logger.info(f"[DIALOGUE-SPECULATIVE] Completed in {elapsed_ms}ms for NPC: {npc_name_for_prompt}")
-    
+
     result_container['dialogue_result'] = {
       'response_text': response_text,
       'response_stats': response_stats,
@@ -138,7 +156,7 @@ def _speculative_dialogue_generation(user_input: str, state: Dict[str, Any], res
       'temp_session': temp_session  # Include the session with the conversation
     }
     result_container['completed'] = True
-    
+
   except Exception as e:
     elapsed_ms = int((time.time() - time.time()) * 1000)  # Will be 0 but keeps format
     logger.error(f"[DIALOGUE-SPECULATIVE] Error: {str(e)}")
@@ -222,15 +240,36 @@ def process_input_revised(user_input: str, state: Dict[str, Any]) -> Dict[str, A
       )
       nlp_thread.start()
       
-      # For simple conversations, also start dialogue generation speculatively
-      if current_npc and chat_session and not state.get('in_hint_mode', False):
-        dialogue_thread = threading.Thread(
-          target=_speculative_dialogue_generation,
-          args=(user_input, state, dialogue_result_container),
-          daemon=True
-        )
-        dialogue_thread.start()
-        logger.info(f"[PARALLEL-PROCESSING] Started both NLP and dialogue threads")
+      # Wait briefly for NLP to complete before starting dialogue
+      nlp_thread.join(timeout=1.2)  # Quick NLP check - 1200ms
+      
+      if nlp_result_container['completed']:
+        intent_result = nlp_result_container['intent_result']
+        nlp_confidence_threshold = state.get('nlp_command_confidence_threshold', 0.7)
+        
+        # If NLP quickly identifies this as a command, don't start dialogue thread
+        if intent_result['is_command'] and intent_result['confidence'] >= nlp_confidence_threshold:
+          logger.info(f"[PARALLEL-PROCESSING] NLP quickly detected command, skipping dialogue thread")
+        else:
+          # Low confidence or not a command - start dialogue generation
+          if current_npc and chat_session and not state.get('in_hint_mode', False):
+            dialogue_thread = threading.Thread(
+              target=_speculative_dialogue_generation,
+              args=(user_input, state, dialogue_result_container),
+              daemon=True
+            )
+            dialogue_thread.start()
+            logger.info(f"[PARALLEL-PROCESSING] Started dialogue thread after NLP check")
+      else:
+        # NLP didn't complete quickly - assume it might be dialogue and start dialogue thread
+        if current_npc and chat_session and not state.get('in_hint_mode', False):
+          dialogue_thread = threading.Thread(
+            target=_speculative_dialogue_generation,
+            args=(user_input, state, dialogue_result_container),
+            daemon=True
+          )
+          dialogue_thread.start()
+          logger.info(f"[PARALLEL-PROCESSING] NLP timeout, started dialogue thread anyway")
 
   if user_input.startswith('/'):
     parts = user_input[1:].split(None, 1)
@@ -259,8 +298,9 @@ def process_input_revised(user_input: str, state: Dict[str, Any]) -> Dict[str, A
 
   # Smart parallel processing results handling
   elif nlp_thread:
-    # Wait a short time to see if NLP completes quickly
-    nlp_thread.join(timeout=0.3)  # Quick check - 300ms
+    # NLP thread may have already completed in the initial check, but handle it again if needed
+    if not nlp_result_container['completed']:
+      nlp_thread.join(timeout=1.5)  # Additional wait if needed
     
     if nlp_result_container['completed']:
       intent_result = nlp_result_container['intent_result']
@@ -270,13 +310,15 @@ def process_input_revised(user_input: str, state: Dict[str, Any]) -> Dict[str, A
         reasoning = intent_result.get('reasoning', 'N/A')
         print(f"{TF.DIM}[NLP-PARALLEL] Intent: {intent_result['is_command']}, Conf: {intent_result['confidence']:.2f}, Cmd: {intent_result.get('inferred_command')}, Reason: {reasoning}{TF.RESET}")
 
-      # High confidence command - cancel dialogue and execute command
+      # High confidence command - execute command
       if intent_result['is_command'] and intent_result['confidence'] >= nlp_confidence_threshold:
-        if dialogue_thread and dialogue_thread.is_alive():
-          logger.info(f"[PARALLEL-PROCESSING] NLP detected command, dialogue thread will be ignored")
-        
         inferred_command_full = intent_result.get('inferred_command')
         if inferred_command_full:
+          # Cancel dialogue thread if it's still running since we now know this is a command
+          if dialogue_thread and dialogue_thread.is_alive():
+            logger.info(f"[PARALLEL-PROCESSING] Cancelling dialogue thread - NLP detected command")
+            dialogue_result_container['cancelled'] = True
+
           print(f"{TF.DIM}[Interpreted as: {inferred_command_full}]{TF.RESET}")
           _add_profile_action(state, f"Used natural language: '{user_input}' → '{inferred_command_full}'")
           return process_input_revised(inferred_command_full, state)
@@ -285,22 +327,53 @@ def process_input_revised(user_input: str, state: Dict[str, Any]) -> Dict[str, A
       elif dialogue_thread:
         dialogue_thread.join(timeout=1.5)  # Wait for dialogue to complete
         
-        if dialogue_result_container['completed'] and dialogue_result_container['dialogue_result']:
+        if (dialogue_result_container['completed'] and
+            dialogue_result_container['dialogue_result'] and
+            not dialogue_result_container.get('cancelled', False)):
           # Use the pre-generated dialogue response!
           dialogue_data = dialogue_result_container['dialogue_result']
           logger.info(f"[PARALLEL-PROCESSING] Using speculative dialogue result")
-          
+
           state['npc_made_new_response_this_turn'] = True
           _add_profile_action(state, f"Said to NPC: '{user_input[:50]}{'...' if len(user_input) > 50 else ''}'")
-          
+
           # Return early with the pre-generated response
           return _build_dialogue_response(state, dialogue_data)
         else:
+          # Wait longer for dialogue thread to complete to avoid overlapping output
+          if dialogue_thread and dialogue_thread.is_alive():
+            logger.info(f"[PARALLEL-PROCESSING] Waiting for dialogue thread to complete...")
+            dialogue_thread.join(timeout=3.0)  # Wait longer
+
+            # Check again if we got a result
+            if (dialogue_result_container['completed'] and
+                dialogue_result_container['dialogue_result'] and
+                not dialogue_result_container.get('cancelled', False)):
+              dialogue_data = dialogue_result_container['dialogue_result']
+              logger.info(f"[PARALLEL-PROCESSING] Using dialogue result after extended wait")
+
+              state['npc_made_new_response_this_turn'] = True
+              _add_profile_action(state, f"Said to NPC: '{user_input[:50]}{'...' if len(user_input) > 50 else ''}'")
+
+              return _build_dialogue_response(state, dialogue_data)
+
           logger.info(f"[PARALLEL-PROCESSING] Dialogue not ready, falling back to normal processing")
     else:
-      # NLP didn't complete quickly - wait longer or timeout
-      nlp_thread.join(timeout=1.0)
-      if debug_mode and not nlp_result_container['completed']:
+      # NLP didn't complete - proceed with dialogue if available
+      if dialogue_thread:
+        dialogue_thread.join(timeout=1.5)
+        if (dialogue_result_container['completed'] and
+            dialogue_result_container['dialogue_result'] and
+            not dialogue_result_container.get('cancelled', False)):
+          dialogue_data = dialogue_result_container['dialogue_result']
+          logger.info(f"[PARALLEL-PROCESSING] NLP timeout, using dialogue result")
+
+          state['npc_made_new_response_this_turn'] = True
+          _add_profile_action(state, f"Said to NPC: '{user_input[:50]}{'...' if len(user_input) > 50 else ''}'")
+
+          return _build_dialogue_response(state, dialogue_data)
+      
+      if debug_mode:
         print(f"{TF.YELLOW}[NLP-PARALLEL] Timeout, proceeding as dialogue{TF.RESET}")
     
     # If we reach here, proceed with normal dialogue processing
