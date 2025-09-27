@@ -8,3 +8,4 @@ compiled/
 
 # Ignore crush directory
 .crush/
+nohup.out
