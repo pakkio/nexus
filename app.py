@@ -693,12 +693,39 @@ def chat_with_npc():
             return jsonify({
                 'error': f'Error processing message: {str(e)}'
             }), 500
-        
+
         # Ensure response is not None
         if not response:
             return jsonify({
                 'error': 'Invalid response from game system'
             }), 500
+
+        # Handle case where command was processed but no NPC response was generated
+        # In this case, make the NPC present the system messages naturally
+        npc_response = response.get('npc_response', '')
+        system_messages = response.get('system_messages', [])
+        current_npc = player_system.game_state.get('current_npc')
+
+        if not npc_response and system_messages and current_npc:
+            npc_name = current_npc.get('name', 'NPC')
+            # Format system messages as NPC dialogue
+            if len(system_messages) == 1:
+                npc_response = f"*{npc_name} ti dice* {system_messages[0]}"
+            else:
+                formatted_messages = []
+                for msg in system_messages[:5]:  # Limit to first 5 messages to avoid truncation
+                    # Skip certain system messages that shouldn't be spoken
+                    if any(skip_phrase in msg for skip_phrase in ['[Interpreted as:', '[Debug]', 'Error:', 'HTTP']):
+                        continue
+                    formatted_messages.append(msg)
+
+                if formatted_messages:
+                    if len(formatted_messages) == 1:
+                        npc_response = f"*{npc_name} ti dice* {formatted_messages[0]}"
+                    else:
+                        # Join multiple messages in a natural way
+                        messages_text = ". ".join(formatted_messages)
+                        npc_response = f"*{npc_name} ti informa* {messages_text}"
         
         # Generate Second Life commands if there's a current NPC
         sl_commands = ""
@@ -745,7 +772,7 @@ def chat_with_npc():
             'player_name': player_name,
             'player_message': message,
             'npc_name': npc_name,
-            'npc_response': normalize_text_for_lsl(response.get('npc_response', '')),
+            'npc_response': normalize_text_for_lsl(npc_response),
             'sl_commands': normalize_text_for_lsl(sl_commands),
             'system_messages': response.get('system_messages', []),
             'current_npc': response.get('current_npc_name'),
@@ -1086,6 +1113,116 @@ def leave_player():
         return jsonify({
             'message': f"*{player_name} has left*",
             'player_name': player_name if 'player_name' in locals() else 'unknown',
+            'conversation_saved': False,
+            'error': str(e)
+        }), 500
+
+
+@app.route('/api/leave_npc', methods=['POST'])
+def leave_npc_conversation():
+    """Handle NPC conversation departure from LSL - save conversation and reset NPC state."""
+    try:
+        if not game_system:
+            return jsonify({'error': GAME_SYSTEM_NOT_INITIALIZED}), 500
+        
+        data = request.get_json()
+        if not data:
+            return jsonify({'error': 'Missing request data'}), 400
+        
+        # Extract fields sent from LSL script
+        player_name = data.get('player_name', '').strip()
+        npc_name = data.get('npc_name', '').strip()
+        
+        if not player_name:
+            return jsonify({'error': 'Player name cannot be empty'}), 400
+        if not npc_name:
+            return jsonify({'error': 'NPC name cannot be empty'}), 400
+        
+        area = data.get('area', 'Unknown')
+        action = data.get('action', 'leaving')
+        message = data.get('message', 'Avatar is leaving the conversation')
+        status = data.get('status', 'end')
+        
+        logger.info(f"NPC conversation leave request: {player_name} with {npc_name} in {area}, action: {action}, status: {status}")
+        
+        # Get player system safely
+        try:
+            player_system = game_system.get_player_system(player_name)
+            if not player_system or not hasattr(player_system, 'game_state'):
+                return jsonify({
+                    'message': f"*{player_name} has left conversation with {npc_name}*",
+                    'player_name': player_name,
+                    'npc_name': npc_name,
+                    'area': area,
+                    'conversation_saved': False,
+                    'note': 'No active session found'
+                })
+        except Exception as e:
+            logger.error(f"Error getting player system for {player_name}: {str(e)}")
+            return jsonify({
+                'message': f"*{player_name} has left conversation with {npc_name}*",
+                'player_name': player_name,
+                'npc_name': npc_name, 
+                'area': area,
+                'conversation_saved': False,
+                'error': f"Could not access player session: {str(e)}"
+            })
+        
+        # Get current NPC and conversation info safely
+        current_npc = player_system.game_state.get('current_npc') if player_system.game_state else None
+        chat_session = player_system.game_state.get('chat_session') if player_system.game_state else None
+        current_area = player_system.game_state.get('current_area') if player_system.game_state else area
+        
+        departure_message = f"*{npc_name} notices {player_name} is leaving*"
+        conversation_saved = False
+        
+        # If there's an active conversation with the same NPC, save it
+        if current_npc and chat_session and current_npc.get('name', '').lower() == npc_name.lower():
+            try:
+                from session_utils import save_current_conversation
+                from terminal_formatter import TerminalFormatter
+                
+                save_current_conversation(
+                    game_system.db, 
+                    player_name, 
+                    current_npc, 
+                    chat_session, 
+                    TerminalFormatter, 
+                    player_system.game_state
+                )
+                conversation_saved = True
+                logger.info(f"Saved NPC conversation for {player_name} with {npc_name}")
+                
+            except Exception as save_error:
+                logger.error(f"Error saving NPC conversation for {player_name} with {npc_name}: {str(save_error)}")
+                conversation_saved = False
+        
+        # Clean up NPC-specific session state
+        if player_system.game_state:
+            try:
+                # Only clear NPC-related state, preserve other player data
+                if current_npc and current_npc.get('name', '').lower() == npc_name.lower():
+                    player_system.game_state['current_npc'] = None
+                    player_system.game_state['chat_session'] = None
+                    logger.info(f"Cleaned up NPC conversation state for {player_name}")
+                    
+            except Exception as cleanup_error:
+                logger.error(f"Error cleaning up NPC conversation for {player_name}: {str(cleanup_error)}")
+        
+        return jsonify({
+            'message': departure_message,
+            'player_name': player_name,
+            'npc_name': npc_name,
+            'area': current_area,
+            'status': status,
+            'action': action,
+            'conversation_saved': conversation_saved
+        })
+    
+    except Exception as e:
+        logger.error(f"Error in leave_npc endpoint: {str(e)}")
+        return jsonify({
+            'message': "Error processing NPC leave request",
             'conversation_saved': False,
             'error': str(e)
         }), 500

@@ -127,7 +127,7 @@ def ask_lsl_formatted(
         if not isinstance(response_data, dict):
             return "Error: Internal game system response error.", stripped_headers_display, cleaned_message_display, sl_context_display
 
-        lsl_response = ""; MAX_LSL_STRING_LENGTH = 1000
+        lsl_response = ""; MAX_LSL_STRING_LENGTH = 800
         what_it_says_for_command_check = cleaned_message_for_game
         npc_dialogue_this_turn = clean_ansi_codes(response_data.get('npc_response', '')).strip()
         actual_npc_speaker_name = response_data.get('current_npc_name')
