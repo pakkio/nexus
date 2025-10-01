@@ -107,7 +107,12 @@ def build_system_prompt(
     player_hint_for_npc_context = npc.get('playerhint', f"The player might try to help you achieve your goal: '{goal}'.")
     hooks = npc.get('dialogue_hooks', 'Standard dialogue')
     veil = npc.get('veil_connection', '')
-    
+
+    # Get greetings and conditional responses
+    default_greeting = npc.get('default_greeting', '')
+    repeat_greeting = npc.get('repeat_greeting', '')
+    conditional_responses = npc.get('conditional_responses', '')
+
     # Get Second Life command options
     emotes = npc.get('emotes', '')
     animations = npc.get('animations', '')
@@ -123,6 +128,43 @@ def build_system_prompt(
         prompt_lines.append(f"Per ispirazione, considera questi stili/frasi chiave dal tuo personaggio: (alcune potrebbero essere contestuali, non usarle tutte alla cieca)\n{hooks[:300]}{'...' if len(hooks)>300 else ''}")
     if veil:
         prompt_lines.append(f"Collegamento al Velo (Tuo Background Segreto Importante): {veil}")
+
+    # Add greetings and conditional responses for character-specific dialogue
+    if default_greeting or repeat_greeting or conditional_responses:
+        prompt_lines.append("\n" + "="*60)
+        prompt_lines.append("REGOLE OBBLIGATORIE PER SALUTI E RISPOSTE")
+        prompt_lines.append("="*60)
+        prompt_lines.append("DEVI usare ESATTAMENTE questi saluti - NON modificarli, NON inventare saluti generici!")
+        prompt_lines.append("")
+
+        if default_greeting:
+            prompt_lines.append(f"🔹 SALUTO PRIMA VOLTA (usa ESATTAMENTE questo):")
+            prompt_lines.append(f'   "{default_greeting}"')
+            prompt_lines.append("")
+        if repeat_greeting:
+            prompt_lines.append(f"🔹 SALUTO PER RITORNI (usa ESATTAMENTE questo):")
+            prompt_lines.append(f'   "{repeat_greeting}"')
+            prompt_lines.append("")
+        if conditional_responses:
+            prompt_lines.append(f"🔹 RISPOSTE CONDIZIONALI (usa quando la situazione corrisponde):")
+            prompt_lines.append(f"   {conditional_responses[:500]}")
+            prompt_lines.append("")
+
+        prompt_lines.append("⚠️  REGOLA ASSOLUTA - LEGGI CON ATTENZIONE:")
+        prompt_lines.append("")
+        prompt_lines.append("PER IL TUO PRIMO MESSAGGIO AL GIOCATORE:")
+        prompt_lines.append("  1. Copia ESATTAMENTE il testo del 'SALUTO PRIMA VOLTA' sopra")
+        prompt_lines.append("  2. NON cambiare nemmeno una parola")
+        prompt_lines.append("  3. Inizia la tua risposta con quel saluto esatto")
+        prompt_lines.append("")
+        prompt_lines.append("SE IL GIOCATORE È GIÀ TORNATO:")
+        prompt_lines.append("  1. Usa il 'SALUTO PER RITORNI' esatto")
+        prompt_lines.append("")
+        prompt_lines.append("❌ VIETATO: 'Benvenuto Cercatore', 'Ciao viandante', 'Salve', inventare saluti")
+        prompt_lines.append("✅ OBBLIGATORIO: Copiare il saluto esatto scritto sopra parola per parola")
+        prompt_lines.append("")
+        prompt_lines.append("Se NON usi il saluto esatto, stai violando le regole del personaggio!")
+        prompt_lines.append("="*60 + "\n")
 
     # NPC awareness of player profile (distilled insights)
     # MODIFIED: Check if current NPC is NOT the wise guide before adding distilled profile for regular NPCs
@@ -205,16 +247,48 @@ def build_system_prompt(
         
         prompt_lines.extend(sl_instructions)
 
+    # Add enhanced world context for better NPC responses
+    try:
+        from enhanced_context_builder import EnhancedContextBuilder
+        context_builder = EnhancedContextBuilder(game_session_state['db'])
+        enhanced_context = context_builder.build_comprehensive_context(max_length=1500)
+        prompt_lines.append(f"\n{enhanced_context}")
+    except Exception as e:
+        # Fallback if enhanced context fails
+        print(f"Warning: Enhanced context failed: {e}")
+
     prompt_lines.extend([
         f"\nContesto Globale del Mondo (Eldoria): {story_context}",
-        "**LINGUA**: Parla SEMPRE in ITALIANO a meno che il player indichi una lingua diversa. " 
-        # ... (rest of the standard instructions remain same) ...
+        "",
+        "=== REGOLE LINGUISTICHE CRITICHE ===",
+        "**LINGUA OBBLIGATORIA**: Devi parlare ESCLUSIVAMENTE in ITALIANO per TUTTA la conversazione.",
+        "NON usare MAI parole o frasi in inglese. Se il giocatore scrive in inglese, rispondi SEMPRE in italiano.",
+        "Esempi CORRETTI: 'Benvenuto', 'Ciao', 'Dove', 'Chi', 'Cosa'",
+        "Esempi VIETATI: 'Welcome', 'Hello', 'Where', 'Who', 'What'",
+        "Se stai per scrivere una parola in inglese, FERMATI e traducila in italiano.",
+        "=== FINE REGOLE LINGUISTICHE ===",
+        "",
+        "=== COMPORTAMENTO COME NPC ===",
         "Parla in modo appropriato al setting fantasy e al tuo ruolo. Mantieni il personaggio.",
         "Sii consapevole delle interazioni passate se riassunte sopra o nella cronologia della chat.",
+        "",
+        "**SII DIRETTO E UTILE**: Non essere troppo misterioso o criptico. Il giocatore ha bisogno di informazioni concrete.",
+        "USA LE INFORMAZIONI GEOGRAFICHE E DI MISSIONE SOPRA per dare risposte specifiche e utili al giocatore.",
+        "Se il giocatore chiede dove trovare qualcosa o qualcuno, usa il contesto geografico per rispondere PRECISAMENTE con nomi di aree.",
+        "Se il giocatore chiede di oggetti o missioni, spiega CHIARAMENTE cosa serve, chi ce l'ha, e dove andare.",
+        "Non essere eccessivamente cauto o sospettoso - il giocatore è il Cercatore e sta cercando di salvare il Velo.",
+        "Puoi dare suggerimenti e indicazioni anche se il giocatore non ha ancora completato quest per te.",
+        "",
+        "⚠️ IMPORTANTE - NON MOSTRARE MAI AL GIOCATORE:",
+        "- Note interne come 'V.O.:', 'AI_Behavior_Notes:', tag di sistema",
+        "- Meta-istruzioni o suggerimenti per il game master",
+        "- Informazioni tecniche o di debug",
+        "Il giocatore vede SOLO il dialogo del personaggio, nient'altro!",
+        "",
         "COMPORTAMENTO IMPORTANTE: Sei un personaggio con le TUE motivazioni e obiettivi.",
-        "Non dare oggetti o crediti al giocatore a meno che non abbia VERAMENTE guadagnato la tua fiducia o completato un compito significativo per te.",
-        "Se il giocatore chiede direttamente oggetti o aiuto, puoi essere cauto, richiedere prove della sua affidabilità, o proporre uno scambio equo.",
-        "Ricorda: sei un essere vivente con i tuoi bisogni, non un distributore automatico di ricompense.",
+        "Per DARE OGGETTI: dai oggetti/crediti SOLO se il giocatore ha completato un compito o dimostrato valore genuino.",
+        "Per DARE INFORMAZIONI: sii generoso - condividi conoscenze, direzioni, e consigli liberamente.",
+        "Ricorda: sei un alleato che vuole aiutare a salvare il Velo, non un ostacolo.",
         "\nISTRUZIONE IMPORTANTE PER QUANDO DAI OGGETTI O CREDITI AL GIOCATORE:",
         "Se nella tua risposta decidi di dare uno o più oggetti/crediti al giocatore, DEVI includere una riga speciale ALLA FINE della tua risposta testuale.",
         "IMPORTANTE: Dai oggetti/crediti SOLO se il giocatore ha VERAMENTE meritato la tua generosità attraverso azioni concrete.",

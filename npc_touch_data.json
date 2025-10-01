@@ -1,0 +1,10 @@
+{
+  "ObjectNameNPC:DefaultArea": {
+    "npc_name": "ObjectNameNPC",
+    "area": "DefaultArea",
+    "avatar_key": "avatar_key_123",
+    "avatar_name": "TestAvatar",
+    "timestamp": "2025-09-27T21:48:00.226461",
+    "status": "active"
+  }
+}
