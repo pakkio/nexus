@@ -156,8 +156,33 @@ def preload_npcs():
                         with open(os.path.join(npc_dir_path, f"{npc_code}.json"), 'w', encoding='utf-8') as f:
                             json.dump(npc_data, f, indent=2)
                     else:
-                        # For real database, would need to implement NPC insertion logic
-                        logger.warning("Real database NPC preloading not implemented yet")
+                        # Insert NPC into MySQL database
+                        import mysql.connector
+                        conn = None
+                        try:
+                            conn = game_system.db.connect()
+                            cursor = conn.cursor()
+                            sql = """INSERT INTO NPCs (code, name, area, role, motivation, goal, needed_object,
+                                     treasure, playerhint, dialogue_hooks, veil_connection, emotes, animations,
+                                     lookup, llsettext, storyboard_id)
+                                     VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                                     ON DUPLICATE KEY UPDATE name=VALUES(name), area=VALUES(area), role=VALUES(role)"""
+                            cursor.execute(sql, (
+                                npc_data.get('code'), npc_data.get('name'), npc_data.get('area'),
+                                npc_data.get('role'), npc_data.get('motivation'), npc_data.get('goal'),
+                                npc_data.get('needed_object'), npc_data.get('treasure'), npc_data.get('playerhint'),
+                                npc_data.get('dialogue_hooks'), npc_data.get('veil_connection'),
+                                npc_data.get('emotes'), npc_data.get('animations'), npc_data.get('lookup'),
+                                npc_data.get('llsettext'), npc_data.get('storyboard_id', 1)
+                            ))
+                            conn.commit()
+                        except Exception as db_err:
+                            logger.error(f"Error inserting NPC {npc_code} into database: {db_err}")
+                            if conn:
+                                conn.rollback()
+                        finally:
+                            if conn:
+                                conn.close()
                     
                     npc_count += 1
                     logger.info(f"Loaded NPC: {npc_code}")
@@ -186,6 +211,8 @@ def initialize_game_system():
     
     logger.info(f"Initializing GameSystem with mockup={use_mockup}, model={model_name}")
     
+    # Initialize GameSystem - it will handle database configuration internally using environment variables
+    from game_system_api import GameSystem
     game_system = GameSystem(
         use_mockup=use_mockup,
         mockup_dir=mockup_dir,
@@ -194,6 +221,8 @@ def initialize_game_system():
         wise_guide_model_name=wise_guide_model,
         debug_mode=debug_mode
     )
+    
+    logger.info(f"Initialized GameSystem with mockup={use_mockup}, model={model_name}")
     
     return game_system
 
