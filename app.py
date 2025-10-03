@@ -691,29 +691,38 @@ def chat_with_npc():
                     'error': f'Error going to area {area}: {str(e)}'
                 }), 500
         
-        # If NPC name is specified, try to switch to that NPC
+        # If NPC name is specified, check if we need to switch to that NPC
         if npc_name:
-            # Format as a /talk command to switch to the specific NPC
-            talk_command = f"/talk {npc_name}"
-            try:
-                switch_response = player_system.process_player_input(talk_command, skip_profile_update=True)
-            except Exception as e:
-                return jsonify({
-                    'error': f'Error switching to NPC {npc_name}: {str(e)}'
-                }), 500
-            
-            # Ensure switch_response is not None
-            if not switch_response:
-                return jsonify({
-                    'error': f'Invalid response when trying to switch to NPC: {npc_name}'
-                }), 500
-            
-            # Check if the switch was successful
-            if switch_response.get('current_npc_name', '').lower() != npc_name.lower():
-                return jsonify({
-                    'error': f'Could not find or switch to NPC: {npc_name}',
-                    'available_npcs': switch_response.get('system_messages', [])
-                }), 400
+            # Check if we're already talking to this NPC
+            current_npc = player_system.game_state.get('current_npc')
+            current_npc_name = current_npc.get('name', '') if current_npc else ''
+
+            # Only switch if we're not already talking to this NPC
+            if current_npc_name.lower() != npc_name.lower():
+                logger.info(f"Switching from {current_npc_name} to {npc_name}")
+                # Format as a /talk command to switch to the specific NPC
+                talk_command = f"/talk {npc_name}"
+                try:
+                    switch_response = player_system.process_player_input(talk_command, skip_profile_update=True)
+                except Exception as e:
+                    return jsonify({
+                        'error': f'Error switching to NPC {npc_name}: {str(e)}'
+                    }), 500
+
+                # Ensure switch_response is not None
+                if not switch_response:
+                    return jsonify({
+                        'error': f'Invalid response when trying to switch to NPC: {npc_name}'
+                    }), 500
+
+                # Check if the switch was successful
+                if switch_response.get('current_npc_name', '').lower() != npc_name.lower():
+                    return jsonify({
+                        'error': f'Could not find or switch to NPC: {npc_name}',
+                        'available_npcs': switch_response.get('system_messages', [])
+                    }), 400
+            else:
+                logger.info(f"Already talking to {npc_name}, continuing conversation")
         
         # Process the actual chat message
         try:
