@@ -128,8 +128,13 @@ REGOLE DI INTERPRETAZIONE FONDAMENTALI:
 - Se vuole vedere l'inventario/oggetti/borsa/tasca → /inventory
 - Se vuole uscire/andarsene/smettere → /exit
 - Se vuole parlare con qualcuno di specifico → /talk <npc>
-- Se chiede consigli/guida/suggerimenti → /hint
 - Se chiede lista aree/elenca aree → /areas o /listareas
+- Se vuole consultazione ESPLICITA con guida saggia → /hint
+
+**IMPORTANTE - DISTINZIONE /hint vs DIALOGO:**
+- "/hint", "dammi un consiglio", "consulta la guida", "chiedi alla guida" → COMANDO /hint
+- "cosa devo fare?", "come procedo?", "quale missione?", "cosa mi consigli?" → DIALOGO con NPC corrente!
+- "ho bisogno di aiuto" → DIALOGO (richiesta generica all'NPC)
 
 ESEMPI SPECIFICI:
 
@@ -142,6 +147,10 @@ ESEMPI SPECIFICI:
 - "ciao Jorin, come stai?" → DIALOGO
 - "dimmi della tua famiglia" → DIALOGO
 - "ho bisogno di una mappa" → DIALOGO
+- "cosa devo fare?" → DIALOGO (domanda all'NPC, NON /hint!)
+- "come procedo?" → DIALOGO (domanda all'NPC, NON /hint!)
+- "quale missione hai per me?" → DIALOGO (domanda all'NPC, NON /hint!)
+- "cosa mi consigli?" → DIALOGO (domanda all'NPC, NON /hint!)
 
 **COMANDI /give:**
 - "do la moneta a questo NPC" → COMANDO: /give Rare Coin
@@ -153,6 +162,12 @@ ESEMPI SPECIFICI:
 - "dammi il diario" → COMANDO: /receive Diary
 - "voglio quel libro" → COMANDO: /receive Book
 - "passami la chiave" → COMANDO: /receive Key
+
+**COMANDI /hint (consultazione guida saggia):**
+- "/hint" → COMANDO: /hint
+- "dammi un consiglio" → COMANDO: /hint
+- "consulta la guida" → COMANDO: /hint
+- "chiedi alla guida saggia" → COMANDO: /hint
 
 **ALTRI COMANDI:**
 - "vado in taverna" → COMANDO: /go Tavern
