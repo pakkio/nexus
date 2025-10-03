@@ -988,12 +988,18 @@ def sense_player():
                     # Set the NPC directly in game state
                     player_system.game_state['current_npc'] = npc_data
                     logger.info(f"Successfully set NPC {npc_name} for player {player_name}")
-                    
-                    # Initialize a chat session for the NPC
-                    from chat_manager import ChatSession
-                    chat_session = ChatSession()
-                    player_system.game_state['chat_session'] = chat_session
-                    
+                    logger.info(f"NPC data has default_greeting: {'default_greeting' in npc_data}")
+
+                    # Initialize a chat session for the NPC ONLY if there isn't one already
+                    # This prevents losing conversation history when player re-touches the same NPC
+                    if not player_system.game_state.get('chat_session'):
+                        from chat_manager import ChatSession
+                        chat_session = ChatSession()
+                        player_system.game_state['chat_session'] = chat_session
+                        logger.info(f"Created new chat session for {npc_name}")
+                    else:
+                        logger.info(f"Reusing existing chat session for {npc_name}")
+
                     logger.info(f"Directly set NPC {npc_name} for player {player_name} in area {current_area}")
                 else:
                     return jsonify({
@@ -1015,14 +1021,34 @@ def sense_player():
         
         current_npc_name = current_npc.get('name', 'Unknown NPC')
         
-        # Generate a simple greeting based on NPC's character
+        # Get the NPC's unique greeting from their card
         npc_role = current_npc.get('role', 'resident')
         npc_area = current_npc.get('area', 'this place')
-        
-        # Generate a simple contextual greeting without processing through the full system
-        if 'erborista' in npc_role.lower():
-            npc_response = f"*{current_npc_name} alza lo sguardo dalle sue erbe* Oh, un visitatore nel mio giardino. Benvenuto."
+
+        # Check if there's an existing conversation with this NPC
+        chat_session = player_system.game_state.get('chat_session')
+        has_conversation_history = chat_session and len(chat_session.messages) > 0
+
+        # Try to get the Default_Greeting from NPC data, fallback to generic greeting
+        default_greeting = current_npc.get('default_greeting', '')
+        logger.info(f"Raw default_greeting for {current_npc_name}: {repr(default_greeting)}")
+
+        # Strip extra quotes if present (from JSON escaping)
+        if default_greeting and default_greeting.startswith('"') and default_greeting.endswith('"'):
+            default_greeting = default_greeting[1:-1]
+            logger.info(f"Cleaned default_greeting: {repr(default_greeting)}")
+
+        # Choose response based on whether there's conversation history
+        if has_conversation_history:
+            # Player is returning to an ongoing conversation
+            logger.info(f"Player {player_name} returning to conversation with {current_npc_name}")
+            npc_response = f"Bentornato, {player_name}. Di cosa volevi parlare?"
+        elif default_greeting:
+            # Use the NPC's unique greeting from their card for first contact
+            npc_response = default_greeting
         else:
+            # Fallback to generic greeting if not found
+            logger.warning(f"No Default_Greeting found for NPC {current_npc_name}, using fallback")
             npc_response = f"*{current_npc_name} nota {player_name}* Salve, viandante."
         
         # Create a minimal response object for consistency
