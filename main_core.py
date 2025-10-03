@@ -49,6 +49,22 @@ except ImportError:
       'debug_mode': False
     }
 
+# === [AGGIUNTA] Caricamento mappa personaggi e tappe all'avvio ===
+def load_world_context():
+    try:
+        with open("mappa_personaggi_luoghi.txt", "r", encoding="utf-8") as f:
+            mappa_personaggi_luoghi = f.read()
+    except Exception:
+        mappa_personaggi_luoghi = ""
+    try:
+        with open("percorso_narratore_tappe.txt", "r", encoding="utf-8") as f:
+            percorso_narratore_tappe = f.read()
+    except Exception:
+        percorso_narratore_tappe = ""
+    return mappa_personaggi_luoghi, percorso_narratore_tappe
+
+# === [FINE AGGIUNTA] ===
+
 def run_interaction_loop(
   db: DbManager,
   story: str,

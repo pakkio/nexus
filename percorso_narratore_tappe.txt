@@ -1,0 +1,60 @@
+# Il Percorso del Narratore – Cercatore: Tappe e Progressione
+
+Questa guida descrive la progressione narrativa del gioco, le tappe principali, le missioni e gli incontri chiave che scandiscono il viaggio del Narratore – Cercatore attraverso Eldoria.
+
+Introduzione
+Il protagonista, un tempo Grande Narratore, ora divenuto Cercatore, si mette in cammino per recuperare la memoria delle narrazioni perdute. Il suo viaggio lo porterà a incontrare personaggi chiave, affrontare prove e compiere scelte che influenzeranno il destino del Velo che avvolge Eldoria.
+
+---
+
+Tappe del Viaggio
+
+1. Vuoto liminale al confine esterno di Eldoria
+- Incontro con Erasmus, che introduce il tema della memoria e del Velo.
+- Erasmus parla per enigmi e invita il Cercatore a superare il grande arco verso Eldoria.
+
+2. Antiche Rovine
+- Incontro con Syra, custode delle rovine.
+- Syra affida al Cercatore la missione di portarle la Ciotola Sacra riempita con acqua pura, in cambio di una porzione di memoria e del Cristallo della Memoria Antica.
+
+3. Villaggio della Taverna di Jorin
+- Incontro con Jorin, il locandiere.
+- Jorin chiede al Cercatore di portargli la Ciotola dell’Offerta Sacra, necessaria per le cerimonie antiche.
+
+4. Villaggio della Bottega del fabbro Garin
+- Incontro con Garin, il fabbro.
+- Garin affida la missione di recuperare minerale di ferro antico dalla Montagna, promettendo in cambio trucioli di ferro utili a Jorin.
+
+5. Foresta – Mara ed Elira
+- Mara, erborista, chiede aiuto per portare una boccetta a Elira, che cura le ferite causate dai Sussurri dell’Oblio.
+- Mara offre crediti utili in città.
+- Elira si incontra tramite un filtro magico (teleport), poi il Cercatore torna da Mara.
+
+6. Nesso dei Sentieri (bloccato)
+- Un muro magico impedisce l’accesso finché la Ciotola Sacra non sarà consegnata a Lyra.
+- Il Cercatore è costretto a deviare verso la città di Eldoria.
+
+7. Città di Eldoria
+- Incontri con Cassian (Torre di Cassian), Theron (giudice), e Irenna (artista burattinaia della Resistenza).
+- Cassian propone uno scambio di crediti per la Pergamena della Saggezza.
+- Theron consegna la Pergamena e riflette sul senso della memoria e dell’oblio.
+- Irenna, nel regno sotterraneo, parla del potere della memoria e delle marionette, e offre un teleport verso l’uscita.
+
+8. Santuario dei Sussurri
+- Incontro con Lyra (Custode) e Boros (Signore della Montagna).
+- Lyra spiega la necessità di recuperare il Cristallo della Memoria Antica e il Telaio dell’Eco.
+- Boros parla della Filosofia del Flusso e consegna il Seme di Foresta e il minerale di ferro antico.
+
+9. Nesso dei Sentieri (atto finale)
+- Tutti i personaggi si ritrovano qui per l’ultimo atto.
+- Il Cercatore deve compiere la scelta finale sul destino del Velo: preservarlo, trasformarlo o dissolverlo.
+
+---
+
+Meccaniche Ricorrenti
+- Ogni tappa prevede un incontro, una missione/oggetto da recuperare, e uno scambio significativo.
+- Alcuni personaggi offrono teleport o indicazioni per proseguire.
+- Le scelte del Cercatore influenzano la narrazione e il destino del Velo.
+
+Nota:
+Questa struttura può essere usata come introduzione nei prompt per LLM, come guida per la narrazione, o come base per la logica di progressione del gioco.

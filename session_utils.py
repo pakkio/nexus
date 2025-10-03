@@ -93,6 +93,17 @@ def build_system_prompt(
     conversation_summary_for_guide_context: Optional[str] = None, # MODIFIED: Renamed
     llm_wrapper_func_for_distill: Optional[Callable] = None # MODIFIED: Renamed for clarity
 ) -> str:
+    # === [AGGIUNTA] Inserisci i due documenti come contesto ===
+    mappa = game_session_state.get('mappa_personaggi_luoghi', '')
+    percorso = game_session_state.get('percorso_narratore_tappe', '')
+    context_intro = (
+        f"CONTESTO STATICO:\n{mappa}\n\n"
+        f"CONTESTO DINAMICO:\n{percorso}\n\n"
+        f"ISTRUZIONI:\nRispondi coerentemente con la posizione attuale dei personaggi e la tappa raggiunta dal Cercatore. "
+        f"Non anticipare eventi futuri e non spostare i personaggi in luoghi diversi da quelli previsti, a meno che la narrazione non lo richieda esplicitamente.\n\n"
+    )
+    # === [FINE AGGIUNTA] ===
+
     player_id = game_session_state['player_id']
     player_profile = game_session_state.get('player_profile_cache')
     model_name_for_distill = game_session_state.get('profile_analysis_model_name') or game_session_state.get('model_name')

@@ -1,0 +1,46 @@
+# Mappa dei Personaggi e dei Luoghi di Eldoria
+
+Questa mappa elenca i principali luoghi di Eldoria e i personaggi che vi si trovano, fornendo un riferimento statico per la collocazione dei personaggi nel mondo di gioco.
+
+- Vuoto liminale al confine esterno di Eldoria
+  - Personaggio: Erasmus
+
+- Il Velo Turrito che riveste Eldoria (infranto)
+  - Punto di passaggio, nessun personaggio fisso
+
+- Antiche Rovine
+  - Personaggio: Syra
+
+- 1° Villaggio - Taverna di Jorin
+  - Personaggio: Jorin
+
+- 2° Villaggio - Bottega del fabbro Garin
+  - Personaggio: Garin
+
+- Tra villaggio e foresta
+  - Personaggio: Mara
+
+- Foresta diffusa
+  - Personaggio: Elira
+
+- Nesso dei Sentieri (Nexus)
+  - Personaggio: Meridia
+  - Tutti i personaggi si ritrovano qui nell’ultima tappa
+
+- Città di Eldoria
+  - Personaggi: Cassian, Theron, Irenna
+
+- Montagna
+  - Personaggio: Boros
+
+- Santuario dei Sussurri
+  - Personaggi: Lyra, Boros
+
+- Nesso dei Sentieri
+  - Tutti i personaggi si ritrovano qui nell’ultimo atto
+
+---
+
+Nota:
+Alcuni personaggi si spostano o compaiono in più luoghi (es. Boros è sia in Montagna che al Santuario dei Sussurri).
+Il Nesso dei Sentieri è il punto di ritrovo finale per tutti.
