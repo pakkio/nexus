@@ -27,6 +27,22 @@ logger = logging.getLogger(__name__)
 # Global game system instance
 game_system: Optional[GameSystem] = None
 
+# Version management
+# Format: MAJOR.MINOR.PATCH
+# - MAJOR: Breaking changes
+# - MINOR: New features/fixes (increment for each significant fix)
+# - PATCH: Small bugfixes
+VERSION = "1.4.0"
+
+# Version changelog
+VERSION_CHANGELOG = {
+    "1.4.0": "Fix NLP interpretation of dialogue vs /hint commands",
+    "1.3.0": "Fix system prompt greeting repetition",
+    "1.2.0": "Fix /api/chat NPC switching behavior",
+    "1.1.0": "Fix /sense endpoint greeting repetition",
+    "1.0.0": "Initial release"
+}
+
 # Constants
 GAME_SYSTEM_NOT_INITIALIZED = 'Game system not initialized'
 
@@ -247,11 +263,13 @@ def index():
     """Root endpoint with API information."""
     return jsonify({
         'service': 'nexus-api',
-        'version': '1.0.0',
+        'version': VERSION,
         'status': 'running',
         'description': 'AI-powered text-based RPG engine',
+        'changelog': VERSION_CHANGELOG.get(VERSION, 'No changelog available'),
         'endpoints': {
             'health': '/health',
+            'version': '/version',
             'chat': '/api/chat',
             'commands': '/api/commands',
             'player': '/api/player/<player_id>/*',
@@ -266,7 +284,19 @@ def health_check():
     return jsonify({
         'status': 'healthy',
         'service': 'nexus-api',
-        'version': '1.0.0'
+        'version': VERSION,
+        'uptime': 'n/a',  # Could be implemented with start time tracking
+        'last_change': VERSION_CHANGELOG.get(VERSION, 'Unknown')
+    })
+
+@app.route('/version', methods=['GET'])
+def version_info():
+    """Version information endpoint."""
+    return jsonify({
+        'current_version': VERSION,
+        'changelog': VERSION_CHANGELOG,
+        'latest_change': VERSION_CHANGELOG.get(VERSION, 'Unknown'),
+        'service': 'nexus-api'
     })
 
 @app.route('/api/player/<player_id>/session', methods=['POST'])
