@@ -32,7 +32,7 @@ game_system: Optional[GameSystem] = None
 # - MAJOR: Breaking changes
 # - MINOR: New features/fixes (increment for each significant fix)
 # - PATCH: Small bugfixes
-VERSION = "1.4.0"
+VERSION = "1.4.2"
 
 # Version changelog
 VERSION_CHANGELOG = {
@@ -684,27 +684,25 @@ def chat_with_npc():
         if not data or 'message' not in data:
             return jsonify({'error': 'Missing message field'}), 400
         
-        if 'player_name' not in data:
-            return jsonify({'error': 'Missing player_name field'}), 400
-        
+        # Accept both player_id (UUID) and display_name, fallback for legacy clients
+        player_id = data.get('player_id') or data.get('player_name') or data.get('name')
+        display_name = data.get('display_name', player_id)
         message = data['message']
-        player_name = data['player_name']
         npc_name = data.get('npc_name')  # Optional NPC name parameter
         area = data.get('area')  # Optional area parameter
-        
-        # Validate player_name
-        if not player_name or not isinstance(player_name, str) or len(player_name.strip()) == 0:
-            return jsonify({'error': 'Invalid player_name: must be a non-empty string'}), 400
-        
-        player_name = player_name.strip()
+
+        # Validate player_id
+        if not player_id or not isinstance(player_id, str) or len(player_id.strip()) == 0:
+            return jsonify({'error': 'Invalid player_id: must be a non-empty string'}), 400
+        player_id = player_id.strip()
         
         # Get player system
-        player_system = game_system.get_player_system(player_name)
+        player_system = game_system.get_player_system(player_id)
         
         # Ensure player_system is valid
         if not player_system:
             return jsonify({
-                'error': f'Could not create or retrieve player system for: {player_name}'
+                'error': f'Could not create or retrieve player system for: {player_id}'
             }), 500
         
         # If area is specified, go to that area first
@@ -837,7 +835,8 @@ def chat_with_npc():
         }
         
         return jsonify({
-            'player_name': player_name,
+            'player_id': player_id,
+            'display_name': display_name,
             'player_message': message,
             'npc_name': npc_name,
             'npc_response': normalize_text_for_lsl(npc_response),
@@ -963,18 +962,18 @@ def sense_player():
             return jsonify({'error': GAME_SYSTEM_NOT_INITIALIZED}), 500
         
         data = request.get_json()
-        if not data or 'name' not in data:
-            return jsonify({'error': 'Missing name field'}), 400
-        
-        player_name = data['name'].strip()
-        if not player_name:
-            return jsonify({'error': 'Player name cannot be empty'}), 400
+        # Accept both player_id (UUID) and display_name, fallback for legacy clients
+        player_id = data.get('player_id') or data.get('player_name') or data.get('name')
+        display_name = data.get('display_name', player_id)
+        if not player_id or not isinstance(player_id, str) or len(player_id.strip()) == 0:
+            return jsonify({'error': 'Invalid player_id: must be a non-empty string'}), 400
+        player_id = player_id.strip()
         
         npc_name = data.get('npcname', '').strip()
         area = data.get('area', '').strip()
         
         # Get player system
-        player_system = game_system.get_player_system(player_name)
+        player_system = game_system.get_player_system(player_id)
         
         # Check if player has a current area, if not, set default starting area
         current_area = player_system.game_state.get('current_area')
@@ -982,7 +981,7 @@ def sense_player():
             # Set default starting area to 'village' if no area specified, otherwise use specified area
             default_area = area if area else 'village'
             player_system.game_state['current_area'] = default_area
-            logger.info(f"Set initial area for fresh player {player_name} to {default_area}")
+            logger.info(f"Set initial area for fresh player {player_id} to {default_area}")
         
         # Initialize other game state if missing
         if 'current_npc' not in player_system.game_state:
@@ -999,18 +998,18 @@ def sense_player():
                     area_response = player_system.process_player_input(go_command, skip_profile_update=True)
                     if not area_response or not isinstance(area_response, dict):
                         # For fresh player state after reset, this might be normal, continue anyway
-                        logger.warning(f"Got invalid response when going to area {area} for fresh player {player_name}")
+                        logger.warning(f"Got invalid response when going to area {area} for fresh player {player_id}")
                         # Set the area manually as fallback
                         player_system.game_state['current_area'] = area
                     else:
-                        logger.info(f"Successfully moved player {player_name} to area {area}")
+                        logger.info(f"Successfully moved player {player_id} to area {area}")
                 except Exception as e:
                     logger.error(f"Exception in /go command for area {area}: {str(e)}", exc_info=True)
                     # Set the area manually as fallback instead of failing
-                    logger.warning(f"Setting area {area} manually for {player_name} as fallback")
+                    logger.warning(f"Setting area {area} manually for {player_id} as fallback")
                     player_system.game_state['current_area'] = area
             else:
-                logger.info(f"Player {player_name} already in area {area}, skipping /go command")
+                logger.info(f"Player {player_id} already in area {area}, skipping /go command")
         
         # If NPC name is specified, try to set that NPC directly
         if npc_name:
@@ -1026,7 +1025,7 @@ def sense_player():
                 if npc_data:
                     # Set the NPC directly in game state
                     player_system.game_state['current_npc'] = npc_data
-                    logger.info(f"Successfully set NPC {npc_name} for player {player_name}")
+                    logger.info(f"Successfully set NPC {npc_name} for player {player_id}")
                     logger.info(f"NPC data has default_greeting: {'default_greeting' in npc_data}")
 
                     # Initialize a chat session for the NPC ONLY if there isn't one already
@@ -1039,7 +1038,7 @@ def sense_player():
                     else:
                         logger.info(f"Reusing existing chat session for {npc_name}")
 
-                    logger.info(f"Directly set NPC {npc_name} for player {player_name} in area {current_area}")
+                    logger.info(f"Directly set NPC {npc_name} for player {player_id} in area {current_area}")
                 else:
                     return jsonify({
                         'error': f'Could not find NPC {npc_name} in area {current_area}'
@@ -1054,8 +1053,9 @@ def sense_player():
         current_npc = player_system.game_state.get('current_npc')
         if not current_npc:
             return jsonify({
-                'npc_response': normalize_text_for_lsl(f"No NPC is currently present to notice {player_name}'s arrival."),
-                'player_name': player_name
+                'npc_response': normalize_text_for_lsl(f"No NPC is currently present to notice {display_name}'s arrival."),
+                'player_id': player_id,
+                'display_name': display_name
             })
         
         current_npc_name = current_npc.get('name', 'Unknown NPC')
@@ -1080,15 +1080,15 @@ def sense_player():
         # Choose response based on whether there's conversation history
         if has_conversation_history:
             # Player is returning to an ongoing conversation
-            logger.info(f"Player {player_name} returning to conversation with {current_npc_name}")
-            npc_response = f"Bentornato, {player_name}. Di cosa volevi parlare?"
+            logger.info(f"Player {player_id} returning to conversation with {current_npc_name}")
+            npc_response = f"Bentornato, {display_name}. Di cosa volevi parlare?"
         elif default_greeting:
             # Use the NPC's unique greeting from their card for first contact
             npc_response = default_greeting
         else:
             # Fallback to generic greeting if not found
             logger.warning(f"No Default_Greeting found for NPC {current_npc_name}, using fallback")
-            npc_response = f"*{current_npc_name} nota {player_name}* Salve, viandante."
+            npc_response = f"*{current_npc_name} nota {display_name}* Salve, viandante."
         
         # Create a minimal response object for consistency
         response = {'current_area': npc_area}
@@ -1105,7 +1105,8 @@ def sense_player():
         return jsonify({
             'npc_response': normalize_text_for_lsl(npc_response),
             'npc_name': current_npc_name,
-            'player_name': player_name,
+            'player_id': player_id,
+            'display_name': display_name,
             'current_area': response.get('current_area'),
             'sl_commands': normalize_text_for_lsl(sl_commands),
             'system_messages': response.get('system_messages', [])
@@ -1123,28 +1124,30 @@ def leave_player():
             return jsonify({'error': GAME_SYSTEM_NOT_INITIALIZED}), 500
         
         data = request.get_json()
-        if not data or 'name' not in data:
-            return jsonify({'error': 'Missing name field'}), 400
-        
-        player_name = data['name'].strip()
-        if not player_name:
-            return jsonify({'error': 'Player name cannot be empty'}), 400
+        # Accept both player_id (UUID) and display_name, fallback for legacy clients
+        player_id = data.get('player_id') or data.get('player_name') or data.get('name')
+        display_name = data.get('display_name', player_id)
+        if not player_id or not isinstance(player_id, str) or len(player_id.strip()) == 0:
+            return jsonify({'error': 'Invalid player_id: must be a non-empty string'}), 400
+        player_id = player_id.strip()
         
         # Get player system safely
         try:
-            player_system = game_system.get_player_system(player_name)
+            player_system = game_system.get_player_system(player_id)
             if not player_system or not hasattr(player_system, 'game_state'):
                 return jsonify({
-                    'message': f"*{player_name} has left*",
-                    'player_name': player_name,
+                    'message': f"*{display_name} has left*",
+                    'player_id': player_id,
+                    'display_name': display_name,
                     'conversation_saved': False,
                     'note': 'No active session found'
                 })
         except Exception as e:
-            logger.error(f"Error getting player system for {player_name}: {str(e)}")
+            logger.error(f"Error getting player system for {player_id}: {str(e)}")
             return jsonify({
-                'message': f"*{player_name} has left*",
-                'player_name': player_name,
+                'message': f"*{display_name} has left*",
+                'player_id': player_id,
+                'display_name': display_name,
                 'conversation_saved': False,
                 'error': f"Could not access player session: {str(e)}"
             })
@@ -1154,14 +1157,14 @@ def leave_player():
         chat_session = player_system.game_state.get('chat_session') if player_system.game_state else None
         current_area = player_system.game_state.get('current_area') if player_system.game_state else 'Unknown'
         
-        departure_message = f"*{player_name} has left*"
+        departure_message = f"*{display_name} has left*"
         current_npc_name = None
         conversation_saved = False
         
         # If there's an active conversation, save it and create departure message
         if current_npc and chat_session:
             current_npc_name = current_npc.get('name', 'Unknown NPC')
-            departure_message = f"*{current_npc_name} notices {player_name} is leaving*"
+            departure_message = f"*{current_npc_name} notices {display_name} is leaving*"
             
             # Try to save conversation
             try:
@@ -1170,17 +1173,17 @@ def leave_player():
                 
                 save_current_conversation(
                     game_system.db, 
-                    player_name, 
+                    player_id, 
                     current_npc, 
                     chat_session, 
                     TerminalFormatter, 
                     player_system.game_state
                 )
                 conversation_saved = True
-                logger.info(f"Saved conversation for {player_name} with {current_npc_name}")
+                logger.info(f"Saved conversation for {player_id} with {current_npc_name}")
                 
             except Exception as save_error:
-                logger.error(f"Error saving conversation for {player_name}: {str(save_error)}")
+                logger.error(f"Error saving conversation for {player_id}: {str(save_error)}")
                 # Don't fail the whole operation, just log the error
                 conversation_saved = False
         
@@ -1190,23 +1193,28 @@ def leave_player():
                 player_system.game_state['current_npc'] = None
                 player_system.game_state['chat_session'] = None
                 # Keep current_area, inventory, profile, etc.
-                logger.info(f"Cleaned up session state for {player_name}")
+                logger.info(f"Cleaned up session state for {player_id}")
             except Exception as cleanup_error:
-                logger.error(f"Error cleaning up session for {player_name}: {str(cleanup_error)}")
+                logger.error(f"Error cleaning up session for {player_id}: {str(cleanup_error)}")
         
         return jsonify({
             'message': departure_message,
             'npc_name': current_npc_name,
-            'player_name': player_name,
+            'player_id': player_id,
+            'display_name': display_name,
             'current_area': current_area,
             'conversation_saved': conversation_saved
         })
     
     except Exception as e:
         logger.error(f"Error in leave endpoint: {str(e)}")
+        # Ensure display_name and player_id are always defined for error response
+        safe_display_name = locals().get('display_name', 'unknown')
+        safe_player_id = locals().get('player_id', 'unknown')
         return jsonify({
-            'message': f"*{player_name} has left*",
-            'player_name': player_name if 'player_name' in locals() else 'unknown',
+            'message': f"*{safe_display_name} has left*",
+            'player_id': safe_player_id,
+            'display_name': safe_display_name,
             'conversation_saved': False,
             'error': str(e)
         }), 500
@@ -1224,11 +1232,13 @@ def leave_npc_conversation():
             return jsonify({'error': 'Missing request data'}), 400
         
         # Extract fields sent from LSL script
-        player_name = data.get('player_name', '').strip()
+        player_id = data.get('player_id') or data.get('player_name') or data.get('name', '')
+        player_id = player_id.strip() if player_id else ''
+        display_name = data.get('display_name', player_id)
         npc_name = data.get('npc_name', '').strip()
         
-        if not player_name:
-            return jsonify({'error': 'Player name cannot be empty'}), 400
+        if not player_id:
+            return jsonify({'error': 'Player id cannot be empty'}), 400
         if not npc_name:
             return jsonify({'error': 'NPC name cannot be empty'}), 400
         
@@ -1237,25 +1247,27 @@ def leave_npc_conversation():
         message = data.get('message', 'Avatar is leaving the conversation')
         status = data.get('status', 'end')
         
-        logger.info(f"NPC conversation leave request: {player_name} with {npc_name} in {area}, action: {action}, status: {status}")
+        logger.info(f"NPC conversation leave request: {player_id} with {npc_name} in {area}, action: {action}, status: {status}")
         
         # Get player system safely
         try:
-            player_system = game_system.get_player_system(player_name)
+            player_system = game_system.get_player_system(player_id)
             if not player_system or not hasattr(player_system, 'game_state'):
                 return jsonify({
-                    'message': f"*{player_name} has left conversation with {npc_name}*",
-                    'player_name': player_name,
+                    'message': f"*{display_name} has left conversation with {npc_name}*",
+                    'player_id': player_id,
+                    'display_name': display_name,
                     'npc_name': npc_name,
                     'area': area,
                     'conversation_saved': False,
                     'note': 'No active session found'
                 })
         except Exception as e:
-            logger.error(f"Error getting player system for {player_name}: {str(e)}")
+            logger.error(f"Error getting player system for {player_id}: {str(e)}")
             return jsonify({
-                'message': f"*{player_name} has left conversation with {npc_name}*",
-                'player_name': player_name,
+                'message': f"*{display_name} has left conversation with {npc_name}*",
+                'player_id': player_id,
+                'display_name': display_name,
                 'npc_name': npc_name, 
                 'area': area,
                 'conversation_saved': False,
@@ -1267,7 +1279,7 @@ def leave_npc_conversation():
         chat_session = player_system.game_state.get('chat_session') if player_system.game_state else None
         current_area = player_system.game_state.get('current_area') if player_system.game_state else area
         
-        departure_message = f"*{npc_name} notices {player_name} is leaving*"
+        departure_message = f"*{npc_name} notices {display_name} is leaving*"
         conversation_saved = False
         
         # If there's an active conversation with the same NPC, save it
@@ -1278,17 +1290,17 @@ def leave_npc_conversation():
                 
                 save_current_conversation(
                     game_system.db, 
-                    player_name, 
+                    player_id, 
                     current_npc, 
                     chat_session, 
                     TerminalFormatter, 
                     player_system.game_state
                 )
                 conversation_saved = True
-                logger.info(f"Saved NPC conversation for {player_name} with {npc_name}")
+                logger.info(f"Saved NPC conversation for {player_id} with {npc_name}")
                 
             except Exception as save_error:
-                logger.error(f"Error saving NPC conversation for {player_name} with {npc_name}: {str(save_error)}")
+                logger.error(f"Error saving NPC conversation for {player_id} with {npc_name}: {str(save_error)}")
                 conversation_saved = False
         
         # Clean up NPC-specific session state
@@ -1298,14 +1310,15 @@ def leave_npc_conversation():
                 if current_npc and current_npc.get('name', '').lower() == npc_name.lower():
                     player_system.game_state['current_npc'] = None
                     player_system.game_state['chat_session'] = None
-                    logger.info(f"Cleaned up NPC conversation state for {player_name}")
+                    logger.info(f"Cleaned up NPC conversation state for {player_id}")
                     
             except Exception as cleanup_error:
-                logger.error(f"Error cleaning up NPC conversation for {player_name}: {str(cleanup_error)}")
+                logger.error(f"Error cleaning up NPC conversation for {player_id}: {str(cleanup_error)}")
         
         return jsonify({
             'message': departure_message,
-            'player_name': player_name,
+            'player_id': player_id,
+            'display_name': display_name,
             'npc_name': npc_name,
             'area': current_area,
             'status': status,
