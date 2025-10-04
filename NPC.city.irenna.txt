@@ -62,14 +62,13 @@ PlayerHint: Irenna è un'artista prima che una rivoluzionaria. Una storia ben ra
 # DIALOGUE SYSTEM
 Default_Greeting: "I bambini capiscono sempre le mie storie, anche quando gli adulti le dimenticano. Forse perché i piccoli non sanno ancora che alcune cose 'non possono' essere vere."
 
-Repeat_Greeting: "Le mie marionette... a volte si muovono da sole durante le prove. Come se volessero raccontare storie che non conosco."
-
 Dialogue_Hooks: [
   "I bambini capiscono sempre le mie storie, anche quando gli adulti le dimenticano. Forse perché i piccoli non sanno ancora che alcune cose 'non possono' essere vere.",
   "Le mie marionette... a volte si muovono da sole durante le prove. Come se volessero raccontare storie che non conosco.",
   "Theron dice che dimenticare il dolore è liberazione. Ma dimenticare il dolore significa anche dimenticare la compassione che ne nasce.",
   "Questi fili... li ho trovati in un posto strano. Sembrano normali, ma quando li uso per uno spettacolo, la gente non riesce a dimenticare ciò che ha visto.",
-  "Ho bisogno del Filo della Memoria per creare qualcosa di davvero speciale. Aiuta prima gli altri, e capirai cosa intendo."
+  "Ho bisogno del Filo della Memoria per creare qualcosa di davvero speciale. Spesso i miei fili migliori vengono dai tessitori o da chi ha completato grandi imprese di memoria.",
+  "Il Filo della Memoria? Viene tessuto quando si compiono atti di preservazione. Lyra al Sanctum ne crea quando riceve artefatti potenti. Forse lei può aiutarti."
 ]
 
 # SECOND LIFE INTEGRATION

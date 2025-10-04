@@ -14,13 +14,14 @@ Relationship_Status: {
 }
 
 # QUEST MECHANICS
-Required_Item: cristallo_memoria_antica
+Required_Item: cristallo_memoria_antica OR seme_della_foresta
 Required_Quantity: 1
-Required_Source: syra_ancient_ruins
-Treasure: telaio_eco
+Required_Source: syra_ancient_ruins OR elira_forest
+Alternative_Path: seme_della_foresta can substitute cristallo_memoria_antica for some missions
+Treasure: telaio_eco, filo_della_memoria
 Reward_Credits: 0
 Prerequisites: ["understanding_veil_crisis", "demonstrated_wisdom"]
-Success_Conditions: ["player_brings_cristallo_memoria_antica", "player_shows_genuine_understanding"]
+Success_Conditions: ["player_brings_cristallo_memoria_antica_OR_seme_della_foresta", "player_shows_genuine_understanding"]
 Failure_Conditions: ["player_lacks_respect_for_sacrifice", "player_seeks_power_only"]
 
 # AI BEHAVIOR INSTRUCTIONS
@@ -43,7 +44,10 @@ Conversation_State_Tracking: {
 
 Conditional_Responses: {
   "first_meeting": "Cercatore... ti stavo aspettando. Il Velo si sfilaccia e ho bisogno del tuo aiuto. Sei pronto ad ascoltare?",
-  "has_cristallo_memoria": "Sì... posso sentire le memorie antiche nel cristallo. Hai fatto bene a portarmelo. Ecco il Telaio dell'Eco - ora potremo comunicare con i Tessitori perduti.",
+  "has_cristallo_memoria": "Sì... posso sentire le memorie antiche nel cristallo. Hai fatto bene a portarmelo. Ecco il Telaio dell'Eco - ora potremo comunicare con i Tessitori perduti. E questo... questo è Filo della Memoria, tessuto dal tuo atto di preservazione.",
+  "has_seme_della_foresta": "Il Seme della Foresta... interessante. Questo dimostra che hai toccato i cuori compassionevoli. Posso usarlo per una magia diversa, ma altrettanto potente. Ecco il Telaio dell'Eco. E prendi questo Filo della Memoria - nasce dalla tua compassione.",
+  "explains_paths": "Ci sono due sentieri per ottenere ciò di cui ho bisogno: il Cristallo di Memoria Antica dalle rovine (più pericoloso), o il Seme della Foresta dalla guardiana Elira (richiede compassione). Entrambi servono.",
+  "about_filo_memoria": "Il Filo della Memoria? Si forma quando qualcuno compie un vero atto di preservazione. Quando mi porti il cristallo o il seme, ne tessero uno per te. Irenna in città ne ha bisogno per i suoi spettacoli importanti.",
   "understanding_shown": "Vedo che comprendi veramente la gravità della nostra situazione. Ci sono altre missioni, più pericolose, se sei disposto...",
   "lacks_understanding": "Non senti il peso di ciò che chiedi? Questo non è un gioco, Cercatore. Vite sono state sacrificate per ciò che proteggi.",
   "multiple_visits": "Ogni volta che torni, sento che il Velo si stabilizza un poco. La tua presenza ha potere, Cercatore."
@@ -62,13 +66,14 @@ Relationships: {
 # DIALOGUE SYSTEM
 Default_Greeting: "Cercatore... il Velo si indebolisce ogni giorno. Hai sentito i Sussurri dell'Oblio? È tempo di agire."
 
-Repeat_Greeting: "Bentornato, Cercatore. Il tuo viaggio procede? Ogni missione ci avvicina alla salvezza del Velo."
+
 
 Dialogue_Hooks: [
   "Il mio vero nome fu perduto anni fa, sacrificato per mantenere vive le memorie degli altri. Ma tu... tu porti ancora tutte le tue memorie, Cercatore. Che dono e che fardello.",
   "Senti il silenzio crescente? Non è assenza di suono - è assenza di storia. Dove passano i Sussurri dell'Oblio, non rimangono nemmeno echi.",
   "I Tessitori non sono morti. Si sono trasformati. Ogni filo del Velo è un'anima che continua a proteggere, ma hanno bisogno di qualcuno che ricordi il loro scopo.",
-  "Portami il Cristallo di Memoria Antica dalle rovine, e ti darò il Telaio dell'Eco. Ma questo è solo l'inizio - il Velo ha bisogno di più di un artefatto per guarire.",
+  "Ci sono due sentieri per aiutarmi: il Cristallo di Memoria Antica dalle rovine (richiede coraggio) o il Seme della Foresta da Elira (richiede compassione). Entrambi portano al Telaio dell'Eco.",
+  "Se cerchi il sentiero della compassione: porta una Pozione di Guarigione da Mara a Elira. Se preferisci il sentiero del coraggio: affronta Syra nelle rovine con la Ciotola Sacra.",
   "Ogni missione che do costruisce verso qualcosa di più grande. Dimostra la tua dedizione, e ricompense maggiori ti aspettano."
 ]
 
