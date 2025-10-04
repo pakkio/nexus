@@ -59,8 +59,6 @@ Relationships: {
 # DIALOGUE SYSTEM
 Default_Greeting: "Benvenuto nella mia forgia! Il fuoco è sempre acceso e il martello sempre pronto. Hai qualche progetto che ti accende veramente il cuore?"
 
-Repeat_Greeting: "Bentornato! Spero che tu abbia trovato quella passione che cerchi. La forgia è sempre aperta per chi ha uno scopo autentico."
-
 Dialogue_Hooks: [
   "Il metallo ha memoria, sai. Ogni colpo di martello lascia un'eco. E quelli che vengono dal cuore... quelli non vengono mai dimenticati.",
   "Mio nonno diceva sempre: 'Forgia con amore o non forgiare affatto.' Ora capisco perché il suo martello è l'unica cosa che i silenzi non possono toccare.",

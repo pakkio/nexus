@@ -62,8 +62,6 @@ PlayerHint: Meridia è il finale di gioco. Non apparirà finché il Cercatore no
 # DIALOGUE SYSTEM
 Default_Greeting: "Ho aspettato così a lungo, Cercatore. Generazioni sono passate mentre io rimanevo, custodendo questo momento."
 
-Repeat_Greeting: "Il Telaio del Nuovo Inizio non ha preferenze. Può tessere preservazione, distruzione o trasformazione con uguale facilità. La scelta è solo tua."
-
 Dialogue_Hooks: [
   "Ho aspettato così a lungo, Cercatore. Generazioni sono passate mentre io rimanevo, custodendo questo momento.",
   "Lyra preserva la memoria del sacrificio. Theron immagina la libertà dell'oblio. Boros cerca l'equilibrio del cambiamento. Ma tu... cosa vedi?",

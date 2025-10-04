@@ -122,6 +122,63 @@ class DbManager:
 
 
     def get_npc(self, area: str, name: str) -> Optional[Dict[str, Any]]:
+        """Get NPC by area and name (existing)."""
+        if self.use_mockup:
+            npc_dir_path = os.path.join(self.mockup_dir, "NPCs")
+            if os.path.exists(npc_dir_path):
+                for filename in os.listdir(npc_dir_path):
+                    if filename.endswith(".json"):
+                        try:
+                            with open(os.path.join(npc_dir_path, filename), 'r', encoding='utf-8') as f:
+                                npc_data = json.load(f)
+                            if npc_data.get('area','').strip().lower() == area.strip().lower() and \
+                                    npc_data.get('name','').strip().lower() == name.strip().lower():
+                                if 'code' not in npc_data or not npc_data['code']:
+                                    npc_data['code'] = filename.replace('.json','')
+                                return npc_data
+                        except Exception: pass
+            return None
+        else: # DB
+            conn = None; cursor = None
+            try:
+                conn = self.connect(); cursor = conn.cursor(dictionary=True)
+                query = "SELECT * FROM NPCs WHERE LOWER(area) = LOWER(%s) AND LOWER(name) = LOWER(%s) LIMIT 1"
+                cursor.execute(query, (area.strip(), name.strip()))
+                return cursor.fetchone()
+            except Exception as e:
+                return None
+            finally:
+                if cursor: cursor.close()
+                if conn and conn.is_connected(): conn.close()
+
+    def get_npc_by_code(self, code: str) -> Optional[Dict[str, Any]]:
+        """Get NPC by unique code (new helper)."""
+        if not code:
+            return None
+        if self.use_mockup:
+            npc_dir_path = os.path.join(self.mockup_dir, "NPCs")
+            if os.path.exists(npc_dir_path):
+                for filename in os.listdir(npc_dir_path):
+                    if filename.endswith(".json"):
+                        try:
+                            with open(os.path.join(npc_dir_path, filename), 'r', encoding='utf-8') as f:
+                                npc_data = json.load(f)
+                            if npc_data.get('code', filename.replace('.json','')) == code:
+                                return npc_data
+                        except Exception: pass
+            return None
+        else:
+            conn = None; cursor = None
+            try:
+                conn = self.connect(); cursor = conn.cursor(dictionary=True)
+                query = "SELECT * FROM NPCs WHERE code = %s LIMIT 1"
+                cursor.execute(query, (code,))
+                return cursor.fetchone()
+            except Exception as e:
+                return None
+            finally:
+                if cursor: cursor.close()
+                if conn and conn.is_connected(): conn.close()
         if self.use_mockup:
             npc_dir_path = os.path.join(self.mockup_dir, "NPCs")
             if os.path.exists(npc_dir_path):
@@ -1084,7 +1141,8 @@ class DbManager:
                 "PlayerState",
                 "PlayerInventory", 
                 "ConversationHistory",
-                "PlayerProfiles"
+                "PlayerProfiles",
+                "NPCs"
             ]
             
             for table in tables_to_truncate:

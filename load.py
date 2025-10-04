@@ -350,20 +350,42 @@ def load_to_mysql(storyboard_filepath, db_config):
                 filepath = os.path.join(base_dir, filename)
                 path_parts = filename.replace('NPC.', '', 1).replace('.txt', '').split('.')
                 npc_code = ".".join(path_parts)
+                npc_data = parse_npc_file(filepath)
+                query = """
+                        INSERT INTO NPCs (code, name, area, role, motivation, goal, needed_object, treasure, playerhint,
+                        dialogue_hooks, default_greeting, repeat_greeting, veil_connection, emotes, animations, lookup, llsettext,
+                        ai_behavior_notes, conditional_responses, conversation_state_tracking, failure_conditions, personality_traits,
+                        prerequisites, relationship_status, relationships, required_item, required_quantity, required_source,
+                        reward_credits, sl_commands, success_conditions, trading_rules, storyboard_id)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+                values = (
+                    npc_code, npc_data.get('name', ''), npc_data.get('area', ''), npc_data.get('role', ''),
+                    npc_data.get('motivation', ''), npc_data.get('goal', ''), npc_data.get('needed_object', ''),
+                    npc_data.get('treasure', ''), npc_data.get('playerhint', ''), npc_data.get('dialogue_hooks', ''),
+                    npc_data.get('default_greeting', ''), npc_data.get('repeat_greeting', ''),
+                    npc_data.get('veil_connection', ''), npc_data.get('emotes', ''), npc_data.get('animations', ''),
+                    npc_data.get('lookup', ''), npc_data.get('llsettext', ''),
+                    npc_data.get('ai_behavior_notes', ''), npc_data.get('conditional_responses', ''),
+                    npc_data.get('conversation_state_tracking', ''), npc_data.get('failure_conditions', ''),
+                    npc_data.get('personality_traits', ''), npc_data.get('prerequisites', ''),
+                    npc_data.get('relationship_status', ''), npc_data.get('relationships', ''),
+                    npc_data.get('required_item', ''), npc_data.get('required_quantity', 0),
+                    npc_data.get('required_source', ''), npc_data.get('reward_credits', 0),
+                    npc_data.get('sl_commands', ''), npc_data.get('success_conditions', ''),
+                    npc_data.get('trading_rules', ''), storyboard_id )
+                if npc_data.get('name') == 'Jorin':
+                    print(f"DEBUG: Jorin default_greeting = {repr(npc_data.get('default_greeting', 'NOT_FOUND'))[:100]}")
                 try:
-                    npc_data = parse_npc_file(filepath)
-                    query = """
-                            INSERT INTO NPCs (code, name, area, role, motivation, goal, needed_object, treasure, playerhint, dialogue_hooks, veil_connection, emotes, animations, lookup, llsettext, storyboard_id)
-                            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
-                    values = (
-                        npc_code, npc_data.get('name', ''), npc_data.get('area', ''), npc_data.get('role', ''),
-                        npc_data.get('motivation', ''), npc_data.get('goal', ''), npc_data.get('needed_object', ''),
-                        npc_data.get('treasure', ''), npc_data.get('playerhint', ''), npc_data.get('dialogue_hooks', ''),
-                        npc_data.get('veil_connection', ''), npc_data.get('emotes', ''), npc_data.get('animations', ''),
-                        npc_data.get('lookup', ''), npc_data.get('llsettext', ''), storyboard_id )
                     cursor.execute(query, values)
                     npc_count += 1
-                except Exception as e: print(f"  ❌ Error processing/inserting NPC {npc_code} from {filename}: {e}"); conn.rollback()
+                except Exception as e:
+                    print(f"  ❌ Error inserting NPC {npc_code}: {e}")
+                    print(f"  Values: {values[:5]}...")  # Print first few values
+                    conn.rollback()
+
+        # Commit NPCs before loading locations (in case locations fail)
+        conn.commit()
+        print(f"✅ Loaded {npc_count} NPCs")
 
         # Load Locations
         for filename in os.listdir(base_dir):

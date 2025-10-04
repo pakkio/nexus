@@ -36,6 +36,18 @@ from command_handlers.handle_history import handle_history
 from command_handlers.handle_sussurri import handle_sussurri
 
 import session_utils # Keep for other utilities like get_npc_color
+
+# Dummy TerminalFormatter fallback for color/style safety
+class DummyTF:
+    YELLOW = RED = DIM = BOLD = ITALIC = RESET = ''
+    BRIGHT_CYAN = BRIGHT_YELLOW = GREEN = BLUE = MAGENTA = CYAN = ''
+    BRIGHT_RED = BRIGHT_GREEN = BRIGHT_BLUE = BRIGHT_MAGENTA = BRIGHT_WHITE = ''
+    BG_GREEN = BLACK = BG_BLUE = BRIGHT_WHITE = ''
+    @staticmethod
+    def get_terminal_width(): return 80
+    @staticmethod
+    def format_terminal_text(text, width=80): return text
+
 from command_handler_utils import HandlerResult, _add_profile_action, hint_manager, get_distilled_profile_insights_for_npc
 from consequence_system import show_philosophical_consequences, track_relationship_changes
 
@@ -47,56 +59,59 @@ except ImportError:
     return {'is_command': False, 'confidence': 0.0, 'original_input': user_input, 'reasoning': 'Fallback: interpreter missing'}
 
 def _speculative_nlp_interpretation(user_input: str, state: Dict[str, Any], result_container: Dict[str, Any]):
-  """Run NLP interpretation in background thread, storing result in container."""
-  try:
-    llm_wrapper_func = state.get('llm_wrapper_func')
-    nlp_model_name = state.get('nlp_command_model_name') or \
-                     state.get('profile_analysis_model_name') or \
-                     state.get('model_name')
-    nlp_confidence_threshold = state.get('nlp_command_confidence_threshold', 0.7)
-    
-    if llm_wrapper_func and nlp_model_name:
-      logger.info(f"[NLP-SPECULATIVE] Starting interpretation for: '{user_input[:30]}...'")
-      start_time = time.time()
-      
-      # Use cached NPCs if available from game system
-      state_copy = state.copy()
-      game_system_instance = state.get('game_system_instance')
-      if game_system_instance and hasattr(game_system_instance, '_get_cached_areas_list'):
-        try:
-          state_copy['available_areas'] = game_system_instance._get_cached_areas_list()
-        except Exception as e:
-          logger.warning(f"[NLP-SPECULATIVE] Cache access failed, using fallback: {e}")
-          # Fallback to original method
-          db = state.get('db')
-          if db:
-            all_known_npcs = session_utils.refresh_known_npcs_list(db, state.get('TerminalFormatter'))
-            available_areas = session_utils.get_known_areas_from_list(all_known_npcs)
-            state_copy['available_areas'] = available_areas
-      else:
-        db = state.get('db')
-        if db:
-          all_known_npcs = session_utils.refresh_known_npcs_list(db, state.get('TerminalFormatter'))
-          available_areas = session_utils.get_known_areas_from_list(all_known_npcs)
-          state_copy['available_areas'] = available_areas
-      
-      intent_result = interpret_user_intent(
-        user_input, state_copy, llm_wrapper_func, nlp_model_name, nlp_confidence_threshold
-      )
-      
-      elapsed_ms = int((time.time() - start_time) * 1000)
-      logger.info(f"[NLP-SPECULATIVE] Completed in {elapsed_ms}ms: is_command={intent_result['is_command']}, confidence={intent_result['confidence']:.2f}")
-      
-      result_container['intent_result'] = intent_result
-      result_container['completed'] = True
-    else:
-      result_container['intent_result'] = {'is_command': False, 'confidence': 0.0, 'original_input': user_input}
-      result_container['completed'] = True
-      
-  except Exception as e:
-    logger.error(f"[NLP-SPECULATIVE] Error: {str(e)}")
-    result_container['intent_result'] = {'is_command': False, 'confidence': 0.0, 'original_input': user_input, 'error': str(e)}
-    result_container['completed'] = True
+    """Run NLP interpretation in background thread, storing result in container."""
+    try:
+        llm_wrapper_func = state.get('llm_wrapper_func')
+        nlp_model_name = state.get('nlp_command_model_name') or \
+                         state.get('profile_analysis_model_name') or \
+                         state.get('model_name')
+        nlp_confidence_threshold = state.get('nlp_command_confidence_threshold', 0.7)
+
+        if llm_wrapper_func and nlp_model_name:
+            logger.info(f"[NLP-SPECULATIVE] Starting interpretation for: '{user_input[:30]}...'")
+            start_time = time.time()
+
+            # Use cached NPCs if available from game system
+            state_copy = state.copy()
+            game_system_instance = state.get('game_system_instance')
+            if game_system_instance and hasattr(game_system_instance, '_get_cached_areas_list'):
+                try:
+                    state_copy['available_areas'] = game_system_instance._get_cached_areas_list()
+                except Exception as e:
+                    logger.warning(f"[NLP-SPECULATIVE] Cache access failed, using fallback: {e}")
+                    # Fallback to original method
+                    db = state.get('db')
+                    if db:
+                        TF = state.get('TerminalFormatter') or DummyTF
+                        all_known_npcs = session_utils.refresh_known_npcs_list(db, TF)
+                        available_areas = session_utils.get_known_areas_from_list(all_known_npcs)
+                        state_copy['available_areas'] = available_areas
+            else:
+                db = state.get('db')
+                if db:
+                    TF = state.get('TerminalFormatter') or DummyTF
+                    all_known_npcs = session_utils.refresh_known_npcs_list(db, TF)
+                    available_areas = session_utils.get_known_areas_from_list(all_known_npcs)
+                    state_copy['available_areas'] = available_areas
+
+            intent_result = interpret_user_intent(
+                user_input, state_copy, llm_wrapper_func, nlp_model_name, nlp_confidence_threshold
+            )
+
+            elapsed_ms = int((time.time() - start_time) * 1000)
+            logger.info(f"[NLP-SPECULATIVE] Completed in {elapsed_ms}ms: is_command={intent_result['is_command']}, confidence={intent_result['confidence']:.2f}")
+
+            result_container['intent_result'] = intent_result
+            result_container['completed'] = True
+        else:
+            result_container['intent_result'] = {'is_command': False, 'confidence': 0.0, 'original_input': user_input}
+            result_container['completed'] = True
+
+    except Exception as e:
+        logger.error(f"[NLP-SPECULATIVE] Error: {str(e)}")
+        result_container['intent_result'] = {'is_command': False, 'confidence': 0.0, 'original_input': user_input, 'error': str(e)}
+        result_container['completed'] = True
+
 
 def _speculative_dialogue_generation(user_input: str, state: Dict[str, Any], result_container: Dict[str, Any]):
   """Run dialogue generation in background thread for simple chat messages."""
@@ -105,9 +120,28 @@ def _speculative_dialogue_generation(user_input: str, state: Dict[str, Any], res
     chat_session = state.get('chat_session')
 
     if not current_npc or not chat_session:
-      result_container['dialogue_result'] = None
-      result_container['completed'] = True
-      return
+        result_container['dialogue_result'] = None
+        result_container['completed'] = True
+        return
+
+    # Defensive check: Ensure NPC area matches player area
+    from session_utils import normalize_area_name
+    npc_area = normalize_area_name(current_npc.get('area', ''))
+    player_area = normalize_area_name(state.get('current_area', ''))
+    if npc_area != player_area:
+        logger.warning(f"[DIALOGUE-SAFEGUARD] Area mismatch: NPC '{current_npc.get('name')}' is in '{npc_area}', but player is in '{player_area}'. Blocking response.")
+        TF = state.get('TerminalFormatter')
+        yellow = getattr(TF, 'YELLOW', '') if TF else ''
+        reset = getattr(TF, 'RESET', '') if TF else ''
+        result_container['dialogue_result'] = {
+            'response_text': f"{yellow}Session mismatch detected: You are in '{player_area}', but trying to talk to '{current_npc.get('name')}' in '{npc_area}'. Please use /go and /talk to reset your conversation.{reset}",
+            'response_stats': None,
+            'npc_name': current_npc.get('name', 'NPC'),
+            'temp_session': chat_session
+        }
+        result_container['completed'] = True
+        return
+
 
     # Check for cancellation before starting
     if result_container.get('cancelled', False):
@@ -172,8 +206,10 @@ def _build_dialogue_response(state: Dict[str, Any], dialogue_data: Dict[str, Any
   
   # Format and display the response
   if response_text:
+    TF = TF or DummyTF
     npc_color = session_utils.get_npc_color(npc_name, TF)
-    print(f"{npc_color}{npc_name} > {TF.RESET}{response_text}")
+    reset = getattr(TF, 'RESET', '') if TF else ''
+    print(f"{npc_color}{npc_name} > {reset}{response_text}")
     
     # Replace the current chat session with the completed one
     if temp_session and state.get('chat_session'):
@@ -288,13 +324,17 @@ def process_input_revised(user_input: str, state: Dict[str, Any]) -> Dict[str, A
           return state
         command_processed_this_turn = True
       else:
-        print(f"{TF.YELLOW}Unknown command '/{command}'. Try /help.{TF.RESET}")
+        yellow = getattr(TF, 'YELLOW', '') if TF else ''
+        reset = getattr(TF, 'RESET', '') if TF else ''
+        print(f"{yellow}Unknown command '/{command}'. Try /help.{reset}")
         command_processed_this_turn = True
     except Exception as e:
-      print(f"{TF.RED}Error processing command '/{command}': {type(e).__name__} - {e}{TF.RESET}")
-      if debug_mode:
-        traceback.print_exc()
-      command_processed_this_turn = True
+        red = getattr(TF, 'RED', '') if TF else ''
+        reset = getattr(TF, 'RESET', '') if TF else ''
+        print(f"{red}Error processing command '/{command}': {type(e).__name__} - {e}{reset}")
+        if debug_mode:
+            traceback.print_exc()
+        command_processed_this_turn = True
 
   # Smart parallel processing results handling
   elif nlp_thread:
@@ -308,7 +348,9 @@ def process_input_revised(user_input: str, state: Dict[str, Any]) -> Dict[str, A
       
       if state.get('nlp_command_debug', False) or debug_mode:
         reasoning = intent_result.get('reasoning', 'N/A')
-        print(f"{TF.DIM}[NLP-PARALLEL] Intent: {intent_result['is_command']}, Conf: {intent_result['confidence']:.2f}, Cmd: {intent_result.get('inferred_command')}, Reason: {reasoning}{TF.RESET}")
+        dim = getattr(TF, 'DIM', '') if TF else ''
+        reset = getattr(TF, 'RESET', '') if TF else ''
+        print(f"{dim}[NLP-PARALLEL] Intent: {intent_result['is_command']}, Conf: {intent_result['confidence']:.2f}, Cmd: {intent_result.get('inferred_command')}, Reason: {reasoning}{reset}")
 
       # High confidence command - execute command
       if intent_result['is_command'] and intent_result['confidence'] >= nlp_confidence_threshold:
@@ -319,7 +361,9 @@ def process_input_revised(user_input: str, state: Dict[str, Any]) -> Dict[str, A
             logger.info(f"[PARALLEL-PROCESSING] Cancelling dialogue thread - NLP detected command")
             dialogue_result_container['cancelled'] = True
 
-          print(f"{TF.DIM}[Interpreted as: {inferred_command_full}]{TF.RESET}")
+          dim = getattr(TF, 'DIM', '') if TF else ''
+          reset = getattr(TF, 'RESET', '') if TF else ''
+          print(f"{dim}[Interpreted as: {inferred_command_full}]{reset}")
           _add_profile_action(state, f"Used natural language: '{user_input}' → '{inferred_command_full}'")
           return process_input_revised(inferred_command_full, state)
       
@@ -374,7 +418,9 @@ def process_input_revised(user_input: str, state: Dict[str, Any]) -> Dict[str, A
           return _build_dialogue_response(state, dialogue_data)
       
       if debug_mode:
-        print(f"{TF.YELLOW}[NLP-PARALLEL] Timeout, proceeding as dialogue{TF.RESET}")
+        yellow = getattr(TF, 'YELLOW', '') if TF else ''
+        reset = getattr(TF, 'RESET', '') if TF else ''
+        print(f"{yellow}[NLP-PARALLEL] Timeout, proceeding as dialogue{reset}")
     
     # If we reach here, proceed with normal dialogue processing
 
@@ -398,21 +444,38 @@ def process_input_revised(user_input: str, state: Dict[str, Any]) -> Dict[str, A
 
   if needs_llm_call:
     if current_npc and chat_session:
+      # Defensive check: Ensure NPC area matches player area (main dialogue path)
+      from session_utils import normalize_area_name
+      npc_area = normalize_area_name(current_npc.get('area', ''))
+      player_area = normalize_area_name(state.get('current_area', ''))
+      if npc_area != player_area:
+        logger.warning(f"[DIALOGUE-SAFEGUARD] Area mismatch: NPC '{current_npc.get('name')}' is in '{npc_area}', but player is in '{player_area}'. Blocking response.")
+        TF = TF or DummyTF
+        yellow = getattr(TF, 'YELLOW', '')
+        reset = getattr(TF, 'RESET', '')
+        print(f"{yellow}Session mismatch detected: You are in '{player_area}', but trying to talk to '{current_npc.get('name')}' in '{npc_area}'. Please use /go and /talk to reset your conversation.{reset}")
+        _add_profile_action(state, f"Attempted to talk to NPC in wrong area: '{current_npc.get('name')}' in '{npc_area}' while in '{player_area}'")
+        state['npc_made_new_response_this_turn'] = False
+        return state
+
       npc_name_for_prompt = current_npc.get('name', 'NPC')
+      TF = TF or DummyTF
       npc_color = session_utils.get_npc_color(current_npc.get('name', 'NPC'), TF)
 
       if is_in_hint_mode: # MODIFIED: Adjust name and color for hint mode
         guide_name = state.get('wise_guide_npc_name', 'Guide')
         npc_name_for_prompt = f"{guide_name} (Consultation)"
+        TF = TF or DummyTF
         npc_color = session_utils.get_npc_color(guide_name, TF)
-
 
       # Avoid printing NPC prompt if it was an NLP-interpreted command that then resulted in an NPC reaction
       # This is tricky because of the recursive call. The `command_processed_this_turn` helps.
       # If it's a direct dialogue or a hint mode dialogue, print the prompt.
       # If it's an NPC reaction to a command, the prompt is already printed (or was a system action).
       if not command_processed_this_turn or (is_in_hint_mode and not command_processed_this_turn):
-          print(f"\n{TF.BOLD}{npc_color}{npc_name_for_prompt} > {TF.RESET}")
+          bold = getattr(TF, 'BOLD', '')
+          reset = getattr(TF, 'RESET', '')
+          print(f"\n{bold}{npc_color}{npc_name_for_prompt} > {reset}")
 
       try:
         _response_text, stats = chat_session.ask(
@@ -423,9 +486,15 @@ def process_input_revised(user_input: str, state: Dict[str, Any]) -> Dict[str, A
           current_npc # Pass NPC data for SL command generation
         )
         if not _response_text.strip() and not (stats and stats.get("error")):
-          placeholder_msg = f"{TF.DIM}{TF.ITALIC}*{npc_name_for_prompt} seems to ponder for a moment...*{TF.RESET}"
+          dim = getattr(TF, 'DIM', '') if TF else ''
+          italic = getattr(TF, 'ITALIC', '') if TF else ''
+          reset = getattr(TF, 'RESET', '') if TF else ''
+          placeholder_msg = f"{dim}{italic}*{npc_name_for_prompt} seems to ponder for a moment...*{reset}"
           if is_in_hint_mode: # MODIFIED
-            placeholder_msg = f"{TF.DIM}{TF.ITALIC}*{state.get('wise_guide_npc_name', 'Guide')} ponders deeply...*{TF.RESET}"
+            dim = getattr(TF, 'DIM', '') if TF else ''
+            italic = getattr(TF, 'ITALIC', '') if TF else ''
+            reset = getattr(TF, 'RESET', '') if TF else ''
+            placeholder_msg = f"{dim}{italic}*{state.get('wise_guide_npc_name', 'Guide')} ponders deeply...*{reset}"
           print(placeholder_msg)
 
         state['npc_made_new_response_this_turn'] = True
@@ -451,12 +520,16 @@ def process_input_revised(user_input: str, state: Dict[str, Any]) -> Dict[str, A
 
       except Exception as e:
         state['npc_made_new_response_this_turn'] = False
-        print(f"{TF.RED}LLM Chat Error with {npc_name_for_prompt}: {type(e).__name__} - {e}{TF.RESET}")
+        red = getattr(TF, 'RED', '') if TF else ''
+        reset = getattr(TF, 'RESET', '') if TF else ''
+        print(f"{red}LLM Chat Error with {npc_name_for_prompt}: {type(e).__name__} - {e}{reset}")
         if debug_mode:
           traceback.print_exc()
 
     elif user_input: # User typed something but not in a conversation
-      print(f"{TF.YELLOW}You're not talking to anyone. Use /go to move to an area, then /talk <npc_name>.{TF.RESET}")
+      yellow = getattr(TF, 'YELLOW', '') if TF else ''
+      reset = getattr(TF, 'RESET', '') if TF else ''
+      print(f"{yellow}You're not talking to anyone. Use /go to move to an area, then /talk <npc_name>.{reset}")
       _add_profile_action(state, f"Attempted to talk while not in conversation: '{user_input[:50]}'")
 
   return state

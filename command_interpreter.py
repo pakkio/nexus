@@ -352,10 +352,12 @@ def _fallback_interpretation(user_input: str, game_state: Dict[str, Any]) -> Dic
   collect_keywords = ['raccolgo', 'prendo', 'pick up', 'pick it up', 'la raccolgo', 'la prendo', 'lo raccolgo', 'lo prendo']
   
   # Parole chiave per dare (COMANDO /give)
-  give_keywords = ['eccoti', 'ti do', 'do il', 'do la', 'offro', 'regalo', 'consegno']
+  give_keywords = ['eccoti', 'ti do', 'do il', 'do la', 'offro', 'regalo', 'consegno', 'porto', 'portato', 'ho portato',
+                   'ecco i', 'ecco la', 'ecco il', 'prendi', 'tieni', 'here are', 'here is', 'i bring', 'i have brought']
   
   # Parole chiave per ricevere/chiedere educatamente (DIALOGO)
-  ask_keywords = ['hai qualcosa', 'cosa mi', 'mi puoi dare', 'mi dai', 'cosa hai']
+  ask_keywords = ['hai qualcosa', 'cosa mi', 'mi puoi dare', 'mi dai', 'cosa hai', 'may i have', 'can i get',
+                  'posso avere', 'potrei avere', 'hai il', 'hai la', 'hai un']
   
   # Parole chiave per richiedere direttamente (COMANDO /receive)
   demand_keywords = ['dammi', 'voglio', 'passami', 'devo avere']
