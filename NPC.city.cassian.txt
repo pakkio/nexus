@@ -61,8 +61,6 @@ PlayerHint: Cassian è completamente mercenario ma non stupido. Se il Cercatore 
 # DIALOGUE SYSTEM
 Default_Greeting: "Informazione, caro Cercatore. È l'unica valuta che mantiene valore quando il mondo cambia."
 
-Repeat_Greeting: "La politica è l'arte di rimanere a galla mentre tutti gli altri affogano. E credimi, molti stanno affogando di questi tempi."
-
 Dialogue_Hooks: [
   "La politica è l'arte di rimanere a galla mentre tutti gli altri affogano. E credimi, molti stanno affogando di questi tempi.",
   "Lyra parla di memoria, Theron del futuro. Io parlo di sopravvivenza. Indovina chi vivrà più a lungo?",

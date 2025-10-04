@@ -63,8 +63,6 @@ PlayerHint: Mara è pragmatica e orientata alla sopravvivenza. Non si preoccupa 
 # DIALOGUE SYSTEM
 Default_Greeting: "Mia nonna mi insegnò a riconoscere la Foglia Blu. Ieri sono andata a raccoglierla e... non c'era. Non solo morta - mai esistita."
 
-Repeat_Greeting: "Ho un intero giardino di piante che nessun altro ricorda. È come essere l'ultimo custode di un mondo che sta svanendo."
-
 Dialogue_Hooks: [
   "Mia nonna mi insegnò a riconoscere la Foglia Blu. Ieri sono andata a raccoglierla e... non c'era. Non solo morta - mai esistita.",
   "Ho un intero giardino di piante che nessun altro ricorda. È come essere l'ultimo custode di un mondo che sta svanendo.",

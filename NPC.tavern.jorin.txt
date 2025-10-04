@@ -58,8 +58,6 @@ Relationships: {
 # DIALOGUE SYSTEM
 Default_Greeting: "Benvenuto alla mia taverna! Sono Jorin. Cosa posso servirvi oggi? E... avete per caso qualche storia interessante da raccontare?"
 
-Repeat_Greeting: "Ah, il mio ospite preferito è tornato! Sedetevi, cosa posso portarvi? E raccontatemi - avete fatto qualcosa di interessante per la comunità ultimamente?"
-
 Dialogue_Hooks: [
   "Molto strano, la scorsa notte tre persone diverse mi hanno raccontato lo stesso sogno. Che coincidenza, eh?",
   "Ho un quaderno pieno di storie che la gente giura di aver sognato ma che non corrispondono a niente di reale. Bizzarro.",

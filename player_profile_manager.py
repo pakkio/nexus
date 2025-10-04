@@ -34,7 +34,8 @@ DEFAULT_PROFILE = {
     "inferred_motivations": ["understand_the_veil_crisis", "survive"],
     "philosophical_leaning": "neutral",
     "recent_changes_log": [],
-    "llm_analysis_notes": ""
+    "llm_analysis_notes": "",
+    "player_name": None  # Store the player's self-identified name
 }
 
 def get_default_player_profile() -> Dict[str, Any]:
@@ -212,6 +213,29 @@ Ensure there are no trailing commas.
         print(f"{TF.RED}Exception during LLM call or processing for profile update: {type(e).__name__} - {e}{TF.RESET}")
         # traceback.print_exc() # Uncomment for full traceback during development
         return {"analysis_notes": f"Exception during LLM call/processing: {type(e).__name__}"}
+
+
+def extract_player_name_from_message(message: str) -> Optional[str]:
+    """Extract player's self-identified name from a message."""
+    # Look for Italian patterns like "mi chiamo [name]", "sono [name]", "il mio nome è [name]", etc.
+    patterns = [
+        r'mi chiamo\s+([a-zA-Z]+)',  # "mi chiamo [name]"
+        r'sono\s+([a-zA-Z]+)',       # "sono [name]"
+        r'il\s+mio\s+nome\s+è\s+([a-zA-Z]+)',  # "il mio nome è [name]"
+        r'my\s+name\s+is\s+([a-zA-Z]+)',  # "my name is [name]" (for multilingual)
+        r'i\s+am\s+([a-zA-Z]+)',     # "i am [name]" (for multilingual)
+        r'i\'m\s+([a-zA-Z]+)',       # "i'm [name]" (for multilingual)
+    ]
+    
+    message_lower = message.lower().strip()
+    for pattern in patterns:
+        match = re.search(pattern, message_lower)
+        if match:
+            name = match.group(1).strip()
+            # Only return if it's a reasonable name (not too generic)
+            if len(name) >= 2 and name not in ['jim', 'john', 'mary', 'luke']:  # Common examples to avoid
+                return name
+    return None
 
 
 def apply_llm_suggestions_to_profile(

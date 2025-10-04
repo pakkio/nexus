@@ -55,6 +55,8 @@ class _SinglePlayerGameSystem:
 
         nlp_config = get_nlp_command_config()
 
+        # Try to load persistent player state (including current_npc_code)
+        saved_state = db.load_player_state(player_id)
         self.game_state: Dict[str, Any] = {
             'db': db,
             'story': story,
@@ -101,6 +103,21 @@ class _SinglePlayerGameSystem:
             'conversation_history_cache': {},  # keyed by player_id + npc_name
             'cache_ttl': 300  # 5 minutes TTL
         }
+
+        # Restore current_npc and chat_session from persistent state if available
+        if saved_state and saved_state.get('current_npc_code'):
+            npc_obj = db.get_npc_by_code(saved_state['current_npc_code'])
+            if npc_obj:
+                self.game_state['current_npc'] = npc_obj
+                # Try to reconstruct chat session for this NPC
+                area = npc_obj.get('area')
+                name = npc_obj.get('name')
+                if area and name:
+                    _, chat_session = session_utils.load_and_prepare_conversation(
+                        db, player_id, area, name, model_name, story, ChatSession, TerminalFormatter, self.game_state
+                    )
+                    if chat_session:
+                        self.game_state['chat_session'] = chat_session
 
         self._auto_start_initial_conversation()
 

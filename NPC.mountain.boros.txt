@@ -59,8 +59,6 @@ Relationships: {
 # DIALOGUE SYSTEM
 Default_Greeting: "La montagna accoglie chi cerca la saggezza, viaggiatore. Dimmi, cosa ti ha portato così in alto? La fuga dal mondo, o la ricerca di una prospettiva più ampia?"
 
-Repeat_Greeting: "Il vento della montagna ti riporta da me. Bene. Le lezioni più importanti richiedono più di una visita per essere comprese."
-
 Dialogue_Hooks: [
   "Tre secoli fa, i miei antenati scomparvero. Non morirono - svanirono. Furono dimenticati così completamente che nemmeno le rovine delle loro case esistono più. Solo io ricordo.",
   "Lyra vuole riparare il Velo. Theron vuole distruggerlo. Entrambi credono che la loro soluzione sia finale. Ma ho imparato che niente è finale.",

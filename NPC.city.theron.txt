@@ -62,8 +62,6 @@ PlayerHint: Theron non è malvagio - è un uomo spezzato dal trauma che ha trasf
 # DIALOGUE SYSTEM
 Default_Greeting: "Mio fratello Darius... era così curioso, Cercatore. Quando trovammo quella crepa nel Velo, io dissi 'fermiamoci'. Lui disse 'andiamo avanti'. Indovina chi aveva ragione?"
 
-Repeat_Greeting: "Non voglio distruggere il Velo per malvagità. Voglio distruggerlo per pietà. Verso noi stessi e verso le anime intrappolate in quella prigione di memoria."
-
 Dialogue_Hooks: [
   "Mio fratello Darius... era così curioso, Cercatore. Quando trovammo quella crepa nel Velo, io dissi 'fermiamoci'. Lui disse 'andiamo avanti'. Indovina chi aveva ragione?",
   "Vedi queste cicatrici sulla mia mano? Sono dell'Oblio che toccò Darius prima di portarselo via. Eppure... non mi fanno male. Mi ricordano che l'Oblio non è malvagità. È... libertà.",
