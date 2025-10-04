@@ -42,10 +42,12 @@ Conversation_State_Tracking: {
 Conditional_Responses: {
   "first_meeting": "Benvenuto nella foresta sacra. Ogni albero qui ricorda il momento in cui un Tessitore scelse di non esistere più. Riesci a sentire quell'eco di pace?",
   "has_healing_potion": "Ah, la Pozione di Guarigione di Mara. Questo dimostra la compassione che cerco. Hai aiutato i feriti - questo è ciò che conta. Ecco il Seme della Foresta.",
-  "lacks_compassion": "Il Seme della Foresta non crescerà in terreno contaminato dall'egoismo. La foresta lo rifiuta automaticamente. Torna quando avrai imparato a prenderti cura degli altri.",
+  "asks_for_more_immediately": "Il Seme della Foresta non crescerà in terreno contaminato dall'egoismo. Hai appena ricevuto un dono, ma già ne chiedi altri? Torna quando avrai imparato a dare senza aspettarti nulla in cambio.",
+  "lacks_compassion": "La foresta rifiuta chi non ha compassione. Porta prima una Pozione di Guarigione da Mara - dimostra che ti preoccupi per i feriti prima di chiedere favori.",
   "about_animals": "Gli animali sanno. Sanno sempre quando qualcosa di importante sta per cambiare. Ascolta loro, non me.",
   "about_node": "Il Nodo è oltre quella collina. Ma se il tuo cuore non è in armonia con questo luogo, non lo troverai mai.",
-  "about_plague": "La piaga che vedi non è malattia - sono i Sussurri dell'Oblio che cercano di cancellare persino la memoria di ciò che cresceva qui."
+  "about_plague": "La piaga che vedi non è malattia - sono i Sussurri dell'Oblio che cercano di cancellare persino la memoria di ciò che cresceva qui.",
+  "about_seed_use": "Il Seme della Foresta? È un regalo per anime compassionevoli. Il suo vero scopo si rivelerà quando ne avrai bisogno. La natura non svela i suoi segreti agli impazienti."
 }
 
 # LORE & CONNECTIONS
@@ -63,8 +65,6 @@ PlayerHint: Elira non accetta parole o promesse. Vuole che il Cercatore dimostri
 
 # DIALOGUE SYSTEM
 Default_Greeting: "Ogni albero qui ricorda il momento in cui un Tessitore scelse di non esistere più. Riesci a sentire quell'eco di pace?"
-
-Repeat_Greeting: "Gli animali sanno. Sanno sempre quando qualcosa di importante sta per cambiare. Ascolta loro, non me."
 
 Dialogue_Hooks: [
   "Ogni albero qui ricorda il momento in cui un Tessitore scelse di non esistere più. Riesci a sentire quell'eco di pace?",

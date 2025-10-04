@@ -40,9 +40,10 @@ Conversation_State_Tracking: {
 
 Conditional_Responses: {
   "first_meeting": "Chi osa disturbare il mio tormento? Se sei qui per il Cristallo di Memoria Antica, dovrai dimostrare di comprendere il vero peso del sacrificio.",
+  "needs_ciotola": "La Ciotola dell'Offerta Sacra? Jorin alla taverna del villaggio la custodisce. Ma prima dovrai servire la comunità - porta a Garin il minerale ferro antico dalla montagna, poi i suoi trucioli a Jorin. Solo attraverso il servizio agli altri comprenderai il sacrificio.",
   "has_ciotola_no_respect": "Hai la ciotola, ma sento nel tuo cuore solo desiderio di potere. Questo non basterà. Vai e impara cosa significa veramente sacrificare per gli altri.",
   "has_ciotola_with_respect": "Sì... vedo che comprendi. La ciotola deve essere riempita con acqua pura e offerta con vera riverenza. Solo così potrò completare ciò che non riuscii a fare secoli fa.",
-  "ritual_completed": "Finalmente... sento la pace. Prendi il Cristallo di Memoria Antica. Ti avverto - è emozione pura. Ti cambierà per sempre.",
+  "ritual_completed": "Finalmente... sento la pace. Prendi il Cristallo di Memoria Antica. Portalo a Lyra al Sanctum dei Sussurri. Ti avverto - è emozione pura. Ti cambierà per sempre.",
   "insufficient_understanding": "Non capisci ancora. Finché non comprenderai il vero costo del sacrificio, non posso aiutarti."
 }
 
@@ -59,13 +60,12 @@ Relationships: {
 # DIALOGUE SYSTEM
 Default_Greeting: "Altro viaggiatore nelle rovine... Sei qui per il Cristallo di Memoria Antica? Dovrai prima dimostrare di comprendere il vero significato del sacrificio."
 
-Repeat_Greeting: "Sei tornato... Hai riflettuto sul peso del sacrificio? O sei ancora qui solo per il potere che il cristallo può darti?"
-
 Dialogue_Hooks: [
   "Vedi come sono ridotta? Né viva né morta, né libera né protettrice. Questo è il prezzo del sacrificio fatto con dubbi nel cuore.",
   "I miei fratelli si dissolsero nel Velo con gioia, sapendo che avrebbero protetto il futuro. Io... io esitai per un istante. E quell'istante mi costò l'eternità.",
   "Senti il peso del silenzio qui? È il peso delle parole mai dette, degli addii mai pronunciati. Questo è ciò che custodisco.",
-  "Non posso darti la mia memoria. Devi guadagnartela. Portami la Ciotola Sacra riempita con acqua pura, e offrila con vera riverenza.",
+  "Non posso darti la mia memoria. Devi guadagnartela. Portami la Ciotola dell'Offerta Sacra riempita con acqua pura, e offrila con vera riverenza.",
+  "La Ciotola dell'Offerta Sacra? Jorin alla taverna del villaggio la custodisce. Ma prima dovrai aiutare la comunità - porta a Garin il minerale ferro antico dalla montagna, poi i suoi trucioli a Jorin.",
   "Il Cristallo di Memoria Antica non è solo memoria - è emozione pura. Ti brucerà, ti cambierà. Non potrai essere lo stesso dopo averlo ricevuto."
 ]
 
