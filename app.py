@@ -32,7 +32,7 @@ game_system: Optional[GameSystem] = None
 # - MAJOR: Breaking changes
 # - MINOR: New features/fixes (increment for each significant fix)
 # - PATCH: Small bugfixes
-VERSION = "1.4.2"
+VERSION = "1.4.3"
 
 # Version changelog
 VERSION_CHANGELOG = {
@@ -83,7 +83,7 @@ def parse_npc_file(filepath):
         'name': '', 'area': '', 'role': '', 'motivation': '',
         'goal': '', 'needed_object': '', 'treasure': '',
         'playerhint': '', 'dialogue_hooks': '', 'veil_connection': '', 'code': '',
-        'emotes': '', 'animations': '', 'lookup': '', 'llsettext': ''
+        'emotes': '', 'animations': '', 'lookup': '', 'llsettext': '', 'teleport': ''
     }
     known_keys_map = {
         'Name:': 'name', 'Area:': 'area', 'Role:': 'role',
@@ -93,9 +93,9 @@ def parse_npc_file(filepath):
         'Veil Connection:': 'veil_connection',
         'Dialogue Hooks:': 'dialogue_hooks_header',
         'Emotes:': 'emotes', 'Animations:': 'animations',
-        'Lookup:': 'lookup', 'Llsettext:': 'llsettext'
+        'Lookup:': 'lookup', 'Llsettext:': 'llsettext', 'Teleport:': 'teleport'
     }
-    simple_multiline_fields = ['motivation', 'goal', 'playerhint', 'veil_connection', 'emotes', 'animations', 'lookup', 'llsettext']
+    simple_multiline_fields = ['motivation', 'goal', 'playerhint', 'veil_connection', 'emotes', 'animations', 'lookup', 'llsettext', 'teleport']
     
     current_field_being_parsed = None
     dialogue_hooks_lines = []
@@ -180,8 +180,8 @@ def preload_npcs():
                             cursor = conn.cursor()
                             sql = """INSERT INTO NPCs (code, name, area, role, motivation, goal, needed_object,
                                      treasure, playerhint, dialogue_hooks, veil_connection, emotes, animations,
-                                     lookup, llsettext, storyboard_id)
-                                     VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                                     lookup, llsettext, teleport, storyboard_id)
+                                     VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                                      ON DUPLICATE KEY UPDATE name=VALUES(name), area=VALUES(area), role=VALUES(role)"""
                             cursor.execute(sql, (
                                 npc_data.get('code'), npc_data.get('name'), npc_data.get('area'),
@@ -189,7 +189,7 @@ def preload_npcs():
                                 npc_data.get('needed_object'), npc_data.get('treasure'), npc_data.get('playerhint'),
                                 npc_data.get('dialogue_hooks'), npc_data.get('veil_connection'),
                                 npc_data.get('emotes'), npc_data.get('animations'), npc_data.get('lookup'),
-                                npc_data.get('llsettext'), npc_data.get('storyboard_id', 1)
+                                npc_data.get('llsettext'), npc_data.get('teleport'), npc_data.get('storyboard_id', 1)
                             ))
                             conn.commit()
                         except Exception as db_err:
@@ -220,7 +220,7 @@ def initialize_game_system():
     # Configuration from environment variables
     use_mockup = os.getenv('NEXUS_USE_MOCKUP', 'true').lower() == 'true'
     mockup_dir = os.getenv('NEXUS_MOCKUP_DIR', 'database')
-    model_name = os.getenv('NEXUS_MODEL_NAME') or os.getenv('OPENROUTER_DEFAULT_MODEL', 'google/gemini-2.0-flash-exp:free')
+    model_name = os.getenv('NEXUS_MODEL_NAME') or os.getenv('OPENROUTER_DEFAULT_MODEL', 'google/gemini-flash-2.5-preview-09-2025:free')
     profile_analysis_model = os.getenv('NEXUS_PROFILE_MODEL_NAME')
     wise_guide_model = os.getenv('NEXUS_WISE_GUIDE_MODEL_NAME')
     debug_mode = os.getenv('NEXUS_DEBUG_MODE', 'false').lower() == 'true'
