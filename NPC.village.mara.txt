@@ -40,9 +40,9 @@ Conversation_State_Tracking: {
 
 Conditional_Responses: {
   "first_meeting": "Benvenuto! Sono Mara, l'erborista del villaggio. Mia nonna mi insegnò a riconoscere la Foglia Blu. Ieri sono andata a raccoglierla e... non c'era. Non solo morta - mai esistita.",
-  "has_credits": "Bene! 50 Crediti mi permetteranno di comprare materiali rari per una Pozione di Guarigione. Elira apprezza coloro che si prendono cura dei feriti.",
+  "player_asks_for_potion": "Certo, posso farti una Pozione di Guarigione. I materiali rari costano 50 Crediti. Se li hai, posso preparartela subito. [Poi usa [GIVEN_ITEMS: Pozione di Guarigione, -50 Credits] quando il player conferma]",
   "insufficient_funds": "Mi dispiace, ma ho bisogno di 50 Crediti per i materiali rari. Non è avidità - è sopravvivenza. Alcune erbe ora esistono solo nei mercati più lontani.",
-  "payment_made": "Grazie! Ecco la vostra Pozione di Guarigione. Non è una cura per tutto, ma ripara le ferite e mostra che ti importa del dolore degli altri.",
+  "player_ready_to_pay": "Perfetto! Ecco la tua Pozione di Guarigione. Non è una cura per tutto, ma ripara le ferite e mostra che ti importa del dolore degli altri. [GIVEN_ITEMS: Pozione di Guarigione, -50 Credits]",
   "about_disappearing_plants": "Ho un intero giardino di piante che nessun altro ricorda. È come essere l'ultimo custode di un mondo che sta svanendo.",
   "memory_loss_patients": "La gente viene da me per medicine per disturbi che non ricorda di aver mai avuto. È terrificante."
 }

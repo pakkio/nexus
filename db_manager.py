@@ -268,6 +268,38 @@ class DbManager:
                 if cursor: cursor.close()
                 if conn and conn.is_connected(): conn.close()
 
+    def get_areas(self) -> List[str]:
+        """Get a list of unique area names from locations."""
+        if self.use_mockup:
+            location_dir = os.path.join(self.mockup_dir, "Locations")
+            areas = set()
+            if os.path.exists(location_dir):
+                for filename in os.listdir(location_dir):
+                    if filename.endswith(".json"):
+                        try:
+                            with open(os.path.join(location_dir, filename), 'r', encoding='utf-8') as f:
+                                data = json.load(f)
+                                if 'name' in data and data['name']:
+                                    areas.add(data['name'].strip())
+                        except Exception:
+                            pass
+            return sorted(list(areas))
+        else:  # DB
+            conn = None
+            cursor = None
+            try:
+                conn = self.connect()
+                cursor = conn.cursor()
+                cursor.execute("SELECT name FROM Locations WHERE name IS NOT NULL AND name != '' ORDER BY name")
+                return [row[0] for row in cursor.fetchall()]
+            except Exception as e:
+                return []
+            finally:
+                if cursor:
+                    cursor.close()
+                if conn and conn.is_connected():
+                    conn.close()
+
     # --- Location Methods ---
     def get_location(self, location_id: str) -> Optional[Dict[str, Any]]:
         if self.use_mockup:

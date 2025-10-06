@@ -63,6 +63,7 @@ CREATE TABLE IF NOT EXISTS NPCs (
     animations TEXT NULL,
     lookup TEXT NULL,
     llsettext TEXT NULL,
+    teleport TEXT NULL,
     ai_behavior_notes TEXT NULL,
     conditional_responses TEXT NULL,
     conversation_state_tracking TEXT NULL,
