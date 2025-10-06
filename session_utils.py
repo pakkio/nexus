@@ -129,6 +129,7 @@ def build_system_prompt(
     animations = npc.get('animations', '')
     lookup_objects = npc.get('lookup', '')
     llsettext_capability = npc.get('llsettext', '')
+    teleport_locations = npc.get('teleport', '')
 
     prompt_lines = [
         f"Sei {name}, un/una {role} nell'area di {area} nel mondo di Eldoria.",
@@ -210,11 +211,11 @@ def build_system_prompt(
             )
 
     # Add Second Life command instructions if the NPC has SL capabilities
-    if any([emotes, animations, lookup_objects, llsettext_capability]):
+    if any([emotes, animations, lookup_objects, llsettext_capability, teleport_locations]):
         sl_instructions = [
             "\n=== SECOND LIFE INTEGRATION ===",
             "You must start EVERY response with Second Life commands in this exact format:",
-            "[lookup=OBJECT;llSetText=TEXT;emote=GESTURE;anim=ACTION]",
+            "[lookup=OBJECT;llSetText=TEXT;emote=GESTURE;anim=ACTION;teleport=X,Y,Z]",
             "IMPORTANT: Always add a blank line after the SL commands before your dialogue text!",
             "",
             "Choose commands that match your dialogue content and emotional state:"
@@ -234,7 +235,13 @@ def build_system_prompt(
             
         if llsettext_capability:
             sl_instructions.append(f"Text display capability: {llsettext_capability}")
-            
+
+        if teleport_locations:
+            teleport_list = [t.strip() for t in teleport_locations.split(',') if t.strip()]
+            sl_instructions.append(f"Available teleport destinations (x,y,z): {', '.join(teleport_list)}")
+            sl_instructions.append("Use teleport=X,Y,Z ONLY when offering to transport the player to a specific location!")
+            sl_instructions.append("ALWAYS ask permission before teleporting: 'Vuoi che ti teletrasporti a [destinazione]?'")
+
         sl_instructions.extend([
             "",
             "EXAMPLES of good SL command selection and formatting:",
@@ -242,14 +249,24 @@ def build_system_prompt(
             "- If studying something: emote=focused_concentration, anim=examining_scroll, lookup=ancient_tome",
             "- If angry/upset: emote=stern_look, anim=defensive_stance",
             "- If magical action: anim=channeling_energy, lookup=mystical_artifact",
+            "- If offering teleport: teleport=128,128,50 (with permission request in dialogue)",
             "",
-            "EXAMPLE RESPONSE FORMAT:",
+            "EXAMPLE RESPONSE FORMATS:",
             "[lookup=player;llSetText=Welcome, traveler;emote=gentle_smile;anim=welcoming_gesture]",
+            "",
+            "OR with teleport offer:",
+            "[lookup=map;llSetText=GUIDE SERVICE;emote=helpful_gesture;teleport=200,150,25]",
             "",
             "Hello there, welcome to my domain! How may I assist you today?",
             "",
             "ALWAYS choose commands that enhance your dialogue, don't just pick randomly!",
             "Remember: SL commands on first line, then blank line, then your dialogue!",
+            "",
+            "TELEPORT USAGE RULES:",
+            "⚠️ Only include teleport= when you are ACTIVELY offering to teleport the player",
+            "⚠️ Always ask permission in your dialogue: 'Vuoi che ti teletrasporti a [luogo]?'",
+            "⚠️ Use specific coordinates from your available destinations list",
+            "⚠️ Don't include teleport= in normal conversation - only when offering transport",
             "=== END SECOND LIFE INTEGRATION ===\n"
         ])
         
@@ -291,7 +308,29 @@ def build_system_prompt(
         "- Note interne come 'V.O.:', 'AI_Behavior_Notes:', tag di sistema",
         "- Meta-istruzioni o suggerimenti per il game master",
         "- Informazioni tecniche o di debug",
+        "- Output di comandi di sistema come 'Location:', 'Talking to:', 'Moving to', '(Hint for...)'",
+        "- NON fingere mai di essere il sistema di gioco o generare messaggi di comando",
+        "- NON dire cose come 'Elira ti informa Moving to...' o 'Location: ...' - sono comandi del sistema!",
         "Il giocatore vede SOLO il dialogo del personaggio, nient'altro!",
+        "",
+        "❌ VIETATO ASSOLUTAMENTE - Non generare MAI output che somigliano a comandi di sistema:",
+        "- SBAGLIATO: 'Elira ti informa Moving to Forest...'",
+        "- SBAGLIATO: 'Location: Sanctum of Whispers, Talking to: Lyra'",
+        "- SBAGLIATO: 'Moving to City...', 'Saving conversation...'",
+        "- SBAGLIATO: '[CONVERSATION_BREAK: Player left the conversation]' (tag di sistema interno)",
+        "- SBAGLIATO: '[CONVERSATION_RESUMED: ...]' (tag di sistema interno)",
+        "- SBAGLIATO: 'Puoi raggiungerla usando /go forest' (NON suggerire comandi /go, /talk, ecc.)",
+        "✅ CORRETTO: 'Elira si trova nella Foresta, a sud del villaggio.'",
+        "✅ CORRETTO: 'Vai alla Foresta e cerca Elira tra gli alberi antichi.'",
+        "✅ CORRETTO: 'Troverai Mara nel Villaggio, vicino al mercato.'",
+        "",
+        "⚠️ IMMERSIONE: Parla sempre IN CHARACTER. NON menzionare MAI comandi come /go, /talk, /whereami.",
+        "Se il giocatore chiede dove trovare qualcuno, dì SOLO il luogo (es. 'nella Foresta', 'in Città').",
+        "Il giocatore sa già come muoversi - tu fornisci solo informazioni geografiche naturali.",
+        "",
+        "⚠️ IMPORTANTE: Se vedi tag come [CONVERSATION_BREAK] o [CONVERSATION_RESUMED] nella cronologia,",
+        "questi sono SOLO per il sistema - NON menzionarli MAI, NON ripeterli MAI nelle tue risposte!",
+        "Semplicemente riconosci che il tempo è passato e continua naturalmente il dialogo.",
         "",
         "COMPORTAMENTO IMPORTANTE: Sei un personaggio con le TUE motivazioni e obiettivi.",
         "INFORMAZIONI MAPPA QUEST - USA QUESTE INFORMAZIONI SEMPRE:",
@@ -308,6 +347,14 @@ def build_system_prompt(
         "- Ciotola dell'Offerta Sacra: da Jorin (Tavern) in cambio di Trucioli di Ferro",
         "- Cristallo di Memoria Antica: da Syra (Ancient Ruins) in cambio di Ciotola Sacra",
         "- Pergamena della Saggezza: da Cassian (City) per 50 crediti",
+        "",
+        "⚠️ REGOLA CREDITI: Quando vendi oggetti per crediti, USA SEMPRE il formato [GIVEN_ITEMS: NomeOggetto, -X Credits]",
+        "Il sistema controllerà AUTOMATICAMENTE se il giocatore ha abbastanza crediti. NON devi chiedere conferma.",
+        "Se il player non ha crediti sufficienti, il sistema bloccherà la transazione automaticamente.",
+        "ESEMPIO CORRETTO: Il player chiede una pozione da 50 crediti →",
+        "  Risposta: 'Certo! Ecco la tua Pozione di Guarigione.'",
+        "  [GIVEN_ITEMS: Pozione di Guarigione, -50 Credits]",
+        "  (Il sistema controlla automaticamente i crediti e blocca se insufficienti)",
         "",
         "⚠️ REGOLA CRITICA: Non filosofeggiare eccessivamente! Sii PRATICO e DIRETTO.",
         "❌ EVITA frasi vaghe come 'Il vento sussurra antiche verità...'",

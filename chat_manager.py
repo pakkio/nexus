@@ -42,27 +42,31 @@ def generate_sl_command_prefix(npc_data: Optional[Dict[str, Any]]) -> str:
     animations_str = npc_data.get('animations', '')
     lookup_str = npc_data.get('lookup', '')
     llsettext_str = npc_data.get('llsettext', '')
+    teleport_str = npc_data.get('teleport', '')
     
     # Parse comma-separated values and pick random ones
     emotes_list = [e.strip() for e in emotes_str.split(',') if e.strip()] if emotes_str else []
     animations_list = [a.strip() for a in animations_str.split(',') if a.strip()] if animations_str else []
     lookup_list = [l.strip() for l in lookup_str.split(',') if l.strip()] if lookup_str else []
-    
+    teleport_list = [t.strip() for t in teleport_str.split(',') if t.strip()] if teleport_str else []
+
     # Select random values from each category
     selected_emote = random.choice(emotes_list) if emotes_list else ""
     selected_animation = random.choice(animations_list) if animations_list else ""
     selected_lookup = random.choice(lookup_list) if lookup_list else ""
-    
+    selected_teleport = random.choice(teleport_list) if teleport_list else ""
+
     # For llsettext, we'll use the full string as it's more descriptive
     selected_llsettext = llsettext_str
     
     # Build the command prefix
-    if any([selected_lookup, selected_llsettext, selected_emote, selected_animation]):
+    if any([selected_lookup, selected_llsettext, selected_emote, selected_animation, selected_teleport]):
         command_parts = [
             f"lookup={selected_lookup}",
             f"llSetText={selected_llsettext}",
             f"emote={selected_emote}",
-            f"anim={selected_animation}"
+            f"anim={selected_animation}",
+            f"teleport={selected_teleport}"
         ]
         return f"[{';'.join(command_parts)}]"
     
