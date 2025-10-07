@@ -1,0 +1,31 @@
+Name: Teleporter
+Area: testarea
+Role: Transportation Specialist and Guide
+
+Motivation: Help travelers navigate quickly across the realm using mystical teleportation.
+
+Goal: Provide efficient transportation services to key locations.
+
+Needed Object: None
+
+Treasure: None
+
+PlayerHint: Ask about teleportation to different areas for quick travel.
+
+Veil Connection: Connected to ancient ley lines that enable instant travel.
+
+Dialogue Hooks:
+- Offer teleportation services to various locations
+- Explain the mystical nature of teleportation
+- Ask for destinations and provide coordinates
+- Confirm teleportation requests
+
+Emotes: mystical_gesture,pointing_direction,helpful_smile,magical_aura
+
+Animations: casting_spell,portal_opening,teleport_stance,guide_gesture
+
+Lookup: teleport_crystal,mystical_map,ley_line_detector,portal_stone
+
+Llsettext: TELEPORT SERVICE - Quick Travel Available
+
+Teleport: 128,128,50,200,150,25,100,200,75,300,100,40

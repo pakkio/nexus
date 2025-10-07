@@ -59,7 +59,7 @@ def parse_npc_file(filepath):
         'name': '', 'area': '', 'role': '', 'motivation': '',
         'goal': '', 'needed_object': '', 'treasure': '',
         'playerhint': '', 'dialogue_hooks': '', 'veil_connection': '', 'code': '',
-        'emotes': '', 'animations': '', 'lookup': '', 'llsettext': '',
+        'emotes': '', 'animations': '', 'lookup': '', 'llsettext': '', 'teleport': '',
         # New schema fields
         'id': '', 'personality_traits': '', 'relationship_status': '',
         'required_item': '', 'required_quantity': '', 'required_source': '',
@@ -77,12 +77,13 @@ def parse_npc_file(filepath):
         'Needed Object:': 'needed_object', 'Treasure:': 'treasure',
         'PlayerHint:': 'playerhint', 'Veil Connection:': 'veil_connection',
         'Dialogue Hooks:': 'dialogue_hooks_header',
+        'Dialogue_Hooks:': 'dialogue_hooks_header',  # Support underscore version
         'Emotes:': 'emotes', 'Animations:': 'animations',
-        'Lookup:': 'lookup', 'Llsettext:': 'llsettext',
+        'Lookup:': 'lookup', 'Llsettext:': 'llsettext', 'Teleport:': 'teleport',
         # New schema
         'ID:': 'id', 'Personality_Traits:': 'personality_traits',
         'Relationship_Status:': 'relationship_status',
-        'Required_Item:': 'required_item', 'Required_Quantity:': 'required_quantity', 
+        'Required_Item:': 'required_item', 'Required_Quantity:': 'required_quantity',
         'Required_Source:': 'required_source', 'Reward_Credits:': 'reward_credits',
         'Prerequisites:': 'prerequisites', 'Success_Conditions:': 'success_conditions',
         'Failure_Conditions:': 'failure_conditions', 'AI_Behavior_Notes:': 'ai_behavior_notes',
@@ -94,8 +95,8 @@ def parse_npc_file(filepath):
     
     # Fields that can extend across multiple lines
     simple_multiline_fields = [
-        'motivation', 'goal', 'playerhint', 'veil_connection', 'emotes', 'animations', 
-        'lookup', 'llsettext', 'personality_traits', 'relationship_status',
+        'motivation', 'goal', 'playerhint', 'veil_connection', 'emotes', 'animations',
+        'lookup', 'llsettext', 'teleport', 'personality_traits', 'relationship_status',
         'prerequisites', 'success_conditions', 'failure_conditions', 'ai_behavior_notes',
         'conversation_state_tracking', 'conditional_responses', 'relationships',
         'default_greeting', 'repeat_greeting', 'sl_commands', 'trading_rules'
@@ -353,18 +354,18 @@ def load_to_mysql(storyboard_filepath, db_config):
                 npc_data = parse_npc_file(filepath)
                 query = """
                         INSERT INTO NPCs (code, name, area, role, motivation, goal, needed_object, treasure, playerhint,
-                        dialogue_hooks, default_greeting, repeat_greeting, veil_connection, emotes, animations, lookup, llsettext,
+                        dialogue_hooks, default_greeting, repeat_greeting, veil_connection, emotes, animations, lookup, llsettext, teleport,
                         ai_behavior_notes, conditional_responses, conversation_state_tracking, failure_conditions, personality_traits,
                         prerequisites, relationship_status, relationships, required_item, required_quantity, required_source,
                         reward_credits, sl_commands, success_conditions, trading_rules, storyboard_id)
-                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
                 values = (
                     npc_code, npc_data.get('name', ''), npc_data.get('area', ''), npc_data.get('role', ''),
                     npc_data.get('motivation', ''), npc_data.get('goal', ''), npc_data.get('needed_object', ''),
                     npc_data.get('treasure', ''), npc_data.get('playerhint', ''), npc_data.get('dialogue_hooks', ''),
                     npc_data.get('default_greeting', ''), npc_data.get('repeat_greeting', ''),
                     npc_data.get('veil_connection', ''), npc_data.get('emotes', ''), npc_data.get('animations', ''),
-                    npc_data.get('lookup', ''), npc_data.get('llsettext', ''),
+                    npc_data.get('lookup', ''), npc_data.get('llsettext', ''), npc_data.get('teleport', ''),
                     npc_data.get('ai_behavior_notes', ''), npc_data.get('conditional_responses', ''),
                     npc_data.get('conversation_state_tracking', ''), npc_data.get('failure_conditions', ''),
                     npc_data.get('personality_traits', ''), npc_data.get('prerequisites', ''),

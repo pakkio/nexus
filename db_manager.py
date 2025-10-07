@@ -220,13 +220,18 @@ class DbManager:
                                 if 'code' not in npc or not npc['code']: npc['code'] = filename.replace('.json', '')
                                 npcs_in_area.append(npc)
                         except: pass
-            if npcs_in_area: return sorted(npcs_in_area, key=lambda x: x.get('name', '').lower())[0]
+            if npcs_in_area:
+                # Prioritize NPCs with is_default_npc=true, then sort by name
+                default_npcs = [n for n in npcs_in_area if n.get('is_default_npc') == True or str(n.get('is_default_npc', '')).lower() == 'true']
+                if default_npcs: return default_npcs[0]
+                return sorted(npcs_in_area, key=lambda x: x.get('name', '').lower())[0]
             return None
         else: # DB
             conn = None; cursor = None
             try:
                 conn = self.connect(); cursor = conn.cursor(dictionary=True)
-                query = "SELECT * FROM NPCs WHERE LOWER(area) = LOWER(%s) ORDER BY name LIMIT 1"
+                # Prioritize NPCs with is_default_npc=1, then sort by name
+                query = "SELECT * FROM NPCs WHERE LOWER(area) = LOWER(%s) ORDER BY is_default_npc DESC, name LIMIT 1"
                 cursor.execute(query, (area.strip(),))
                 return cursor.fetchone()
             except Exception as e:

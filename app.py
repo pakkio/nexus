@@ -32,10 +32,11 @@ game_system: Optional[GameSystem] = None
 # - MAJOR: Breaking changes
 # - MINOR: New features/fixes (increment for each significant fix)
 # - PATCH: Small bugfixes
-VERSION = "1.4.3"
+VERSION = "2.0.0"
 
 # Version changelog
 VERSION_CHANGELOG = {
+    "2.0.0": "Major update: version bump, see release notes.",
     "1.4.0": "Fix NLP interpretation of dialogue vs /hint commands",
     "1.3.0": "Fix system prompt greeting repetition",
     "1.2.0": "Fix /api/chat NPC switching behavior",
@@ -96,37 +97,69 @@ def parse_npc_file(filepath):
         'Lookup:': 'lookup', 'Llsettext:': 'llsettext', 'Teleport:': 'teleport'
     }
     simple_multiline_fields = ['motivation', 'goal', 'playerhint', 'veil_connection', 'emotes', 'animations', 'lookup', 'llsettext', 'teleport']
-    
+
     current_field_being_parsed = None
     dialogue_hooks_lines = []
     parsing_dialogue_hooks = False
-    
+
     try:
         with open(filepath, 'r', encoding='utf-8') as file:
-            lines = file.readlines()
-        
+            content = file.read()
+            lines = content.split('\n')
+
+        # Try to parse new structured format for SL_Commands
+        if 'SL_Commands:' in content:
+            import re
+            # Extract SL_Commands section
+            sl_commands_match = re.search(r'SL_Commands:\s*\{([^}]+)\}', content, re.DOTALL)
+            if sl_commands_match:
+                sl_section = sl_commands_match.group(1)
+
+                # Extract arrays using regex
+                emotes_match = re.search(r'"Emotes":\s*\[([^\]]+)\]', sl_section)
+                if emotes_match and not data['emotes']:
+                    emotes_list = [e.strip().strip('"') for e in emotes_match.group(1).split(',')]
+                    data['emotes'] = ', '.join(emotes_list)
+
+                animations_match = re.search(r'"Animations":\s*\[([^\]]+)\]', sl_section)
+                if animations_match and not data['animations']:
+                    anims_list = [a.strip().strip('"') for a in animations_match.group(1).split(',')]
+                    data['animations'] = ', '.join(anims_list)
+
+                lookup_match = re.search(r'"Lookup":\s*\[([^\]]+)\]', sl_section)
+                if lookup_match and not data['lookup']:
+                    lookup_list = [l.strip().strip('"') for l in lookup_match.group(1).split(',')]
+                    data['lookup'] = ', '.join(lookup_list)
+
+                text_display_match = re.search(r'"Text_Display":\s*\[([^\]]+)\]', sl_section)
+                if text_display_match and not data['llsettext']:
+                    text_list = [t.strip().strip('"') for t in text_display_match.group(1).split(',')]
+                    data['llsettext'] = ', '.join(text_list)
+
         for line_raw in lines:
             line_stripped = line_raw.strip()
             original_line_content_for_hooks = line_raw.rstrip('\n\r')
-            
+
             matched_new_key = False
             for key_prefix, field_name_target in known_keys_map.items():
                 if line_stripped.lower().startswith(key_prefix.lower()):
                     parsing_dialogue_hooks = False
                     content_after_key = line_stripped[len(key_prefix):].strip()
-                    
+
                     if field_name_target == 'dialogue_hooks_header':
                         parsing_dialogue_hooks = True
                         current_field_being_parsed = None
                     else:
-                        data[field_name_target] = content_after_key
+                        # Don't overwrite if already parsed from structured format
+                        if not data[field_name_target]:
+                            data[field_name_target] = content_after_key
                         if field_name_target in simple_multiline_fields:
                             current_field_being_parsed = field_name_target
                         else:
                             current_field_being_parsed = None
                     matched_new_key = True
                     break
-            
+
             if not matched_new_key:
                 if parsing_dialogue_hooks:
                     dialogue_hooks_lines.append(original_line_content_for_hooks)
@@ -135,10 +168,10 @@ def parse_npc_file(filepath):
                         data[current_field_being_parsed] += "\n" + line_stripped
                     else:
                         data[current_field_being_parsed] = line_stripped
-        
+
         data['dialogue_hooks'] = "\n".join(dialogue_hooks_lines)
         return data
-        
+
     except Exception as e:
         logger.error(f"Error parsing NPC file {filepath}: {e}")
         raise
@@ -288,6 +321,46 @@ def health_check():
         'uptime': 'n/a',  # Could be implemented with start time tracking
         'last_change': VERSION_CHANGELOG.get(VERSION, 'Unknown')
     })
+
+@app.route('/api/npc/verify', methods=['POST'])
+def verify_npc():
+    """Verify NPC exists in database and return capabilities."""
+    try:
+        if not game_system:
+            return jsonify({'error': GAME_SYSTEM_NOT_INITIALIZED}), 500
+
+        data = request.get_json()
+        npc_name = data.get('npc_name', '').strip()
+        area = data.get('area', '').strip()
+
+        if not npc_name or not area:
+            return jsonify({'error': 'Missing npc_name or area'}), 400
+
+        # Try to get NPC from database
+        npc_data = game_system.db.get_npc(area, npc_name)
+
+        if npc_data:
+            # Check capabilities
+            has_teleport = bool(npc_data.get('teleport', '').strip())
+            has_llsettext = bool(npc_data.get('llsettext', '').strip())
+
+            return jsonify({
+                'found': 'true',
+                'npc_name': npc_data.get('name', npc_name),
+                'area': npc_data.get('area', area),
+                'has_teleport': 'true' if has_teleport else 'false',
+                'has_llsettext': 'true' if has_llsettext else 'false'
+            })
+        else:
+            return jsonify({
+                'found': 'false',
+                'npc_name': npc_name,
+                'area': area
+            }), 404
+
+    except Exception as e:
+        logger.error(f"Error in NPC verification: {str(e)}")
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/version', methods=['GET'])
 def version_info():
@@ -799,7 +872,10 @@ def chat_with_npc():
             current_npc = player_system.game_state.get('current_npc')
             if current_npc:
                 from chat_manager import generate_sl_command_prefix
-                sl_commands = generate_sl_command_prefix(current_npc)
+                # Check if teleport was offered in this turn
+                teleport_offered = player_system.game_state.get('teleport_offered_this_turn', False)
+                sl_commands = generate_sl_command_prefix(current_npc, include_teleport=teleport_offered)
+                logger.info(f"Generated SL commands: '{sl_commands}' (teleport_offered={teleport_offered})")
         except Exception as sl_error:
             logger.warning(f"Error generating SL commands: {str(sl_error)}")
             sl_commands = ""
@@ -857,7 +933,7 @@ def api_info():
     """API information endpoint."""
     return jsonify({
         'api': 'nexus-rpg',
-        'version': '1.0.0',
+        'version': VERSION,
         'status': 'active',
         'endpoints': {
             'player_management': {
@@ -1098,6 +1174,7 @@ def sense_player():
         try:
             from chat_manager import generate_sl_command_prefix
             sl_commands = generate_sl_command_prefix(current_npc)
+            logger.info(f"Generated SL commands (sense): '{sl_commands}'")
         except Exception as sl_error:
             logger.warning(f"Error generating SL commands in sense: {str(sl_error)}")
             sl_commands = ""
@@ -1392,7 +1469,7 @@ def game_interface():
     return jsonify({
         'title': 'Nexus RPG - Eldoria',
         'description': 'AI-powered text-based RPG engine',
-        'version': '1.0.0',
+        'version': VERSION,
         'features': [
             'Dynamic AI NPCs with unique personalities',
             'Player psychological profiling',
