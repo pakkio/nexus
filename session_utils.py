@@ -156,7 +156,7 @@ def build_system_prompt(
         # NOTE: Repeat_Greeting removed to prevent LLM from repeating it every message
         if conditional_responses:
             prompt_lines.append(f"🔹 RISPOSTE CONDIZIONALI (usa quando la situazione corrisponde):")
-            prompt_lines.append(f"   {conditional_responses[:500]}")
+            prompt_lines.append(f"   {conditional_responses[:2000]}")
             prompt_lines.append("")
 
         prompt_lines.append("⚠️  REGOLA CRITICA SUL SALUTO:")
@@ -210,67 +210,25 @@ def build_system_prompt(
                 f"Usa questa informazione, insieme ai dettagli del giocatore e al suo profilo psicologico, per dare il tuo saggio consiglio."
             )
 
-    # Add Second Life command instructions if the NPC has SL capabilities
-    if any([emotes, animations, lookup_objects, llsettext_capability, teleport_locations]):
-        sl_instructions = [
-            "\n=== SECOND LIFE INTEGRATION ===",
-            "You must start EVERY response with Second Life commands in this exact format:",
-            "[lookup=OBJECT;llSetText=TEXT;emote=GESTURE;anim=ACTION;teleport=X,Y,Z]",
-            "IMPORTANT: Always add a blank line after the SL commands before your dialogue text!",
-            "",
-            "Choose commands that match your dialogue content and emotional state:"
+    # REMOVED: Second Life command generation instructions for LLM
+    # SL commands are now generated server-side via generate_sl_command_prefix() in chat_manager.py
+    # The LLM no longer needs to generate [lookup=...;emote=...] commands in its responses
+
+    # Add teleport instructions if NPC has teleport capability
+    if teleport_locations:
+        teleport_instructions = [
+            "\n=== TELEPORT CAPABILITY ===",
+            f"You have the ability to teleport players to: {teleport_locations}",
+            "IMPORTANT: When the player asks to be teleported or agrees to teleportation:",
+            "- You MUST add the tag [OFFER_TELEPORT] at the VERY END of your response",
+            "- The tag must be EXACTLY [OFFER_TELEPORT] - no spaces, no variations",
+            "- It triggers the actual teleport mechanism",
+            "Example correct response: 'Certo, ti teletrasporto al mio teatro! [OFFER_TELEPORT]'",
+            "Example when player says 'si' or 'teleportami': 'Perfetto, partiamo! [OFFER_TELEPORT]'",
+            "CRITICAL: Without [OFFER_TELEPORT] tag, the teleport will NOT work!",
+            "=== END TELEPORT ===\n"
         ]
-        
-        if emotes:
-            emote_list = [e.strip() for e in emotes.split(',') if e.strip()]
-            sl_instructions.append(f"Available emotes: {', '.join(emote_list)}")
-            
-        if animations:
-            anim_list = [a.strip() for a in animations.split(',') if a.strip()]
-            sl_instructions.append(f"Available animations: {', '.join(anim_list)}")
-            
-        if lookup_objects:
-            lookup_list = [l.strip() for l in lookup_objects.split(',') if l.strip()]
-            sl_instructions.append(f"Objects you can look at: {', '.join(lookup_list)}")
-            
-        if llsettext_capability:
-            sl_instructions.append(f"Text display capability: {llsettext_capability}")
-
-        if teleport_locations:
-            teleport_list = [t.strip() for t in teleport_locations.split(',') if t.strip()]
-            sl_instructions.append(f"Available teleport destinations (x,y,z): {', '.join(teleport_list)}")
-            sl_instructions.append("Use teleport=X,Y,Z ONLY when offering to transport the player to a specific location!")
-            sl_instructions.append("ALWAYS ask permission before teleporting: 'Vuoi che ti teletrasporti a [destinazione]?'")
-
-        sl_instructions.extend([
-            "",
-            "EXAMPLES of good SL command selection and formatting:",
-            "- If greeting warmly: emote=gentle_smile, anim=welcoming_gesture",
-            "- If studying something: emote=focused_concentration, anim=examining_scroll, lookup=ancient_tome",
-            "- If angry/upset: emote=stern_look, anim=defensive_stance",
-            "- If magical action: anim=channeling_energy, lookup=mystical_artifact",
-            "- If offering teleport: teleport=128,128,50 (with permission request in dialogue)",
-            "",
-            "EXAMPLE RESPONSE FORMATS:",
-            "[lookup=player;llSetText=Welcome, traveler;emote=gentle_smile;anim=welcoming_gesture]",
-            "",
-            "OR with teleport offer:",
-            "[lookup=map;llSetText=GUIDE SERVICE;emote=helpful_gesture;teleport=200,150,25]",
-            "",
-            "Hello there, welcome to my domain! How may I assist you today?",
-            "",
-            "ALWAYS choose commands that enhance your dialogue, don't just pick randomly!",
-            "Remember: SL commands on first line, then blank line, then your dialogue!",
-            "",
-            "TELEPORT USAGE RULES:",
-            "⚠️ Only include teleport= when you are ACTIVELY offering to teleport the player",
-            "⚠️ Always ask permission in your dialogue: 'Vuoi che ti teletrasporti a [luogo]?'",
-            "⚠️ Use specific coordinates from your available destinations list",
-            "⚠️ Don't include teleport= in normal conversation - only when offering transport",
-            "=== END SECOND LIFE INTEGRATION ===\n"
-        ])
-        
-        prompt_lines.extend(sl_instructions)
+        prompt_lines.extend(teleport_instructions)
 
     # Add enhanced world context for better NPC responses
     try:
@@ -351,8 +309,20 @@ def build_system_prompt(
         "⚠️ REGOLA CREDITI: Quando vendi oggetti per crediti, USA SEMPRE il formato [GIVEN_ITEMS: NomeOggetto, -X Credits]",
         "Il sistema controllerà AUTOMATICAMENTE se il giocatore ha abbastanza crediti. NON devi chiedere conferma.",
         "Se il player non ha crediti sufficienti, il sistema bloccherà la transazione automaticamente.",
-        "ESEMPIO CORRETTO: Il player chiede una pozione da 50 crediti →",
-        "  Risposta: 'Certo! Ecco la tua Pozione di Guarigione.'",
+        "",
+        "⚠️ REGOLA INVENTORY HINT (MARA ONLY): Se sei MARA e il player dice 'non ho crediti/soldi', DEVI SEMPRE dire:",
+        "   'Hai controllato il tuo inventario? A volte abbiamo risorse che dimentichiamo di avere. Prova con /inventory'",
+        "   Questa è una regola PRIORITARIA E OBBLIGATORIA per Mara.",
+        "RICONOSCIMENTO LINGUAGGIO NATURALE: Se il player dice QUALSIASI frase che indica volontà di pagare/comprare,",
+        "  procedi IMMEDIATAMENTE con la vendita usando [GIVEN_ITEMS: item, -X Credits].",
+        "  Esempi che indicano volontà di pagare:",
+        "  - 'Ti do 50 crediti, mi vendi la pozione?'",
+        "  - 'Voglio comprare la pozione'",
+        "  - 'Ho i crediti, dammi la pozione'",
+        "  - 'Ecco i soldi'",
+        "  - Qualsiasi variazione che esprime intenzione di acquisto",
+        "ESEMPIO CORRETTO: Il player dice 'ti do 50 crediti mi vendi la pozione?' →",
+        "  Risposta: 'Certamente! Ecco la tua Pozione di Guarigione.'",
         "  [GIVEN_ITEMS: Pozione di Guarigione, -50 Credits]",
         "  (Il sistema controlla automaticamente i crediti e blocca se insufficienti)",
         "",

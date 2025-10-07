@@ -1,0 +1,1210 @@
+2025-10-04 16:06:41,376 - INFO - app.py:228 - Initializing GameSystem with mockup=False, model=google/gemini-2.0-flash-001
+2025-10-04 16:06:42,165 - INFO - app.py:241 - Initialized GameSystem with mockup=False, model=google/gemini-2.0-flash-001
+2025-10-04 16:06:42,165 - INFO - app.py:1419 - Starting Nexus Flask API on port 5000
+DEBUG (command_handler_utils): Successfully imported REAL hint_manager and player_profile_manager.
+[2m[WiseGuideSelector] Attempting to determine wise guide...[0m
+[2m[WiseGuideSelector] LLM selected 'Erasmus' as the wise guide.[0m
+[GameSystem Manager Init] Wise guide selected: Erasmus
+ * Serving Flask app 'app'
+ * Debug mode: off
+2025-10-04 16:06:42,184 - INFO - _internal.py:97 - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://212.227.64.143:5000
+2025-10-04 16:06:42,184 - INFO - _internal.py:97 - [33mPress CTRL+C to quit[0m
+2025-10-04 16:06:46,928 - INFO - _internal.py:97 - 212.227.64.143 - - [04/Oct/2025 16:06:46] "GET /health HTTP/1.1" 200 -
+2025-10-04 16:09:58,126 - INFO - game_system_api.py:166 - [CONTEXT-CACHE] Refreshing NPCs list for QuestSeeker
+2025-10-04 16:09:58,127 - INFO - game_system_api.py:210 - [CONTEXT-CACHE] Context preloaded in 1ms for QuestSeeker
+2025-10-04 16:09:58,130 - INFO - _internal.py:97 - 212.227.64.143 - - [04/Oct/2025 16:09:58] "POST /api/player/QuestSeeker/session HTTP/1.1" 200 -
+2025-10-04 16:10:06,512 - INFO - app.py:753 - Already talking to Erasmus, continuing conversation
+2025-10-04 16:10:06,512 - INFO - game_system_api.py:210 - [CONTEXT-CACHE] Context preloaded in 0ms for QuestSeeker
+2025-10-04 16:10:06,513 - INFO - command_processor.py:71 - [NLP-SPECULATIVE] Starting interpretation for: 'Greetings, Erasmus. I seek kno...'
+2025-10-04 16:10:07,597 - INFO - command_processor.py:102 - [NLP-SPECULATIVE] Completed in 1084ms: is_command=False, confidence=0.90
+2025-10-04 16:10:07,598 - INFO - command_processor.py:152 - [DIALOGUE-SPECULATIVE] Starting dialogue generation for: 'Greetings, Erasmus. I seek kno...'
+2025-10-04 16:10:07,599 - INFO - command_processor.py:298 - [PARALLEL-PROCESSING] Started dialogue thread after NLP check
+2025-10-04 16:10:09,099 - INFO - command_processor.py:389 - [PARALLEL-PROCESSING] Waiting for dialogue thread to complete...
+2025-10-04 16:10:09,527 - INFO - command_processor.py:184 - [DIALOGUE-SPECULATIVE] Completed in 1928ms for NPC: Erasmus
+2025-10-04 16:10:09,527 - INFO - command_processor.py:397 - [PARALLEL-PROCESSING] Using dialogue result after extended wait
+2025-10-04 16:10:09,527 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for QuestSeeker
+2025-10-04 16:10:09,527 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for QuestSeeker
+2025-10-04 16:10:09,532 - INFO - _internal.py:97 - 212.227.64.143 - - [04/Oct/2025 16:10:09] "POST /api/chat HTTP/1.1" 200 -
+2025-10-04 16:10:10,776 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for QuestSeeker in 1246ms
+2025-10-04 16:10:14,745 - INFO - app.py:753 - Already talking to Erasmus, continuing conversation
+2025-10-04 16:10:14,745 - INFO - game_system_api.py:210 - [CONTEXT-CACHE] Context preloaded in 0ms for QuestSeeker
+2025-10-04 16:10:14,746 - INFO - command_processor.py:71 - [NLP-SPECULATIVE] Starting interpretation for: 'Thank you for this wisdom, Era...'
+2025-10-04 16:10:15,699 - INFO - command_processor.py:102 - [NLP-SPECULATIVE] Completed in 953ms: is_command=False, confidence=0.90
+2025-10-04 16:10:15,699 - INFO - command_processor.py:152 - [DIALOGUE-SPECULATIVE] Starting dialogue generation for: 'Thank you for this wisdom, Era...'
+2025-10-04 16:10:15,700 - INFO - command_processor.py:298 - [PARALLEL-PROCESSING] Started dialogue thread after NLP check
+2025-10-04 16:10:16,771 - INFO - command_processor.py:184 - [DIALOGUE-SPECULATIVE] Completed in 1072ms for NPC: Erasmus
+2025-10-04 16:10:16,772 - INFO - command_processor.py:379 - [PARALLEL-PROCESSING] Using speculative dialogue result
+2025-10-04 16:10:16,772 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for QuestSeeker
+2025-10-04 16:10:16,773 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for QuestSeeker
+2025-10-04 16:10:16,778 - INFO - _internal.py:97 - 212.227.64.143 - - [04/Oct/2025 16:10:16] "POST /api/chat HTTP/1.1" 200 -
+2025-10-04 16:10:18,144 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for QuestSeeker in 1368ms
+2025-10-04 16:10:28,274 - INFO - app.py:753 - Already talking to Erasmus, continuing conversation
+2025-10-04 16:10:28,278 - INFO - _internal.py:97 - 212.227.64.143 - - [04/Oct/2025 16:10:28] "POST /api/chat HTTP/1.1" 200 -
+2025-10-04 16:10:32,069 - INFO - app.py:753 - Already talking to Erasmus, continuing conversation
+2025-10-04 16:10:32,073 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for QuestSeeker
+2025-10-04 16:10:32,073 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for QuestSeeker
+2025-10-04 16:10:32,078 - INFO - _internal.py:97 - 212.227.64.143 - - [04/Oct/2025 16:10:32] "POST /api/chat HTTP/1.1" 200 -
+2025-10-04 16:10:33,309 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for QuestSeeker in 1232ms
+2025-10-04 16:10:35,449 - INFO - app.py:753 - Already talking to Erasmus, continuing conversation
+2025-10-04 16:10:36,122 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for QuestSeeker
+2025-10-04 16:10:36,122 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for QuestSeeker
+2025-10-04 16:10:36,126 - INFO - _internal.py:97 - 212.227.64.143 - - [04/Oct/2025 16:10:36] "POST /api/chat HTTP/1.1" 200 -
+2025-10-04 16:10:38,000 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for QuestSeeker in 1875ms
+2025-10-04 16:10:49,036 - INFO - app.py:753 - Already talking to Lyra, continuing conversation
+2025-10-04 16:10:49,037 - INFO - game_system_api.py:210 - [CONTEXT-CACHE] Context preloaded in 0ms for QuestSeeker
+2025-10-04 16:10:49,037 - INFO - command_processor.py:71 - [NLP-SPECULATIVE] Starting interpretation for: 'Greetings, Lyra. Erasmus sent ...'
+2025-10-04 16:10:50,238 - INFO - command_processor.py:152 - [DIALOGUE-SPECULATIVE] Starting dialogue generation for: 'Greetings, Lyra. Erasmus sent ...'
+2025-10-04 16:10:50,238 - INFO - command_processor.py:308 - [PARALLEL-PROCESSING] NLP timeout, started dialogue thread anyway
+2025-10-04 16:10:50,466 - INFO - command_processor.py:102 - [NLP-SPECULATIVE] Completed in 1428ms: is_command=False, confidence=0.95
+2025-10-04 16:10:51,966 - INFO - command_processor.py:389 - [PARALLEL-PROCESSING] Waiting for dialogue thread to complete...
+2025-10-04 16:10:52,427 - INFO - command_processor.py:184 - [DIALOGUE-SPECULATIVE] Completed in 2188ms for NPC: Lyra
+2025-10-04 16:10:52,427 - INFO - command_processor.py:397 - [PARALLEL-PROCESSING] Using dialogue result after extended wait
+2025-10-04 16:10:52,427 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for QuestSeeker
+2025-10-04 16:10:52,428 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for QuestSeeker
+2025-10-04 16:10:52,433 - INFO - _internal.py:97 - 212.227.64.143 - - [04/Oct/2025 16:10:52] "POST /api/chat HTTP/1.1" 200 -
+2025-10-04 16:10:53,824 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for QuestSeeker in 1394ms
+2025-10-04 16:10:57,525 - INFO - app.py:753 - Already talking to Lyra, continuing conversation
+2025-10-04 16:10:57,525 - INFO - game_system_api.py:210 - [CONTEXT-CACHE] Context preloaded in 0ms for QuestSeeker
+2025-10-04 16:10:57,525 - INFO - command_processor.py:71 - [NLP-SPECULATIVE] Starting interpretation for: 'I seek to understand how memor...'
+2025-10-04 16:10:58,725 - INFO - command_processor.py:152 - [DIALOGUE-SPECULATIVE] Starting dialogue generation for: 'I seek to understand how memor...'
+2025-10-04 16:10:58,725 - INFO - command_processor.py:308 - [PARALLEL-PROCESSING] NLP timeout, started dialogue thread anyway
+2025-10-04 16:10:59,135 - INFO - command_processor.py:102 - [NLP-SPECULATIVE] Completed in 1609ms: is_command=False, confidence=0.95
+2025-10-04 16:11:00,635 - INFO - command_processor.py:389 - [PARALLEL-PROCESSING] Waiting for dialogue thread to complete...
+2025-10-04 16:11:01,085 - INFO - command_processor.py:184 - [DIALOGUE-SPECULATIVE] Completed in 2358ms for NPC: Lyra
+2025-10-04 16:11:01,085 - INFO - command_processor.py:397 - [PARALLEL-PROCESSING] Using dialogue result after extended wait
+2025-10-04 16:11:01,085 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for QuestSeeker
+2025-10-04 16:11:01,086 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for QuestSeeker
+2025-10-04 16:11:01,092 - INFO - _internal.py:97 - 212.227.64.143 - - [04/Oct/2025 16:11:01] "POST /api/chat HTTP/1.1" 200 -
+2025-10-04 16:11:03,366 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for QuestSeeker in 2277ms
+2025-10-04 16:11:08,112 - INFO - app.py:753 - Already talking to Lyra, continuing conversation
+2025-10-04 16:11:08,112 - INFO - game_system_api.py:210 - [CONTEXT-CACHE] Context preloaded in 0ms for QuestSeeker
+2025-10-04 16:11:08,112 - INFO - command_processor.py:71 - [NLP-SPECULATIVE] Starting interpretation for: 'I accept this quest to help st...'
+2025-10-04 16:11:09,314 - INFO - command_processor.py:152 - [DIALOGUE-SPECULATIVE] Starting dialogue generation for: 'I accept this quest to help st...'
+2025-10-04 16:11:09,314 - INFO - command_processor.py:308 - [PARALLEL-PROCESSING] NLP timeout, started dialogue thread anyway
+2025-10-04 16:11:09,565 - INFO - command_processor.py:102 - [NLP-SPECULATIVE] Completed in 1452ms: is_command=False, confidence=0.95
+2025-10-04 16:11:10,813 - INFO - command_processor.py:184 - [DIALOGUE-SPECULATIVE] Completed in 1499ms for NPC: Lyra
+2025-10-04 16:11:10,813 - INFO - command_processor.py:379 - [PARALLEL-PROCESSING] Using speculative dialogue result
+2025-10-04 16:11:10,813 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for QuestSeeker
+2025-10-04 16:11:10,814 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for QuestSeeker
+2025-10-04 16:11:10,820 - INFO - _internal.py:97 - 212.227.64.143 - - [04/Oct/2025 16:11:10] "POST /api/chat HTTP/1.1" 200 -
+2025-10-04 16:11:13,334 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for QuestSeeker in 2518ms
+2025-10-04 16:11:23,041 - INFO - app.py:753 - Already talking to Lyra, continuing conversation
+2025-10-04 16:11:23,796 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for QuestSeeker
+2025-10-04 16:11:23,796 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for QuestSeeker
+2025-10-04 16:11:23,801 - INFO - _internal.py:97 - 212.227.64.143 - - [04/Oct/2025 16:11:23] "POST /api/chat HTTP/1.1" 200 -
+2025-10-04 16:11:24,892 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for QuestSeeker in 1092ms
+2025-10-04 16:11:36,594 - INFO - app.py:753 - Already talking to Syra, continuing conversation
+2025-10-04 16:11:36,595 - INFO - game_system_api.py:210 - [CONTEXT-CACHE] Context preloaded in 0ms for QuestSeeker
+2025-10-04 16:11:36,595 - INFO - command_processor.py:71 - [NLP-SPECULATIVE] Starting interpretation for: 'Greetings, Syra. I come seekin...'
+2025-10-04 16:11:37,764 - INFO - command_processor.py:102 - [NLP-SPECULATIVE] Completed in 1168ms: is_command=False, confidence=0.95
+2025-10-04 16:11:37,764 - INFO - command_processor.py:152 - [DIALOGUE-SPECULATIVE] Starting dialogue generation for: 'Greetings, Syra. I come seekin...'
+2025-10-04 16:11:37,765 - INFO - command_processor.py:298 - [PARALLEL-PROCESSING] Started dialogue thread after NLP check
+2025-10-04 16:11:39,266 - INFO - command_processor.py:389 - [PARALLEL-PROCESSING] Waiting for dialogue thread to complete...
+2025-10-04 16:11:39,765 - INFO - command_processor.py:184 - [DIALOGUE-SPECULATIVE] Completed in 2000ms for NPC: Syra
+2025-10-04 16:11:39,765 - INFO - command_processor.py:397 - [PARALLEL-PROCESSING] Using dialogue result after extended wait
+2025-10-04 16:11:39,765 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for QuestSeeker
+2025-10-04 16:11:39,766 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for QuestSeeker
+2025-10-04 16:11:39,771 - INFO - _internal.py:97 - 212.227.64.143 - - [04/Oct/2025 16:11:39] "POST /api/chat HTTP/1.1" 200 -
+2025-10-04 16:11:41,368 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for QuestSeeker in 1600ms
+2025-10-04 16:11:46,268 - INFO - app.py:753 - Already talking to Syra, continuing conversation
+2025-10-04 16:11:46,268 - INFO - game_system_api.py:210 - [CONTEXT-CACHE] Context preloaded in 0ms for QuestSeeker
+2025-10-04 16:11:46,268 - INFO - command_processor.py:71 - [NLP-SPECULATIVE] Starting interpretation for: 'I understand the gravity of wh...'
+2025-10-04 16:11:47,469 - INFO - command_processor.py:152 - [DIALOGUE-SPECULATIVE] Starting dialogue generation for: 'I understand the gravity of wh...'
+2025-10-04 16:11:47,469 - INFO - command_processor.py:308 - [PARALLEL-PROCESSING] NLP timeout, started dialogue thread anyway
+2025-10-04 16:11:47,691 - INFO - command_processor.py:102 - [NLP-SPECULATIVE] Completed in 1423ms: is_command=False, confidence=0.90
+2025-10-04 16:11:48,407 - INFO - command_processor.py:184 - [DIALOGUE-SPECULATIVE] Completed in 937ms for NPC: Syra
+2025-10-04 16:11:48,407 - INFO - command_processor.py:379 - [PARALLEL-PROCESSING] Using speculative dialogue result
+2025-10-04 16:11:48,407 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for QuestSeeker
+2025-10-04 16:11:48,408 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for QuestSeeker
+2025-10-04 16:11:48,412 - INFO - _internal.py:97 - 212.227.64.143 - - [04/Oct/2025 16:11:48] "POST /api/chat HTTP/1.1" 200 -
+2025-10-04 16:11:50,140 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for QuestSeeker in 1729ms
+2025-10-04 16:12:02,091 - INFO - app.py:753 - Already talking to Syra, continuing conversation
+2025-10-04 16:12:03,029 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for QuestSeeker
+2025-10-04 16:12:03,029 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for QuestSeeker
+2025-10-04 16:12:03,035 - INFO - _internal.py:97 - 212.227.64.143 - - [04/Oct/2025 16:12:03] "POST /api/chat HTTP/1.1" 200 -
+2025-10-04 16:12:03,953 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for QuestSeeker in 921ms
+2025-10-04 16:12:15,676 - INFO - app.py:753 - Already talking to Jorin, continuing conversation
+2025-10-04 16:12:15,677 - INFO - game_system_api.py:210 - [CONTEXT-CACHE] Context preloaded in 0ms for QuestSeeker
+2025-10-04 16:12:15,678 - INFO - command_processor.py:71 - [NLP-SPECULATIVE] Starting interpretation for: 'Greetings, Jorin. I am on a qu...'
+2025-10-04 16:12:16,696 - INFO - command_processor.py:102 - [NLP-SPECULATIVE] Completed in 1017ms: is_command=False, confidence=0.95
+2025-10-04 16:12:16,696 - INFO - command_processor.py:152 - [DIALOGUE-SPECULATIVE] Starting dialogue generation for: 'Greetings, Jorin. I am on a qu...'
+2025-10-04 16:12:16,697 - INFO - command_processor.py:298 - [PARALLEL-PROCESSING] Started dialogue thread after NLP check
+2025-10-04 16:12:18,087 - INFO - command_processor.py:184 - [DIALOGUE-SPECULATIVE] Completed in 1390ms for NPC: Jorin
+2025-10-04 16:12:18,087 - INFO - command_processor.py:379 - [PARALLEL-PROCESSING] Using speculative dialogue result
+2025-10-04 16:12:18,087 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for QuestSeeker
+2025-10-04 16:12:18,088 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for QuestSeeker
+2025-10-04 16:12:18,093 - INFO - _internal.py:97 - 212.227.64.143 - - [04/Oct/2025 16:12:18] "POST /api/chat HTTP/1.1" 200 -
+2025-10-04 16:12:19,738 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for QuestSeeker in 1647ms
+2025-10-04 16:12:32,927 - INFO - app.py:753 - Already talking to Jorin, continuing conversation
+2025-10-04 16:12:33,754 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for QuestSeeker
+2025-10-04 16:12:33,754 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for QuestSeeker
+2025-10-04 16:12:33,760 - INFO - _internal.py:97 - 212.227.64.143 - - [04/Oct/2025 16:12:33] "POST /api/chat HTTP/1.1" 200 -
+2025-10-04 16:12:34,993 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for QuestSeeker in 1236ms
+2025-10-04 16:12:46,657 - INFO - app.py:753 - Already talking to Garin, continuing conversation
+2025-10-04 16:12:46,658 - INFO - game_system_api.py:210 - [CONTEXT-CACHE] Context preloaded in 0ms for QuestSeeker
+2025-10-04 16:12:46,658 - INFO - command_processor.py:71 - [NLP-SPECULATIVE] Starting interpretation for: 'Greetings, Garin. I am on a qu...'
+2025-10-04 16:12:47,600 - INFO - command_processor.py:102 - [NLP-SPECULATIVE] Completed in 941ms: is_command=False, confidence=0.95
+2025-10-04 16:12:47,600 - INFO - command_processor.py:152 - [DIALOGUE-SPECULATIVE] Starting dialogue generation for: 'Greetings, Garin. I am on a qu...'
+2025-10-04 16:12:47,602 - INFO - command_processor.py:298 - [PARALLEL-PROCESSING] Started dialogue thread after NLP check
+2025-10-04 16:12:49,102 - INFO - command_processor.py:389 - [PARALLEL-PROCESSING] Waiting for dialogue thread to complete...
+2025-10-04 16:12:49,278 - INFO - command_processor.py:184 - [DIALOGUE-SPECULATIVE] Completed in 1677ms for NPC: Garin
+2025-10-04 16:12:49,278 - INFO - command_processor.py:397 - [PARALLEL-PROCESSING] Using dialogue result after extended wait
+2025-10-04 16:12:49,279 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for QuestSeeker
+2025-10-04 16:12:49,280 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for QuestSeeker
+2025-10-04 16:12:49,286 - INFO - _internal.py:97 - 212.227.64.143 - - [04/Oct/2025 16:12:49] "POST /api/chat HTTP/1.1" 200 -
+2025-10-04 16:12:51,214 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for QuestSeeker in 1932ms
+2025-10-04 16:13:03,074 - INFO - app.py:753 - Already talking to Garin, continuing conversation
+2025-10-04 16:13:03,740 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for QuestSeeker
+2025-10-04 16:13:03,740 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for QuestSeeker
+2025-10-04 16:13:03,745 - INFO - _internal.py:97 - 212.227.64.143 - - [04/Oct/2025 16:13:03] "POST /api/chat HTTP/1.1" 200 -
+2025-10-04 16:13:05,192 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for QuestSeeker in 1448ms
+2025-10-04 16:13:17,110 - INFO - app.py:753 - Already talking to Boros, continuing conversation
+2025-10-04 16:13:17,111 - INFO - game_system_api.py:210 - [CONTEXT-CACHE] Context preloaded in 0ms for QuestSeeker
+2025-10-04 16:13:17,112 - INFO - command_processor.py:71 - [NLP-SPECULATIVE] Starting interpretation for: 'Greetings, Boros. I am on a sa...'
+2025-10-04 16:13:18,312 - INFO - command_processor.py:152 - [DIALOGUE-SPECULATIVE] Starting dialogue generation for: 'Greetings, Boros. I am on a sa...'
+2025-10-04 16:13:18,314 - INFO - command_processor.py:308 - [PARALLEL-PROCESSING] NLP timeout, started dialogue thread anyway
+2025-10-04 16:13:18,539 - INFO - command_processor.py:102 - [NLP-SPECULATIVE] Completed in 1427ms: is_command=False, confidence=0.90
+2025-10-04 16:13:19,825 - INFO - command_processor.py:184 - [DIALOGUE-SPECULATIVE] Completed in 1512ms for NPC: Boros
+2025-10-04 16:13:19,825 - INFO - command_processor.py:379 - [PARALLEL-PROCESSING] Using speculative dialogue result
+2025-10-04 16:13:19,825 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for QuestSeeker
+2025-10-04 16:13:19,826 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for QuestSeeker
+2025-10-04 16:13:19,831 - INFO - _internal.py:97 - 212.227.64.143 - - [04/Oct/2025 16:13:19] "POST /api/chat HTTP/1.1" 200 -
+2025-10-04 16:13:21,708 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for QuestSeeker in 1880ms
+2025-10-04 16:13:37,118 - INFO - app.py:753 - Already talking to Boros, continuing conversation
+2025-10-04 16:13:37,946 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for QuestSeeker
+2025-10-04 16:13:37,946 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for QuestSeeker
+2025-10-04 16:13:37,952 - INFO - _internal.py:97 - 212.227.64.143 - - [04/Oct/2025 16:13:37] "POST /api/chat HTTP/1.1" 200 -
+2025-10-04 16:13:39,000 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for QuestSeeker in 1050ms
+2025-10-04 16:13:51,851 - INFO - app.py:753 - Already talking to Elira, continuing conversation
+2025-10-04 16:13:51,852 - INFO - game_system_api.py:210 - [CONTEXT-CACHE] Context preloaded in 0ms for QuestSeeker
+2025-10-04 16:13:51,853 - INFO - command_processor.py:71 - [NLP-SPECULATIVE] Starting interpretation for: 'Greetings, Elira. I am on a qu...'
+2025-10-04 16:13:53,053 - INFO - command_processor.py:152 - [DIALOGUE-SPECULATIVE] Starting dialogue generation for: 'Greetings, Elira. I am on a qu...'
+2025-10-04 16:13:53,055 - INFO - command_processor.py:308 - [PARALLEL-PROCESSING] NLP timeout, started dialogue thread anyway
+2025-10-04 16:13:53,260 - INFO - command_processor.py:102 - [NLP-SPECULATIVE] Completed in 1406ms: is_command=False, confidence=0.95
+2025-10-04 16:13:54,289 - INFO - command_processor.py:184 - [DIALOGUE-SPECULATIVE] Completed in 1235ms for NPC: Elira
+2025-10-04 16:13:54,289 - INFO - command_processor.py:379 - [PARALLEL-PROCESSING] Using speculative dialogue result
+2025-10-04 16:13:54,289 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for QuestSeeker
+2025-10-04 16:13:54,290 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for QuestSeeker
+2025-10-04 16:13:54,296 - INFO - _internal.py:97 - 212.227.64.143 - - [04/Oct/2025 16:13:54] "POST /api/chat HTTP/1.1" 200 -
+2025-10-04 16:13:55,921 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for QuestSeeker in 1628ms
+2025-10-04 16:13:59,623 - INFO - app.py:753 - Already talking to Elira, continuing conversation
+2025-10-04 16:13:59,626 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for QuestSeeker
+2025-10-04 16:13:59,626 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for QuestSeeker
+2025-10-04 16:13:59,631 - INFO - _internal.py:97 - 212.227.64.143 - - [04/Oct/2025 16:13:59] "POST /api/chat HTTP/1.1" 200 -
+2025-10-04 16:14:00,981 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for QuestSeeker in 1352ms
+2025-10-04 16:14:05,422 - INFO - app.py:753 - Already talking to Elira, continuing conversation
+2025-10-04 16:14:05,422 - INFO - game_system_api.py:210 - [CONTEXT-CACHE] Context preloaded in 0ms for QuestSeeker
+2025-10-04 16:14:05,422 - INFO - command_processor.py:71 - [NLP-SPECULATIVE] Starting interpretation for: 'I understand the importance of...'
+2025-10-04 16:14:06,414 - INFO - command_processor.py:102 - [NLP-SPECULATIVE] Completed in 991ms: is_command=False, confidence=0.95
+2025-10-04 16:14:06,415 - INFO - command_processor.py:152 - [DIALOGUE-SPECULATIVE] Starting dialogue generation for: 'I understand the importance of...'
+2025-10-04 16:14:06,415 - INFO - command_processor.py:298 - [PARALLEL-PROCESSING] Started dialogue thread after NLP check
+2025-10-04 16:14:07,143 - INFO - command_processor.py:184 - [DIALOGUE-SPECULATIVE] Completed in 728ms for NPC: Elira
+2025-10-04 16:14:07,143 - INFO - command_processor.py:379 - [PARALLEL-PROCESSING] Using speculative dialogue result
+2025-10-04 16:14:07,144 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for QuestSeeker
+2025-10-04 16:14:07,144 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for QuestSeeker
+2025-10-04 16:14:07,150 - INFO - _internal.py:97 - 212.227.64.143 - - [04/Oct/2025 16:14:07] "POST /api/chat HTTP/1.1" 200 -
+2025-10-04 16:14:08,950 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for QuestSeeker in 1803ms
+2025-10-04 16:14:11,420 - INFO - app.py:753 - Already talking to Elira, continuing conversation
+2025-10-04 16:14:12,246 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for QuestSeeker
+2025-10-04 16:14:12,246 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for QuestSeeker
+2025-10-04 16:14:12,252 - INFO - _internal.py:97 - 212.227.64.143 - - [04/Oct/2025 16:14:12] "POST /api/chat HTTP/1.1" 200 -
+2025-10-04 16:14:13,327 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for QuestSeeker in 1077ms
+2025-10-04 16:14:16,664 - INFO - app.py:753 - Already talking to Garin, continuing conversation
+2025-10-04 16:14:17,378 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for QuestSeeker
+2025-10-04 16:14:17,378 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for QuestSeeker
+2025-10-04 16:14:17,382 - INFO - _internal.py:97 - 212.227.64.143 - - [04/Oct/2025 16:14:17] "POST /api/chat HTTP/1.1" 200 -
+2025-10-04 16:14:18,280 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for QuestSeeker in 898ms
+2025-10-04 16:14:32,227 - INFO - app.py:730 - Switching from Garin to Mara
+2025-10-04 16:14:32,908 - INFO - game_system_api.py:210 - [CONTEXT-CACHE] Context preloaded in 0ms for QuestSeeker
+2025-10-04 16:14:32,908 - INFO - command_processor.py:71 - [NLP-SPECULATIVE] Starting interpretation for: 'Greetings, Mara. I am on a que...'
+2025-10-04 16:14:33,995 - INFO - command_processor.py:102 - [NLP-SPECULATIVE] Completed in 1086ms: is_command=False, confidence=0.95
+2025-10-04 16:14:33,995 - INFO - command_processor.py:152 - [DIALOGUE-SPECULATIVE] Starting dialogue generation for: 'Greetings, Mara. I am on a que...'
+2025-10-04 16:14:33,997 - INFO - command_processor.py:298 - [PARALLEL-PROCESSING] Started dialogue thread after NLP check
+2025-10-04 16:14:35,470 - INFO - command_processor.py:184 - [DIALOGUE-SPECULATIVE] Completed in 1474ms for NPC: Mara
+2025-10-04 16:14:35,470 - INFO - command_processor.py:379 - [PARALLEL-PROCESSING] Using speculative dialogue result
+2025-10-04 16:14:35,471 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for QuestSeeker
+2025-10-04 16:14:35,472 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for QuestSeeker
+2025-10-04 16:14:35,477 - INFO - _internal.py:97 - 212.227.64.143 - - [04/Oct/2025 16:14:35] "POST /api/chat HTTP/1.1" 200 -
+2025-10-04 16:14:37,425 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for QuestSeeker in 1951ms
+2025-10-04 16:14:41,678 - INFO - app.py:753 - Already talking to Mara, continuing conversation
+2025-10-04 16:14:41,678 - INFO - game_system_api.py:210 - [CONTEXT-CACHE] Context preloaded in 0ms for QuestSeeker
+2025-10-04 16:14:41,678 - INFO - command_processor.py:71 - [NLP-SPECULATIVE] Starting interpretation for: '50 credits is fair for such an...'
+2025-10-04 16:14:42,879 - INFO - command_processor.py:152 - [DIALOGUE-SPECULATIVE] Starting dialogue generation for: '50 credits is fair for such an...'
+2025-10-04 16:14:42,879 - INFO - command_processor.py:308 - [PARALLEL-PROCESSING] NLP timeout, started dialogue thread anyway
+2025-10-04 16:14:43,760 - INFO - command_processor.py:102 - [NLP-SPECULATIVE] Completed in 2081ms: is_command=True, confidence=0.90
+2025-10-04 16:14:43,760 - INFO - command_processor.py:361 - [PARALLEL-PROCESSING] Cancelling dialogue thread - NLP detected command
+2025-10-04 16:14:44,061 - INFO - command_processor.py:179 - [DIALOGUE-SPECULATIVE] Cancelled after LLM call, discarding result
+2025-10-04 16:14:44,970 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for QuestSeeker
+2025-10-04 16:14:44,970 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for QuestSeeker
+2025-10-04 16:14:44,975 - INFO - game_system_api.py:369 - [ITEM-PROCESSING] Processing items: ['Pozione di Guarigione']
+2025-10-04 16:14:44,975 - INFO - game_system_api.py:378 - [ITEM-PROCESSING] Found item: Pozione di Guarigione
+2025-10-04 16:14:44,975 - INFO - game_system_api.py:387 - [ITEM-PROCESSING] Adding 'Pozione di Guarigione' to inventory for QuestSeeker
+2025-10-04 16:14:44,979 - INFO - game_system_api.py:389 - [ITEM-PROCESSING] Successfully added 'Pozione di Guarigione' to inventory
+2025-10-04 16:14:44,979 - INFO - _internal.py:97 - 212.227.64.143 - - [04/Oct/2025 16:14:44] "POST /api/chat HTTP/1.1" 200 -
+2025-10-04 16:14:46,303 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for QuestSeeker in 1329ms
+2025-10-04 16:15:00,847 - INFO - app.py:753 - Already talking to Mara, continuing conversation
+2025-10-04 16:15:01,719 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for QuestSeeker
+2025-10-04 16:15:01,719 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for QuestSeeker
+2025-10-04 16:15:01,725 - INFO - _internal.py:97 - 212.227.64.143 - - [04/Oct/2025 16:15:01] "POST /api/chat HTTP/1.1" 200 -
+2025-10-04 16:15:03,279 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for QuestSeeker in 1556ms
+2025-10-04 16:15:06,086 - INFO - app.py:753 - Already talking to Elira, continuing conversation
+2025-10-04 16:15:07,143 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for QuestSeeker
+2025-10-04 16:15:07,143 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for QuestSeeker
+2025-10-04 16:15:07,147 - INFO - game_system_api.py:369 - [ITEM-PROCESSING] Processing items: ['Seme della Foresta']
+2025-10-04 16:15:07,148 - INFO - game_system_api.py:378 - [ITEM-PROCESSING] Found item: Seme della Foresta
+2025-10-04 16:15:07,148 - INFO - game_system_api.py:387 - [ITEM-PROCESSING] Adding 'Seme della Foresta' to inventory for QuestSeeker
+2025-10-04 16:15:07,151 - INFO - game_system_api.py:389 - [ITEM-PROCESSING] Successfully added 'Seme della Foresta' to inventory
+2025-10-04 16:15:07,151 - INFO - _internal.py:97 - 212.227.64.143 - - [04/Oct/2025 16:15:07] "POST /api/chat HTTP/1.1" 200 -
+2025-10-04 16:15:08,890 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for QuestSeeker in 1744ms
+2025-10-04 16:15:25,340 - INFO - app.py:753 - Already talking to Elira, continuing conversation
+2025-10-04 16:15:26,156 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for QuestSeeker
+2025-10-04 16:15:26,156 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for QuestSeeker
+2025-10-04 16:15:26,161 - INFO - _internal.py:97 - 212.227.64.143 - - [04/Oct/2025 16:15:26] "POST /api/chat HTTP/1.1" 200 -
+2025-10-04 16:15:28,632 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for QuestSeeker in 2472ms
+2025-10-04 16:15:30,411 - INFO - app.py:753 - Already talking to Boros, continuing conversation
+2025-10-04 16:15:31,498 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for QuestSeeker
+2025-10-04 16:15:31,498 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for QuestSeeker
+2025-10-04 16:15:31,504 - INFO - game_system_api.py:369 - [ITEM-PROCESSING] Processing items: ['Minerale di Ferro Antico']
+2025-10-04 16:15:31,505 - INFO - game_system_api.py:378 - [ITEM-PROCESSING] Found item: Minerale di Ferro Antico
+2025-10-04 16:15:31,505 - INFO - game_system_api.py:387 - [ITEM-PROCESSING] Adding 'Minerale di Ferro Antico' to inventory for QuestSeeker
+2025-10-04 16:15:31,509 - INFO - game_system_api.py:389 - [ITEM-PROCESSING] Successfully added 'Minerale di Ferro Antico' to inventory
+2025-10-04 16:15:31,509 - INFO - _internal.py:97 - 212.227.64.143 - - [04/Oct/2025 16:15:31] "POST /api/chat HTTP/1.1" 200 -
+2025-10-04 16:15:33,327 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for QuestSeeker in 1825ms
+2025-10-04 16:15:37,453 - INFO - app.py:753 - Already talking to Boros, continuing conversation
+2025-10-04 16:15:38,368 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for QuestSeeker
+2025-10-04 16:15:38,368 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for QuestSeeker
+2025-10-04 16:15:38,373 - INFO - _internal.py:97 - 212.227.64.143 - - [04/Oct/2025 16:15:38] "POST /api/chat HTTP/1.1" 200 -
+2025-10-04 16:15:39,707 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for QuestSeeker in 1335ms
+2025-10-04 16:15:42,474 - INFO - app.py:753 - Already talking to Garin, continuing conversation
+2025-10-04 16:15:43,914 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for QuestSeeker
+2025-10-04 16:15:43,914 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for QuestSeeker
+2025-10-04 16:15:43,919 - INFO - game_system_api.py:369 - [ITEM-PROCESSING] Processing items: ['Trucioli di Ferro']
+2025-10-04 16:15:43,919 - INFO - game_system_api.py:378 - [ITEM-PROCESSING] Found item: Trucioli di Ferro
+2025-10-04 16:15:43,919 - INFO - game_system_api.py:387 - [ITEM-PROCESSING] Adding 'Trucioli di Ferro' to inventory for QuestSeeker
+2025-10-04 16:15:43,922 - INFO - game_system_api.py:389 - [ITEM-PROCESSING] Successfully added 'Trucioli di Ferro' to inventory
+2025-10-04 16:15:43,923 - INFO - _internal.py:97 - 212.227.64.143 - - [04/Oct/2025 16:15:43] "POST /api/chat HTTP/1.1" 200 -
+2025-10-04 16:15:45,353 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for QuestSeeker in 1436ms
+2025-10-04 16:15:57,579 - INFO - app.py:753 - Already talking to Garin, continuing conversation
+2025-10-04 16:15:58,491 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for QuestSeeker
+2025-10-04 16:15:58,491 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for QuestSeeker
+2025-10-04 16:15:58,496 - INFO - _internal.py:97 - 212.227.64.143 - - [04/Oct/2025 16:15:58] "POST /api/chat HTTP/1.1" 200 -
+2025-10-04 16:16:00,238 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for QuestSeeker in 1744ms
+2025-10-04 16:16:02,901 - INFO - app.py:753 - Already talking to Jorin, continuing conversation
+2025-10-04 16:16:04,435 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for QuestSeeker
+2025-10-04 16:16:04,436 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for QuestSeeker
+2025-10-04 16:16:04,441 - INFO - game_system_api.py:369 - [ITEM-PROCESSING] Processing items: ["Ciotola dell'Offerta Sacra"]
+2025-10-04 16:16:04,441 - INFO - game_system_api.py:378 - [ITEM-PROCESSING] Found item: Ciotola dell'Offerta Sacra
+2025-10-04 16:16:04,441 - INFO - game_system_api.py:387 - [ITEM-PROCESSING] Adding 'Ciotola dell'Offerta Sacra' to inventory for QuestSeeker
+2025-10-04 16:16:04,444 - INFO - game_system_api.py:389 - [ITEM-PROCESSING] Successfully added 'Ciotola dell'Offerta Sacra' to inventory
+2025-10-04 16:16:04,444 - INFO - _internal.py:97 - 212.227.64.143 - - [04/Oct/2025 16:16:04] "POST /api/chat HTTP/1.1" 200 -
+2025-10-04 16:16:05,699 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for QuestSeeker in 1260ms
+2025-10-04 16:16:12,336 - INFO - app.py:753 - Already talking to Jorin, continuing conversation
+2025-10-04 16:16:12,336 - INFO - game_system_api.py:166 - [CONTEXT-CACHE] Refreshing NPCs list for QuestSeeker
+2025-10-04 16:16:12,338 - INFO - game_system_api.py:210 - [CONTEXT-CACHE] Context preloaded in 1ms for QuestSeeker
+2025-10-04 16:16:12,338 - INFO - command_processor.py:71 - [NLP-SPECULATIVE] Starting interpretation for: 'Thank you, Jorin. This Sacred ...'
+2025-10-04 16:16:13,521 - INFO - command_processor.py:102 - [NLP-SPECULATIVE] Completed in 1182ms: is_command=False, confidence=0.90
+2025-10-04 16:16:13,521 - INFO - command_processor.py:152 - [DIALOGUE-SPECULATIVE] Starting dialogue generation for: 'Thank you, Jorin. This Sacred ...'
+2025-10-04 16:16:13,522 - INFO - command_processor.py:298 - [PARALLEL-PROCESSING] Started dialogue thread after NLP check
+2025-10-04 16:16:14,547 - INFO - command_processor.py:184 - [DIALOGUE-SPECULATIVE] Completed in 1025ms for NPC: Jorin
+2025-10-04 16:16:14,547 - INFO - command_processor.py:379 - [PARALLEL-PROCESSING] Using speculative dialogue result
+2025-10-04 16:16:14,547 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for QuestSeeker
+2025-10-04 16:16:14,547 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for QuestSeeker
+2025-10-04 16:16:14,553 - INFO - _internal.py:97 - 212.227.64.143 - - [04/Oct/2025 16:16:14] "POST /api/chat HTTP/1.1" 200 -
+2025-10-04 16:16:16,268 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for QuestSeeker in 1717ms
+2025-10-04 16:16:29,336 - INFO - app.py:753 - Already talking to Jorin, continuing conversation
+2025-10-04 16:16:30,266 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for QuestSeeker
+2025-10-04 16:16:30,266 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for QuestSeeker
+2025-10-04 16:16:30,271 - INFO - _internal.py:97 - 212.227.64.143 - - [04/Oct/2025 16:16:30] "POST /api/chat HTTP/1.1" 200 -
+2025-10-04 16:16:31,524 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for QuestSeeker in 1254ms
+2025-10-04 16:16:36,536 - INFO - app.py:753 - Already talking to Elira, continuing conversation
+2025-10-04 16:16:36,537 - INFO - game_system_api.py:210 - [CONTEXT-CACHE] Context preloaded in 0ms for QuestSeeker
+2025-10-04 16:16:36,537 - INFO - command_processor.py:71 - [NLP-SPECULATIVE] Starting interpretation for: 'Elira, I have the Sacred Offer...'
+2025-10-04 16:16:37,622 - INFO - command_processor.py:102 - [NLP-SPECULATIVE] Completed in 1085ms: is_command=False, confidence=0.90
+2025-10-04 16:16:37,623 - INFO - command_processor.py:152 - [DIALOGUE-SPECULATIVE] Starting dialogue generation for: 'Elira, I have the Sacred Offer...'
+2025-10-04 16:16:37,625 - INFO - command_processor.py:298 - [PARALLEL-PROCESSING] Started dialogue thread after NLP check
+2025-10-04 16:16:38,557 - INFO - command_processor.py:184 - [DIALOGUE-SPECULATIVE] Completed in 933ms for NPC: Elira
+2025-10-04 16:16:38,557 - INFO - command_processor.py:379 - [PARALLEL-PROCESSING] Using speculative dialogue result
+2025-10-04 16:16:38,557 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for QuestSeeker
+2025-10-04 16:16:38,558 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for QuestSeeker
+2025-10-04 16:16:38,563 - INFO - _internal.py:97 - 212.227.64.143 - - [04/Oct/2025 16:16:38] "POST /api/chat HTTP/1.1" 200 -
+2025-10-04 16:16:40,531 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for QuestSeeker in 1970ms
+2025-10-04 16:16:47,129 - INFO - app.py:753 - Already talking to Elira, continuing conversation
+2025-10-04 16:16:47,129 - INFO - game_system_api.py:210 - [CONTEXT-CACHE] Context preloaded in 0ms for QuestSeeker
+2025-10-04 16:16:47,130 - INFO - command_processor.py:71 - [NLP-SPECULATIVE] Starting interpretation for: 'I understand, Elira. My quest ...'
+2025-10-04 16:16:48,331 - INFO - command_processor.py:152 - [DIALOGUE-SPECULATIVE] Starting dialogue generation for: 'I understand, Elira. My quest ...'
+2025-10-04 16:16:48,331 - INFO - command_processor.py:308 - [PARALLEL-PROCESSING] NLP timeout, started dialogue thread anyway
+2025-10-04 16:16:48,392 - INFO - command_processor.py:102 - [NLP-SPECULATIVE] Completed in 1262ms: is_command=False, confidence=0.95
+2025-10-04 16:16:49,290 - INFO - command_processor.py:184 - [DIALOGUE-SPECULATIVE] Completed in 958ms for NPC: Elira
+2025-10-04 16:16:49,290 - INFO - command_processor.py:379 - [PARALLEL-PROCESSING] Using speculative dialogue result
+2025-10-04 16:16:49,290 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for QuestSeeker
+2025-10-04 16:16:49,291 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for QuestSeeker
+2025-10-04 16:16:49,296 - INFO - _internal.py:97 - 212.227.64.143 - - [04/Oct/2025 16:16:49] "POST /api/chat HTTP/1.1" 200 -
+2025-10-04 16:16:51,091 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for QuestSeeker in 1798ms
+2025-10-04 16:16:56,496 - INFO - app.py:753 - Already talking to Elira, continuing conversation
+2025-10-04 16:16:56,496 - INFO - game_system_api.py:210 - [CONTEXT-CACHE] Context preloaded in 0ms for QuestSeeker
+2025-10-04 16:16:56,497 - INFO - command_processor.py:71 - [NLP-SPECULATIVE] Starting interpretation for: 'I feel the peace of those who ...'
+2025-10-04 16:16:57,697 - INFO - command_processor.py:152 - [DIALOGUE-SPECULATIVE] Starting dialogue generation for: 'I feel the peace of those who ...'
+2025-10-04 16:16:57,697 - INFO - command_processor.py:308 - [PARALLEL-PROCESSING] NLP timeout, started dialogue thread anyway
+2025-10-04 16:16:57,884 - INFO - command_processor.py:102 - [NLP-SPECULATIVE] Completed in 1387ms: is_command=False, confidence=0.95
+2025-10-04 16:16:58,557 - INFO - command_processor.py:184 - [DIALOGUE-SPECULATIVE] Completed in 859ms for NPC: Elira
+2025-10-04 16:16:58,557 - INFO - command_processor.py:379 - [PARALLEL-PROCESSING] Using speculative dialogue result
+2025-10-04 16:16:58,558 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for QuestSeeker
+2025-10-04 16:16:58,559 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for QuestSeeker
+2025-10-04 16:16:58,563 - INFO - _internal.py:97 - 212.227.64.143 - - [04/Oct/2025 16:16:58] "POST /api/chat HTTP/1.1" 200 -
+2025-10-04 16:17:00,674 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for QuestSeeker in 2113ms
+2025-10-04 16:17:05,888 - INFO - app.py:753 - Already talking to Elira, continuing conversation
+2025-10-04 16:17:05,888 - INFO - game_system_api.py:210 - [CONTEXT-CACHE] Context preloaded in 0ms for QuestSeeker
+2025-10-04 16:17:05,889 - INFO - command_processor.py:71 - [NLP-SPECULATIVE] Starting interpretation for: 'Thank you, Elira. I will medit...'
+2025-10-04 16:17:07,000 - INFO - command_processor.py:102 - [NLP-SPECULATIVE] Completed in 1111ms: is_command=False, confidence=0.95
+2025-10-04 16:17:07,000 - INFO - command_processor.py:152 - [DIALOGUE-SPECULATIVE] Starting dialogue generation for: 'Thank you, Elira. I will medit...'
+2025-10-04 16:17:07,001 - INFO - command_processor.py:298 - [PARALLEL-PROCESSING] Started dialogue thread after NLP check
+2025-10-04 16:17:07,894 - INFO - command_processor.py:184 - [DIALOGUE-SPECULATIVE] Completed in 893ms for NPC: Elira
+2025-10-04 16:17:07,894 - INFO - command_processor.py:379 - [PARALLEL-PROCESSING] Using speculative dialogue result
+2025-10-04 16:17:07,894 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for QuestSeeker
+2025-10-04 16:17:07,895 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for QuestSeeker
+2025-10-04 16:17:07,900 - INFO - _internal.py:97 - 212.227.64.143 - - [04/Oct/2025 16:17:07] "POST /api/chat HTTP/1.1" 200 -
+2025-10-04 16:17:10,282 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for QuestSeeker in 2384ms
+2025-10-04 16:17:13,510 - INFO - app.py:753 - Already talking to Elira, continuing conversation
+2025-10-04 16:17:14,185 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for QuestSeeker
+2025-10-04 16:17:14,185 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for QuestSeeker
+2025-10-04 16:17:14,190 - INFO - _internal.py:97 - 212.227.64.143 - - [04/Oct/2025 16:17:14] "POST /api/chat HTTP/1.1" 200 -
+2025-10-04 16:17:16,656 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for QuestSeeker in 2468ms
+2025-10-04 16:17:21,701 - INFO - app.py:753 - Already talking to Syra, continuing conversation
+2025-10-04 16:17:21,701 - INFO - game_system_api.py:210 - [CONTEXT-CACHE] Context preloaded in 0ms for QuestSeeker
+2025-10-04 16:17:21,701 - INFO - command_processor.py:71 - [NLP-SPECULATIVE] Starting interpretation for: 'Syra, I have returned with the...'
+2025-10-04 16:17:22,902 - INFO - command_processor.py:152 - [DIALOGUE-SPECULATIVE] Starting dialogue generation for: 'Syra, I have returned with the...'
+2025-10-04 16:17:22,902 - INFO - command_processor.py:308 - [PARALLEL-PROCESSING] NLP timeout, started dialogue thread anyway
+2025-10-04 16:17:23,022 - INFO - command_processor.py:102 - [NLP-SPECULATIVE] Completed in 1321ms: is_command=True, confidence=0.95
+2025-10-04 16:17:23,022 - INFO - command_processor.py:361 - [PARALLEL-PROCESSING] Cancelling dialogue thread - NLP detected command
+2025-10-04 16:17:23,024 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for QuestSeeker
+2025-10-04 16:17:23,024 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for QuestSeeker
+2025-10-04 16:17:23,030 - INFO - _internal.py:97 - 212.227.64.143 - - [04/Oct/2025 16:17:23] "POST /api/chat HTTP/1.1" 200 -
+2025-10-04 16:17:24,870 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for QuestSeeker in 1842ms
+2025-10-04 16:17:25,329 - INFO - command_processor.py:179 - [DIALOGUE-SPECULATIVE] Cancelled after LLM call, discarding result
+2025-10-04 16:17:27,061 - INFO - app.py:753 - Already talking to Syra, continuing conversation
+2025-10-04 16:17:27,064 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for QuestSeeker
+2025-10-04 16:17:27,064 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for QuestSeeker
+2025-10-04 16:17:27,068 - INFO - _internal.py:97 - 212.227.64.143 - - [04/Oct/2025 16:17:27] "POST /api/chat HTTP/1.1" 200 -
+2025-10-04 16:17:28,622 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for QuestSeeker in 1553ms
+2025-10-04 16:17:31,976 - INFO - app.py:753 - Already talking to Syra, continuing conversation
+2025-10-04 16:17:33,372 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for QuestSeeker
+2025-10-04 16:17:33,372 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for QuestSeeker
+2025-10-04 16:17:33,378 - INFO - _internal.py:97 - 212.227.64.143 - - [04/Oct/2025 16:17:33] "POST /api/chat HTTP/1.1" 200 -
+2025-10-04 16:17:34,970 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for QuestSeeker in 1594ms
+2025-10-04 16:17:42,222 - INFO - app.py:753 - Already talking to Syra, continuing conversation
+2025-10-04 16:17:42,222 - INFO - game_system_api.py:210 - [CONTEXT-CACHE] Context preloaded in 0ms for QuestSeeker
+2025-10-04 16:17:42,223 - INFO - command_processor.py:71 - [NLP-SPECULATIVE] Starting interpretation for: 'Syra, I understand. I have fil...'
+2025-10-04 16:17:43,423 - INFO - command_processor.py:152 - [DIALOGUE-SPECULATIVE] Starting dialogue generation for: 'Syra, I understand. I have fil...'
+2025-10-04 16:17:43,423 - INFO - command_processor.py:308 - [PARALLEL-PROCESSING] NLP timeout, started dialogue thread anyway
+2025-10-04 16:17:43,705 - INFO - command_processor.py:102 - [NLP-SPECULATIVE] Completed in 1482ms: is_command=True, confidence=0.90
+2025-10-04 16:17:43,706 - INFO - command_processor.py:361 - [PARALLEL-PROCESSING] Cancelling dialogue thread - NLP detected command
+2025-10-04 16:17:43,707 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for QuestSeeker
+2025-10-04 16:17:43,707 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for QuestSeeker
+2025-10-04 16:17:43,712 - INFO - _internal.py:97 - 212.227.64.143 - - [04/Oct/2025 16:17:43] "POST /api/chat HTTP/1.1" 200 -
+2025-10-04 16:17:45,547 - INFO - command_processor.py:179 - [DIALOGUE-SPECULATIVE] Cancelled after LLM call, discarding result
+2025-10-04 16:17:46,093 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for QuestSeeker in 2382ms
+2025-10-04 16:17:54,062 - INFO - app.py:753 - Already talking to Syra, continuing conversation
+2025-10-04 16:17:54,062 - INFO - game_system_api.py:210 - [CONTEXT-CACHE] Context preloaded in 0ms for QuestSeeker
+2025-10-04 16:17:54,062 - INFO - command_processor.py:71 - [NLP-SPECULATIVE] Starting interpretation for: 'Syra, you have the Sacred Offe...'
+2025-10-04 16:17:55,263 - INFO - command_processor.py:152 - [DIALOGUE-SPECULATIVE] Starting dialogue generation for: 'Syra, you have the Sacred Offe...'
+2025-10-04 16:17:55,264 - INFO - command_processor.py:308 - [PARALLEL-PROCESSING] NLP timeout, started dialogue thread anyway
+2025-10-04 16:17:55,383 - INFO - command_processor.py:102 - [NLP-SPECULATIVE] Completed in 1320ms: is_command=True, confidence=0.95
+2025-10-04 16:17:55,383 - INFO - command_processor.py:361 - [PARALLEL-PROCESSING] Cancelling dialogue thread - NLP detected command
+2025-10-04 16:17:55,385 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for QuestSeeker
+2025-10-04 16:17:55,386 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for QuestSeeker
+2025-10-04 16:17:55,390 - INFO - _internal.py:97 - 212.227.64.143 - - [04/Oct/2025 16:17:55] "POST /api/chat HTTP/1.1" 200 -
+2025-10-04 16:17:57,018 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for QuestSeeker in 1629ms
+2025-10-04 16:17:57,192 - INFO - command_processor.py:179 - [DIALOGUE-SPECULATIVE] Cancelled after LLM call, discarding result
+2025-10-04 16:18:01,995 - INFO - app.py:753 - Already talking to Syra, continuing conversation
+2025-10-04 16:18:01,996 - INFO - game_system_api.py:210 - [CONTEXT-CACHE] Context preloaded in 0ms for QuestSeeker
+2025-10-04 16:18:01,996 - INFO - command_processor.py:71 - [NLP-SPECULATIVE] Starting interpretation for: 'Syra, I have demonstrated my u...'
+2025-10-04 16:18:03,196 - INFO - command_processor.py:152 - [DIALOGUE-SPECULATIVE] Starting dialogue generation for: 'Syra, I have demonstrated my u...'
+2025-10-04 16:18:03,197 - INFO - command_processor.py:308 - [PARALLEL-PROCESSING] NLP timeout, started dialogue thread anyway
+2025-10-04 16:18:03,217 - INFO - command_processor.py:102 - [NLP-SPECULATIVE] Completed in 1220ms: is_command=False, confidence=1.00
+2025-10-04 16:18:04,717 - INFO - command_processor.py:389 - [PARALLEL-PROCESSING] Waiting for dialogue thread to complete...
+2025-10-04 16:18:04,813 - INFO - command_processor.py:184 - [DIALOGUE-SPECULATIVE] Completed in 1616ms for NPC: Syra
+2025-10-04 16:18:04,814 - INFO - command_processor.py:397 - [PARALLEL-PROCESSING] Using dialogue result after extended wait
+2025-10-04 16:18:04,814 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for QuestSeeker
+2025-10-04 16:18:04,815 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for QuestSeeker
+2025-10-04 16:18:04,819 - INFO - game_system_api.py:369 - [ITEM-PROCESSING] Processing items: ['Cristallo di Memoria Antica']
+2025-10-04 16:18:04,819 - INFO - game_system_api.py:378 - [ITEM-PROCESSING] Found item: Cristallo di Memoria Antica
+2025-10-04 16:18:04,819 - INFO - game_system_api.py:387 - [ITEM-PROCESSING] Adding 'Cristallo di Memoria Antica' to inventory for QuestSeeker
+2025-10-04 16:18:04,823 - INFO - game_system_api.py:389 - [ITEM-PROCESSING] Successfully added 'Cristallo di Memoria Antica' to inventory
+2025-10-04 16:18:04,823 - INFO - _internal.py:97 - 212.227.64.143 - - [04/Oct/2025 16:18:04] "POST /api/chat HTTP/1.1" 200 -
+2025-10-04 16:18:06,429 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for QuestSeeker in 1611ms
+2025-10-04 17:33:35,110 - ERROR - _internal.py:97 - 93.123.109.214 - - [04/Oct/2025 17:33:35] code 400, message Bad request version ('À\x13À')
+2025-10-04 17:33:35,110 - INFO - _internal.py:97 - 93.123.109.214 - - [04/Oct/2025 17:33:35] "[31m[1m\x16\x03\x01\x00ê\x01\x00\x00æ\x03\x03øË\x86R²\x05\x94:ö\x00Þ\x02¦k±r¬Hê\x14òBìðèIÃHÚ\x1fi² \x1bÕQ¹¼\x89Üc\x8c\x0c\x05¦\x08\x8c]®LÓØß!$´/ C\x98.\x96Î\x91p\x00&À+À/À,À0Ì©Ì¨À\x09À\x13À[0m" 400 -
+2025-10-04 17:33:35,162 - INFO - _internal.py:97 - 93.123.109.214 - - [04/Oct/2025 17:33:35] "GET / HTTP/1.1" 200 -
+2025-10-04 17:33:35,223 - INFO - _internal.py:97 - 93.123.109.214 - - [04/Oct/2025 17:33:35] "GET / HTTP/1.1" 200 -
+2025-10-04 17:39:39,061 - ERROR - _internal.py:97 - 195.178.110.15 - - [04/Oct/2025 17:39:39] code 400, message Bad request version ('À\x13À')
+2025-10-04 17:39:39,061 - INFO - _internal.py:97 - 195.178.110.15 - - [04/Oct/2025 17:39:39] "[31m[1m\x16\x03\x01\x00ê\x01\x00\x00æ\x03\x03\x0d"\x9eEþÙ\x9d¥S\x9dëãL[ºÃ'gCåØ\x95ù½Pô\x9cîlv<µ áÀ\x1dT¢­F\x8d{K*ºÓC}\x01/Ø\x17TKÀÇY17nuv½ßÙ\x00&À+À/À,À0Ì©Ì¨À\x09À\x13À[0m" 400 -
+2025-10-04 17:39:39,108 - INFO - _internal.py:97 - 195.178.110.15 - - [04/Oct/2025 17:39:39] "GET / HTTP/1.1" 200 -
+2025-10-04 17:39:39,162 - INFO - _internal.py:97 - 195.178.110.15 - - [04/Oct/2025 17:39:39] "GET / HTTP/1.1" 200 -
+2025-10-04 18:56:41,682 - INFO - _internal.py:97 - 79.129.37.37 - - [04/Oct/2025 18:56:41] "GET / HTTP/1.0" 200 -
+2025-10-04 20:07:36,474 - ERROR - _internal.py:97 - 93.123.109.214 - - [04/Oct/2025 20:07:36] code 400, message Bad request version ('À\x13À')
+2025-10-04 20:07:36,475 - INFO - _internal.py:97 - 93.123.109.214 - - [04/Oct/2025 20:07:36] "[31m[1m\x16\x03\x01\x00ê\x01\x00\x00æ\x03\x03â\x0e\x08mµjîn¿q\x9cbÕ¸T=çúÈND\x02û»^ú\x8cr\x91\x94\x0c\x0b \x9e(x\x14qu\x1dÆ\x19\x01\x9dÀ:\x83v\\_qå\x95È\x0eÔ\x15J[o.ðaé\x9d\x00&À+À/À,À0Ì©Ì¨À\x09À\x13À[0m" 400 -
+2025-10-04 20:07:36,512 - INFO - _internal.py:97 - 93.123.109.214 - - [04/Oct/2025 20:07:36] "GET / HTTP/1.1" 200 -
+2025-10-04 20:07:36,562 - INFO - _internal.py:97 - 93.123.109.214 - - [04/Oct/2025 20:07:36] "GET / HTTP/1.1" 200 -
+2025-10-04 22:23:06,353 - ERROR - _internal.py:97 - 195.178.110.15 - - [04/Oct/2025 22:23:06] code 400, message Bad request version ('À\x13À')
+2025-10-04 22:23:06,353 - INFO - _internal.py:97 - 195.178.110.15 - - [04/Oct/2025 22:23:06] "[31m[1m\x16\x03\x01\x00ê\x01\x00\x00æ\x03\x03Ê',K\x1b\x88)\x99eéB·\\Äõ «¨2\x8eÒ8±Ô¤ÉQTï\x0f \x0e ~õTÈéû\x1d\x14\x84É\x91h+ÄµLJö\x1fÎlÇØ9\x04\x9d\x8eªºyÑ\x97\x00&À+À/À,À0Ì©Ì¨À\x09À\x13À[0m" 400 -
+2025-10-04 22:23:06,391 - INFO - _internal.py:97 - 195.178.110.15 - - [04/Oct/2025 22:23:06] "GET / HTTP/1.1" 200 -
+2025-10-04 22:23:06,440 - INFO - _internal.py:97 - 195.178.110.15 - - [04/Oct/2025 22:23:06] "GET / HTTP/1.1" 200 -
+2025-10-04 23:37:12,227 - INFO - app.py:1012 - Player 7fb35fc4-0699-b83b-2056-dc250cd7ee32 already in area Liminal Void, skipping /go command
+2025-10-04 23:37:12,227 - INFO - app.py:1021 - Looking for NPC Erasmus in area Liminal Void
+2025-10-04 23:37:12,228 - INFO - app.py:1023 - NPC lookup result: True
+2025-10-04 23:37:12,228 - INFO - app.py:1028 - Successfully set NPC Erasmus for player 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-04 23:37:12,228 - INFO - app.py:1029 - NPC data has default_greeting: True
+2025-10-04 23:37:12,228 - INFO - app.py:1039 - Reusing existing chat session for Erasmus
+2025-10-04 23:37:12,228 - INFO - app.py:1041 - Directly set NPC Erasmus for player 7fb35fc4-0699-b83b-2056-dc250cd7ee32 in area Liminal Void
+2025-10-04 23:37:12,228 - INFO - app.py:1073 - Raw default_greeting for Erasmus: None
+2025-10-04 23:37:12,228 - INFO - app.py:1083 - Player 7fb35fc4-0699-b83b-2056-dc250cd7ee32 returning to conversation with Erasmus
+2025-10-04 23:37:12,228 - INFO - _internal.py:97 - 176.9.66.43 - - [04/Oct/2025 23:37:12] "POST /sense HTTP/1.1" 200 -
+2025-10-04 23:37:48,416 - INFO - app.py:753 - Already talking to Erasmus, continuing conversation
+2025-10-04 23:37:48,416 - INFO - game_system_api.py:166 - [CONTEXT-CACHE] Refreshing NPCs list for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-04 23:37:48,418 - INFO - game_system_api.py:210 - [CONTEXT-CACHE] Context preloaded in 1ms for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-04 23:37:48,418 - INFO - command_processor.py:71 - [NLP-SPECULATIVE] Starting interpretation for: 'Volevo sapee come pocedee n...'
+2025-10-04 23:37:49,618 - INFO - command_processor.py:152 - [DIALOGUE-SPECULATIVE] Starting dialogue generation for: 'Volevo sapee come pocedee n...'
+2025-10-04 23:37:49,618 - INFO - command_processor.py:308 - [PARALLEL-PROCESSING] NLP timeout, started dialogue thread anyway
+2025-10-04 23:37:49,875 - INFO - command_processor.py:102 - [NLP-SPECULATIVE] Completed in 1457ms: is_command=False, confidence=0.90
+2025-10-04 23:37:51,050 - INFO - command_processor.py:184 - [DIALOGUE-SPECULATIVE] Completed in 1431ms for NPC: Erasmus
+2025-10-04 23:37:51,050 - INFO - command_processor.py:379 - [PARALLEL-PROCESSING] Using speculative dialogue result
+2025-10-04 23:37:51,050 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-04 23:37:51,050 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-04 23:37:51,055 - INFO - _internal.py:97 - 176.9.66.43 - - [04/Oct/2025 23:37:51] "POST /api/chat HTTP/1.1" 200 -
+2025-10-04 23:37:51,913 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for 7fb35fc4-0699-b83b-2056-dc250cd7ee32 in 860ms
+2025-10-04 23:38:22,014 - INFO - app.py:753 - Already talking to Erasmus, continuing conversation
+2025-10-04 23:38:22,014 - INFO - game_system_api.py:210 - [CONTEXT-CACHE] Context preloaded in 0ms for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-04 23:38:22,015 - INFO - command_processor.py:71 - [NLP-SPECULATIVE] Starting interpretation for: 'Ti ingazio...'
+2025-10-04 23:38:23,083 - INFO - command_processor.py:102 - [NLP-SPECULATIVE] Completed in 1067ms: is_command=False, confidence=0.90
+2025-10-04 23:38:23,083 - INFO - command_processor.py:152 - [DIALOGUE-SPECULATIVE] Starting dialogue generation for: 'Ti ingazio...'
+2025-10-04 23:38:23,084 - INFO - command_processor.py:298 - [PARALLEL-PROCESSING] Started dialogue thread after NLP check
+2025-10-04 23:38:24,020 - INFO - command_processor.py:184 - [DIALOGUE-SPECULATIVE] Completed in 936ms for NPC: Erasmus
+2025-10-04 23:38:24,020 - INFO - command_processor.py:379 - [PARALLEL-PROCESSING] Using speculative dialogue result
+2025-10-04 23:38:24,020 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-04 23:38:24,021 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-04 23:38:24,025 - INFO - _internal.py:97 - 176.9.66.43 - - [04/Oct/2025 23:38:24] "POST /api/chat HTTP/1.1" 200 -
+2025-10-04 23:38:25,094 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for 7fb35fc4-0699-b83b-2056-dc250cd7ee32 in 1071ms
+2025-10-04 23:39:21,136 - INFO - app.py:1005 - Successfully moved player 7fb35fc4-0699-b83b-2056-dc250cd7ee32 to area Sanctum Of Whispers
+2025-10-04 23:39:21,136 - INFO - app.py:1021 - Looking for NPC Lyra in area Sanctum of Whispers
+2025-10-04 23:39:21,137 - INFO - app.py:1023 - NPC lookup result: True
+2025-10-04 23:39:21,137 - INFO - app.py:1028 - Successfully set NPC Lyra for player 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-04 23:39:21,137 - INFO - app.py:1029 - NPC data has default_greeting: True
+2025-10-04 23:39:21,137 - INFO - app.py:1039 - Reusing existing chat session for Lyra
+2025-10-04 23:39:21,137 - INFO - app.py:1041 - Directly set NPC Lyra for player 7fb35fc4-0699-b83b-2056-dc250cd7ee32 in area Sanctum of Whispers
+2025-10-04 23:39:21,137 - INFO - app.py:1073 - Raw default_greeting for Lyra: None
+2025-10-04 23:39:21,138 - INFO - app.py:1083 - Player 7fb35fc4-0699-b83b-2056-dc250cd7ee32 returning to conversation with Lyra
+2025-10-04 23:39:21,138 - INFO - _internal.py:97 - 176.9.66.43 - - [04/Oct/2025 23:39:21] "POST /sense HTTP/1.1" 200 -
+2025-10-04 23:39:53,104 - INFO - app.py:753 - Already talking to Lyra, continuing conversation
+2025-10-04 23:39:53,105 - INFO - game_system_api.py:210 - [CONTEXT-CACHE] Context preloaded in 0ms for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-04 23:39:53,105 - INFO - command_processor.py:71 - [NLP-SPECULATIVE] Starting interpretation for: 'Mi ha mandata qui Easmus pe ...'
+2025-10-04 23:39:54,119 - INFO - command_processor.py:102 - [NLP-SPECULATIVE] Completed in 1013ms: is_command=False, confidence=0.90
+2025-10-04 23:39:54,119 - INFO - command_processor.py:152 - [DIALOGUE-SPECULATIVE] Starting dialogue generation for: 'Mi ha mandata qui Easmus pe ...'
+2025-10-04 23:39:54,121 - INFO - command_processor.py:298 - [PARALLEL-PROCESSING] Started dialogue thread after NLP check
+2025-10-04 23:39:55,251 - INFO - command_processor.py:184 - [DIALOGUE-SPECULATIVE] Completed in 1132ms for NPC: Lyra
+2025-10-04 23:39:55,252 - INFO - command_processor.py:379 - [PARALLEL-PROCESSING] Using speculative dialogue result
+2025-10-04 23:39:55,252 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-04 23:39:55,252 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-04 23:39:55,257 - INFO - _internal.py:97 - 176.9.66.43 - - [04/Oct/2025 23:39:55] "POST /api/chat HTTP/1.1" 200 -
+2025-10-04 23:39:56,602 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for 7fb35fc4-0699-b83b-2056-dc250cd7ee32 in 1347ms
+2025-10-04 23:40:23,098 - INFO - app.py:753 - Already talking to Lyra, continuing conversation
+2025-10-04 23:40:23,098 - INFO - game_system_api.py:210 - [CONTEXT-CACHE] Context preloaded in 0ms for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-04 23:40:23,098 - INFO - command_processor.py:71 - [NLP-SPECULATIVE] Starting interpretation for: 'Dove devo ecami oa?...'
+2025-10-04 23:40:24,097 - INFO - command_processor.py:102 - [NLP-SPECULATIVE] Completed in 998ms: is_command=True, confidence=0.90
+2025-10-04 23:40:24,097 - INFO - command_processor.py:288 - [PARALLEL-PROCESSING] NLP quickly detected command, skipping dialogue thread
+2025-10-04 23:40:24,097 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-04 23:40:24,098 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-04 23:40:24,101 - INFO - _internal.py:97 - 176.9.66.43 - - [04/Oct/2025 23:40:24] "POST /api/chat HTTP/1.1" 200 -
+2025-10-04 23:40:25,875 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for 7fb35fc4-0699-b83b-2056-dc250cd7ee32 in 1776ms
+2025-10-04 23:40:47,994 - INFO - app.py:753 - Already talking to Lyra, continuing conversation
+2025-10-04 23:40:47,994 - INFO - game_system_api.py:210 - [CONTEXT-CACHE] Context preloaded in 0ms for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-04 23:40:47,995 - INFO - command_processor.py:71 - [NLP-SPECULATIVE] Starting interpretation for: 'Non ho capito...'
+2025-10-04 23:40:48,654 - INFO - command_processor.py:102 - [NLP-SPECULATIVE] Completed in 659ms: is_command=False, confidence=0.90
+2025-10-04 23:40:48,654 - INFO - command_processor.py:152 - [DIALOGUE-SPECULATIVE] Starting dialogue generation for: 'Non ho capito...'
+2025-10-04 23:40:48,656 - INFO - command_processor.py:298 - [PARALLEL-PROCESSING] Started dialogue thread after NLP check
+2025-10-04 23:40:50,156 - INFO - command_processor.py:389 - [PARALLEL-PROCESSING] Waiting for dialogue thread to complete...
+2025-10-04 23:40:50,284 - INFO - command_processor.py:184 - [DIALOGUE-SPECULATIVE] Completed in 1629ms for NPC: Lyra
+2025-10-04 23:40:50,284 - INFO - command_processor.py:397 - [PARALLEL-PROCESSING] Using dialogue result after extended wait
+2025-10-04 23:40:50,284 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-04 23:40:50,285 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-04 23:40:50,289 - INFO - _internal.py:97 - 176.9.66.43 - - [04/Oct/2025 23:40:50] "POST /api/chat HTTP/1.1" 200 -
+2025-10-04 23:40:51,252 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for 7fb35fc4-0699-b83b-2056-dc250cd7ee32 in 964ms
+2025-10-04 23:41:23,257 - INFO - app.py:753 - Already talking to Lyra, continuing conversation
+2025-10-04 23:41:23,257 - INFO - game_system_api.py:210 - [CONTEXT-CACHE] Context preloaded in 0ms for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-04 23:41:23,257 - INFO - command_processor.py:71 - [NLP-SPECULATIVE] Starting interpretation for: 'Desideo conoscee un luogo pe...'
+2025-10-04 23:41:24,142 - INFO - command_processor.py:102 - [NLP-SPECULATIVE] Completed in 885ms: is_command=False, confidence=0.70
+2025-10-04 23:41:24,143 - INFO - command_processor.py:152 - [DIALOGUE-SPECULATIVE] Starting dialogue generation for: 'Desideo conoscee un luogo pe...'
+2025-10-04 23:41:24,143 - INFO - command_processor.py:298 - [PARALLEL-PROCESSING] Started dialogue thread after NLP check
+2025-10-04 23:41:25,571 - INFO - command_processor.py:184 - [DIALOGUE-SPECULATIVE] Completed in 1427ms for NPC: Lyra
+2025-10-04 23:41:25,571 - INFO - command_processor.py:379 - [PARALLEL-PROCESSING] Using speculative dialogue result
+2025-10-04 23:41:25,571 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-04 23:41:25,572 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-04 23:41:25,577 - INFO - _internal.py:97 - 176.9.66.43 - - [04/Oct/2025 23:41:25] "POST /api/chat HTTP/1.1" 200 -
+2025-10-04 23:41:26,943 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for 7fb35fc4-0699-b83b-2056-dc250cd7ee32 in 1369ms
+2025-10-04 23:41:52,662 - INFO - app.py:753 - Already talking to Lyra, continuing conversation
+2025-10-04 23:41:52,662 - INFO - game_system_api.py:210 - [CONTEXT-CACHE] Context preloaded in 0ms for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-04 23:41:52,663 - INFO - command_processor.py:71 - [NLP-SPECULATIVE] Starting interpretation for: 'Gazie...'
+2025-10-04 23:41:53,671 - INFO - command_processor.py:102 - [NLP-SPECULATIVE] Completed in 1008ms: is_command=False, confidence=0.90
+2025-10-04 23:41:53,672 - INFO - command_processor.py:152 - [DIALOGUE-SPECULATIVE] Starting dialogue generation for: 'Gazie...'
+2025-10-04 23:41:53,674 - INFO - command_processor.py:298 - [PARALLEL-PROCESSING] Started dialogue thread after NLP check
+2025-10-04 23:41:54,515 - INFO - command_processor.py:184 - [DIALOGUE-SPECULATIVE] Completed in 843ms for NPC: Lyra
+2025-10-04 23:41:54,515 - INFO - command_processor.py:379 - [PARALLEL-PROCESSING] Using speculative dialogue result
+2025-10-04 23:41:54,515 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-04 23:41:54,516 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-04 23:41:54,520 - INFO - _internal.py:97 - 176.9.66.43 - - [04/Oct/2025 23:41:54] "POST /api/chat HTTP/1.1" 200 -
+2025-10-04 23:41:55,579 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for 7fb35fc4-0699-b83b-2056-dc250cd7ee32 in 1061ms
+2025-10-04 23:43:24,181 - INFO - app.py:1250 - NPC conversation leave request: 7fb35fc4-0699-b83b-2056-dc250cd7ee32 with Erasmus in Liminal Void, action: leaving, status: end
+2025-10-04 23:43:24,181 - INFO - _internal.py:97 - 176.9.66.43 - - [04/Oct/2025 23:43:24] "POST /api/leave_npc HTTP/1.1" 200 -
+2025-10-04 23:44:34,937 - INFO - app.py:1005 - Successfully moved player 7fb35fc4-0699-b83b-2056-dc250cd7ee32 to area Tavern
+2025-10-04 23:44:34,937 - INFO - app.py:1021 - Looking for NPC Jorin in area Tavern
+2025-10-04 23:44:34,938 - INFO - app.py:1023 - NPC lookup result: True
+2025-10-04 23:44:34,938 - INFO - app.py:1028 - Successfully set NPC Jorin for player 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-04 23:44:34,938 - INFO - app.py:1029 - NPC data has default_greeting: True
+2025-10-04 23:44:34,938 - INFO - app.py:1039 - Reusing existing chat session for Jorin
+2025-10-04 23:44:34,938 - INFO - app.py:1041 - Directly set NPC Jorin for player 7fb35fc4-0699-b83b-2056-dc250cd7ee32 in area Tavern
+2025-10-04 23:44:34,938 - INFO - app.py:1073 - Raw default_greeting for Jorin: None
+2025-10-04 23:44:34,938 - INFO - app.py:1083 - Player 7fb35fc4-0699-b83b-2056-dc250cd7ee32 returning to conversation with Jorin
+2025-10-04 23:44:34,939 - INFO - _internal.py:97 - 176.9.66.43 - - [04/Oct/2025 23:44:34] "POST /sense HTTP/1.1" 200 -
+2025-10-04 23:45:17,715 - INFO - app.py:753 - Already talking to Jorin, continuing conversation
+2025-10-04 23:45:17,715 - INFO - game_system_api.py:166 - [CONTEXT-CACHE] Refreshing NPCs list for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-04 23:45:17,717 - INFO - game_system_api.py:210 - [CONTEXT-CACHE] Context preloaded in 1ms for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-04 23:45:17,717 - INFO - command_processor.py:71 - [NLP-SPECULATIVE] Starting interpretation for: 'Lya mi ha mandata da te pe c...'
+2025-10-04 23:45:18,727 - INFO - command_processor.py:102 - [NLP-SPECULATIVE] Completed in 1009ms: is_command=False, confidence=0.90
+2025-10-04 23:45:18,727 - INFO - command_processor.py:152 - [DIALOGUE-SPECULATIVE] Starting dialogue generation for: 'Lya mi ha mandata da te pe c...'
+2025-10-04 23:45:18,729 - INFO - command_processor.py:298 - [PARALLEL-PROCESSING] Started dialogue thread after NLP check
+2025-10-04 23:45:19,649 - INFO - command_processor.py:184 - [DIALOGUE-SPECULATIVE] Completed in 921ms for NPC: Jorin
+2025-10-04 23:45:19,649 - INFO - command_processor.py:379 - [PARALLEL-PROCESSING] Using speculative dialogue result
+2025-10-04 23:45:19,649 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-04 23:45:19,650 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-04 23:45:19,654 - INFO - _internal.py:97 - 176.9.66.43 - - [04/Oct/2025 23:45:19] "POST /api/chat HTTP/1.1" 200 -
+2025-10-04 23:45:21,356 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for 7fb35fc4-0699-b83b-2056-dc250cd7ee32 in 1704ms
+2025-10-04 23:45:54,931 - INFO - app.py:753 - Already talking to Jorin, continuing conversation
+2025-10-04 23:45:54,931 - INFO - game_system_api.py:210 - [CONTEXT-CACHE] Context preloaded in 0ms for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-04 23:45:54,932 - INFO - command_processor.py:71 - [NLP-SPECULATIVE] Starting interpretation for: 'Quindi dovei andae dal fabb...'
+2025-10-04 23:45:55,765 - INFO - command_processor.py:102 - [NLP-SPECULATIVE] Completed in 833ms: is_command=False, confidence=0.70
+2025-10-04 23:45:55,766 - INFO - command_processor.py:152 - [DIALOGUE-SPECULATIVE] Starting dialogue generation for: 'Quindi dovei andae dal fabb...'
+2025-10-04 23:45:55,767 - INFO - command_processor.py:298 - [PARALLEL-PROCESSING] Started dialogue thread after NLP check
+2025-10-04 23:45:56,594 - INFO - command_processor.py:184 - [DIALOGUE-SPECULATIVE] Completed in 827ms for NPC: Jorin
+2025-10-04 23:45:56,594 - INFO - command_processor.py:379 - [PARALLEL-PROCESSING] Using speculative dialogue result
+2025-10-04 23:45:56,594 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-04 23:45:56,595 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-04 23:45:56,599 - INFO - _internal.py:97 - 176.9.66.43 - - [04/Oct/2025 23:45:56] "POST /api/chat HTTP/1.1" 200 -
+2025-10-04 23:45:57,690 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for 7fb35fc4-0699-b83b-2056-dc250cd7ee32 in 1093ms
+2025-10-04 23:46:19,893 - INFO - app.py:753 - Already talking to Jorin, continuing conversation
+2025-10-04 23:46:19,894 - INFO - game_system_api.py:210 - [CONTEXT-CACHE] Context preloaded in 0ms for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-04 23:46:19,894 - INFO - command_processor.py:71 - [NLP-SPECULATIVE] Starting interpretation for: 'Va bene, gazie...'
+2025-10-04 23:46:20,916 - INFO - command_processor.py:102 - [NLP-SPECULATIVE] Completed in 1021ms: is_command=False, confidence=0.90
+2025-10-04 23:46:20,916 - INFO - command_processor.py:152 - [DIALOGUE-SPECULATIVE] Starting dialogue generation for: 'Va bene, gazie...'
+2025-10-04 23:46:20,918 - INFO - command_processor.py:298 - [PARALLEL-PROCESSING] Started dialogue thread after NLP check
+2025-10-04 23:46:21,595 - INFO - command_processor.py:184 - [DIALOGUE-SPECULATIVE] Completed in 678ms for NPC: Jorin
+2025-10-04 23:46:21,595 - INFO - command_processor.py:379 - [PARALLEL-PROCESSING] Using speculative dialogue result
+2025-10-04 23:46:21,595 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-04 23:46:21,596 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-04 23:46:21,602 - INFO - _internal.py:97 - 176.9.66.43 - - [04/Oct/2025 23:46:21] "POST /api/chat HTTP/1.1" 200 -
+2025-10-04 23:46:22,452 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for 7fb35fc4-0699-b83b-2056-dc250cd7ee32 in 853ms
+2025-10-04 23:46:54,647 - INFO - app.py:1250 - NPC conversation leave request: 7fb35fc4-0699-b83b-2056-dc250cd7ee32 with Lyra in Sanctum Of Whispers, action: leaving, status: end
+2025-10-04 23:46:54,647 - INFO - _internal.py:97 - 176.9.66.43 - - [04/Oct/2025 23:46:54] "POST /api/leave_npc HTTP/1.1" 200 -
+2025-10-04 23:48:04,213 - INFO - app.py:1005 - Successfully moved player 7fb35fc4-0699-b83b-2056-dc250cd7ee32 to area Village
+2025-10-04 23:48:04,213 - INFO - app.py:1021 - Looking for NPC Garin in area Village
+2025-10-04 23:48:04,214 - INFO - app.py:1023 - NPC lookup result: True
+2025-10-04 23:48:04,214 - INFO - app.py:1028 - Successfully set NPC Garin for player 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-04 23:48:04,214 - INFO - app.py:1029 - NPC data has default_greeting: True
+2025-10-04 23:48:04,214 - INFO - app.py:1039 - Reusing existing chat session for Garin
+2025-10-04 23:48:04,214 - INFO - app.py:1041 - Directly set NPC Garin for player 7fb35fc4-0699-b83b-2056-dc250cd7ee32 in area Village
+2025-10-04 23:48:04,214 - INFO - app.py:1073 - Raw default_greeting for Garin: None
+2025-10-04 23:48:04,214 - INFO - app.py:1083 - Player 7fb35fc4-0699-b83b-2056-dc250cd7ee32 returning to conversation with Garin
+2025-10-04 23:48:04,215 - INFO - _internal.py:97 - 176.9.66.43 - - [04/Oct/2025 23:48:04] "POST /sense HTTP/1.1" 200 -
+2025-10-04 23:48:28,334 - INFO - app.py:753 - Already talking to Garin, continuing conversation
+2025-10-04 23:48:28,335 - INFO - game_system_api.py:210 - [CONTEXT-CACHE] Context preloaded in 0ms for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-04 23:48:28,335 - INFO - command_processor.py:71 - [NLP-SPECULATIVE] Starting interpretation for: 'Mi sevono tuciolo di feo pe...'
+2025-10-04 23:48:29,175 - INFO - command_processor.py:102 - [NLP-SPECULATIVE] Completed in 840ms: is_command=False, confidence=0.90
+2025-10-04 23:48:29,176 - INFO - command_processor.py:152 - [DIALOGUE-SPECULATIVE] Starting dialogue generation for: 'Mi sevono tuciolo di feo pe...'
+2025-10-04 23:48:29,176 - INFO - command_processor.py:298 - [PARALLEL-PROCESSING] Started dialogue thread after NLP check
+2025-10-04 23:48:30,678 - INFO - command_processor.py:389 - [PARALLEL-PROCESSING] Waiting for dialogue thread to complete...
+2025-10-04 23:48:30,839 - INFO - command_processor.py:184 - [DIALOGUE-SPECULATIVE] Completed in 1663ms for NPC: Garin
+2025-10-04 23:48:30,840 - INFO - command_processor.py:397 - [PARALLEL-PROCESSING] Using dialogue result after extended wait
+2025-10-04 23:48:30,840 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-04 23:48:30,841 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-04 23:48:30,846 - INFO - _internal.py:97 - 176.9.66.43 - - [04/Oct/2025 23:48:30] "POST /api/chat HTTP/1.1" 200 -
+2025-10-04 23:48:31,847 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for 7fb35fc4-0699-b83b-2056-dc250cd7ee32 in 1003ms
+2025-10-04 23:49:01,345 - INFO - app.py:753 - Already talking to Garin, continuing conversation
+2025-10-04 23:49:01,345 - INFO - game_system_api.py:210 - [CONTEXT-CACHE] Context preloaded in 0ms for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-04 23:49:01,346 - INFO - command_processor.py:71 - [NLP-SPECULATIVE] Starting interpretation for: 'Va bene, gazie...'
+2025-10-04 23:49:02,302 - INFO - command_processor.py:102 - [NLP-SPECULATIVE] Completed in 956ms: is_command=False, confidence=0.90
+2025-10-04 23:49:02,302 - INFO - command_processor.py:152 - [DIALOGUE-SPECULATIVE] Starting dialogue generation for: 'Va bene, gazie...'
+2025-10-04 23:49:02,306 - INFO - command_processor.py:298 - [PARALLEL-PROCESSING] Started dialogue thread after NLP check
+2025-10-04 23:49:03,682 - INFO - command_processor.py:184 - [DIALOGUE-SPECULATIVE] Completed in 1379ms for NPC: Garin
+2025-10-04 23:49:03,682 - INFO - command_processor.py:379 - [PARALLEL-PROCESSING] Using speculative dialogue result
+2025-10-04 23:49:03,682 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-04 23:49:03,683 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-04 23:49:03,687 - INFO - _internal.py:97 - 176.9.66.43 - - [04/Oct/2025 23:49:03] "POST /api/chat HTTP/1.1" 200 -
+2025-10-04 23:49:04,880 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for 7fb35fc4-0699-b83b-2056-dc250cd7ee32 in 1194ms
+2025-10-04 23:51:21,764 - INFO - app.py:1250 - NPC conversation leave request: 7fb35fc4-0699-b83b-2056-dc250cd7ee32 with Jorin in Tavern, action: leaving, status: end
+2025-10-04 23:51:21,765 - INFO - _internal.py:97 - 176.9.66.43 - - [04/Oct/2025 23:51:21] "POST /api/leave_npc HTTP/1.1" 200 -
+2025-10-04 23:51:51,049 - INFO - app.py:1005 - Successfully moved player 7fb35fc4-0699-b83b-2056-dc250cd7ee32 to area Mountain
+2025-10-04 23:51:51,049 - INFO - app.py:1021 - Looking for NPC Boros in area Mountain
+2025-10-04 23:51:51,051 - INFO - app.py:1023 - NPC lookup result: True
+2025-10-04 23:51:51,051 - INFO - app.py:1028 - Successfully set NPC Boros for player 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-04 23:51:51,051 - INFO - app.py:1029 - NPC data has default_greeting: True
+2025-10-04 23:51:51,051 - INFO - app.py:1039 - Reusing existing chat session for Boros
+2025-10-04 23:51:51,051 - INFO - app.py:1041 - Directly set NPC Boros for player 7fb35fc4-0699-b83b-2056-dc250cd7ee32 in area Mountain
+2025-10-04 23:51:51,051 - INFO - app.py:1073 - Raw default_greeting for Boros: None
+2025-10-04 23:51:51,051 - INFO - app.py:1083 - Player 7fb35fc4-0699-b83b-2056-dc250cd7ee32 returning to conversation with Boros
+2025-10-04 23:51:51,051 - INFO - _internal.py:97 - 176.9.66.43 - - [04/Oct/2025 23:51:51] "POST /sense HTTP/1.1" 200 -
+2025-10-04 23:52:17,899 - INFO - app.py:753 - Already talking to Boros, continuing conversation
+2025-10-04 23:52:17,899 - INFO - game_system_api.py:166 - [CONTEXT-CACHE] Refreshing NPCs list for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-04 23:52:17,901 - INFO - game_system_api.py:210 - [CONTEXT-CACHE] Context preloaded in 1ms for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-04 23:52:17,901 - INFO - command_processor.py:71 - [NLP-SPECULATIVE] Starting interpretation for: 'Gain mi ha chiesto del feo p...'
+2025-10-04 23:52:18,808 - INFO - command_processor.py:102 - [NLP-SPECULATIVE] Completed in 906ms: is_command=False, confidence=0.90
+2025-10-04 23:52:18,808 - INFO - command_processor.py:152 - [DIALOGUE-SPECULATIVE] Starting dialogue generation for: 'Gain mi ha chiesto del feo p...'
+2025-10-04 23:52:18,810 - INFO - command_processor.py:298 - [PARALLEL-PROCESSING] Started dialogue thread after NLP check
+2025-10-04 23:52:19,779 - INFO - command_processor.py:184 - [DIALOGUE-SPECULATIVE] Completed in 970ms for NPC: Boros
+2025-10-04 23:52:19,779 - INFO - command_processor.py:379 - [PARALLEL-PROCESSING] Using speculative dialogue result
+2025-10-04 23:52:19,779 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-04 23:52:19,780 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-04 23:52:19,784 - INFO - _internal.py:97 - 176.9.66.43 - - [04/Oct/2025 23:52:19] "POST /api/chat HTTP/1.1" 200 -
+2025-10-04 23:52:21,743 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for 7fb35fc4-0699-b83b-2056-dc250cd7ee32 in 1961ms
+2025-10-04 23:52:41,539 - INFO - app.py:753 - Already talking to Boros, continuing conversation
+2025-10-04 23:52:41,539 - INFO - game_system_api.py:210 - [CONTEXT-CACHE] Context preloaded in 0ms for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-04 23:52:41,539 - INFO - command_processor.py:71 - [NLP-SPECULATIVE] Starting interpretation for: 'E dove si tova la foesta?...'
+2025-10-04 23:52:42,739 - INFO - command_processor.py:152 - [DIALOGUE-SPECULATIVE] Starting dialogue generation for: 'E dove si tova la foesta?...'
+2025-10-04 23:52:42,739 - INFO - command_processor.py:308 - [PARALLEL-PROCESSING] NLP timeout, started dialogue thread anyway
+2025-10-04 23:52:43,233 - INFO - command_processor.py:102 - [NLP-SPECULATIVE] Completed in 1694ms: is_command=True, confidence=0.90
+2025-10-04 23:52:43,233 - INFO - command_processor.py:361 - [PARALLEL-PROCESSING] Cancelling dialogue thread - NLP detected command
+2025-10-04 23:52:43,856 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-04 23:52:43,856 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-04 23:52:43,860 - INFO - _internal.py:97 - 176.9.66.43 - - [04/Oct/2025 23:52:43] "POST /api/chat HTTP/1.1" 200 -
+2025-10-04 23:52:44,191 - INFO - command_processor.py:179 - [DIALOGUE-SPECULATIVE] Cancelled after LLM call, discarding result
+2025-10-04 23:52:45,385 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for 7fb35fc4-0699-b83b-2056-dc250cd7ee32 in 1526ms
+2025-10-04 23:53:11,144 - INFO - app.py:753 - Already talking to Boros, continuing conversation
+2025-10-04 23:53:11,144 - INFO - game_system_api.py:210 - [CONTEXT-CACHE] Context preloaded in 0ms for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-04 23:53:11,145 - INFO - command_processor.py:71 - [NLP-SPECULATIVE] Starting interpretation for: 'Non è molto chiao, scusami...'
+2025-10-04 23:53:12,136 - INFO - command_processor.py:102 - [NLP-SPECULATIVE] Completed in 991ms: is_command=False, confidence=0.90
+2025-10-04 23:53:12,136 - INFO - command_processor.py:152 - [DIALOGUE-SPECULATIVE] Starting dialogue generation for: 'Non è molto chiao, scusami...'
+2025-10-04 23:53:12,138 - INFO - command_processor.py:298 - [PARALLEL-PROCESSING] Started dialogue thread after NLP check
+2025-10-04 23:53:12,863 - INFO - command_processor.py:184 - [DIALOGUE-SPECULATIVE] Completed in 726ms for NPC: Boros
+2025-10-04 23:53:12,863 - INFO - command_processor.py:379 - [PARALLEL-PROCESSING] Using speculative dialogue result
+2025-10-04 23:53:12,863 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-04 23:53:12,864 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-04 23:53:12,868 - INFO - _internal.py:97 - 176.9.66.43 - - [04/Oct/2025 23:53:12] "POST /api/chat HTTP/1.1" 200 -
+2025-10-04 23:53:14,451 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for 7fb35fc4-0699-b83b-2056-dc250cd7ee32 in 1585ms
+2025-10-04 23:53:30,861 - INFO - app.py:753 - Already talking to Boros, continuing conversation
+2025-10-04 23:53:30,861 - INFO - game_system_api.py:210 - [CONTEXT-CACHE] Context preloaded in 0ms for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-04 23:53:30,861 - INFO - command_processor.py:71 - [NLP-SPECULATIVE] Starting interpretation for: 'Dove tovo Elia?...'
+2025-10-04 23:53:31,547 - INFO - command_processor.py:102 - [NLP-SPECULATIVE] Completed in 686ms: is_command=False, confidence=0.90
+2025-10-04 23:53:31,548 - INFO - command_processor.py:152 - [DIALOGUE-SPECULATIVE] Starting dialogue generation for: 'Dove tovo Elia?...'
+2025-10-04 23:53:31,550 - INFO - command_processor.py:298 - [PARALLEL-PROCESSING] Started dialogue thread after NLP check
+2025-10-04 23:53:32,192 - INFO - command_processor.py:184 - [DIALOGUE-SPECULATIVE] Completed in 644ms for NPC: Boros
+2025-10-04 23:53:32,192 - INFO - command_processor.py:379 - [PARALLEL-PROCESSING] Using speculative dialogue result
+2025-10-04 23:53:32,193 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-04 23:53:32,194 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-04 23:53:32,198 - INFO - _internal.py:97 - 176.9.66.43 - - [04/Oct/2025 23:53:32] "POST /api/chat HTTP/1.1" 200 -
+2025-10-04 23:53:33,016 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for 7fb35fc4-0699-b83b-2056-dc250cd7ee32 in 821ms
+2025-10-04 23:53:50,407 - INFO - app.py:753 - Already talking to Boros, continuing conversation
+2025-10-04 23:53:50,407 - INFO - game_system_api.py:210 - [CONTEXT-CACHE] Context preloaded in 0ms for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-04 23:53:50,407 - INFO - command_processor.py:71 - [NLP-SPECULATIVE] Starting interpretation for: 'Va bene, vado a cecala...'
+2025-10-04 23:53:51,551 - INFO - command_processor.py:102 - [NLP-SPECULATIVE] Completed in 1143ms: is_command=True, confidence=0.90
+2025-10-04 23:53:51,551 - INFO - command_processor.py:288 - [PARALLEL-PROCESSING] NLP quickly detected command, skipping dialogue thread
+2025-10-04 23:53:52,784 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-04 23:53:52,784 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-04 23:53:52,788 - INFO - _internal.py:97 - 176.9.66.43 - - [04/Oct/2025 23:53:52] "POST /api/chat HTTP/1.1" 200 -
+2025-10-04 23:53:53,627 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for 7fb35fc4-0699-b83b-2056-dc250cd7ee32 in 840ms
+2025-10-04 23:54:03,850 - INFO - app.py:1250 - NPC conversation leave request: 7fb35fc4-0699-b83b-2056-dc250cd7ee32 with Garin in Village, action: leaving, status: end
+2025-10-04 23:54:03,850 - INFO - _internal.py:97 - 176.9.66.43 - - [04/Oct/2025 23:54:03] "POST /api/leave_npc HTTP/1.1" 200 -
+2025-10-04 23:56:31,328 - INFO - app.py:1005 - Successfully moved player 7fb35fc4-0699-b83b-2056-dc250cd7ee32 to area Forest
+2025-10-04 23:56:31,328 - INFO - app.py:1021 - Looking for NPC Elira in area Forest
+2025-10-04 23:56:31,329 - INFO - app.py:1023 - NPC lookup result: True
+2025-10-04 23:56:31,329 - INFO - app.py:1028 - Successfully set NPC Elira for player 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-04 23:56:31,329 - INFO - app.py:1029 - NPC data has default_greeting: True
+2025-10-04 23:56:31,329 - INFO - app.py:1039 - Reusing existing chat session for Elira
+2025-10-04 23:56:31,329 - INFO - app.py:1041 - Directly set NPC Elira for player 7fb35fc4-0699-b83b-2056-dc250cd7ee32 in area Forest
+2025-10-04 23:56:31,329 - INFO - app.py:1073 - Raw default_greeting for Elira: None
+2025-10-04 23:56:31,329 - INFO - app.py:1083 - Player 7fb35fc4-0699-b83b-2056-dc250cd7ee32 returning to conversation with Elira
+2025-10-04 23:56:31,329 - INFO - _internal.py:97 - 176.9.66.43 - - [04/Oct/2025 23:56:31] "POST /sense HTTP/1.1" 200 -
+2025-10-04 23:57:03,060 - INFO - app.py:753 - Already talking to Elira, continuing conversation
+2025-10-04 23:57:03,061 - INFO - game_system_api.py:210 - [CONTEXT-CACHE] Context preloaded in 0ms for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-04 23:57:03,061 - INFO - command_processor.py:71 - [NLP-SPECULATIVE] Starting interpretation for: 'Mi manda qui Boos, hai qualco...'
+2025-10-04 23:57:04,108 - INFO - command_processor.py:102 - [NLP-SPECULATIVE] Completed in 1047ms: is_command=False, confidence=0.95
+2025-10-04 23:57:04,109 - INFO - command_processor.py:152 - [DIALOGUE-SPECULATIVE] Starting dialogue generation for: 'Mi manda qui Boos, hai qualco...'
+2025-10-04 23:57:04,111 - INFO - command_processor.py:298 - [PARALLEL-PROCESSING] Started dialogue thread after NLP check
+2025-10-04 23:57:05,219 - INFO - command_processor.py:184 - [DIALOGUE-SPECULATIVE] Completed in 1110ms for NPC: Elira
+2025-10-04 23:57:05,219 - INFO - command_processor.py:379 - [PARALLEL-PROCESSING] Using speculative dialogue result
+2025-10-04 23:57:05,220 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-04 23:57:05,220 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-04 23:57:05,224 - INFO - _internal.py:97 - 176.9.66.43 - - [04/Oct/2025 23:57:05] "POST /api/chat HTTP/1.1" 200 -
+2025-10-04 23:57:06,192 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for 7fb35fc4-0699-b83b-2056-dc250cd7ee32 in 969ms
+2025-10-04 23:57:43,761 - INFO - app.py:753 - Already talking to Elira, continuing conversation
+2025-10-04 23:57:43,761 - INFO - game_system_api.py:166 - [CONTEXT-CACHE] Refreshing NPCs list for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-04 23:57:43,762 - INFO - game_system_api.py:210 - [CONTEXT-CACHE] Context preloaded in 1ms for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-04 23:57:43,762 - INFO - command_processor.py:71 - [NLP-SPECULATIVE] Starting interpretation for: 'Gazie, vedo di tovae Maa...'
+2025-10-04 23:57:44,754 - INFO - command_processor.py:102 - [NLP-SPECULATIVE] Completed in 990ms: is_command=False, confidence=0.90
+2025-10-04 23:57:44,754 - INFO - command_processor.py:152 - [DIALOGUE-SPECULATIVE] Starting dialogue generation for: 'Gazie, vedo di tovae Maa...'
+2025-10-04 23:57:44,756 - INFO - command_processor.py:298 - [PARALLEL-PROCESSING] Started dialogue thread after NLP check
+2025-10-04 23:57:45,407 - INFO - command_processor.py:184 - [DIALOGUE-SPECULATIVE] Completed in 652ms for NPC: Elira
+2025-10-04 23:57:45,407 - INFO - command_processor.py:379 - [PARALLEL-PROCESSING] Using speculative dialogue result
+2025-10-04 23:57:45,407 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-04 23:57:45,408 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-04 23:57:45,412 - INFO - _internal.py:97 - 176.9.66.43 - - [04/Oct/2025 23:57:45] "POST /api/chat HTTP/1.1" 200 -
+2025-10-04 23:57:46,490 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for 7fb35fc4-0699-b83b-2056-dc250cd7ee32 in 1080ms
+2025-10-04 23:58:52,846 - INFO - app.py:1250 - NPC conversation leave request: 7fb35fc4-0699-b83b-2056-dc250cd7ee32 with Boros in Mountain, action: leaving, status: end
+2025-10-04 23:58:52,846 - INFO - _internal.py:97 - 176.9.66.43 - - [04/Oct/2025 23:58:52] "POST /api/leave_npc HTTP/1.1" 200 -
+2025-10-04 23:59:30,480 - INFO - app.py:1005 - Successfully moved player 7fb35fc4-0699-b83b-2056-dc250cd7ee32 to area Village
+2025-10-04 23:59:30,480 - INFO - app.py:1021 - Looking for NPC Mara in area Village
+2025-10-04 23:59:30,481 - INFO - app.py:1023 - NPC lookup result: True
+2025-10-04 23:59:30,481 - INFO - app.py:1028 - Successfully set NPC Mara for player 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-04 23:59:30,481 - INFO - app.py:1029 - NPC data has default_greeting: True
+2025-10-04 23:59:30,481 - INFO - app.py:1039 - Reusing existing chat session for Mara
+2025-10-04 23:59:30,481 - INFO - app.py:1041 - Directly set NPC Mara for player 7fb35fc4-0699-b83b-2056-dc250cd7ee32 in area Village
+2025-10-04 23:59:30,481 - INFO - app.py:1073 - Raw default_greeting for Mara: None
+2025-10-04 23:59:30,481 - INFO - app.py:1083 - Player 7fb35fc4-0699-b83b-2056-dc250cd7ee32 returning to conversation with Mara
+2025-10-04 23:59:30,481 - INFO - _internal.py:97 - 176.9.66.43 - - [04/Oct/2025 23:59:30] "POST /sense HTTP/1.1" 200 -
+2025-10-05 00:00:21,299 - INFO - app.py:730 - Switching from Garin to Mara
+2025-10-05 00:00:22,024 - INFO - game_system_api.py:210 - [CONTEXT-CACHE] Context preloaded in 0ms for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-05 00:00:22,025 - INFO - command_processor.py:71 - [NLP-SPECULATIVE] Starting interpretation for: 'Salve, potesti dami una dell...'
+2025-10-05 00:00:23,225 - INFO - command_processor.py:152 - [DIALOGUE-SPECULATIVE] Starting dialogue generation for: 'Salve, potesti dami una dell...'
+2025-10-05 00:00:23,225 - INFO - command_processor.py:308 - [PARALLEL-PROCESSING] NLP timeout, started dialogue thread anyway
+2025-10-05 00:00:23,367 - INFO - command_processor.py:102 - [NLP-SPECULATIVE] Completed in 1342ms: is_command=False, confidence=0.90
+2025-10-05 00:00:24,867 - INFO - command_processor.py:389 - [PARALLEL-PROCESSING] Waiting for dialogue thread to complete...
+2025-10-05 00:00:25,197 - INFO - command_processor.py:184 - [DIALOGUE-SPECULATIVE] Completed in 1971ms for NPC: Mara
+2025-10-05 00:00:25,197 - INFO - command_processor.py:397 - [PARALLEL-PROCESSING] Using dialogue result after extended wait
+2025-10-05 00:00:25,197 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-05 00:00:25,198 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-05 00:00:25,202 - INFO - _internal.py:97 - 176.9.66.43 - - [05/Oct/2025 00:00:25] "POST /api/chat HTTP/1.1" 200 -
+2025-10-05 00:00:26,134 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for 7fb35fc4-0699-b83b-2056-dc250cd7ee32 in 933ms
+2025-10-05 00:00:53,595 - INFO - app.py:730 - Switching from Garin to Mara
+2025-10-05 00:00:54,407 - INFO - game_system_api.py:210 - [CONTEXT-CACHE] Context preloaded in 0ms for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-05 00:00:54,407 - INFO - command_processor.py:71 - [NLP-SPECULATIVE] Starting interpretation for: 'Io non ho cediti, Maa...'
+2025-10-05 00:00:55,178 - INFO - command_processor.py:102 - [NLP-SPECULATIVE] Completed in 770ms: is_command=False, confidence=0.90
+2025-10-05 00:00:55,178 - INFO - command_processor.py:152 - [DIALOGUE-SPECULATIVE] Starting dialogue generation for: 'Io non ho cediti, Maa...'
+2025-10-05 00:00:55,180 - INFO - command_processor.py:298 - [PARALLEL-PROCESSING] Started dialogue thread after NLP check
+2025-10-05 00:00:56,681 - INFO - command_processor.py:389 - [PARALLEL-PROCESSING] Waiting for dialogue thread to complete...
+2025-10-05 00:00:56,784 - INFO - command_processor.py:184 - [DIALOGUE-SPECULATIVE] Completed in 1605ms for NPC: Mara
+2025-10-05 00:00:56,784 - INFO - command_processor.py:397 - [PARALLEL-PROCESSING] Using dialogue result after extended wait
+2025-10-05 00:00:56,784 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-05 00:00:56,785 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-05 00:00:56,789 - INFO - _internal.py:97 - 176.9.66.43 - - [05/Oct/2025 00:00:56] "POST /api/chat HTTP/1.1" 200 -
+2025-10-05 00:00:57,811 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for 7fb35fc4-0699-b83b-2056-dc250cd7ee32 in 1024ms
+2025-10-05 00:01:39,779 - INFO - app.py:730 - Switching from Garin to Mara
+2025-10-05 00:01:40,498 - INFO - game_system_api.py:210 - [CONTEXT-CACHE] Context preloaded in 0ms for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-05 00:01:40,499 - INFO - command_processor.py:71 - [NLP-SPECULATIVE] Starting interpretation for: 'Va bene, andò in città...'
+2025-10-05 00:01:41,688 - INFO - command_processor.py:102 - [NLP-SPECULATIVE] Completed in 1188ms: is_command=True, confidence=0.95
+2025-10-05 00:01:41,688 - INFO - command_processor.py:288 - [PARALLEL-PROCESSING] NLP quickly detected command, skipping dialogue thread
+2025-10-05 00:01:42,342 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-05 00:01:42,342 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-05 00:01:42,347 - INFO - _internal.py:97 - 176.9.66.43 - - [05/Oct/2025 00:01:42] "POST /api/chat HTTP/1.1" 200 -
+2025-10-05 00:01:43,436 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for 7fb35fc4-0699-b83b-2056-dc250cd7ee32 in 1090ms
+2025-10-05 00:02:45,518 - INFO - app.py:1250 - NPC conversation leave request: 7fb35fc4-0699-b83b-2056-dc250cd7ee32 with Elira in Forest, action: leaving, status: end
+2025-10-05 00:02:45,519 - INFO - _internal.py:97 - 176.9.66.43 - - [05/Oct/2025 00:02:45] "POST /api/leave_npc HTTP/1.1" 200 -
+2025-10-05 00:03:51,759 - INFO - app.py:1012 - Player 7fb35fc4-0699-b83b-2056-dc250cd7ee32 already in area City, skipping /go command
+2025-10-05 00:03:51,759 - INFO - app.py:1021 - Looking for NPC Cassian in area City
+2025-10-05 00:03:51,761 - INFO - app.py:1023 - NPC lookup result: True
+2025-10-05 00:03:51,761 - INFO - app.py:1028 - Successfully set NPC Cassian for player 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-05 00:03:51,761 - INFO - app.py:1029 - NPC data has default_greeting: True
+2025-10-05 00:03:51,761 - INFO - app.py:1039 - Reusing existing chat session for Cassian
+2025-10-05 00:03:51,761 - INFO - app.py:1041 - Directly set NPC Cassian for player 7fb35fc4-0699-b83b-2056-dc250cd7ee32 in area City
+2025-10-05 00:03:51,761 - INFO - app.py:1073 - Raw default_greeting for Cassian: None
+2025-10-05 00:03:51,761 - INFO - app.py:1083 - Player 7fb35fc4-0699-b83b-2056-dc250cd7ee32 returning to conversation with Cassian
+2025-10-05 00:03:51,761 - INFO - _internal.py:97 - 176.9.66.43 - - [05/Oct/2025 00:03:51] "POST /sense HTTP/1.1" 200 -
+2025-10-05 00:04:43,420 - INFO - app.py:730 - Switching from Alto Giudice Theron to Cassian
+2025-10-05 00:04:44,649 - INFO - game_system_api.py:166 - [CONTEXT-CACHE] Refreshing NPCs list for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-05 00:04:44,651 - INFO - game_system_api.py:210 - [CONTEXT-CACHE] Context preloaded in 1ms for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-05 00:04:44,651 - INFO - command_processor.py:71 - [NLP-SPECULATIVE] Starting interpretation for: 'Devo avee la pozione di guai...'
+2025-10-05 00:04:45,852 - INFO - command_processor.py:152 - [DIALOGUE-SPECULATIVE] Starting dialogue generation for: 'Devo avee la pozione di guai...'
+2025-10-05 00:04:45,852 - INFO - command_processor.py:308 - [PARALLEL-PROCESSING] NLP timeout, started dialogue thread anyway
+2025-10-05 00:04:46,671 - INFO - command_processor.py:102 - [NLP-SPECULATIVE] Completed in 2019ms: is_command=False, confidence=0.90
+2025-10-05 00:04:47,267 - INFO - command_processor.py:184 - [DIALOGUE-SPECULATIVE] Completed in 1415ms for NPC: Cassian
+2025-10-05 00:04:47,267 - INFO - command_processor.py:379 - [PARALLEL-PROCESSING] Using speculative dialogue result
+2025-10-05 00:04:47,268 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-05 00:04:47,269 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-05 00:04:47,273 - INFO - _internal.py:97 - 176.9.66.43 - - [05/Oct/2025 00:04:47] "POST /api/chat HTTP/1.1" 200 -
+2025-10-05 00:04:48,359 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for 7fb35fc4-0699-b83b-2056-dc250cd7ee32 in 1088ms
+2025-10-05 00:06:42,494 - INFO - app.py:1250 - NPC conversation leave request: 7fb35fc4-0699-b83b-2056-dc250cd7ee32 with Mara in Village, action: leaving, status: end
+2025-10-05 00:06:42,495 - INFO - _internal.py:97 - 176.9.66.43 - - [05/Oct/2025 00:06:42] "POST /api/leave_npc HTTP/1.1" 200 -
+2025-10-05 00:06:45,935 - INFO - app.py:730 - Switching from Alto Giudice Theron to Cassian
+2025-10-05 00:06:46,611 - INFO - game_system_api.py:210 - [CONTEXT-CACHE] Context preloaded in 0ms for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-05 00:06:46,612 - INFO - command_processor.py:71 - [NLP-SPECULATIVE] Starting interpretation for: 'Scusa, ma se non ho 50 cediti...'
+2025-10-05 00:06:47,812 - INFO - command_processor.py:152 - [DIALOGUE-SPECULATIVE] Starting dialogue generation for: 'Scusa, ma se non ho 50 cediti...'
+2025-10-05 00:06:47,812 - INFO - command_processor.py:308 - [PARALLEL-PROCESSING] NLP timeout, started dialogue thread anyway
+2025-10-05 00:06:48,561 - INFO - command_processor.py:102 - [NLP-SPECULATIVE] Completed in 1948ms: is_command=False, confidence=0.90
+2025-10-05 00:06:50,061 - INFO - command_processor.py:389 - [PARALLEL-PROCESSING] Waiting for dialogue thread to complete...
+2025-10-05 00:06:50,284 - INFO - command_processor.py:184 - [DIALOGUE-SPECULATIVE] Completed in 2471ms for NPC: Cassian
+2025-10-05 00:06:50,284 - INFO - command_processor.py:397 - [PARALLEL-PROCESSING] Using dialogue result after extended wait
+2025-10-05 00:06:50,284 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-05 00:06:50,285 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-05 00:06:50,289 - INFO - _internal.py:97 - 176.9.66.43 - - [05/Oct/2025 00:06:50] "POST /api/chat HTTP/1.1" 200 -
+2025-10-05 00:06:51,080 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for 7fb35fc4-0699-b83b-2056-dc250cd7ee32 in 793ms
+2025-10-05 00:09:59,351 - INFO - app.py:1012 - Player 7fb35fc4-0699-b83b-2056-dc250cd7ee32 already in area City, skipping /go command
+2025-10-05 00:09:59,351 - INFO - app.py:1021 - Looking for NPC Alto Giudice Theron in area City
+2025-10-05 00:09:59,352 - INFO - app.py:1023 - NPC lookup result: True
+2025-10-05 00:09:59,352 - INFO - app.py:1028 - Successfully set NPC Alto Giudice Theron for player 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-05 00:09:59,352 - INFO - app.py:1029 - NPC data has default_greeting: True
+2025-10-05 00:09:59,352 - INFO - app.py:1039 - Reusing existing chat session for Alto Giudice Theron
+2025-10-05 00:09:59,353 - INFO - app.py:1041 - Directly set NPC Alto Giudice Theron for player 7fb35fc4-0699-b83b-2056-dc250cd7ee32 in area City
+2025-10-05 00:09:59,353 - INFO - app.py:1073 - Raw default_greeting for Alto Giudice Theron: None
+2025-10-05 00:09:59,353 - INFO - app.py:1083 - Player 7fb35fc4-0699-b83b-2056-dc250cd7ee32 returning to conversation with Alto Giudice Theron
+2025-10-05 00:09:59,353 - INFO - _internal.py:97 - 176.9.66.43 - - [05/Oct/2025 00:09:59] "POST /sense HTTP/1.1" 200 -
+2025-10-05 00:10:38,097 - INFO - app.py:753 - Already talking to Alto Giudice Theron, continuing conversation
+2025-10-05 00:10:38,097 - INFO - game_system_api.py:166 - [CONTEXT-CACHE] Refreshing NPCs list for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-05 00:10:38,099 - INFO - game_system_api.py:210 - [CONTEXT-CACHE] Context preloaded in 1ms for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-05 00:10:38,099 - INFO - command_processor.py:71 - [NLP-SPECULATIVE] Starting interpretation for: 'Scusami, Theon, puoi dami la...'
+2025-10-05 00:10:39,293 - INFO - command_processor.py:102 - [NLP-SPECULATIVE] Completed in 1193ms: is_command=False, confidence=0.95
+2025-10-05 00:10:39,293 - INFO - command_processor.py:152 - [DIALOGUE-SPECULATIVE] Starting dialogue generation for: 'Scusami, Theon, puoi dami la...'
+2025-10-05 00:10:39,295 - INFO - command_processor.py:298 - [PARALLEL-PROCESSING] Started dialogue thread after NLP check
+2025-10-05 00:10:40,796 - INFO - command_processor.py:389 - [PARALLEL-PROCESSING] Waiting for dialogue thread to complete...
+2025-10-05 00:10:41,707 - INFO - command_processor.py:184 - [DIALOGUE-SPECULATIVE] Completed in 2413ms for NPC: Alto Giudice Theron
+2025-10-05 00:10:41,707 - INFO - command_processor.py:397 - [PARALLEL-PROCESSING] Using dialogue result after extended wait
+2025-10-05 00:10:41,707 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-05 00:10:41,707 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-05 00:10:41,712 - INFO - _internal.py:97 - 176.9.66.43 - - [05/Oct/2025 00:10:41] "POST /api/chat HTTP/1.1" 200 -
+2025-10-05 00:10:43,082 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for 7fb35fc4-0699-b83b-2056-dc250cd7ee32 in 1372ms
+2025-10-05 00:11:27,464 - INFO - app.py:753 - Already talking to Alto Giudice Theron, continuing conversation
+2025-10-05 00:11:27,464 - INFO - game_system_api.py:210 - [CONTEXT-CACHE] Context preloaded in 0ms for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-05 00:11:27,464 - INFO - command_processor.py:71 - [NLP-SPECULATIVE] Starting interpretation for: 'Io mi itengo senz'alto una p...'
+2025-10-05 00:11:28,451 - INFO - command_processor.py:102 - [NLP-SPECULATIVE] Completed in 986ms: is_command=False, confidence=0.95
+2025-10-05 00:11:28,451 - INFO - command_processor.py:152 - [DIALOGUE-SPECULATIVE] Starting dialogue generation for: 'Io mi itengo senz'alto una p...'
+2025-10-05 00:11:28,452 - INFO - command_processor.py:298 - [PARALLEL-PROCESSING] Started dialogue thread after NLP check
+2025-10-05 00:11:29,955 - INFO - command_processor.py:389 - [PARALLEL-PROCESSING] Waiting for dialogue thread to complete...
+2025-10-05 00:11:30,331 - INFO - command_processor.py:184 - [DIALOGUE-SPECULATIVE] Completed in 1879ms for NPC: Alto Giudice Theron
+2025-10-05 00:11:30,331 - INFO - command_processor.py:397 - [PARALLEL-PROCESSING] Using dialogue result after extended wait
+2025-10-05 00:11:30,332 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-05 00:11:30,333 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-05 00:11:30,337 - INFO - _internal.py:97 - 176.9.66.43 - - [05/Oct/2025 00:11:30] "POST /api/chat HTTP/1.1" 200 -
+2025-10-05 00:11:31,604 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for 7fb35fc4-0699-b83b-2056-dc250cd7ee32 in 1270ms
+2025-10-05 00:11:50,456 - INFO - app.py:1250 - NPC conversation leave request: 7fb35fc4-0699-b83b-2056-dc250cd7ee32 with Cassian in City, action: leaving, status: end
+2025-10-05 00:11:50,456 - INFO - _internal.py:97 - 176.9.66.43 - - [05/Oct/2025 00:11:50] "POST /api/leave_npc HTTP/1.1" 200 -
+2025-10-05 00:13:25,008 - INFO - app.py:753 - Already talking to Alto Giudice Theron, continuing conversation
+2025-10-05 00:13:25,009 - INFO - game_system_api.py:210 - [CONTEXT-CACHE] Context preloaded in 0ms for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-05 00:13:25,009 - INFO - command_processor.py:71 - [NLP-SPECULATIVE] Starting interpretation for: 'Possiamo coltivae la memoia,...'
+2025-10-05 00:13:26,210 - INFO - command_processor.py:152 - [DIALOGUE-SPECULATIVE] Starting dialogue generation for: 'Possiamo coltivae la memoia,...'
+2025-10-05 00:13:26,210 - INFO - command_processor.py:308 - [PARALLEL-PROCESSING] NLP timeout, started dialogue thread anyway
+2025-10-05 00:13:26,267 - INFO - command_processor.py:102 - [NLP-SPECULATIVE] Completed in 1258ms: is_command=False, confidence=0.90
+2025-10-05 00:13:27,768 - INFO - command_processor.py:389 - [PARALLEL-PROCESSING] Waiting for dialogue thread to complete...
+2025-10-05 00:13:29,331 - INFO - command_processor.py:184 - [DIALOGUE-SPECULATIVE] Completed in 3121ms for NPC: Alto Giudice Theron
+2025-10-05 00:13:29,332 - INFO - command_processor.py:397 - [PARALLEL-PROCESSING] Using dialogue result after extended wait
+2025-10-05 00:13:29,332 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-05 00:13:29,333 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-05 00:13:29,338 - INFO - _internal.py:97 - 176.9.66.43 - - [05/Oct/2025 00:13:29] "POST /api/chat HTTP/1.1" 200 -
+2025-10-05 00:13:30,630 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for 7fb35fc4-0699-b83b-2056-dc250cd7ee32 in 1295ms
+2025-10-05 00:17:55,662 - ERROR - _internal.py:97 - 93.123.109.214 - - [05/Oct/2025 00:17:55] code 400, message Bad request version ('6ÜG_')
+2025-10-05 00:17:55,662 - INFO - _internal.py:97 - 93.123.109.214 - - [05/Oct/2025 00:17:55] "[31m[1m\x16\x03\x01\x00ê\x01\x00\x00æ\x03\x03\x16\x0f\x12\x9bü­e\x85\x03[OóåA-©T\x1aä\x91µ\x99xø\x01Æ\x0dÿ;e\x084 6ÜG_[0m" 400 -
+2025-10-05 00:17:55,739 - INFO - _internal.py:97 - 93.123.109.214 - - [05/Oct/2025 00:17:55] "GET / HTTP/1.1" 200 -
+2025-10-05 00:17:55,797 - INFO - _internal.py:97 - 93.123.109.214 - - [05/Oct/2025 00:17:55] "GET / HTTP/1.1" 200 -
+2025-10-05 00:18:29,529 - INFO - app.py:1250 - NPC conversation leave request: 7fb35fc4-0699-b83b-2056-dc250cd7ee32 with Alto Giudice Theron in City, action: leaving, status: end
+2025-10-05 00:18:29,532 - INFO - app.py:1300 - Saved NPC conversation for 7fb35fc4-0699-b83b-2056-dc250cd7ee32 with Alto Giudice Theron
+2025-10-05 00:18:29,532 - INFO - app.py:1313 - Cleaned up NPC conversation state for 7fb35fc4-0699-b83b-2056-dc250cd7ee32
+2025-10-05 00:18:29,532 - INFO - _internal.py:97 - 176.9.66.43 - - [05/Oct/2025 00:18:29] "POST /api/leave_npc HTTP/1.1" 200 -
+2025-10-05 00:36:04,479 - INFO - _internal.py:97 - 45.79.8.221 - - [05/Oct/2025 00:36:04] "GET / HTTP/1.1" 200 -
+2025-10-05 00:36:10,625 - INFO - _internal.py:97 - 172.236.119.165 - - [05/Oct/2025 00:36:10] "GET / HTTP/1.1" 200 -
+2025-10-05 00:41:34,054 - INFO - _internal.py:97 - 172.236.228.111 - - [05/Oct/2025 00:41:34] "GET / HTTP/1.1" 200 -
+2025-10-05 00:59:52,981 - ERROR - _internal.py:97 - 93.123.109.214 - - [05/Oct/2025 00:59:52] code 400, message Bad request version ('À\x13À')
+2025-10-05 00:59:52,981 - INFO - _internal.py:97 - 93.123.109.214 - - [05/Oct/2025 00:59:52] "[31m[1m\x16\x03\x01\x00ê\x01\x00\x00æ\x03\x03^\x7fPìËñuJ±o­j\x15xö\x9b¥cZ ÂBï\x7fE?\x81Y\x15\x13\x89ß Åv^üP1«;\\èÝ$dqj\x07Æí¾\x1eW&Æz[\x13\x80wó01s\x00&À+À/À,À0Ì©Ì¨À\x09À\x13À[0m" 400 -
+2025-10-05 00:59:53,019 - INFO - _internal.py:97 - 93.123.109.214 - - [05/Oct/2025 00:59:53] "GET / HTTP/1.1" 200 -
+2025-10-05 00:59:53,068 - INFO - _internal.py:97 - 93.123.109.214 - - [05/Oct/2025 00:59:53] "GET / HTTP/1.1" 200 -
+2025-10-05 02:08:06,394 - INFO - _internal.py:97 - 64.62.197.197 - - [05/Oct/2025 02:08:06] "GET / HTTP/1.1" 200 -
+2025-10-05 02:08:16,908 - ERROR - app.py:255 - Unhandled exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+Traceback (most recent call last):
+  File "/root/.cache/pypoetry/virtualenvs/nexus-p7PCQIh--py3.12/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.cache/pypoetry/virtualenvs/nexus-p7PCQIh--py3.12/lib/python3.12/site-packages/flask/app.py", line 891, in dispatch_request
+    self.raise_routing_exception(req)
+  File "/root/.cache/pypoetry/virtualenvs/nexus-p7PCQIh--py3.12/lib/python3.12/site-packages/flask/app.py", line 500, in raise_routing_exception
+    raise request.routing_exception  # type: ignore[misc]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.cache/pypoetry/virtualenvs/nexus-p7PCQIh--py3.12/lib/python3.12/site-packages/flask/ctx.py", line 362, in match_request
+    result = self.url_adapter.match(return_rule=True)  # type: ignore
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.cache/pypoetry/virtualenvs/nexus-p7PCQIh--py3.12/lib/python3.12/site-packages/werkzeug/routing/map.py", line 629, in match
+    raise NotFound() from None
+werkzeug.exceptions.NotFound: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2025-10-05 02:08:16,913 - INFO - _internal.py:97 - 64.62.197.199 - - [05/Oct/2025 02:08:16] "[35m[1mGET /favicon.ico HTTP/1.1[0m" 500 -
+2025-10-05 02:51:17,446 - INFO - _internal.py:97 - 66.132.153.139 - - [05/Oct/2025 02:51:17] "GET / HTTP/1.1" 200 -
+2025-10-05 02:51:17,684 - ERROR - app.py:255 - Unhandled exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+Traceback (most recent call last):
+  File "/root/.cache/pypoetry/virtualenvs/nexus-p7PCQIh--py3.12/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.cache/pypoetry/virtualenvs/nexus-p7PCQIh--py3.12/lib/python3.12/site-packages/flask/app.py", line 891, in dispatch_request
+    self.raise_routing_exception(req)
+  File "/root/.cache/pypoetry/virtualenvs/nexus-p7PCQIh--py3.12/lib/python3.12/site-packages/flask/app.py", line 500, in raise_routing_exception
+    raise request.routing_exception  # type: ignore[misc]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.cache/pypoetry/virtualenvs/nexus-p7PCQIh--py3.12/lib/python3.12/site-packages/flask/ctx.py", line 362, in match_request
+    result = self.url_adapter.match(return_rule=True)  # type: ignore
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.cache/pypoetry/virtualenvs/nexus-p7PCQIh--py3.12/lib/python3.12/site-packages/werkzeug/routing/map.py", line 629, in match
+    raise NotFound() from None
+werkzeug.exceptions.NotFound: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2025-10-05 02:51:17,685 - INFO - _internal.py:97 - 66.132.153.139 - - [05/Oct/2025 02:51:17] "[35m[1mGET /favicon.ico HTTP/1.1[0m" 500 -
+2025-10-05 02:51:18,129 - ERROR - _internal.py:97 - 66.132.153.139 - - [05/Oct/2025 02:51:18] code 505, message Invalid HTTP version (2.0)
+2025-10-05 02:51:18,129 - INFO - _internal.py:97 - 66.132.153.139 - - [05/Oct/2025 02:51:18] "[35m[1mPRI * HTTP/2.0[0m" 505 -
+2025-10-05 02:51:40,215 - INFO - _internal.py:97 - 66.132.153.139 - - [05/Oct/2025 02:51:40] "GET / HTTP/1.1" 200 -
+2025-10-05 02:54:36,210 - ERROR - _internal.py:97 - 195.178.110.15 - - [05/Oct/2025 02:54:36] code 400, message Bad request version ('À\x13À')
+2025-10-05 02:54:36,210 - INFO - _internal.py:97 - 195.178.110.15 - - [05/Oct/2025 02:54:36] "[31m[1m\x16\x03\x01\x00ê\x01\x00\x00æ\x03\x03\x10\x0f\x83\x07öáÔyç·(7!JÉoô\x7fä`w\x8c*\x97÷O)\x9c\x14±e§ ¢rÛÏ\x1cÏ0\x0b¥\x0dÄ?\x91\x09P\x81\x93©\x16t´¹½§Å\x91ô(\x0d\x8d¦\x12\x00&À+À/À,À0Ì©Ì¨À\x09À\x13À[0m" 400 -
+2025-10-05 02:54:36,249 - INFO - _internal.py:97 - 195.178.110.15 - - [05/Oct/2025 02:54:36] "GET / HTTP/1.1" 200 -
+2025-10-05 02:54:36,299 - INFO - _internal.py:97 - 195.178.110.15 - - [05/Oct/2025 02:54:36] "GET / HTTP/1.1" 200 -
+2025-10-05 06:08:35,721 - ERROR - _internal.py:97 - 206.168.34.116 - - [05/Oct/2025 06:08:35] code 400, message Bad request version ('À\x14À')
+2025-10-05 06:08:35,721 - INFO - _internal.py:97 - 206.168.34.116 - - [05/Oct/2025 06:08:35] "[31m[1m\x16\x03\x01\x00î\x01\x00\x00ê\x03\x03Î\x84¿û[¨W\x9fIÔ¾[·\x86\x06\x1c¾|ô@k\x82\x01\x962æ+õ²OM\x11 \x95ú\x8c\x05\x02\x1eÏÀ~(^¼ë\x85\x9aÁÔÝ\x0fLÚ2Ã\x13L\x02)\x1aDcØD\x00&Ì¨Ì©À/À0À+À,À\x13À\x09À\x14À[0m" 400 -
+2025-10-05 06:08:39,145 - INFO - _internal.py:97 - 206.168.34.116 - - [05/Oct/2025 06:08:39] "GET / HTTP/1.1" 200 -
+2025-10-05 06:08:51,970 - INFO - _internal.py:97 - 206.168.34.116 - - [05/Oct/2025 06:08:51] "GET / HTTP/1.1" 200 -
+2025-10-05 06:08:54,162 - ERROR - app.py:255 - Unhandled exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+Traceback (most recent call last):
+  File "/root/.cache/pypoetry/virtualenvs/nexus-p7PCQIh--py3.12/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.cache/pypoetry/virtualenvs/nexus-p7PCQIh--py3.12/lib/python3.12/site-packages/flask/app.py", line 891, in dispatch_request
+    self.raise_routing_exception(req)
+  File "/root/.cache/pypoetry/virtualenvs/nexus-p7PCQIh--py3.12/lib/python3.12/site-packages/flask/app.py", line 500, in raise_routing_exception
+    raise request.routing_exception  # type: ignore[misc]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.cache/pypoetry/virtualenvs/nexus-p7PCQIh--py3.12/lib/python3.12/site-packages/flask/ctx.py", line 362, in match_request
+    result = self.url_adapter.match(return_rule=True)  # type: ignore
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.cache/pypoetry/virtualenvs/nexus-p7PCQIh--py3.12/lib/python3.12/site-packages/werkzeug/routing/map.py", line 629, in match
+    raise NotFound() from None
+werkzeug.exceptions.NotFound: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2025-10-05 06:08:54,163 - INFO - _internal.py:97 - 206.168.34.116 - - [05/Oct/2025 06:08:54] "[35m[1mGET /favicon.ico HTTP/1.1[0m" 500 -
+2025-10-05 06:08:55,735 - ERROR - _internal.py:97 - 206.168.34.116 - - [05/Oct/2025 06:08:55] code 505, message Invalid HTTP version (2.0)
+2025-10-05 06:08:55,735 - INFO - _internal.py:97 - 206.168.34.116 - - [05/Oct/2025 06:08:55] "[35m[1mPRI * HTTP/2.0[0m" 505 -
+2025-10-05 06:09:06,571 - INFO - _internal.py:97 - 206.168.34.116 - - [05/Oct/2025 06:09:06] "GET / HTTP/1.1" 200 -
+2025-10-05 06:34:44,860 - ERROR - app.py:255 - Unhandled exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+Traceback (most recent call last):
+  File "/root/.cache/pypoetry/virtualenvs/nexus-p7PCQIh--py3.12/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.cache/pypoetry/virtualenvs/nexus-p7PCQIh--py3.12/lib/python3.12/site-packages/flask/app.py", line 891, in dispatch_request
+    self.raise_routing_exception(req)
+  File "/root/.cache/pypoetry/virtualenvs/nexus-p7PCQIh--py3.12/lib/python3.12/site-packages/flask/app.py", line 500, in raise_routing_exception
+    raise request.routing_exception  # type: ignore[misc]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.cache/pypoetry/virtualenvs/nexus-p7PCQIh--py3.12/lib/python3.12/site-packages/flask/ctx.py", line 362, in match_request
+    result = self.url_adapter.match(return_rule=True)  # type: ignore
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.cache/pypoetry/virtualenvs/nexus-p7PCQIh--py3.12/lib/python3.12/site-packages/werkzeug/routing/map.py", line 629, in match
+    raise NotFound() from None
+werkzeug.exceptions.NotFound: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2025-10-05 06:34:44,862 - INFO - _internal.py:97 - 147.185.132.112 - - [05/Oct/2025 06:34:44] "[35m[1mGET /.well-known/security.txt HTTP/1.1[0m" 500 -
+2025-10-05 07:14:48,658 - INFO - _internal.py:97 - 147.185.132.25 - - [05/Oct/2025 07:14:48] "GET / HTTP/1.1" 200 -
+2025-10-05 07:37:21,347 - ERROR - _internal.py:97 - 195.178.110.109 - - [05/Oct/2025 07:37:21] code 400, message Bad request version ('À\x13À')
+2025-10-05 07:37:21,347 - INFO - _internal.py:97 - 195.178.110.109 - - [05/Oct/2025 07:37:21] "[31m[1m\x16\x03\x01\x00ê\x01\x00\x00æ\x03\x03âad\x1d\x9fÖE\x95#âýæ)\x1bÈ\x06áìu=\x7f\x02-hàîùN?óäÃ ï°\x8f©íëý¥t\x0c\x990p\x92\x94ÕAÑ\x94Op\x09¤\x98Ýtêòü£\x04D\x00&À+À/À,À0Ì©Ì¨À\x09À\x13À[0m" 400 -
+2025-10-05 07:37:21,385 - INFO - _internal.py:97 - 195.178.110.109 - - [05/Oct/2025 07:37:21] "GET / HTTP/1.1" 200 -
+2025-10-05 07:37:21,434 - INFO - _internal.py:97 - 195.178.110.109 - - [05/Oct/2025 07:37:21] "GET / HTTP/1.1" 200 -
+2025-10-05 07:51:28,529 - INFO - app.py:1012 - Player c45b11a7-f561-abe0-9105-8135ab153507 already in area Liminal Void, skipping /go command
+2025-10-05 07:51:28,529 - INFO - app.py:1021 - Looking for NPC Erasmus in area Liminal Void
+2025-10-05 07:51:28,529 - INFO - app.py:1023 - NPC lookup result: True
+2025-10-05 07:51:28,530 - INFO - app.py:1028 - Successfully set NPC Erasmus for player c45b11a7-f561-abe0-9105-8135ab153507
+2025-10-05 07:51:28,530 - INFO - app.py:1029 - NPC data has default_greeting: True
+2025-10-05 07:51:28,530 - INFO - app.py:1039 - Reusing existing chat session for Erasmus
+2025-10-05 07:51:28,530 - INFO - app.py:1041 - Directly set NPC Erasmus for player c45b11a7-f561-abe0-9105-8135ab153507 in area Liminal Void
+2025-10-05 07:51:28,530 - INFO - app.py:1073 - Raw default_greeting for Erasmus: None
+2025-10-05 07:51:28,530 - INFO - app.py:1083 - Player c45b11a7-f561-abe0-9105-8135ab153507 returning to conversation with Erasmus
+2025-10-05 07:51:28,530 - INFO - _internal.py:97 - 176.9.66.43 - - [05/Oct/2025 07:51:28] "POST /sense HTTP/1.1" 200 -
+2025-10-05 07:56:28,669 - INFO - app.py:1250 - NPC conversation leave request: c45b11a7-f561-abe0-9105-8135ab153507 with Erasmus in Liminal Void, action: leaving, status: end
+2025-10-05 07:56:28,671 - INFO - app.py:1300 - Saved NPC conversation for c45b11a7-f561-abe0-9105-8135ab153507 with Erasmus
+2025-10-05 07:56:28,671 - INFO - app.py:1313 - Cleaned up NPC conversation state for c45b11a7-f561-abe0-9105-8135ab153507
+2025-10-05 07:56:28,672 - INFO - _internal.py:97 - 176.9.66.43 - - [05/Oct/2025 07:56:28] "POST /api/leave_npc HTTP/1.1" 200 -
+2025-10-05 07:57:19,099 - INFO - _internal.py:97 - 147.185.132.91 - - [05/Oct/2025 07:57:19] "GET / HTTP/1.0" 200 -
+2025-10-05 08:44:10,983 - ERROR - _internal.py:97 - 195.178.110.109 - - [05/Oct/2025 08:44:10] code 400, message Bad request version ('À\x13À')
+2025-10-05 08:44:10,983 - INFO - _internal.py:97 - 195.178.110.109 - - [05/Oct/2025 08:44:10] "[31m[1m\x16\x03\x01\x00ê\x01\x00\x00æ\x03\x030.\x96\x88\x02Z\x1dts\x94:md$â¨Ê³\x9eQ/#ò×À\x8b.\x16¤\x1d=­ \x17 ×B¸*õ\x19xÿ\x86¬öjìøýiÀ\x9e"M#ír~ÊsN]\x14Õ\x00&À+À/À,À0Ì©Ì¨À\x09À\x13À[0m" 400 -
+2025-10-05 08:44:11,021 - INFO - _internal.py:97 - 195.178.110.109 - - [05/Oct/2025 08:44:11] "GET / HTTP/1.1" 200 -
+2025-10-05 08:44:11,070 - INFO - _internal.py:97 - 195.178.110.109 - - [05/Oct/2025 08:44:11] "GET / HTTP/1.1" 200 -
+2025-10-05 09:17:25,145 - ERROR - _internal.py:97 - 66.132.153.125 - - [05/Oct/2025 09:17:25] code 400, message Bad request version ('À\x14À')
+2025-10-05 09:17:25,145 - INFO - _internal.py:97 - 66.132.153.125 - - [05/Oct/2025 09:17:25] "[31m[1m\x16\x03\x01\x00î\x01\x00\x00ê\x03\x03~\x02\x04«H²h\x94pôö+×?\x0f±öX÷3D\x1d\x9arUç&'\x10yg7 £ñ\\WzÉ¢)\x9dÕõ\x8a{+P-k¤í\x15\x93QSºR \x84\x8b?¾%d\x00&Ì¨Ì©À/À0À+À,À\x13À\x09À\x14À[0m" 400 -
+2025-10-05 09:17:28,940 - INFO - _internal.py:97 - 66.132.153.125 - - [05/Oct/2025 09:17:28] "GET / HTTP/1.1" 200 -
+2025-10-05 09:17:33,419 - INFO - _internal.py:97 - 66.132.153.125 - - [05/Oct/2025 09:17:33] "GET / HTTP/1.1" 200 -
+2025-10-05 09:17:34,266 - ERROR - app.py:255 - Unhandled exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+Traceback (most recent call last):
+  File "/root/.cache/pypoetry/virtualenvs/nexus-p7PCQIh--py3.12/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.cache/pypoetry/virtualenvs/nexus-p7PCQIh--py3.12/lib/python3.12/site-packages/flask/app.py", line 891, in dispatch_request
+    self.raise_routing_exception(req)
+  File "/root/.cache/pypoetry/virtualenvs/nexus-p7PCQIh--py3.12/lib/python3.12/site-packages/flask/app.py", line 500, in raise_routing_exception
+    raise request.routing_exception  # type: ignore[misc]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.cache/pypoetry/virtualenvs/nexus-p7PCQIh--py3.12/lib/python3.12/site-packages/flask/ctx.py", line 362, in match_request
+    result = self.url_adapter.match(return_rule=True)  # type: ignore
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.cache/pypoetry/virtualenvs/nexus-p7PCQIh--py3.12/lib/python3.12/site-packages/werkzeug/routing/map.py", line 629, in match
+    raise NotFound() from None
+werkzeug.exceptions.NotFound: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2025-10-05 09:17:34,267 - INFO - _internal.py:97 - 66.132.153.125 - - [05/Oct/2025 09:17:34] "[35m[1mGET /favicon.ico HTTP/1.1[0m" 500 -
+2025-10-05 09:17:34,709 - ERROR - _internal.py:97 - 66.132.153.125 - - [05/Oct/2025 09:17:34] code 505, message Invalid HTTP version (2.0)
+2025-10-05 09:17:34,709 - INFO - _internal.py:97 - 66.132.153.125 - - [05/Oct/2025 09:17:34] "[35m[1mPRI * HTTP/2.0[0m" 505 -
+2025-10-05 09:17:38,565 - INFO - _internal.py:97 - 66.132.153.125 - - [05/Oct/2025 09:17:38] "GET / HTTP/1.1" 200 -
+2025-10-05 09:30:53,274 - ERROR - _internal.py:97 - 195.178.110.109 - - [05/Oct/2025 09:30:53] code 400, message Bad request version ('À\x13À')
+2025-10-05 09:30:53,274 - INFO - _internal.py:97 - 195.178.110.109 - - [05/Oct/2025 09:30:53] "[31m[1m\x16\x03\x01\x00ê\x01\x00\x00æ\x03\x03&¤9\x0el\x8cõ\x99\x0f¥Í\x88\x0bÅ\x98P\x1e©S\x05Ú}dÜ\x10»ýÛ4=WÛ 6c!ß{©\x9eéÕª&«²úwµe£¢`_SÂk\x88\x92\x11\x0e@ðD\x9e\x00&À+À/À,À0Ì©Ì¨À\x09À\x13À[0m" 400 -
+2025-10-05 09:30:53,312 - INFO - _internal.py:97 - 195.178.110.109 - - [05/Oct/2025 09:30:53] "GET / HTTP/1.1" 200 -
+2025-10-05 09:30:53,363 - INFO - _internal.py:97 - 195.178.110.109 - - [05/Oct/2025 09:30:53] "GET / HTTP/1.1" 200 -
+2025-10-05 09:57:55,902 - INFO - _internal.py:97 - 176.32.195.85 - - [05/Oct/2025 09:57:55] "GET / HTTP/1.0" 200 -
+2025-10-05 09:58:07,589 - ERROR - _internal.py:97 - 176.32.195.85 - - [05/Oct/2025 09:58:07] code 400, message Bad request syntax ('\x16\x03\x01\x05¨\x01\x00\x05¤\x03\x03{þ\\')
+2025-10-05 09:58:07,589 - INFO - _internal.py:97 - 176.32.195.85 - - [05/Oct/2025 09:58:07] "[31m[1m\x16\x03\x01\x05¨\x01\x00\x05¤\x03\x03{þ\\[0m" 400 -
+2025-10-05 09:58:07,802 - ERROR - app.py:255 - Unhandled exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+Traceback (most recent call last):
+  File "/root/.cache/pypoetry/virtualenvs/nexus-p7PCQIh--py3.12/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.cache/pypoetry/virtualenvs/nexus-p7PCQIh--py3.12/lib/python3.12/site-packages/flask/app.py", line 891, in dispatch_request
+    self.raise_routing_exception(req)
+  File "/root/.cache/pypoetry/virtualenvs/nexus-p7PCQIh--py3.12/lib/python3.12/site-packages/flask/app.py", line 500, in raise_routing_exception
+    raise request.routing_exception  # type: ignore[misc]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.cache/pypoetry/virtualenvs/nexus-p7PCQIh--py3.12/lib/python3.12/site-packages/flask/ctx.py", line 362, in match_request
+    result = self.url_adapter.match(return_rule=True)  # type: ignore
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.cache/pypoetry/virtualenvs/nexus-p7PCQIh--py3.12/lib/python3.12/site-packages/werkzeug/routing/map.py", line 629, in match
+    raise NotFound() from None
+werkzeug.exceptions.NotFound: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2025-10-05 09:58:07,803 - INFO - _internal.py:97 - 176.32.195.85 - - [05/Oct/2025 09:58:07] "[35m[1mGET /aaa9 HTTP/1.1[0m" 500 -
+2025-10-05 09:58:07,961 - ERROR - _internal.py:97 - 176.32.195.85 - - [05/Oct/2025 09:58:07] code 400, message Bad request version ('À\x13À')
+2025-10-05 09:58:07,961 - INFO - _internal.py:97 - 176.32.195.85 - - [05/Oct/2025 09:58:07] "[31m[1m\x16\x03\x01\x05¨\x01\x00\x05¤\x03\x03Äó¦ÊvïNª²¿\x0d\x9d)l7dÚ<=iÀe?Ïà«\x80]\x9e\x0c/\x1f Ì´¤$§°\x14¤\x11\x1f\x08¶\x91²\x12Ý$,>.gi*B\x90\x93ÌÄ\x8apïr\x00\x1aÀ+À/À,À0Ì©Ì¨À\x09À\x13À[0m" 400 -
+2025-10-05 09:58:08,112 - ERROR - app.py:255 - Unhandled exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+Traceback (most recent call last):
+  File "/root/.cache/pypoetry/virtualenvs/nexus-p7PCQIh--py3.12/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.cache/pypoetry/virtualenvs/nexus-p7PCQIh--py3.12/lib/python3.12/site-packages/flask/app.py", line 891, in dispatch_request
+    self.raise_routing_exception(req)
+  File "/root/.cache/pypoetry/virtualenvs/nexus-p7PCQIh--py3.12/lib/python3.12/site-packages/flask/app.py", line 500, in raise_routing_exception
+    raise request.routing_exception  # type: ignore[misc]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.cache/pypoetry/virtualenvs/nexus-p7PCQIh--py3.12/lib/python3.12/site-packages/flask/ctx.py", line 362, in match_request
+    result = self.url_adapter.match(return_rule=True)  # type: ignore
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.cache/pypoetry/virtualenvs/nexus-p7PCQIh--py3.12/lib/python3.12/site-packages/werkzeug/routing/map.py", line 629, in match
+    raise NotFound() from None
+werkzeug.exceptions.NotFound: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2025-10-05 09:58:08,113 - INFO - _internal.py:97 - 176.32.195.85 - - [05/Oct/2025 09:58:08] "[35m[1mGET /aab9 HTTP/1.1[0m" 500 -
+2025-10-05 10:23:05,695 - INFO - _internal.py:97 - 3.131.215.38 - - [05/Oct/2025 10:23:05] "GET / HTTP/1.1" 200 -
+2025-10-05 10:24:38,170 - INFO - _internal.py:97 - 3.131.215.38 - - [05/Oct/2025 10:24:38] "GET / HTTP/1.1" 200 -
+2025-10-05 10:26:14,663 - ERROR - _internal.py:97 - 3.131.215.38 - - [05/Oct/2025 10:26:14] code 400, message Bad request version ('À\x14À')
+2025-10-05 10:26:14,663 - INFO - _internal.py:97 - 3.131.215.38 - - [05/Oct/2025 10:26:14] "[31m[1m\x16\x03\x01\x00{\x01\x00\x00w\x03\x03©ôuÌÌóB\x98þf»àtK\x10\x87:¨\x0cº£\x0câü\x14éP\x86k[ì¶\x00\x00\x1aÀ/À+À\x11À\x07À\x13À\x09À\x14À[0m" 400 -
+2025-10-05 10:27:35,197 - ERROR - _internal.py:97 - 3.131.215.38 - - [05/Oct/2025 10:27:35] code 400, message Bad request syntax ('SSH-2.0-Go')
+2025-10-05 10:27:35,197 - INFO - _internal.py:97 - 3.131.215.38 - - [05/Oct/2025 10:27:35] "[31m[1mSSH-2.0-Go[0m" 400 -
+2025-10-05 10:29:13,311 - ERROR - _internal.py:97 - 3.131.215.38 - - [05/Oct/2025 10:29:13] code 400, message Bad request version ('À\x14À')
+2025-10-05 10:29:13,311 - INFO - _internal.py:97 - 3.131.215.38 - - [05/Oct/2025 10:29:13] "[31m[1m\x16\x03\x01\x00{\x01\x00\x00w\x03\x03\x89<H\x85õkÌÙëE2E\x02\x87\x1bÆ`õ³w)rï-¬y÷ûâáAã\x00\x00\x1aÀ/À+À\x11À\x07À\x13À\x09À\x14À[0m" 400 -
+2025-10-05 10:33:11,990 - ERROR - _internal.py:97 - 195.178.110.109 - - [05/Oct/2025 10:33:11] code 400, message Bad request syntax ('\x16\x03\x01\x00ê\x01\x00\x00æ\x03\x03]#\x91!|U')
+2025-10-05 10:33:11,990 - INFO - _internal.py:97 - 195.178.110.109 - - [05/Oct/2025 10:33:11] "[31m[1m\x16\x03\x01\x00ê\x01\x00\x00æ\x03\x03]#\x91!|U[0m" 400 -
+2025-10-05 10:33:12,030 - INFO - _internal.py:97 - 195.178.110.109 - - [05/Oct/2025 10:33:12] "GET / HTTP/1.1" 200 -
+2025-10-05 10:33:12,084 - INFO - _internal.py:97 - 195.178.110.109 - - [05/Oct/2025 10:33:12] "GET / HTTP/1.1" 200 -
+2025-10-05 13:29:14,606 - INFO - _internal.py:97 - 115.231.78.11 - - [05/Oct/2025 13:29:14] "GET / HTTP/1.1" 200 -
+2025-10-05 13:29:15,145 - INFO - _internal.py:97 - 115.231.78.11 - - [05/Oct/2025 13:29:15] "GET / HTTP/1.1" 200 -
+2025-10-05 13:29:15,533 - ERROR - app.py:255 - Unhandled exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+Traceback (most recent call last):
+  File "/root/.cache/pypoetry/virtualenvs/nexus-p7PCQIh--py3.12/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.cache/pypoetry/virtualenvs/nexus-p7PCQIh--py3.12/lib/python3.12/site-packages/flask/app.py", line 891, in dispatch_request
+    self.raise_routing_exception(req)
+  File "/root/.cache/pypoetry/virtualenvs/nexus-p7PCQIh--py3.12/lib/python3.12/site-packages/flask/app.py", line 500, in raise_routing_exception
+    raise request.routing_exception  # type: ignore[misc]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.cache/pypoetry/virtualenvs/nexus-p7PCQIh--py3.12/lib/python3.12/site-packages/flask/ctx.py", line 362, in match_request
+    result = self.url_adapter.match(return_rule=True)  # type: ignore
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.cache/pypoetry/virtualenvs/nexus-p7PCQIh--py3.12/lib/python3.12/site-packages/werkzeug/routing/map.py", line 629, in match
+    raise NotFound() from None
+werkzeug.exceptions.NotFound: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2025-10-05 13:29:15,533 - INFO - _internal.py:97 - 115.231.78.11 - - [05/Oct/2025 13:29:15] "[35m[1mGET /favicon.ico HTTP/1.1[0m" 500 -
+2025-10-05 13:29:17,035 - ERROR - app.py:255 - Unhandled exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+Traceback (most recent call last):
+  File "/root/.cache/pypoetry/virtualenvs/nexus-p7PCQIh--py3.12/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.cache/pypoetry/virtualenvs/nexus-p7PCQIh--py3.12/lib/python3.12/site-packages/flask/app.py", line 891, in dispatch_request
+    self.raise_routing_exception(req)
+  File "/root/.cache/pypoetry/virtualenvs/nexus-p7PCQIh--py3.12/lib/python3.12/site-packages/flask/app.py", line 500, in raise_routing_exception
+    raise request.routing_exception  # type: ignore[misc]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.cache/pypoetry/virtualenvs/nexus-p7PCQIh--py3.12/lib/python3.12/site-packages/flask/ctx.py", line 362, in match_request
+    result = self.url_adapter.match(return_rule=True)  # type: ignore
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.cache/pypoetry/virtualenvs/nexus-p7PCQIh--py3.12/lib/python3.12/site-packages/werkzeug/routing/map.py", line 629, in match
+    raise NotFound() from None
+werkzeug.exceptions.NotFound: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2025-10-05 13:29:17,035 - INFO - _internal.py:97 - 115.231.78.11 - - [05/Oct/2025 13:29:17] "[35m[1mGET /robots.txt HTTP/1.1[0m" 500 -
+2025-10-05 13:54:40,102 - INFO - _internal.py:97 - 188.166.145.131 - - [05/Oct/2025 13:54:40] "GET / HTTP/1.1" 200 -
+2025-10-05 13:54:40,159 - ERROR - app.py:255 - Unhandled exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+Traceback (most recent call last):
+  File "/root/.cache/pypoetry/virtualenvs/nexus-p7PCQIh--py3.12/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.cache/pypoetry/virtualenvs/nexus-p7PCQIh--py3.12/lib/python3.12/site-packages/flask/app.py", line 891, in dispatch_request
+    self.raise_routing_exception(req)
+  File "/root/.cache/pypoetry/virtualenvs/nexus-p7PCQIh--py3.12/lib/python3.12/site-packages/flask/app.py", line 500, in raise_routing_exception
+    raise request.routing_exception  # type: ignore[misc]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.cache/pypoetry/virtualenvs/nexus-p7PCQIh--py3.12/lib/python3.12/site-packages/flask/ctx.py", line 362, in match_request
+    result = self.url_adapter.match(return_rule=True)  # type: ignore
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.cache/pypoetry/virtualenvs/nexus-p7PCQIh--py3.12/lib/python3.12/site-packages/werkzeug/routing/map.py", line 629, in match
+    raise NotFound() from None
+werkzeug.exceptions.NotFound: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2025-10-05 13:54:40,160 - INFO - _internal.py:97 - 188.166.145.131 - - [05/Oct/2025 13:54:40] "[35m[1mGET /favicon.ico HTTP/1.1[0m" 500 -
+2025-10-05 14:40:16,031 - ERROR - _internal.py:97 - 195.178.110.109 - - [05/Oct/2025 14:40:16] code 400, message Bad HTTP/0.9 request type ('\x16\x03\x01\x00ê\x01\x00\x00æ\x03\x03+¨')
+2025-10-05 14:40:16,031 - INFO - _internal.py:97 - 195.178.110.109 - - [05/Oct/2025 14:40:16] "[31m[1m\x16\x03\x01\x00ê\x01\x00\x00æ\x03\x03+¨ b[0m" 400 -
+2025-10-05 14:40:16,069 - INFO - _internal.py:97 - 195.178.110.109 - - [05/Oct/2025 14:40:16] "GET / HTTP/1.1" 200 -
+2025-10-05 14:40:16,117 - INFO - _internal.py:97 - 195.178.110.109 - - [05/Oct/2025 14:40:16] "GET / HTTP/1.1" 200 -
+2025-10-05 14:46:10,725 - ERROR - _internal.py:97 - 2.57.121.247 - - [05/Oct/2025 14:46:10] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00/*à\x00\x00\x00\x00\x00Cookie:')
+2025-10-05 14:46:10,725 - INFO - _internal.py:97 - 2.57.121.247 - - [05/Oct/2025 14:46:10] "[31m[1m\x03\x00\x00/*à\x00\x00\x00\x00\x00Cookie: mstshash=Administr[0m" 400 -
+2025-10-05 15:31:01,746 - ERROR - _internal.py:97 - 195.178.110.15 - - [05/Oct/2025 15:31:01] code 400, message Bad request version ('À\x13À')
+2025-10-05 15:31:01,746 - INFO - _internal.py:97 - 195.178.110.15 - - [05/Oct/2025 15:31:01] "[31m[1m\x16\x03\x01\x00ê\x01\x00\x00æ\x03\x03\x18^ß\x91dè_Ú3!>=¨Xú²°\x04×¤uâ\x85\x00\x82\x80Æ\x83\x1eZ\x02ø \x9foyÔ¢yrf¿öV}ÀÉËÊZ6ïºHK r±OV\x85×²\x18s\x00&À+À/À,À0Ì©Ì¨À\x09À\x13À[0m" 400 -
+2025-10-05 15:31:01,784 - INFO - _internal.py:97 - 195.178.110.15 - - [05/Oct/2025 15:31:01] "GET / HTTP/1.1" 200 -
+2025-10-05 15:31:01,834 - INFO - _internal.py:97 - 195.178.110.15 - - [05/Oct/2025 15:31:01] "GET / HTTP/1.1" 200 -
+2025-10-05 15:36:06,081 - ERROR - _internal.py:97 - 71.6.134.234 - - [05/Oct/2025 15:36:06] code 400, message Bad request version ('**\x13\x01\x13\x02\x13\x03À+À/À,À0Ì©Ì¨À\x13À\x14\x00\x9c\x00\x9d\x00/\x005\x01\x00\x00\x7f\x00\x05\x00\x05\x01\x00\x00\x00\x00\x00')
+2025-10-05 15:36:06,082 - INFO - _internal.py:97 - 71.6.134.234 - - [05/Oct/2025 15:36:06] "[31m[1m\x16\x03\x01\x00ì\x01\x00\x00è\x03\x03p°\x7fA©Æ\x07\x1f\x96\x09~9\x81`ú@@\x06\x8f¡ú¨ÑaÉg\x7f¼ON\x04& Èº1Âb\x194¤\x89=cì\x03ðz3iT«uÞÄ\x03Xýþh¬\x8déÆe\x00 **\x13\x01\x13\x02\x13\x03À+À/À,À0Ì©Ì¨À\x13À\x14\x00\x9c\x00\x9d\x00/\x005\x01\x00\x00\x7f\x00\x05\x00\x05\x01\x00\x00\x00\x00\x00[0m" 400 -
+2025-10-05 15:41:09,674 - ERROR - _internal.py:97 - 2.57.121.247 - - [05/Oct/2025 15:41:09] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00/*à\x00\x00\x00\x00\x00Cookie:')
+2025-10-05 15:41:09,674 - INFO - _internal.py:97 - 2.57.121.247 - - [05/Oct/2025 15:41:09] "[31m[1m\x03\x00\x00/*à\x00\x00\x00\x00\x00Cookie: mstshash=Administr[0m" 400 -
+2025-10-05 15:51:34,570 - INFO - _internal.py:97 - 71.6.134.234 - - [05/Oct/2025 15:51:34] "GET / HTTP/1.1" 200 -
+2025-10-05 15:51:58,991 - ERROR - app.py:255 - Unhandled exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+Traceback (most recent call last):
+  File "/root/.cache/pypoetry/virtualenvs/nexus-p7PCQIh--py3.12/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.cache/pypoetry/virtualenvs/nexus-p7PCQIh--py3.12/lib/python3.12/site-packages/flask/app.py", line 891, in dispatch_request
+    self.raise_routing_exception(req)
+  File "/root/.cache/pypoetry/virtualenvs/nexus-p7PCQIh--py3.12/lib/python3.12/site-packages/flask/app.py", line 500, in raise_routing_exception
+    raise request.routing_exception  # type: ignore[misc]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.cache/pypoetry/virtualenvs/nexus-p7PCQIh--py3.12/lib/python3.12/site-packages/flask/ctx.py", line 362, in match_request
+    result = self.url_adapter.match(return_rule=True)  # type: ignore
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.cache/pypoetry/virtualenvs/nexus-p7PCQIh--py3.12/lib/python3.12/site-packages/werkzeug/routing/map.py", line 629, in match
+    raise NotFound() from None
+werkzeug.exceptions.NotFound: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2025-10-05 15:51:58,992 - INFO - _internal.py:97 - 71.6.134.234 - - [05/Oct/2025 15:51:58] "[35m[1mGET /favicon.ico HTTP/1.1[0m" 500 -
+2025-10-05 15:57:17,768 - INFO - _internal.py:97 - 84.196.100.134 - - [05/Oct/2025 15:57:17] "GET / HTTP/1.0" 200 -
+2025-10-05 17:49:49,389 - ERROR - _internal.py:97 - 81.29.134.51 - - [05/Oct/2025 17:49:49] code 400, message Bad request syntax ('\x16\x03\x01\x00þ\x01\x00\x00ú\x03\x03ÂÆv2g\x18')
+2025-10-05 17:49:49,390 - INFO - _internal.py:97 - 81.29.134.51 - - [05/Oct/2025 17:49:49] "[31m[1m\x16\x03\x01\x00þ\x01\x00\x00ú\x03\x03ÂÆv2g\x18[0m" 400 -
+2025-10-05 17:49:49,475 - INFO - _internal.py:97 - 81.29.134.51 - - [05/Oct/2025 17:49:49] "GET / HTTP/1.1" 200 -
+2025-10-05 17:49:49,562 - INFO - _internal.py:97 - 81.29.134.51 - - [05/Oct/2025 17:49:49] "HEAD / HTTP/1.1" 200 -
+2025-10-05 17:49:49,650 - INFO - _internal.py:97 - 81.29.134.51 - - [05/Oct/2025 17:49:49] "GET / HTTP/1.1" 200 -
+2025-10-05 17:49:49,745 - ERROR - app.py:255 - Unhandled exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+Traceback (most recent call last):
+  File "/root/.cache/pypoetry/virtualenvs/nexus-p7PCQIh--py3.12/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.cache/pypoetry/virtualenvs/nexus-p7PCQIh--py3.12/lib/python3.12/site-packages/flask/app.py", line 891, in dispatch_request
+    self.raise_routing_exception(req)
+  File "/root/.cache/pypoetry/virtualenvs/nexus-p7PCQIh--py3.12/lib/python3.12/site-packages/flask/app.py", line 500, in raise_routing_exception
+    raise request.routing_exception  # type: ignore[misc]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.cache/pypoetry/virtualenvs/nexus-p7PCQIh--py3.12/lib/python3.12/site-packages/flask/ctx.py", line 362, in match_request
+    result = self.url_adapter.match(return_rule=True)  # type: ignore
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.cache/pypoetry/virtualenvs/nexus-p7PCQIh--py3.12/lib/python3.12/site-packages/werkzeug/routing/map.py", line 629, in match
+    raise NotFound() from None
+werkzeug.exceptions.NotFound: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2025-10-05 17:49:49,746 - INFO - _internal.py:97 - 81.29.134.51 - - [05/Oct/2025 17:49:49] "[35m[1mGET /favicon.ico HTTP/1.1[0m" 500 -
+2025-10-05 18:46:27,332 - ERROR - _internal.py:97 - 195.178.110.15 - - [05/Oct/2025 18:46:27] code 400, message Bad request version ('É°ö6S')
+2025-10-05 18:46:27,332 - INFO - _internal.py:97 - 195.178.110.15 - - [05/Oct/2025 18:46:27] "[31m[1m\x16\x03\x01\x00ê\x01\x00\x00æ\x03\x039\x09+Éé\x1eÉ°ö6S[0m" 400 -
+2025-10-05 18:46:27,371 - INFO - _internal.py:97 - 195.178.110.15 - - [05/Oct/2025 18:46:27] "GET / HTTP/1.1" 200 -
+2025-10-05 18:46:27,424 - INFO - _internal.py:97 - 195.178.110.15 - - [05/Oct/2025 18:46:27] "GET / HTTP/1.1" 200 -
+2025-10-05 20:28:35,954 - ERROR - _internal.py:97 - 195.178.110.15 - - [05/Oct/2025 20:28:35] code 400, message Bad request version ('AnÍÃ<\x15\x01Ã¤¡')
+2025-10-05 20:28:35,955 - INFO - _internal.py:97 - 195.178.110.15 - - [05/Oct/2025 20:28:35] "[31m[1m\x16\x03\x01\x00ê\x01\x00\x00æ\x03\x03}\x0cC\x96cµ#Ý\x1f³\x9dmü>\x96\x06àÖ\x84Á57-b,Ôy2º\x113x AnÍÃ<\x15\x01Ã¤¡[0m" 400 -
+2025-10-05 20:28:35,993 - INFO - _internal.py:97 - 195.178.110.15 - - [05/Oct/2025 20:28:35] "GET / HTTP/1.1" 200 -
+2025-10-05 20:28:36,042 - INFO - _internal.py:97 - 195.178.110.15 - - [05/Oct/2025 20:28:36] "GET / HTTP/1.1" 200 -
+2025-10-05 20:37:14,193 - INFO - _internal.py:97 - 176.9.66.43 - - [05/Oct/2025 20:37:14] "GET /health HTTP/1.1" 200 -
+2025-10-05 20:51:16,787 - INFO - _internal.py:97 - 205.210.31.207 - - [05/Oct/2025 20:51:16] "GET / HTTP/1.1" 200 -

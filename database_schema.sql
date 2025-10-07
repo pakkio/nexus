@@ -93,11 +93,23 @@ CREATE TABLE IF NOT EXISTS Storyboards (
 
 -- Table for storing locations
 CREATE TABLE IF NOT EXISTS Locations (
-    id VARCHAR(255) NOT NULL PRIMARY KEY,
+    id VARCHAR(255) PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
-    area_type VARCHAR(255) NULL,
-    access_level VARCHAR(255) NULL,
-    description TEXT NULL,
+    area_type VARCHAR(100),
+    access_level VARCHAR(100),
+    setting_description TEXT,
+    veil_connection TEXT,
+    primary_npcs TEXT,
+    secondary_npcs TEXT,
+    npc_density VARCHAR(100),
+    interactive_objects TEXT,
+    atmospheric_elements TEXT,
+    location_purpose TEXT,
+    special_properties TEXT,
+    sl_environment TEXT,
+    connected_locations TEXT,
+    quest_relevance TEXT,
+    storyboard_id INT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 

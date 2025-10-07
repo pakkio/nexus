@@ -1,0 +1,110 @@
+2025-10-07 14:29:33,709 - INFO - app.py:260 - Initializing GameSystem with mockup=False, model=openai/gpt-4o-mini
+2025-10-07 14:29:36,146 - INFO - app.py:273 - Initialized GameSystem with mockup=False, model=openai/gpt-4o-mini
+2025-10-07 14:29:36,146 - INFO - app.py:1495 - Starting Nexus Flask API on port 5000
+DEBUG (command_handler_utils): Successfully imported REAL hint_manager and player_profile_manager.
+[2m[WiseGuideSelector] Attempting to determine wise guide...[0m
+[2m[WiseGuideSelector] LLM selected 'Erasmus' as the wise guide.[0m
+[GameSystem Manager Init] Wise guide selected: Erasmus
+ * Serving Flask app 'app'
+ * Debug mode: off
+2025-10-07 14:29:36,165 - INFO - _internal.py:96 - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://212.227.64.143:5000
+2025-10-07 14:29:36,165 - INFO - _internal.py:96 - [33mPress CTRL+C to quit[0m
+2025-10-07 14:29:50,270 - INFO - app.py:236 - Loaded NPC: forest.elira
+2025-10-07 14:29:50,271 - INFO - app.py:236 - Loaded NPC: city.cassian
+2025-10-07 14:29:50,273 - INFO - app.py:236 - Loaded NPC: sanctumofwhispers.lyra
+2025-10-07 14:29:50,275 - INFO - app.py:236 - Loaded NPC: city.theron
+2025-10-07 14:29:50,277 - INFO - app.py:236 - Loaded NPC: testarea.teleporter
+2025-10-07 14:29:50,279 - INFO - app.py:236 - Loaded NPC: liminalvoid.erasmus
+2025-10-07 14:29:50,281 - INFO - app.py:236 - Loaded NPC: mountain.boros
+2025-10-07 14:29:50,283 - INFO - app.py:236 - Loaded NPC: ancientruins.syra
+2025-10-07 14:29:50,286 - INFO - app.py:236 - Loaded NPC: tavern.jorin
+2025-10-07 14:29:50,288 - INFO - app.py:236 - Loaded NPC: city.irenna
+2025-10-07 14:29:50,290 - INFO - app.py:236 - Loaded NPC: nexusofpaths.meridia
+2025-10-07 14:29:50,291 - INFO - app.py:236 - Loaded NPC: village.garin
+2025-10-07 14:29:50,294 - INFO - app.py:236 - Loaded NPC: village.mara
+2025-10-07 14:29:50,294 - INFO - app.py:241 - Preloaded 13 NPCs
+2025-10-07 14:29:50,294 - INFO - _internal.py:96 - 127.0.0.1 - - [07/Oct/2025 14:29:50] "POST /reset HTTP/1.1" 200 -
+2025-10-07 14:29:53,897 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for MaraTest
+2025-10-07 14:29:53,897 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for MaraTest
+2025-10-07 14:29:53,902 - INFO - app.py:877 - Generated SL commands: '[lookup=fuoco_forgia;llSetText=progetti_strumenti;emote=asciugare_sudore;anim=lavorare_forgia]' (teleport_offered=False)
+2025-10-07 14:29:53,902 - INFO - _internal.py:96 - 127.0.0.1 - - [07/Oct/2025 14:29:53] "POST /api/chat HTTP/1.1" 200 -
+2025-10-07 14:29:57,440 - INFO - app.py:877 - Generated SL commands: '[lookup=collezione_semi;emote=curare_piante;anim=preparare_pozioni]' (teleport_offered=False)
+2025-10-07 14:29:57,440 - INFO - _internal.py:96 - 127.0.0.1 - - [07/Oct/2025 14:29:57] "POST /api/chat HTTP/1.1" 200 -
+2025-10-07 14:29:57,823 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for MaraTest in 3923ms
+2025-10-07 14:29:59,452 - INFO - game_system_api.py:166 - [CONTEXT-CACHE] Refreshing NPCs list for MaraTest
+2025-10-07 14:29:59,455 - INFO - game_system_api.py:210 - [CONTEXT-CACHE] Context preloaded in 3ms for MaraTest
+2025-10-07 14:29:59,455 - INFO - command_processor.py:71 - [NLP-SPECULATIVE] Starting interpretation for: 'Salve, potresti darmi una dell...'
+2025-10-07 14:30:00,657 - INFO - command_processor.py:152 - [DIALOGUE-SPECULATIVE] Starting dialogue generation for: 'Salve, potresti darmi una dell...'
+2025-10-07 14:30:00,657 - INFO - command_processor.py:308 - [PARALLEL-PROCESSING] NLP timeout, started dialogue thread anyway
+2025-10-07 14:30:02,908 - INFO - command_processor.py:102 - [NLP-SPECULATIVE] Completed in 3452ms: is_command=False, confidence=0.90
+2025-10-07 14:30:02,913 - INFO - command_processor.py:184 - [DIALOGUE-SPECULATIVE] Completed in 2255ms for NPC: Mara
+2025-10-07 14:30:02,913 - INFO - command_processor.py:413 - [PARALLEL-PROCESSING] NLP timeout, using dialogue result
+2025-10-07 14:30:02,913 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for MaraTest
+2025-10-07 14:30:02,914 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for MaraTest
+2025-10-07 14:30:02,918 - INFO - app.py:877 - Generated SL commands: '[lookup=mortaio_pestello;emote=cura_gentile;anim=esaminare_piante]' (teleport_offered=False)
+2025-10-07 14:30:02,918 - INFO - _internal.py:96 - 127.0.0.1 - - [07/Oct/2025 14:30:02] "POST /api/chat HTTP/1.1" 200 -
+2025-10-07 14:30:05,936 - INFO - game_system_api.py:210 - [CONTEXT-CACHE] Context preloaded in 0ms for MaraTest
+2025-10-07 14:30:05,936 - INFO - command_processor.py:71 - [NLP-SPECULATIVE] Starting interpretation for: 'Io non ho crediti, Mara...'
+2025-10-07 14:30:06,244 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for MaraTest in 3328ms
+2025-10-07 14:30:07,137 - INFO - command_processor.py:152 - [DIALOGUE-SPECULATIVE] Starting dialogue generation for: 'Io non ho crediti, Mara...'
+2025-10-07 14:30:07,138 - INFO - command_processor.py:308 - [PARALLEL-PROCESSING] NLP timeout, started dialogue thread anyway
+2025-10-07 14:30:08,866 - INFO - command_processor.py:102 - [NLP-SPECULATIVE] Completed in 2929ms: is_command=False, confidence=0.90
+2025-10-07 14:30:09,860 - INFO - command_processor.py:184 - [DIALOGUE-SPECULATIVE] Completed in 2721ms for NPC: Mara
+2025-10-07 14:30:09,860 - INFO - command_processor.py:413 - [PARALLEL-PROCESSING] NLP timeout, using dialogue result
+2025-10-07 14:30:09,861 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for MaraTest
+2025-10-07 14:30:09,862 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for MaraTest
+2025-10-07 14:30:09,866 - INFO - app.py:877 - Generated SL commands: '[lookup=pozione_guarigione;emote=sorriso_compassionevole;anim=curare_giardino]' (teleport_offered=False)
+2025-10-07 14:30:09,866 - INFO - _internal.py:96 - 127.0.0.1 - - [07/Oct/2025 14:30:09] "POST /api/chat HTTP/1.1" 200 -
+2025-10-07 14:30:12,889 - INFO - app.py:877 - Generated SL commands: '[lookup=pozione_guarigione;emote=gesto_protettivo;anim=esaminare_piante]' (teleport_offered=False)
+2025-10-07 14:30:12,889 - INFO - _internal.py:96 - 127.0.0.1 - - [07/Oct/2025 14:30:12] "POST /api/chat HTTP/1.1" 200 -
+2025-10-07 14:30:13,420 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for MaraTest in 3556ms
+2025-10-07 14:31:18,607 - INFO - app.py:236 - Loaded NPC: forest.elira
+2025-10-07 14:31:18,609 - INFO - app.py:236 - Loaded NPC: city.cassian
+2025-10-07 14:31:18,611 - INFO - app.py:236 - Loaded NPC: sanctumofwhispers.lyra
+2025-10-07 14:31:18,614 - INFO - app.py:236 - Loaded NPC: city.theron
+2025-10-07 14:31:18,616 - INFO - app.py:236 - Loaded NPC: testarea.teleporter
+2025-10-07 14:31:18,619 - INFO - app.py:236 - Loaded NPC: liminalvoid.erasmus
+2025-10-07 14:31:18,622 - INFO - app.py:236 - Loaded NPC: mountain.boros
+2025-10-07 14:31:18,624 - INFO - app.py:236 - Loaded NPC: ancientruins.syra
+2025-10-07 14:31:18,626 - INFO - app.py:236 - Loaded NPC: tavern.jorin
+2025-10-07 14:31:18,629 - INFO - app.py:236 - Loaded NPC: city.irenna
+2025-10-07 14:31:18,631 - INFO - app.py:236 - Loaded NPC: nexusofpaths.meridia
+2025-10-07 14:31:18,633 - INFO - app.py:236 - Loaded NPC: village.garin
+2025-10-07 14:31:18,636 - INFO - app.py:236 - Loaded NPC: village.mara
+2025-10-07 14:31:18,637 - INFO - app.py:241 - Preloaded 13 NPCs
+2025-10-07 14:31:18,637 - INFO - _internal.py:96 - 127.0.0.1 - - [07/Oct/2025 14:31:18] "POST /reset HTTP/1.1" 200 -
+2025-10-07 14:31:23,634 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for MaraFinal
+2025-10-07 14:31:23,634 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for MaraFinal
+2025-10-07 14:31:23,639 - INFO - app.py:877 - Generated SL commands: '[lookup=incudine;llSetText=progetti_strumenti;emote=sorriso_orgoglioso;anim=temprare_acciaio]' (teleport_offered=False)
+2025-10-07 14:31:23,640 - INFO - _internal.py:96 - 127.0.0.1 - - [07/Oct/2025 14:31:23] "POST /api/chat HTTP/1.1" 200 -
+2025-10-07 14:31:27,349 - INFO - app.py:877 - Generated SL commands: '[lookup=giocatore;emote=gesto_protettivo;anim=raccogliere_erbe]' (teleport_offered=False)
+2025-10-07 14:31:27,349 - INFO - _internal.py:96 - 127.0.0.1 - - [07/Oct/2025 14:31:27] "POST /api/chat HTTP/1.1" 200 -
+2025-10-07 14:31:27,993 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for MaraFinal in 4355ms
+2025-10-07 14:31:29,361 - INFO - game_system_api.py:166 - [CONTEXT-CACHE] Refreshing NPCs list for MaraFinal
+2025-10-07 14:31:29,364 - INFO - game_system_api.py:210 - [CONTEXT-CACHE] Context preloaded in 3ms for MaraFinal
+2025-10-07 14:31:29,365 - INFO - command_processor.py:71 - [NLP-SPECULATIVE] Starting interpretation for: 'Potresti darmi una pozione?...'
+2025-10-07 14:31:30,565 - INFO - command_processor.py:152 - [DIALOGUE-SPECULATIVE] Starting dialogue generation for: 'Potresti darmi una pozione?...'
+2025-10-07 14:31:30,565 - INFO - command_processor.py:308 - [PARALLEL-PROCESSING] NLP timeout, started dialogue thread anyway
+2025-10-07 14:31:32,168 - INFO - command_processor.py:184 - [DIALOGUE-SPECULATIVE] Completed in 1602ms for NPC: Mara
+2025-10-07 14:31:32,168 - INFO - command_processor.py:413 - [PARALLEL-PROCESSING] NLP timeout, using dialogue result
+2025-10-07 14:31:32,168 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for MaraFinal
+2025-10-07 14:31:32,168 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for MaraFinal
+2025-10-07 14:31:32,173 - INFO - app.py:877 - Generated SL commands: '[lookup=collezione_semi;emote=movimenti_mescolamento;anim=esaminare_piante]' (teleport_offered=False)
+2025-10-07 14:31:32,174 - INFO - _internal.py:96 - 127.0.0.1 - - [07/Oct/2025 14:31:32] "POST /api/chat HTTP/1.1" 200 -
+2025-10-07 14:31:32,184 - INFO - command_processor.py:102 - [NLP-SPECULATIVE] Completed in 2819ms: is_command=False, confidence=0.90
+2025-10-07 14:31:35,190 - INFO - game_system_api.py:210 - [CONTEXT-CACHE] Context preloaded in 0ms for MaraFinal
+2025-10-07 14:31:35,191 - INFO - command_processor.py:71 - [NLP-SPECULATIVE] Starting interpretation for: 'Non ho crediti...'
+2025-10-07 14:31:36,391 - INFO - command_processor.py:152 - [DIALOGUE-SPECULATIVE] Starting dialogue generation for: 'Non ho crediti...'
+2025-10-07 14:31:36,391 - INFO - command_processor.py:308 - [PARALLEL-PROCESSING] NLP timeout, started dialogue thread anyway
+2025-10-07 14:31:37,625 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for MaraFinal in 5454ms
+2025-10-07 14:31:38,044 - INFO - command_processor.py:102 - [NLP-SPECULATIVE] Completed in 2853ms: is_command=False, confidence=0.90
+2025-10-07 14:31:38,798 - INFO - command_processor.py:184 - [DIALOGUE-SPECULATIVE] Completed in 2406ms for NPC: Mara
+2025-10-07 14:31:38,798 - INFO - command_processor.py:413 - [PARALLEL-PROCESSING] NLP timeout, using dialogue result
+2025-10-07 14:31:38,798 - INFO - game_system_api.py:131 - [PROFILE-ASYNC] Starting profile analysis for MaraFinal
+2025-10-07 14:31:38,799 - INFO - game_system_api.py:305 - [PROFILE-ASYNC] Started background thread for MaraFinal
+2025-10-07 14:31:38,803 - INFO - app.py:877 - Generated SL commands: '[lookup=mortaio_pestello;emote=ricerca_memoria;anim=preparare_pozioni]' (teleport_offered=False)
+2025-10-07 14:31:38,803 - INFO - _internal.py:96 - 127.0.0.1 - - [07/Oct/2025 14:31:38] "POST /api/chat HTTP/1.1" 200 -
+2025-10-07 14:31:44,734 - INFO - game_system_api.py:150 - [PROFILE-ASYNC] Profile updated for MaraFinal in 5932ms

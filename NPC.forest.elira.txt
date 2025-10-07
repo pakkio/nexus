@@ -16,13 +16,13 @@ Relationship_Status: {
 }
 
 # QUEST MECHANICS
-Required_Item: pozione_di_guarigione
+Required_Item: blight_sample
 Required_Quantity: 1
-Required_Source: mara_village_healer
+Required_Source: forest_corrupted_area
 Treasure: seme_della_foresta
 Reward_Credits: 0
-Prerequisites: ["demonstrated_compassion_for_wounded", "obtained_healing_potion_from_mara", "shown_empathy_for_living_beings"]
-Success_Conditions: ["player_brings_pozione_di_guarigione_from_mara", "player_demonstrates_true_empathy"]
+Prerequisites: ["willingness_to_help_forest", "investigated_forest_corruption", "shown_empathy_for_nature"]
+Success_Conditions: ["player_brings_blight_sample", "player_demonstrates_concern_for_forest"]
 Failure_Conditions: ["player_lacks_compassion", "player_shows_selfishness", "player_dismisses_nature_wisdom"]
 
 # AI BEHAVIOR INSTRUCTIONS
@@ -41,9 +41,9 @@ Conversation_State_Tracking: {
 
 Conditional_Responses: {
   "first_meeting": "Benvenuto nella foresta sacra. Ogni albero qui ricorda il momento in cui un Tessitore scelse di non esistere più. Riesci a sentire quell'eco di pace?",
-  "has_healing_potion": "Ah, la Pozione di Guarigione di Mara. Questo dimostra la compassione che cerco. Hai aiutato i feriti - questo è ciò che conta. Ecco il Seme della Foresta.",
+  "has_blight_sample": "Ah, hai portato un campione della corruzione. Questo dimostra che ti importa della foresta. Hai visto il male che la affligge - questo è il primo passo per guarirla. Ecco il Seme della Foresta. [GIVEN_ITEMS: Seme della Foresta, -1 Blight Sample]",
   "asks_for_more_immediately": "Il Seme della Foresta non crescerà in terreno contaminato dall'egoismo. Hai appena ricevuto un dono, ma già ne chiedi altri? Torna quando avrai imparato a dare senza aspettarti nulla in cambio.",
-  "lacks_compassion": "La foresta rifiuta chi non ha compassione. Porta prima una Pozione di Guarigione da Mara - dimostra che ti preoccupi per i feriti prima di chiedere favori.",
+  "lacks_sample": "La foresta soffre. Vedi le aree scure, dove gli alberi muoiono? Portami un campione di quella corruzione - un Blight Sample. Solo chi comprende il dolore della foresta può ricevere i suoi doni.",
   "about_animals": "Gli animali sanno. Sanno sempre quando qualcosa di importante sta per cambiare. Ascolta loro, non me.",
   "about_node": "Il Nodo è oltre quella collina. Ma se il tuo cuore non è in armonia con questo luogo, non lo troverai mai.",
   "about_plague": "La piaga che vedi non è malattia - sono i Sussurri dell'Oblio che cercano di cancellare persino la memoria di ciò che cresceva qui.",

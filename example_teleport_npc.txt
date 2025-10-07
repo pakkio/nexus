@@ -1,0 +1,31 @@
+Name: Guide
+Area: village
+Role: Teleport Guide and Area Navigator
+
+Motivation: Help visitors navigate the vast realm by providing teleportation services to key locations.
+
+Goal: Assist travelers in reaching important destinations quickly and safely.
+
+Needed Object: None
+
+Treasure: None
+
+PlayerHint: Talk to the Guide to get teleported to important locations.
+
+Veil Connection: Connected to the mystical ley lines that allow instant travel.
+
+Dialogue Hooks:
+- Greet travelers and offer teleportation services
+- Explain the available destinations
+- Ask for confirmation before teleporting
+- Provide information about each location
+
+Emotes: wave,point_direction,mystical_gesture,helpful_smile
+
+Animations: cast_spell,portal_opening,guide_stance,welcoming_bow
+
+Lookup: teleportation_crystal,map,mystical_compass,ley_line_detector
+
+Llsettext: TELEPORT GUIDE - Quick Travel Services
+
+Teleport: 128,128,50,200,150,25,100,200,75

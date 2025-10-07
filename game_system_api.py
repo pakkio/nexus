@@ -22,15 +22,7 @@ from wise_guide_selector import get_wise_guide_npc_name
 # Configure logger for async profile updates
 logger = logging.getLogger(__name__)
 
-try:
-    from terminal_formatter import TerminalFormatter
-except ImportError:
-    class TerminalFormatter:
-        RED = ""; RESET = ""; BOLD = ""; YELLOW = ""; DIM = ""; MAGENTA = ""; CYAN = ""; BRIGHT_CYAN = ""; BG_GREEN = ""; BLACK = ""; BRIGHT_MAGENTA = ""; BRIGHT_GREEN = ""; BRIGHT_YELLOW = ""; ITALIC = "";
-        @staticmethod
-        def format_terminal_text(text, width=80): return text
-        @staticmethod
-        def get_terminal_width(): return 80
+from terminal_formatter import TerminalFormatter
 
 # Helper to remove ANSI codes for LSL output
 def clean_ansi_codes(text: str) -> str:
@@ -245,6 +237,8 @@ class _SinglePlayerGameSystem:
         )
 
     def process_player_input(self, player_input: str, skip_profile_update: bool = False) -> Dict[str, Any]:
+        if self.game_state is None:
+            self.game_state = {}
         self.game_state['system_messages_buffer'] = []
         self.output_buffer = []
         self.game_state['npc_made_new_response_this_turn'] = False
@@ -271,6 +265,8 @@ class _SinglePlayerGameSystem:
         sys.stdout = CaptureStdout(self.output_buffer)
 
         try:
+            if self.game_state is None:
+                self.game_state = {}
             result = command_processor.process_input_revised(player_input, self.game_state)
             if result is None:
                 self.game_state['system_messages_buffer'].append("Error: Command processor returned None")
@@ -407,6 +403,25 @@ class _SinglePlayerGameSystem:
                                             self.game_state['player_info']['credits'] = current_credits + credits_given
                                     except Exception as e:
                                         logger.error(f"[ITEM-PROCESSING] Failed to update credits: {e}")
+
+                # Check for [OFFER_TELEPORT] tag and store flag
+                # Also auto-detect teleport offers based on keywords
+                teleport_offered = False
+                if final_npc_dialogue_for_return:
+                    if "[OFFER_TELEPORT]" in final_npc_dialogue_for_return:
+                        logger.info(f"[TELEPORT] Detected teleport offer via [OFFER_TELEPORT] tag")
+                        final_npc_dialogue_for_return = final_npc_dialogue_for_return.replace("[OFFER_TELEPORT]", "").strip()
+                        teleport_offered = True
+                    else:
+                        # Fallback: Auto-detect teleport intent from keywords
+                        teleport_keywords = ["teletrasport", "ti porto", "partiamo", "andiamo al", "vuoi venire"]
+                        response_lower = final_npc_dialogue_for_return.lower()
+                        if any(keyword in response_lower for keyword in teleport_keywords):
+                            logger.info(f"[TELEPORT] Auto-detected teleport offer from keywords in response")
+                            teleport_offered = True
+
+                self.game_state['teleport_offered_this_turn'] = teleport_offered
+
             elif self.game_state['debug_mode']:
                  self.game_state['system_messages_buffer'].append("[Debug] No new NPC response marked this turn for API return construction.")
 

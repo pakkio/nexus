@@ -25,14 +25,15 @@ except ImportError as e:
         def get_terminal_width(): return 80
 
 
-def generate_sl_command_prefix(npc_data: Optional[Dict[str, Any]]) -> str:
+def generate_sl_command_prefix(npc_data: Optional[Dict[str, Any]], include_teleport: bool = False) -> str:
     """Generate Second Life command prefix for NPC responses.
-    
+
     Args:
         npc_data: Dictionary containing NPC data with SL fields
-        
+        include_teleport: If True, includes teleport coordinates from NPC data
+
     Returns:
-        String in format [lookup=?;llSetText=?;emote=?;anim=?] or empty string if no NPC data
+        String in format [lookup=?;llSetText=?;emote=?;anim=?;teleport=?] or empty string if no NPC data
     """
     if not npc_data:
         return ""
@@ -48,28 +49,34 @@ def generate_sl_command_prefix(npc_data: Optional[Dict[str, Any]]) -> str:
     emotes_list = [e.strip() for e in emotes_str.split(',') if e.strip()] if emotes_str else []
     animations_list = [a.strip() for a in animations_str.split(',') if a.strip()] if animations_str else []
     lookup_list = [l.strip() for l in lookup_str.split(',') if l.strip()] if lookup_str else []
-    teleport_list = [t.strip() for t in teleport_str.split(',') if t.strip()] if teleport_str else []
+    llsettext_list = [t.strip() for t in llsettext_str.split(',') if t.strip()] if llsettext_str else []
 
     # Select random values from each category
     selected_emote = random.choice(emotes_list) if emotes_list else ""
     selected_animation = random.choice(animations_list) if animations_list else ""
     selected_lookup = random.choice(lookup_list) if lookup_list else ""
-    selected_teleport = random.choice(teleport_list) if teleport_list else ""
+    selected_llsettext = random.choice(llsettext_list) if llsettext_list else ""
 
-    # For llsettext, we'll use the full string as it's more descriptive
-    selected_llsettext = llsettext_str
+    # Teleport: Only include if explicitly requested via include_teleport flag
+    # The entire teleport string is treated as one coordinate set (x,y,z format)
+    selected_teleport = teleport_str.strip() if include_teleport and teleport_str else ""
     
-    # Build the command prefix
-    if any([selected_lookup, selected_llsettext, selected_emote, selected_animation, selected_teleport]):
-        command_parts = [
-            f"lookup={selected_lookup}",
-            f"llSetText={selected_llsettext}",
-            f"emote={selected_emote}",
-            f"anim={selected_animation}",
-            f"teleport={selected_teleport}"
-        ]
+    # Build the command prefix - only include non-empty fields
+    command_parts = []
+    if selected_lookup:
+        command_parts.append(f"lookup={selected_lookup}")
+    if selected_llsettext:
+        command_parts.append(f"llSetText={selected_llsettext}")
+    if selected_emote:
+        command_parts.append(f"emote={selected_emote}")
+    if selected_animation:
+        command_parts.append(f"anim={selected_animation}")
+    if selected_teleport:
+        command_parts.append(f"teleport={selected_teleport}")
+
+    if command_parts:
         return f"[{';'.join(command_parts)}]"
-    
+
     return ""
 
 
