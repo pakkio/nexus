@@ -49,7 +49,24 @@ def handle_profile(args_str: str, state: Dict[str, Any]) -> HandlerResult:
                 print(f"  {TF.DIM}- {m.replace('_', ' ').capitalize()}{TF.RESET}")
         else:
             print(f"  {TF.DIM}(Primary quest focus assumed){TF.RESET}")
-            
+
+        # === Achievements Section ===
+        achievements = profile_data.get("achievements", [])
+        print(f"\n{TF.YELLOW}Achievements:{TF.RESET}")
+        if achievements:
+            for ach in achievements[-5:]:
+                print(f"  {TF.DIM}- {ach}{TF.RESET}")
+        else:
+            print(f"  {TF.DIM}(No achievements yet){TF.RESET}")
+
+        # === AI Considerations Section ===
+        ai_considerations = profile_data.get("llm_analysis_notes", "")
+        print(f"\n{TF.YELLOW}AI Considerations (Psychological Summary):{TF.RESET}")
+        if ai_considerations:
+            print(f"  {TF.DIM}{ai_considerations[:300]}{'...' if len(ai_considerations) > 300 else ''}{TF.RESET}")
+        else:
+            print(f"  {TF.DIM}(No AI summary available yet){TF.RESET}")
+
         # Debug mode: show philosophical alignment and LLM analysis details
         if debug_mode:
             print(f"\n{TF.BRIGHT_CYAN}{TF.BOLD}--- DEBUG INFO ---{TF.RESET}")
