@@ -172,7 +172,8 @@ def _speculative_dialogue_generation(user_input: str, state: Dict[str, Any], res
       current_npc_name_for_placeholder=npc_name_for_prompt,
       stream=False,  # Never stream in speculative mode to avoid overlapping output
       collect_stats=True,
-      npc_data=current_npc
+      npc_data=current_npc,
+      game_session_state=state # Pass game session state for dynamic system prompt regeneration
     )
 
     # Final check for cancellation before storing result
@@ -246,6 +247,9 @@ command_handlers_map: Dict[str, Callable] = {
 }
 
 def process_input_revised(user_input: str, state: Dict[str, Any]) -> Dict[str, Any]:
+  # DEBUG: Track brief_mode state at start of command processing
+  brief_mode_at_start = state.get('brief_mode', False)
+  
   state['npc_made_new_response_this_turn'] = False
   if not user_input.strip():
     return state
@@ -485,7 +489,8 @@ def process_input_revised(user_input: str, state: Dict[str, Any]) -> Dict[str, A
           current_npc.get('name', 'NPC'), # Original NPC name for placeholder logic in ask()
           state.get('use_stream', True),
           True, # collect_stats
-          current_npc # Pass NPC data for SL command generation
+          current_npc, # Pass NPC data for SL command generation
+          state # Pass game session state for dynamic system prompt regeneration
         )
         if not _response_text.strip() and not (stats and stats.get("error")):
           dim = getattr(TF, 'DIM', '') if TF else ''

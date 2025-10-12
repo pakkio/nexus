@@ -204,6 +204,7 @@ def build_system_prompt(
 
     # Brief mode - concise responses
     brief_mode = game_session_state.get('brief_mode', False)
+    
     if brief_mode:
         prompt_lines.append("")
         prompt_lines.append("=" * 80)
@@ -472,12 +473,21 @@ def load_and_prepare_conversation(
             return None, None
 
         # System prompt is now built using game_session_state
-        system_prompt = build_system_prompt(
-            npc_data, story, TF_class,
-            game_session_state=game_session_state, # Pass state
-            conversation_summary_for_guide_context=conversation_summary_for_guide_context,
-            llm_wrapper_func_for_distill=llm_wrapper_for_profile_distillation_func
-        )
+        # Use enhanced prompt for regular NPCs (not wise guide/hint mode)
+        from chat_manager import build_npc_system_prompt
+        is_wise_guide = False
+        wise_guide_name = game_session_state.get('wise_guide_npc_name')
+        if wise_guide_name and npc_data.get('name', '').lower() == wise_guide_name.lower():
+            is_wise_guide = True
+        if not is_wise_guide:
+            system_prompt = build_npc_system_prompt(game_session_state, npc_data.get('name'))
+        else:
+            system_prompt = build_system_prompt(
+                npc_data, story, TF_class,
+                game_session_state=game_session_state, # Pass state
+                conversation_summary_for_guide_context=conversation_summary_for_guide_context,
+                llm_wrapper_func_for_distill=llm_wrapper_for_profile_distillation_func
+            )
 
         chat_session = ChatSession_class(model_name=model_name, model_type=model_type)
         chat_session.set_system_prompt(system_prompt)

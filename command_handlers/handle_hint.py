@@ -145,7 +145,9 @@ def handle_hint(state: Dict[str, Any]) -> Dict[str, Any]:
         initial_hint_prompt_to_guide,
         wise_guide_npc_name,
         state['use_stream'],
-        True # collect_stats
+        True, # collect_stats
+        None, # npc_data not available for guide sessions
+        state  # Pass game session state for dynamic system prompt regeneration
     )
     state['npc_made_new_response_this_turn'] = True
 

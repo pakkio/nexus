@@ -956,7 +956,7 @@ class DbManager:
     # --- Player State & Credits Management ---
     def load_player_state(self, player_id: str) -> Dict[str, Any]:
         default_credits = 220
-        default_state_data = {'current_area': None, 'current_npc_code': None, 'plot_flags': {}, 'credits': default_credits}
+        default_state_data = {'current_area': None, 'current_npc_code': None, 'plot_flags': {}, 'credits': default_credits, 'brief_mode': False}
         if not player_id: return copy.deepcopy(default_state_data)
 
         loaded_state_data = None
@@ -969,7 +969,8 @@ class DbManager:
                         'current_area': loaded_raw.get('current_area'),
                         'current_npc_code': loaded_raw.get('current_npc_code'),
                         'plot_flags': loaded_raw.get('plot_flags', {}),
-                        'credits': int(loaded_raw.get('credits', default_credits))
+                        'credits': int(loaded_raw.get('credits', default_credits)),
+                        'brief_mode': loaded_raw.get('brief_mode', False)
                     }
                 except Exception as e:
                     # print(f"{TerminalFormatter.YELLOW}Warning: Error loading state file {state_file}: {e}. Using defaults.{TerminalFormatter.RESET}")
@@ -981,7 +982,7 @@ class DbManager:
             conn = None; cursor = None
             try:
                 conn = self.connect(); cursor = conn.cursor(dictionary=True)
-                cursor.execute("SELECT current_area, current_npc_code, plot_flags, credits FROM PlayerState WHERE player_id = %s", (player_id,))
+                cursor.execute("SELECT current_area, current_npc_code, plot_flags, credits, brief_mode FROM PlayerState WHERE player_id = %s", (player_id,))
                 result = cursor.fetchone()
                 if result:
                     plot_flags_json = result.get('plot_flags', '{}')
@@ -989,7 +990,8 @@ class DbManager:
                         'current_area': result.get('current_area'),
                         'current_npc_code': result.get('current_npc_code'),
                         'plot_flags': json.loads(plot_flags_json) if isinstance(plot_flags_json, str) else (plot_flags_json or {}),
-                        'credits': int(result.get('credits', default_credits))
+                        'credits': int(result.get('credits', default_credits)),
+                        'brief_mode': result.get('brief_mode', False)
                     }
                 else:
                     self.save_player_state(player_id, default_state_data)
@@ -1012,7 +1014,8 @@ class DbManager:
             'current_area': state_data.get('current_area'),
             'current_npc_code': npc_code_to_save,
             'plot_flags': state_data.get('plot_flags', {}),
-            'credits': int(credits_to_save)
+            'credits': int(credits_to_save),
+            'brief_mode': state_data.get('brief_mode', False)
         }
         if self.use_mockup:
             state_file = self.player_state_file_template.format(player_id=player_id)
@@ -1025,14 +1028,14 @@ class DbManager:
             try:
                 conn = self.connect(); cursor = conn.cursor()
                 sql = """
-                      INSERT INTO PlayerState (player_id, current_area, current_npc_code, plot_flags, credits, last_seen)
-                      VALUES (%s, %s, %s, %s, %s, NOW())
+                      INSERT INTO PlayerState (player_id, current_area, current_npc_code, plot_flags, credits, brief_mode, last_seen)
+                      VALUES (%s, %s, %s, %s, %s, %s, NOW())
                           ON DUPLICATE KEY UPDATE
                                                current_area = VALUES(current_area), current_npc_code = VALUES(current_npc_code),
-                                               plot_flags = VALUES(plot_flags), credits = VALUES(credits), last_seen = NOW(); \
+                                               plot_flags = VALUES(plot_flags), credits = VALUES(credits), brief_mode = VALUES(brief_mode), last_seen = NOW(); \
                       """
                 plot_flags_json = json.dumps(data_to_persist['plot_flags'])
-                values = (player_id, data_to_persist['current_area'], data_to_persist['current_npc_code'], plot_flags_json, data_to_persist['credits'])
+                values = (player_id, data_to_persist['current_area'], data_to_persist['current_npc_code'], plot_flags_json, data_to_persist['credits'], data_to_persist['brief_mode'])
                 cursor.execute(sql, values); conn.commit()
             except Exception as e:
                 # print(f"{TerminalFormatter.RED}DB error saving state for P:{player_id}: {e}{TerminalFormatter.RESET}")

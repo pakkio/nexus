@@ -171,9 +171,45 @@ def format_stats(stats: Optional[Dict[str, Any]], model_type: str = "dialogue") 
 
 
 def build_npc_system_prompt(game_session_state, npc_name=None):
-    # IMPORTANT: Only provide full narrative context for wise guide hints, not regular NPC conversations
-    # Regular NPCs should use their own character files, not the 70KB narrative journey
-    return ""
+    """Build system prompt for regular NPCs (not wise guides)"""
+    # Import here to avoid circular import
+    from session_utils import build_system_prompt
+    
+    # For regular NPCs, we need to get their data and build a basic prompt
+    # This is a simplified version that focuses on brief mode handling
+    
+    prompt_lines = []
+    
+    # Brief mode - concise responses
+    brief_mode = game_session_state.get('brief_mode', False)
+    
+    if brief_mode:
+        prompt_lines.append("")
+        prompt_lines.append("=" * 80)
+        prompt_lines.append("🚨 MODALITÀ BRIEF ATTIVA - MASSIMO 50-80 PAROLE 🚨")
+        prompt_lines.append("=" * 80)
+        prompt_lines.append("")
+        prompt_lines.append("⚠️  LIMITE INVALICABILE: MAX 80 PAROLE TOTALI PER RISPOSTA")
+        prompt_lines.append("⚠️  PENALITÀ: Risposte oltre 80 parole sono VIETATE e considerate ERRORE GRAVE")
+        prompt_lines.append("")
+        prompt_lines.append("REGOLE BREVITÀ:")
+        prompt_lines.append("1. CONTA LE PAROLE prima di rispondere - deve essere 50-80 parole MAX")
+        prompt_lines.append("2. NO ELENCHI NUMERATI lunghi (max 2 punti)")
+        prompt_lines.append("3. NO SPIEGAZIONI dettagliate - solo informazione essenziale")
+        prompt_lines.append("4. RISPOSTE DIRETTE - vai subito al punto")
+        prompt_lines.append("5. [GIVEN_ITEMS:...] NON conta nel limite di parole")
+        prompt_lines.append("6. MANTIENI personalità ma sii CONCISO")
+        prompt_lines.append("7. FRASI BREVI - preferisci punti, non paragrafi")
+        prompt_lines.append("")
+        prompt_lines.append("✅ ESEMPI DI RISPOSTE BRIEF CORRETTE (50-80 parole):")
+        prompt_lines.append("❌ VIETA: 'Benvenuto, caro avventuriero, in questo magnifico luogo ricco di storia e mistero...'")
+        prompt_lines.append("✅ USA: 'Ciao. Cerchi qualcosa di specifico? [GIVEN_ITEMS: cristallo, 10 Credits]'")
+        prompt_lines.append("")
+        prompt_lines.append("💡 RICORDA: Se la tua risposta è > 80 parole, è un ERRORE GRAVE")
+        prompt_lines.append("=" * 80)
+        prompt_lines.append("")
+    
+    return "\n".join(prompt_lines)
 
 class ChatSession:
     """Gestisce una sessione di chat interattiva con un LLM."""
@@ -231,12 +267,23 @@ class ChatSession:
         print(f"{TerminalFormatter.YELLOW}Memoria messaggi resettata (System Prompt e Hint NPC mantenuti, se impostati).{TerminalFormatter.RESET}")
 
 
-    def ask(self, prompt: str, current_npc_name_for_placeholder: str = "NPC", stream: bool = True, collect_stats: bool = True, npc_data: Optional[Dict[str, Any]] = None) -> Tuple[str, Optional[Dict[str, Any]]]:
+    def ask(self, prompt: str, current_npc_name_for_placeholder: str = "NPC", stream: bool = True, collect_stats: bool = True, npc_data: Optional[Dict[str, Any]] = None, game_session_state: Optional[Dict[str, Any]] = None) -> Tuple[str, Optional[Dict[str, Any]]]:
         """Sends a prompt to the LLM and gets a response.
         MODIFIED: Added current_npc_name_for_placeholder for better empty response placeholders.
         MODIFIED: Added sudo mode detection for special test mode.
+        MODIFIED: Added game_session_state parameter to regenerate system prompt dynamically.
         """
         start_call_time = time.time()
+
+        # Regenerate system prompt if game state is provided and brief_mode has changed
+        if game_session_state is not None:
+            # Check if we need to regenerate the system prompt due to brief_mode change
+            current_brief_mode = game_session_state.get('brief_mode', False)
+            system_prompt_has_brief = self.system_prompt and 'MODALITÀ BRIEF ATTIVA' in self.system_prompt
+            
+            # If brief_mode state doesn't match what's in the current system prompt, regenerate it
+            if (current_brief_mode and not system_prompt_has_brief) or (not current_brief_mode and system_prompt_has_brief):
+                self.system_prompt = build_npc_system_prompt(game_session_state)
 
         # Check for sudo mode - special test mode where NPCs are obliged to comply
         sudo_mode = False

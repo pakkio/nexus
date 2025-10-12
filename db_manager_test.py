@@ -125,7 +125,9 @@ def process_input_revised(user_input: str, state: Dict[str, Any]) -> Dict[str, A
                 try:
                     _response_text, stats = chat_session.ask(
                         prompt_for_llm, current_npc.get('name', 'NPC'), # Pass original NPC name for placeholder if needed
-                        state.get('use_stream', True), True # collect_stats is True
+                        state.get('use_stream', True), True, # collect_stats is True
+                        None, # npc_data not available in this test
+                        None  # game_session_state not available in this test
                     )
                     if not _response_text.strip() and not (stats and stats.get("error")):
                         # Handle empty but non-error LLM responses with a placeholder

@@ -17,7 +17,7 @@ except ImportError:
         print("Fallback llm_wrapper: LLM calls from player_profile_manager will not work.")
         return json.dumps({"analysis_notes": "LLM not available, no profile changes suggested."}), {"error": "llm_wrapper missing"}
     class TerminalFormatter:
-        DIM = ""; RESET = ""; BOLD = ""; YELLOW = ""; RED = ""; GREEN = ""; MAGENTA = ""; CYAN = ""; ITALIC = "";
+        DIM = ""; RESET = ""; BOLD = ""; YELLOW = ""; RED = ""; GREEN = ""; MAGENTA = ""; CYAN = ""; ITALIC = ""; BRIGHT_YELLOW = ""; BRIGHT_CYAN = "";
         @staticmethod
         def format_terminal_text(text, width=80): import textwrap; return "\n".join(textwrap.wrap(text, width=width))
 
@@ -35,7 +35,8 @@ DEFAULT_PROFILE = {
     "philosophical_leaning": "neutral",
     "recent_changes_log": [],
     "llm_analysis_notes": "",
-    "player_name": None  # Store the player's self-identified name
+    "player_name": None,  # Store the player's self-identified name
+    "achievements": []    # List of achievement strings
 }
 
 def get_default_player_profile() -> Dict[str, Any]:
@@ -123,6 +124,8 @@ Analyze if player shows alignment towards 'progressist' (pro-Oblivion), 'conserv
 Do NOT invent NPCs or extensive new motivations unless directly implied by actions.
 Focus on direct implications of the provided log and actions.
 
+In addition to the above, generate a brief but narrative psychological summary of the player's recent behavior and overall psychological state, suitable for display to the player as an "AI Considerations" section. This should be holistic, story-like, and insightful, not just a list of traits. Place this in the 'analysis_notes' field of the JSON output.
+
 Output your suggested updates STRICTLY as a JSON object.
 Example of desired JSON output format:
 {{
@@ -132,10 +135,10 @@ Example of desired JSON output format:
   "updated_interaction_style_summary": "More inquisitive and slightly more assertive.",
   "updated_veil_perception": "slightly_more_concerned",
   "updated_philosophical_leaning": "progressist",
-  "analysis_notes": "Player asked multiple probing questions to Lyra regarding Theron, indicating increased skepticism and emerging anger. Player stated 'sono arrabbiato con l'alto giudice'."
+  "analysis_notes": "Recently, the Seeker has shown a growing skepticism towards authority, especially in interactions with Lyra and Theron. Their actions reveal a blend of assertiveness and underlying frustration, suggesting a shift from cautious curiosity to direct confrontation. This psychological evolution may influence future decisions and relationships in Eldoria."
 }}
 If no significant changes are warranted for a category, omit it or provide an empty list/dict for it.
-'analysis_notes' should briefly explain your reasoning.
+'analysis_notes' should briefly explain your reasoning and provide a narrative summary as described above.
 ONLY output the JSON object. Do not include any explanatory text before or after the JSON.
 Ensure all keys and string values in the JSON are enclosed in double quotes.
 Ensure there are no trailing commas.
@@ -199,9 +202,10 @@ Ensure there are no trailing commas.
             return {"analysis_notes": "No parsable JSON content identified in LLM response."}
 
         try:
-            # print(f"{TF.DIM}Attempting to parse: {repr(json_to_parse)}{TF.RESET}")
+            print(f"{TF.DIM}[DEBUG] Attempting to parse: {repr(json_to_parse)}{TF.RESET}")
             suggestions = json.loads(json_to_parse)
-            # print(f"{TF.GREEN}Successfully parsed JSON from LLM.{TF.RESET}")
+            print(f"{TF.GREEN}[DEBUG] Successfully parsed JSON from LLM.{TF.RESET}")
+            print(f"{TF.DIM}[DEBUG] Parsed suggestions type: {type(suggestions)}, keys: {list(suggestions.keys()) if isinstance(suggestions, dict) else 'NOT_DICT'}{TF.RESET}")
             return suggestions
         except json.JSONDecodeError as je:
             print(f"{TF.RED}Error decoding LLM JSON response: {je}{TF.RESET}")
@@ -238,6 +242,37 @@ def extract_player_name_from_message(message: str) -> Optional[str]:
     return None
 
 
+def auto_update_achievements(profile: Dict[str, Any]) -> list:
+    """
+    Scan key_experiences_tags, decision_patterns, and other fields to generate achievements.
+    Returns a list of achievement strings.
+    """
+    achievements = set(profile.get("achievements", []))
+    experiences = profile.get("key_experiences_tags", [])
+    patterns = profile.get("decision_patterns", [])
+    # Example mappings
+    for exp in experiences:
+        if "confronted_theron" in exp:
+            achievements.add("Confronted High Judge Theron")
+        if "aided_syra" in exp:
+            achievements.add("Aided Syra in the Ruins")
+        if "paid_theron_for_info" in exp:
+            achievements.add("Paid Theron for Information")
+        if "visited_nexus_of_paths" in exp:
+            achievements.add("Discovered the Nexus of Paths")
+        if "gave_credits_to_npc" in exp:
+            achievements.add("Generous Contributor")
+        if "received_item_from_npc" in exp:
+            achievements.add("Received a Gift from an NPC")
+    # Example: milestone for number of experiences
+    if len(experiences) >= 10:
+        achievements.add("Experienced Adventurer")
+    # Example: quest completion (if tracked)
+    if "main_quest_completed" in experiences:
+        achievements.add("Completed the Main Quest")
+    # Add more mappings as needed
+    return sorted(list(achievements))
+
 def apply_llm_suggestions_to_profile(
         current_profile: Dict[str, Any],
         suggestions: Dict[str, Any]
@@ -260,14 +295,19 @@ def apply_llm_suggestions_to_profile(
         for trait, adjustment_str in trait_adjustments.items():
             if trait in updated_profile["core_traits"]:
                 try:
-                    adjustment_val = float(str(adjustment_str).replace('"', '').strip()) # Clean string like "+1"
+                    # Convert adjustment_str to string and clean it
+                    adjustment_str_clean = str(adjustment_str).replace('"', '').strip()
+                    adjustment_val = float(adjustment_str_clean) # Clean string like "+1"
                     old_value = updated_profile["core_traits"][trait]
                     new_value = max(1, min(10, round(old_value + adjustment_val, 1)))
                     if new_value != old_value:
                         updated_profile["core_traits"][trait] = new_value
                         changes_made_descriptions.append(f"Trait '{trait}' adjusted from {old_value} to {new_value} (adj: {adjustment_str}).")
-                except ValueError:
-                    changes_made_descriptions.append(f"Invalid adjustment value '{adjustment_str}' for trait '{trait}'.")
+                except (ValueError, TypeError) as e:
+                    changes_made_descriptions.append(f"Invalid adjustment value '{adjustment_str}' (type: {type(adjustment_str)}) for trait '{trait}': {e}")
+    elif trait_adjustments is not None:
+        # Debug: trait_adjustments is not a dict but something else
+        changes_made_descriptions.append(f"ISSUE: trait_adjustments is not a dict, got type {type(trait_adjustments)}: {repr(trait_adjustments)[:200]}")
 
     new_patterns = suggestions.get("new_decision_patterns")
     if isinstance(new_patterns, list):
@@ -306,7 +346,10 @@ def apply_llm_suggestions_to_profile(
     analysis_notes = suggestions.get("analysis_notes")
     if analysis_notes and isinstance(analysis_notes, str):
         updated_profile["llm_analysis_notes"] = analysis_notes
-        
+    
+    # Auto-update achievements
+    updated_profile["achievements"] = auto_update_achievements(updated_profile)
+
     # Add recent changes to log
     if "recent_changes_log" not in updated_profile:
         updated_profile["recent_changes_log"] = []
