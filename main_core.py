@@ -51,17 +51,33 @@ except ImportError:
 
 # === [AGGIUNTA] Caricamento mappa personaggi e tappe all'avvio ===
 def load_world_context():
+    """Load world context files for NPC narrative awareness.
+
+    Returns:
+        tuple: (mappa, percorso_full, percorso_condensed)
+            - mappa: Character and location map (~1KB)
+            - percorso_full: Full narrative journey (~70KB, for wise guide only)
+            - percorso_condensed: Condensed narrative (~1.3KB, for regular NPCs)
+    """
     try:
         with open("mappa_personaggi_luoghi.txt", "r", encoding="utf-8") as f:
             mappa_personaggi_luoghi = f.read()
     except Exception:
         mappa_personaggi_luoghi = ""
+
     try:
         with open("percorso_narratore_tappe.txt", "r", encoding="utf-8") as f:
-            percorso_narratore_tappe = f.read()
+            percorso_narratore_tappe_full = f.read()
     except Exception:
-        percorso_narratore_tappe = ""
-    return mappa_personaggi_luoghi, percorso_narratore_tappe
+        percorso_narratore_tappe_full = ""
+
+    try:
+        with open("percorso_narratore_CONDENSED.txt", "r", encoding="utf-8") as f:
+            percorso_narratore_tappe_condensed = f.read()
+    except Exception:
+        percorso_narratore_tappe_condensed = ""
+
+    return mappa_personaggi_luoghi, percorso_narratore_tappe_full, percorso_narratore_tappe_condensed
 
 # === [FINE AGGIUNTA] ===
 
@@ -81,6 +97,9 @@ def run_interaction_loop(
   initial_player_credits = db.get_player_credits(player_id)
   player_profile_data = db.load_player_profile(player_id)
   nlp_config = get_nlp_command_config()
+
+  # Load world context files for NPC narrative awareness
+  mappa_personaggi_luoghi, percorso_narratore_full, percorso_narratore_condensed = load_world_context()
 
   game_session_state: Dict[str, Any] = {
     'db': db, 'story': story, 'current_area': None, 'current_npc': None,
@@ -105,6 +124,9 @@ def run_interaction_loop(
     'nlp_command_interpretation_enabled': nlp_config['enabled'],
     'nlp_command_confidence_threshold': nlp_config['confidence_threshold'],
     'nlp_command_debug': nlp_config['debug_mode'] or debug_mode,
+    'mappa_personaggi_luoghi': mappa_personaggi_luoghi, # Character/location map (~1KB)
+    'percorso_narratore_tappe': percorso_narratore_full, # Full journey (~70KB, wise guide only)
+    'percorso_narratore_condensed': percorso_narratore_condensed, # Condensed journey (~1.3KB, regular NPCs)
   }
 
   if debug_mode and nlp_config['enabled']:

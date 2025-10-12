@@ -85,6 +85,32 @@ def _format_storyboard_for_prompt(story_text: str, max_length: int = 300) -> str
     return truncated + "..."
   return story_text
 
+def _load_npc_narrative_prefix(npc_area: str, npc_name: str) -> str:
+  """Load NPC-specific narrative context prefix.
+
+  Args:
+      npc_area: NPC's area (e.g., 'city', 'village', 'forest')
+      npc_name: NPC's name (e.g., 'irenna', 'garin', 'elira')
+
+  Returns:
+      str: Personalized narrative context for this NPC, or empty string if not found
+  """
+  # Normalize area and name to lowercase for filename
+  area_normalized = npc_area.lower().replace(' ', '').replace('_', '')
+  name_normalized = npc_name.lower().replace(' ', '').replace('_', '')
+
+  prefix_filename = f"NPC_PREFIX.{area_normalized}.{name_normalized}.txt"
+
+  try:
+    with open(prefix_filename, 'r', encoding='utf-8') as f:
+      return f.read()
+  except FileNotFoundError:
+    # No personalized prefix for this NPC - that's okay, return empty
+    return ""
+  except Exception as e:
+    print(f"Warning: Error loading NPC prefix {prefix_filename}: {e}")
+    return ""
+
 def build_system_prompt(
     npc: Dict[str, Any],
     story: str,
@@ -93,16 +119,9 @@ def build_system_prompt(
     conversation_summary_for_guide_context: Optional[str] = None, # MODIFIED: Renamed
     llm_wrapper_func_for_distill: Optional[Callable] = None # MODIFIED: Renamed for clarity
 ) -> str:
-    # === [AGGIUNTA] Inserisci i due documenti come contesto ===
-    mappa = game_session_state.get('mappa_personaggi_luoghi', '')
-    percorso = game_session_state.get('percorso_narratore_tappe', '')
-    context_intro = (
-        f"CONTESTO STATICO:\n{mappa}\n\n"
-        f"CONTESTO DINAMICO:\n{percorso}\n\n"
-        f"ISTRUZIONI:\nRispondi coerentemente con la posizione attuale dei personaggi e la tappa raggiunta dal Cercatore. "
-        f"Non anticipare eventi futuri e non spostare i personaggi in luoghi diversi da quelli previsti, a meno che la narrazione non lo richieda esplicitamente.\n\n"
-    )
-    # === [FINE AGGIUNTA] ===
+    # IMPORTANT: Narrative context (~70KB) should ONLY be added for wise guide during /hint mode
+    # Regular NPCs should use their own character files without this massive context
+    # This prevents the narrative journey from changing NPC behavior
 
     player_id = game_session_state['player_id']
     player_profile = game_session_state.get('player_profile_cache')
@@ -132,11 +151,26 @@ def build_system_prompt(
     llsettext_capability = npc.get('llsettext', '')
     teleport_locations = npc.get('teleport', '')
 
-    prompt_lines = [
+    # Load NPC-specific narrative context FIRST (if available)
+    npc_narrative_prefix = _load_npc_narrative_prefix(area, name)
+
+    prompt_lines = []
+
+    # Add personalized narrative context at the TOP if it exists
+    if npc_narrative_prefix:
+        prompt_lines.append("="*80)
+        prompt_lines.append("CONTESTO NARRATIVO PERSONALIZZATO PER TE")
+        prompt_lines.append("="*80)
+        prompt_lines.append(npc_narrative_prefix)
+        prompt_lines.append("="*80)
+        prompt_lines.append("")
+
+    # Then add standard character information
+    prompt_lines.extend([
         f"Sei {name}, un/una {role} nell'area di {area} nel mondo di Eldoria.",
         f"Motivazione: '{motivation}'. Obiettivo (cosa TU, l'NPC, vuoi ottenere): '{goal}'.",
         f"V.O. (Guida per l'azione del giocatore per aiutarti): \"{player_hint_for_npc_context}\"",
-    ]
+    ])
     if hooks:
         prompt_lines.append(f"Per ispirazione, considera questi stili/frasi chiave dal tuo personaggio: (alcune potrebbero essere contestuali, non usarle tutte alla cieca)\n{hooks[:300]}{'...' if len(hooks)>300 else ''}")
     if veil:
@@ -244,6 +278,29 @@ def build_system_prompt(
                 )
 
         if conversation_summary_for_guide_context: # This is passed only when starting hint session
+            # IMPORTANT: Add narrative context ONLY for wise guide during hint mode
+            # Use CONDENSED version (~1.3KB) instead of full version (~70KB) for better performance
+            mappa = game_session_state.get('mappa_personaggi_luoghi', '')
+            percorso_condensed = game_session_state.get('percorso_narratore_condensed', '')
+            # percorso_full = game_session_state.get('percorso_narratore_tappe', '')  # Available if needed
+
+            if mappa or percorso_condensed:
+                prompt_lines.append(
+                    f"\n{'='*80}\n"
+                    f"CONTESTO NARRATIVO (Solo per te come Guida Saggia):\n"
+                    f"{'='*80}\n"
+                )
+                if mappa:
+                    prompt_lines.append(f"MAPPA PERSONAGGI E LUOGHI:\n{mappa}\n")
+                if percorso_condensed:
+                    prompt_lines.append(f"\nPERCORSO NARRATIVO CONDENSATO:\n{percorso_condensed}\n")
+                prompt_lines.append(
+                    f"{'='*80}\n"
+                    f"ISTRUZIONI: Usa questo contesto per dare consigli coerenti con la posizione e tappa del Cercatore.\n"
+                    f"Non anticipare eventi futuri. Guida con saggezza basandoti su dove si trova il Cercatore ora.\n"
+                    f"{'='*80}\n"
+                )
+
             prompt_lines.append(
                 f"\nINFORMAZIONE CONTESTUALE AGGIUNTIVA PER TE, {name.upper()} (per /hint):\n"
                 f"Il Cercatore (giocatore) stava parlando con un altro NPC prima di consultarti. Ecco un riassunto di quella interazione:\n"
