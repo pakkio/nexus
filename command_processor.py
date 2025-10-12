@@ -34,6 +34,7 @@ from command_handlers.handle_profile import handle_profile
 from command_handlers.heandle_profile_for_npc import handle_profile_for_npc
 from command_handlers.handle_history import handle_history
 from command_handlers.handle_sussurri import handle_sussurri
+from command_handlers.handle_brief import handle_brief
 
 import session_utils # Keep for other utilities like get_npc_color
 
@@ -234,6 +235,7 @@ command_handlers_map: Dict[str, Callable] = {
   'clear': handle_clear,
   'hint': handle_hint,           # MODIFIED
   'endhint': handle_endhint,     # MODIFIED
+  'brief': handle_brief,         # Toggle brief/concise mode
   'inventory': handle_inventory, 'inv': handle_inventory,
   'give': handle_give,
   'receive': handle_receive,

@@ -2,7 +2,7 @@
 // Uses /sense endpoint for simple LSL-friendly responses
 // Activated by touch - only listens to the toucher during conversation
 // Maintains dialogue state with the toucher until they leave range or touch again
-// Resets automatically after 5 minutes of inactivity
+// Resets automatically after 1 minute of inactivity
 // NAMING CONVENTION: Object name must be "NPCName.AreaName" (e.g., "Syra.Forest")
 // SERVER URL: Set in object description (e.g., "http://212.227.64.143:5000")
 
@@ -16,7 +16,7 @@ key current_toucher = NULL_KEY;       // Key of the avatar currently in conversa
 string current_toucher_name = "";     // Name of the current toucher
 integer listen_handle = -1;           // Handle for the listen event
 integer IS_CONVERSING = FALSE;        // Flag to track if in active conversation
-integer TIMEOUT_SECONDS = 300;        // 5 minutes in seconds (300 seconds)
+integer TIMEOUT_SECONDS = 60;         // 1 minute in seconds (60 seconds)
 
 // HTTP request tracking
 key chat_request_id;
@@ -68,11 +68,12 @@ default
             }
 
             // Check for common naming issues
-            if (llSubStringIndex(NPC_NAME, " ") != -1 || llSubStringIndex(CURRENT_AREA, " ") != -1)
-            {
-                llOwnerSay("⚠️  ATTENZIONE: Spazi nel nome potrebbero causare problemi");
-                llOwnerSay("  Consiglio: Usa 'Lyra.SanctumOfWhispers' invece di 'Lyra.Sanctum Of Whispers'");
-            }
+            // Note: Spaces in area names are now supported but may cause issues in some contexts
+            // if (llSubStringIndex(NPC_NAME, " ") != -1 || llSubStringIndex(CURRENT_AREA, " ") != -1)
+            // {
+            //     llOwnerSay("⚠️  ATTENZIONE: Spazi nel nome potrebbero causare problemi");
+            //     llOwnerSay("  Consiglio: Usa 'Lyra.SanctumOfWhispers' invece di 'Lyra.Sanctum Of Whispers'");
+            // }
         }
         else
         {
@@ -149,7 +150,7 @@ default
             }
             listen_handle = llListen(0, "", current_toucher, "");  // Listen only to current toucher
 
-            // Set up timeout for 5 minutes (300 seconds) of inactivity
+            // Set up timeout for 1 minute (60 seconds) of inactivity
             llSetTimerEvent(TIMEOUT_SECONDS);
 
             // Call /sense endpoint for initial greeting
@@ -234,7 +235,7 @@ default
                 llSetTimerEvent(0.0);
             }
         }
-        // This is a conversation timeout (5 minutes of inactivity)
+        // This is a conversation timeout (1 minute of inactivity)
         else if (IS_CONVERSING)
         {
             end_conversation();
@@ -452,10 +453,48 @@ process_sl_commands(string sl_commands)
     string anim = extract_sl_command(sl_commands, "anim");
     string teleport = extract_sl_command(sl_commands, "teleport");
 
-    // Execute llSetText command
-    if (llsettext != "")
+    // Execute llSetText command - append to conversation status
+    if (llsettext != "" && IS_CONVERSING)
     {
-        llSetText(llsettext, <1.0, 1.0, 0.0>, 1.0);
+        // Backend truncates to 80 chars max, split into lines of 20 chars each
+        string line1 = "";
+        string line2 = "";
+        string line3 = "";
+        string line4 = "";
+
+        integer len = llStringLength(llsettext);
+
+        if (len > 60)
+        {
+            line1 = llGetSubString(llsettext, 0, 19);
+            line2 = llGetSubString(llsettext, 20, 39);
+            line3 = llGetSubString(llsettext, 40, 59);
+            line4 = llGetSubString(llsettext, 60, -1);
+        }
+        else if (len > 40)
+        {
+            line1 = llGetSubString(llsettext, 0, 19);
+            line2 = llGetSubString(llsettext, 20, 39);
+            line3 = llGetSubString(llsettext, 40, -1);
+        }
+        else if (len > 20)
+        {
+            line1 = llGetSubString(llsettext, 0, 19);
+            line2 = llGetSubString(llsettext, 20, -1);
+        }
+        else
+        {
+            line1 = llsettext;
+        }
+
+        // Append to current conversation status
+        string status_text = "Sto parlando con " + current_toucher_name;
+        if (line1 != "") status_text += "\n" + line1;
+        if (line2 != "") status_text += "\n" + line2;
+        if (line3 != "") status_text += "\n" + line3;
+        if (line4 != "") status_text += "\n" + line4;
+
+        llSetText(status_text, <0.0, 1.0, 0.0>, 1.0);
     }
 
     // Handle teleport command with permission dialog
@@ -687,9 +726,9 @@ string clean_response_text(string response)
         response = llGetSubString(response, 0, -2);
     }
 
-    // Limit length for LSL say function
-    if (llStringLength(response) > 1000) {
-        response = llGetSubString(response, 0, 996) + "...";
+    // Limit length for LSL say function (increased for brief mode support)
+    if (llStringLength(response) > 2500) {
+        response = llGetSubString(response, 0, 2496) + "...";
     }
 
     return response;

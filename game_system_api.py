@@ -266,12 +266,17 @@ class _SinglePlayerGameSystem:
 
         try:
             if self.game_state is None:
+                logger.warning(f"[DEBUG] game_state was None before process_input_revised, initializing to {{}}")
                 self.game_state = {}
+            logger.info(f"[DEBUG] Calling process_input_revised with player_input: {player_input[:50]}...")
             result = command_processor.process_input_revised(player_input, self.game_state)
+            logger.info(f"[DEBUG] process_input_revised returned: {type(result)} - is None: {result is None}")
             if result is None:
+                logger.error(f"[DEBUG] Command processor returned None for input: {player_input}")
                 self.game_state['system_messages_buffer'].append("Error: Command processor returned None")
                 return None
             self.game_state = result
+            logger.info(f"[DEBUG] game_state updated, is None: {self.game_state is None}")
 
             if 'system_message_for_ui' in self.game_state:
                 self.game_state['system_messages_buffer'].append(self.game_state.pop('system_message_for_ui'))
@@ -300,10 +305,17 @@ class _SinglePlayerGameSystem:
                 self._profile_update_thread.start()
                 logger.info(f"[PROFILE-ASYNC] Started background thread for {self.game_state['player_id']}")
 
+            logger.info(f"[DEBUG] End of try block, game_state is None: {self.game_state is None}")
+
         finally:
             sys.stdout = original_stdout
+            logger.info(f"[DEBUG] Start of finally block, game_state is None: {self.game_state is None}, type: {type(self.game_state)}")
 
-            current_npc_name_for_filter = self.game_state.get('current_npc', {}).get('name')
+            current_npc_name_for_filter = None
+            if self.game_state:
+                current_npc = self.game_state.get('current_npc')
+                if current_npc:
+                    current_npc_name_for_filter = current_npc.get('name')
             npc_prompt_artifact_pattern = None
             if current_npc_name_for_filter:
                 npc_prompt_artifact_pattern = re.compile(rf"^\s*{re.escape(current_npc_name_for_filter)}\s*>\s*$")
