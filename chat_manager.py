@@ -171,14 +171,9 @@ def format_stats(stats: Optional[Dict[str, Any]], model_type: str = "dialogue") 
 
 
 def build_npc_system_prompt(game_session_state, npc_name=None):
-    mappa = game_session_state.get('mappa_personaggi_luoghi', '')
-    percorso = game_session_state.get('percorso_narratore_tappe', '')
-    return (
-        f"CONTESTO STATICO:\n{mappa}\n\n"
-        f"CONTESTO DINAMICO:\n{percorso}\n\n"
-        f"ISTRUZIONI:\nRispondi coerentemente con la posizione attuale dei personaggi e la tappa raggiunta dal Cercatore. "
-        f"Non anticipare eventi futuri e non spostare i personaggi in luoghi diversi da quelli previsti, a meno che la narrazione non lo richieda esplicitamente."
-    )
+    # IMPORTANT: Only provide full narrative context for wise guide hints, not regular NPC conversations
+    # Regular NPCs should use their own character files, not the 70KB narrative journey
+    return ""
 
 class ChatSession:
     """Gestisce una sessione di chat interattiva con un LLM."""
