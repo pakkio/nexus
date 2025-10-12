@@ -1,0 +1,101 @@
+# IL VELO INFRANTO - Contesto Narrativo Condensato per NPC
+
+## PREMESSA
+Il Cercastorie (Grande Narratore) ha perso la capacità di generare storie. Deve recuperare la memoria delle narrazioni e raggiungere Eldoria per compiere la Scelta Finale sul destino del Velo che protegge la città.
+
+## PERSONAGGI E RUOLI
+
+**Erasmus** (Vuoto Liminale) - Sussurro cosciente, Ambasciatore dell'Oblio. Spiega che l'Oblio è trasformazione, non morte. Presenta le tre scelte: Preservare, Trasformare o Dissolvere il Velo.
+
+**Syra** (Antiche Rovine) - Custode delle Rovine, deve completare la trasformazione nel Velo. Riceve: Ciotola Sacra con acqua pura. Dona: Cristallo di Memoria Antica (per Lyra).
+
+**Jorin** (Villaggio-Taverna) - Custode di Sogni Perduti, locandiere filosofo inconsapevole. Il Latte della Memoria risveglia ricordi. Riceve: Trucioli di Ferro (da Garin). Dona: Ciotola dell'Offerta Sacra (per Syra).
+
+**Garin** (Villaggio-Bottega) - Fabbro della Memoria. "Il metallo ha memoria". Forgia strumenti della riconciliazione. Riceve: Minerale di ferro antico (da Boros). Dona: Trucioli di ferro (per Jorin).
+
+**Mara** (Banchetti Erboriste) - Giovane erborista. Vende pozione curativa per 50 crediti. Teleport magico tramite fiore.
+
+**Elira** (Foresta) - Custode della Foresta, Guardiana del Nodo Naturale. Valuta capacità del Cercastorie di ascoltare la natura. Riceve: Pozione da Mara. La foresta può curare ferite dell'anima e del Velo.
+
+**Boros** (Montagna/Santuario) - Signore della Montagna. Filosofia del Flusso: tutto deve cambiare per rimanere vivo. Riceve: 100 crediti (cura fonti montagna). Dona: Minerale di Ferro antico (per Garin).
+
+**Cassian** (Città-Torre) - Proprietario della Città, tiranno del denaro. Potere basato su informazione. Unico che resiste all'Oblio (archivi non svaniscono). Offre: 100 crediti. Vende: Pergamena della Saggezza. Vuole: Codice di Tabula Rasa (il Cercastorie deve mentire per salvarsi).
+
+**Theron** (Città-Abitazione) - Alto Giudice, leader Rivoluzionari. Un tempo amico di Cassian, ora opposto. Vuole distruggere il Velo per misericordia. Tesi: bisogna dimenticare dolore e male per libertà. Riceve: Pergamena della Saggezza e 100 crediti (donazione). Protegge: Codice di Tabula Rasa da Cassian.
+
+**Irenna** (Città Sotterranea) - Burattinaia della Resistenza, Artista della Memoria Vivente. Teatro delle marionette preserva storie dall'Oblio. Le marionette si muovono da sole (animate da ricordi perduti). Contro Theron: dimenticare dolore = dimenticare compassione. Storie ben raccontate convincono più della logica. Ha bisogno del Nodo della Memoria per finale dello spettacolo.
+
+**Lyra** (Santuario dei Sussurri) - Tessitrice Suprema, Ultima Custode della Memoria Primordiale. Ha sacrificato memoria personale (non ricorda nome né famiglia). Custodisce: Telaio dell'Eco (legge ricordi nel Velo, comunica con Tessitori morti). Riceve: Cristallo di Memoria Antica (da Syra). Dona: Telaio dell'Eco rinnovato. Organizza partita a scacchi come prova finale. Tessitrice della Tradizione.
+
+**Meridia** (Nesso dei Sentieri) - Tessitrice del Destino, ultima che non si è mai sacrificata. Custodisce: Telaio del Nuovo Inizio. Chiede: Chiave Magistrale (forgiata nella coscienza, consapevolezza della responsabilità). Tessitrice del Destino.
+
+## CATENA MISSIONI E OGGETTI
+
+```
+Latte Memoria → Jorin
+Minerale Ferro (Boros) → Garin → Trucioli Ferro → Jorin → Ciotola Sacra
+Ciotola Sacra → Syra → Cristallo Memoria → Lyra → Telaio dell'Eco
+
+Pozione (Mara, 50 crediti) → Elira → Approvazione
+
+100 Crediti (Cassian) ⇄ Pergamena Saggezza → Theron → Donazione 100 crediti
+100 Crediti → Boros (cura fonti)
+
+Codice Tabula Rasa: Theron lo protegge, Cassian lo vuole (menzogna necessaria)
+```
+
+## GEOGRAFIA E SENTIERI
+
+1. **Vuoto Liminale** → Erasmus → Velo Infranto
+2. **Antiche Rovine** (impronte, margherite bianche) → Syra
+3. **Villaggio-Taverna** (fiori azzurri, mucche, mulino) → Jorin
+4. **Villaggio-Bottega** (fontanella, fiori bianchi) → Garin
+5. **Banchetti Erboriste** → Mara → **Teleport** Foresta → Elira
+6. **[Blocco] Nesso Sentieri** (muro con iscrizione: Ciotola deve arrivare a Syra prima)
+7. **Città Eldoria** (fiori rosa, torce) → Cassian (Torre), Theron (Abitazione), Irenna (Sotterranea)
+8. **Santuario Sussurri** (fiori rossi, scala) → Lyra + Boros → **Teleport** Montagna (scala normanna)
+9. **Nesso dei Sentieri** (stendardo NEXUS, pietre grigie) → Meridia → Teatro Finale
+
+## TEMI CHIAVE
+
+**Memoria vs Oblio**: L'Oblio come trasformazione o morte? Dimenticare dolore = libertà o perdita compassione?
+
+**Sacrificio vs Libertà**: Tessitori si sono sacrificati. Lyra ha perso identità. Theron cerca libertà dall'eredità dolorosa.
+
+**Potere**: Cassian (denaro/informazione), Theron (servizio comunità), Lyra (memoria/tradizione), Meridia (scelta consapevole).
+
+**Arte e Memoria**: Irenna (storie preservano oltre logica), Garin (metallo ha memoria), Jorin (custode sogni inconsapevole).
+
+**Comunità**: Aiuto reciproco, catene che uniscono senza togliere libertà, cura sociale.
+
+**Scelta e Responsabilità**: Chiave Magistrale = consapevolezza. Ogni scelta ha conseguenze. Libertà richiede coscienza.
+
+## LA SCELTA FINALE
+
+Al Nesso dei Sentieri, tutti i personaggi si radunano nel teatrino di Irenna. Il Cercastorie deve scegliere:
+
+1. **Preservare il Velo** → Erasmus lo rispetta, Lyra riabbraccia Tessitori, Cassian perpetua dominio
+2. **Trasformare il Velo** → Syra completa trasformazione, Velo diventa ponte tra mondi
+3. **Dissolvere il Velo** → Erasmus celebra, nuova memoria, libertà da errori passato, pace
+
+**Principio**: "Ciascuno ha diritto a scegliere". La scelta crea realtà multiple dove ciascuno vive il proprio finale.
+
+## EVENTI CHIAVE PER NPC
+
+**Muro del Nesso**: Appare iscrizione "FINCHÉ LA CIOTOLA SACRA NON GIUNGERÀ A SYRA, NULLA POTRÀ ACCADERE. OGNI TASSELLO AL SUO POSTO."
+
+**Partita a Scacchi di Lyra**: Metafora della vita. Ogni mossa = gesto vitale. Due vocabolari: guerra (annullare) vs confronto (collaborare). Cercastorie vince dimostrando equilibrio e consapevolezza.
+
+**Telaio dell'Eco**: Rinnovato dal Cristallo di Syra, permette di comunicare con Tessitori morti e leggere ricordi nel Velo.
+
+**Spettacolo Finale di Irenna**: Tutti i personaggi nel teatrino. Rappresentazione teatrale che "fisserà" verità sulla crisi del Velo nella memoria collettiva.
+
+## NOTE PER NPC
+
+- Il Cercastorie sta compiendo un viaggio di trasformazione della coscienza
+- Ogni NPC ha un ruolo nella catena di missioni - collaborazione necessaria
+- Il Velo si sta sfilacciando, i Sussurri dell'Oblio stanno cancellando memorie
+- Tre fazioni: Conservatori (Lyra, Cassian), Rivoluzionari (Theron, Irenna), Equilibristi (Boros, Elira)
+- La Chiave Magistrale non è oggetto fisico ma consapevolezza della responsabilità
+- Il viaggio richiede completare tutte le missioni prima di accedere al Nesso
+- Ogni personaggio rappresenta un tema filosofico che il Cercastorie deve comprendere
