@@ -782,12 +782,16 @@ def chat_with_npc():
         if area:
             go_command = f"/go {area}"
             try:
+                logger.info(f"[DEBUG] About to call process_player_input with: {go_command}")
+                logger.info(f"[DEBUG] player_system.game_state before /go: {type(player_system.game_state)}, is None: {player_system.game_state is None}")
                 area_response = player_system.process_player_input(go_command, skip_profile_update=True)
+                logger.info(f"[DEBUG] player_system.game_state after /go: {type(player_system.game_state)}, is None: {player_system.game_state is None}")
                 if not area_response:
                     return jsonify({
                         'error': f'Invalid response when trying to go to area: {area}'
                     }), 500
             except Exception as e:
+                logger.error(f"[DEBUG] Exception in /go command for area {area}: {str(e)}", exc_info=True)
                 return jsonify({
                     'error': f'Error going to area {area}: {str(e)}'
                 }), 500
@@ -795,8 +799,10 @@ def chat_with_npc():
         # If NPC name is specified, check if we need to switch to that NPC
         if npc_name:
             # Check if we're already talking to this NPC
-            current_npc = player_system.game_state.get('current_npc')
+            logger.info(f"[DEBUG] Checking current NPC, game_state is None: {player_system.game_state is None}")
+            current_npc = player_system.game_state.get('current_npc') if player_system.game_state else None
             current_npc_name = current_npc.get('name', '') if current_npc else ''
+            logger.info(f"[DEBUG] current_npc_name: {current_npc_name}, requested npc_name: {npc_name}")
 
             # Only switch if we're not already talking to this NPC
             if current_npc_name.lower() != npc_name.lower():
@@ -843,7 +849,7 @@ def chat_with_npc():
         # In this case, make the NPC present the system messages naturally
         npc_response = response.get('npc_response', '')
         system_messages = response.get('system_messages', [])
-        current_npc = player_system.game_state.get('current_npc')
+        current_npc = player_system.game_state.get('current_npc') if player_system.game_state else None
 
         if not npc_response and system_messages and current_npc:
             npc_name = current_npc.get('name', 'NPC')
@@ -869,12 +875,12 @@ def chat_with_npc():
         # Generate Second Life commands if there's a current NPC
         sl_commands = ""
         try:
-            current_npc = player_system.game_state.get('current_npc')
+            current_npc = player_system.game_state.get('current_npc') if player_system.game_state else None
             if current_npc:
                 from chat_manager import generate_sl_command_prefix
                 # Check if teleport was offered in this turn
-                teleport_offered = player_system.game_state.get('teleport_offered_this_turn', False)
-                sl_commands = generate_sl_command_prefix(current_npc, include_teleport=teleport_offered)
+                teleport_offered = player_system.game_state.get('teleport_offered_this_turn', False) if player_system.game_state else False
+                sl_commands = generate_sl_command_prefix(current_npc, include_teleport=teleport_offered, npc_response=npc_response)
                 logger.info(f"Generated SL commands: '{sl_commands}' (teleport_offered={teleport_offered})")
         except Exception as sl_error:
             logger.warning(f"Error generating SL commands: {str(sl_error)}")
@@ -1052,7 +1058,7 @@ def sense_player():
         player_system = game_system.get_player_system(player_id)
         
         # Check if player has a current area, if not, set default starting area
-        current_area = player_system.game_state.get('current_area')
+        current_area = player_system.game_state.get('current_area') if player_system.game_state else None
         if not current_area:
             # Set default starting area to 'village' if no area specified, otherwise use specified area
             default_area = area if area else 'village'
@@ -1067,7 +1073,7 @@ def sense_player():
         
         # If area is specified, go to that area first (unless already there)
         if area:
-            current_area = player_system.game_state.get('current_area')
+            current_area = player_system.game_state.get('current_area') if player_system.game_state else None
             if current_area != area:
                 go_command = f"/go {area}"
                 try:
@@ -1091,7 +1097,7 @@ def sense_player():
         if npc_name:
             try:
                 # Get the current area for NPC lookup
-                current_area = player_system.game_state.get('current_area', 'village')
+                current_area = player_system.game_state.get('current_area', 'village') if player_system.game_state else 'village'
                 
                 # Try to get the NPC data directly from database
                 logger.info(f"Looking for NPC {npc_name} in area {current_area}")
@@ -1106,7 +1112,7 @@ def sense_player():
 
                     # Initialize a chat session for the NPC ONLY if there isn't one already
                     # This prevents losing conversation history when player re-touches the same NPC
-                    if not player_system.game_state.get('chat_session'):
+                    if not (player_system.game_state.get('chat_session') if player_system.game_state else None):
                         from chat_manager import ChatSession
                         chat_session = ChatSession()
                         player_system.game_state['chat_session'] = chat_session
@@ -1126,7 +1132,7 @@ def sense_player():
                 }), 500
         
         # Get current NPC info
-        current_npc = player_system.game_state.get('current_npc')
+        current_npc = player_system.game_state.get('current_npc') if player_system.game_state else None
         if not current_npc:
             return jsonify({
                 'npc_response': normalize_text_for_lsl(f"No NPC is currently present to notice {display_name}'s arrival."),
@@ -1141,7 +1147,7 @@ def sense_player():
         npc_area = current_npc.get('area', 'this place')
 
         # Check if there's an existing conversation with this NPC
-        chat_session = player_system.game_state.get('chat_session')
+        chat_session = player_system.game_state.get('chat_session') if player_system.game_state else None
         has_conversation_history = chat_session and len(chat_session.messages) > 0
 
         # Try to get the Default_Greeting from NPC data, fallback to generic greeting
@@ -1173,7 +1179,7 @@ def sense_player():
         sl_commands = ""
         try:
             from chat_manager import generate_sl_command_prefix
-            sl_commands = generate_sl_command_prefix(current_npc)
+            sl_commands = generate_sl_command_prefix(current_npc, npc_response=npc_response)
             logger.info(f"Generated SL commands (sense): '{sl_commands}'")
         except Exception as sl_error:
             logger.warning(f"Error generating SL commands in sense: {str(sl_error)}")

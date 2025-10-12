@@ -25,26 +25,77 @@ except ImportError as e:
         def get_terminal_width(): return 80
 
 
-def generate_sl_command_prefix(npc_data: Optional[Dict[str, Any]], include_teleport: bool = False) -> str:
+def generate_summary_for_llsettext(npc_response: str, npc_name: str = "NPC") -> str:
+    """Generate a short summary of the NPC response for llSetText display.
+
+    Args:
+        npc_response: The full NPC response text
+        npc_name: Name of the NPC
+
+    Returns:
+        Short summary (max 80 chars) suitable for llSetText
+    """
+    if not npc_response:
+        return ""
+
+    # Clean up the response text
+    clean_text = npc_response.strip()
+    # Remove markdown and formatting
+    clean_text = clean_text.replace('*', '').replace('_', '')
+    # Remove LSL protocol-breaking characters
+    clean_text = clean_text.replace(';', ',').replace(']', ')')
+    # Remove common prefixes
+    for prefix in [f"{npc_name} ti dice", f"{npc_name} ti informa", "*", "- "]:
+        clean_text = clean_text.replace(prefix, "").strip()
+
+    # Take first sentence or first 80 characters
+    if '.' in clean_text:
+        first_sentence = clean_text.split('.')[0].strip()
+        if len(first_sentence) <= 80:
+            return first_sentence
+        # If first sentence is too long, truncate at word boundary
+        words = first_sentence.split()
+        summary = ""
+        for word in words:
+            if len(summary + " " + word) > 77:  # Leave room for "..."
+                break
+            summary += (" " + word if summary else word)
+        return summary + "..."
+    else:
+        # No period found, just truncate
+        if len(clean_text) <= 80:
+            return clean_text
+        # Truncate at word boundary
+        words = clean_text.split()
+        summary = ""
+        for word in words:
+            if len(summary + " " + word) > 77:
+                break
+            summary += (" " + word if summary else word)
+        return summary + "..."
+
+
+def generate_sl_command_prefix(npc_data: Optional[Dict[str, Any]], include_teleport: bool = False, npc_response: str = "") -> str:
     """Generate Second Life command prefix for NPC responses.
 
     Args:
         npc_data: Dictionary containing NPC data with SL fields
         include_teleport: If True, includes teleport coordinates from NPC data
+        npc_response: The NPC's response text to generate summary for llSetText
 
     Returns:
         String in format [lookup=?;llSetText=?;emote=?;anim=?;teleport=?] or empty string if no NPC data
     """
     if not npc_data:
         return ""
-    
+
     # Get SL fields from NPC data
     emotes_str = npc_data.get('emotes', '')
     animations_str = npc_data.get('animations', '')
     lookup_str = npc_data.get('lookup', '')
     llsettext_str = npc_data.get('llsettext', '')
     teleport_str = npc_data.get('teleport', '')
-    
+
     # Parse comma-separated values and pick random ones
     emotes_list = [e.strip() for e in emotes_str.split(',') if e.strip()] if emotes_str else []
     animations_list = [a.strip() for a in animations_str.split(',') if a.strip()] if animations_str else []
@@ -55,12 +106,18 @@ def generate_sl_command_prefix(npc_data: Optional[Dict[str, Any]], include_telep
     selected_emote = random.choice(emotes_list) if emotes_list else ""
     selected_animation = random.choice(animations_list) if animations_list else ""
     selected_lookup = random.choice(lookup_list) if lookup_list else ""
-    selected_llsettext = random.choice(llsettext_list) if llsettext_list else ""
+
+    # Generate summary from npc_response if available, otherwise use predefined llsettext
+    if npc_response:
+        npc_name = npc_data.get('name', 'NPC')
+        selected_llsettext = generate_summary_for_llsettext(npc_response, npc_name)
+    else:
+        selected_llsettext = random.choice(llsettext_list) if llsettext_list else ""
 
     # Teleport: Only include if explicitly requested via include_teleport flag
     # The entire teleport string is treated as one coordinate set (x,y,z format)
     selected_teleport = teleport_str.strip() if include_teleport and teleport_str else ""
-    
+
     # Build the command prefix - only include non-empty fields
     command_parts = []
     if selected_lookup:

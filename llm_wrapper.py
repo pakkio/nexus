@@ -119,7 +119,16 @@ def process_direct_non_streaming_output(response_data: Dict[str, Any],
     first_token_time = time.time()
 
     try:
-        output_text = response_data.get("choices", [{}])[0].get("message", {}).get("content", "")
+        message_obj = response_data.get("choices", [{}])[0].get("message", {})
+        output_text = message_obj.get("content", "")
+
+        # GPT-5/reasoning models may have reasoning in separate field
+        reasoning = message_obj.get("reasoning", None)
+        if reasoning and not output_text:
+            # If content is empty but reasoning exists, use a summary
+            output_text = "[Reasoning model generated internal reasoning but no direct response. Try a simpler prompt or different model.]"
+            logging.info(f"GPT-5 reasoning detected but no content. Reasoning preview: {str(reasoning)[:200]}")
+
         if not output_text and "error" in response_data: # If no content but error field exists
             error_msg = response_data.get("error", {}).get("message", "Unknown error from API")
             output_text = f"[API Error: {error_msg}]"
@@ -263,11 +272,20 @@ def llm_wrapper(messages: List[Dict[str, str]],
         "HTTP-Referer": site_url,
         "X-Title": app_title,
     }
-    payload = { "model": model_name, "messages": messages, "stream": stream }
-    # Performance-optimized parameters
-    payload["max_tokens"] = 512  # Limit response length for faster generation
-    payload["temperature"] = 0.7  # Good balance of creativity vs speed
-    payload["top_p"] = 0.9  # Nucleus sampling for faster token selection
+    # Special handling for GPT-5 models
+    if model_name and model_name.startswith("openai/gpt-5"):
+        # GPT-5 is a reasoning model - increase max_tokens to allow for reasoning + content
+        payload = { "model": model_name, "messages": messages, "stream": stream }
+        payload["max_tokens"] = 2048  # Higher limit for reasoning models
+        payload["temperature"] = 0.7
+        payload["top_p"] = 0.9
+        payload["reasoning_effort"] = "low"  # Enable reasoning: low/medium/high
+        logging.info(f"GPT-5 reasoning enabled with effort=low")
+    else:
+        payload = { "model": model_name, "messages": messages, "stream": stream }
+        payload["max_tokens"] = 512
+        payload["temperature"] = 0.7
+        payload["top_p"] = 0.9
 
     start_time = time.time()
     first_token_time = None
@@ -430,5 +448,72 @@ Suggest updates as JSON: {"trait_adjustments": {"curiosity": "+1"}, "analysis_no
     print(f"{TF.DIM}Stats (Skipped): {stats_skipped}{TF.RESET}\n")
     assert "Skipped API call" in str(stats_skipped.get("error", ""))
 
+    # --- Test 4: GPT-5 Pro Reasoning Token Handling ---
+    print(f"\n{TF.BOLD}Test 4: GPT-5 Pro (no reasoning){TF.RESET}")
+    messages_gpt5 = [
+        {"role": "system", "content": "You are a wise oracle."},
+        {"role": "user", "content": "What is the meaning of life?"}
+    ]
+    response_gpt5, stats_gpt5 = llm_wrapper(
+        messages_gpt5,
+        model_name="openai/gpt-5-mini",
+        stream=False,
+        collect_stats=True
+    )
+    print(f"\n{TF.DIM}LLM Response (GPT-5 Mini, no reasoning):{TF.RESET}\n{response_gpt5}")
+    print(f"{TF.DIM}Stats (GPT-5 Mini, no reasoning): {stats_gpt5}{TF.RESET}\n")
+
+    print(f"\n{TF.BOLD}Test 5: GPT-5 Mini (Capital of France, no reasoning){TF.RESET}")
+    messages_gpt5_france = [
+        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "user", "content": "What is the capital of France?"}
+    ]
+    response_gpt5_france, stats_gpt5_france = llm_wrapper(
+        messages_gpt5_france,
+        model_name="openai/gpt-5-mini",
+        stream=False,
+        collect_stats=True
+    )
+    print(f"\n{TF.DIM}LLM Response (GPT-5 Mini, capital of France):{TF.RESET}\n{response_gpt5_france}")
+    print(f"{TF.DIM}Stats (GPT-5 Mini, capital of France): {stats_gpt5_france}{TF.RESET}\n")
+
+    print(f"\n{TF.BOLD}Test 4b: GPT-5 Mini (with reasoning tokens){TF.RESET}")
+    # Add reasoning parameter to payload by monkey-patching llm_wrapper for this test
+    def llm_wrapper_with_reasoning(messages, model_name=None, formatting_function=None, stream=True, width=None, collect_stats=False):
+        api_key = os.environ.get("OPENROUTER_API_KEY")
+        api_base = "https://openrouter.ai/api/v1"
+        site_url = os.environ.get("OPENROUTER_APP_URL", "http://localhost")
+        app_title = os.environ.get("OPENROUTER_APP_TITLE", "MyNexusClient")
+        headers = {
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json",
+            "HTTP-Referer": site_url,
+            "X-Title": app_title,
+        }
+        payload = { "model": model_name, "messages": messages, "stream": stream, "include_reasoning": True }
+        payload["max_tokens"] = 512
+        payload["temperature"] = 0.7
+        payload["top_p"] = 0.9
+        response = requests.post(
+            f"{api_base}/chat/completions",
+            headers=headers,
+            json=payload,
+            stream=stream,
+            timeout=60
+        )
+        response_data = response.json()
+        output_text = response_data.get("choices", [{}])[0].get("message", {}).get("content", "")
+        reasoning = response_data.get("choices", [{}])[0].get("message", {}).get("reasoning", None)
+        if reasoning:
+            print(f"{TF.MAGENTA}Reasoning tokens:{TF.RESET}\n{reasoning}")
+        return output_text, response_data
+
+    response_gpt5_reasoning, stats_gpt5_reasoning = llm_wrapper_with_reasoning(
+        messages_gpt5,
+        model_name="openai/gpt-5-mini",
+        stream=False
+    )
+    print(f"\n{TF.DIM}LLM Response (GPT-5 Mini, with reasoning):{TF.RESET}\n{response_gpt5_reasoning}")
+    print(f"{TF.DIM}Raw API Response (GPT-5 Mini, with reasoning): {stats_gpt5_reasoning}{TF.RESET}\n")
 
     print(f"{TF.YELLOW}--- LLM Wrapper Self-Tests Done ---{TF.RESET}")

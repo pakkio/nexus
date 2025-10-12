@@ -55,6 +55,7 @@ def get_help_text(game_session_state: Optional[Dict[str, Any]] = None) -> str: #
  {TF.DIM}/hint{TF.RESET}                - Consult {wise_guide_name_for_help} for guidance based on your current situation.
       (Temporarily switches context to {wise_guide_name_for_help}).
  {TF.DIM}/endhint{TF.RESET}             - End consultation with {wise_guide_name_for_help} and return to your previous interaction.
+ {TF.DIM}/brief [on|off]{TF.RESET}      - Toggle brief mode: NPCs respond concisely without narrative flourishes.
  {TF.DIM}/inventory{TF.RESET}           - Display your inventory and Credits.
  {TF.DIM}/inv{TF.RESET}                 - Alias for /inventory.
  {TF.DIM}/give <item_name>{TF.RESET}    - Give an item to the current NPC (e.g., /give Mystic Token).
