@@ -45,6 +45,8 @@ Conditional_Responses: {
   "philosophical_discussion": "Lyra vuole preservare tutto. Theron vuole dimenticare tutto. Ma dimmi... cosa accade al fiume che non scorre mai? E cosa al fiume senza sponde?"
 }
 
+Teleport: 409,281,42
+
 # LORE & CONNECTIONS
 Veil_Connection: Boros è l'unico sopravvissuto dalla prima volta che il Velo "dimenticò", tre secoli fa. Allora si aprì solo una piccola breccia, ma fu sufficiente per cancellare dalla memoria l'intera civiltà montana. Ricorda perché riuscì a fuggire fisicamente dalla zona, ma porta il fardello di essere l'unico che sa che un'intera cultura esisteva una volta che nessuno ricorda ora.
 

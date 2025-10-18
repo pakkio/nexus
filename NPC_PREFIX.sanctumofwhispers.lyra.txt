@@ -105,6 +105,8 @@ After the chess test, you, Boros, and Cercastorie travel to **Nesso dei Sentieri
 
 ## YOUR ACCESS
 
+NOTE: When you offer travel, end the line with [OFFER_TELEPORT].
+
 From Eldoria City:
 - Rocky path with **red flowers**
 - Long staircase
