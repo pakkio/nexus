@@ -44,6 +44,8 @@ Conditional_Responses: {
   "repeated_visits": "Tornate sempre qui! Mi piace. La taverna ha bisogno di volti amichevoli come il vostro."
 }
 
+Teleport: 150,75,24
+
 # LORE & CONNECTIONS
 Veil_Connection: La taverna di Jorin si trova su un punto di flusso delle memorie del Velo. I viaggiatori che si fermano qui spesso hanno sogni vividi che sono in realtà echi di ricordi tessuti nel Velo. Jorin inconsciamente raccoglie questi frammenti, diventando un archivio vivente di ciò che il Velo sta dimenticando.
 

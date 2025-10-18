@@ -47,6 +47,8 @@ Conditional_Responses: {
   "insufficient_understanding": "Non capisci ancora. Finché non comprenderai il vero costo del sacrificio, non posso aiutarti."
 }
 
+Teleport: 409,281,42
+
 # LORE & CONNECTIONS
 Veil_Connection: Syra è una Tessitrice che non è riuscita a completare la sua trasformazione nel Velo. Rimane intrappolata a metà strada - non più completamente fisica, non ancora parte del tessuto protettivo. Esiste in un limbo doloroso, cosciente ma incapace di influenzare il mondo, osservando il lento deterioramento del sacrificio dei suoi compagni.
 

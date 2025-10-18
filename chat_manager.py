@@ -171,45 +171,47 @@ def format_stats(stats: Optional[Dict[str, Any]], model_type: str = "dialogue") 
 
 
 def build_npc_system_prompt(game_session_state, npc_name=None):
-    """Build system prompt for regular NPCs (not wise guides)"""
+    """Build system prompt for regular NPCs (not wise guides)
+
+    This is a wrapper that gets called dynamically when brief mode changes.
+    It looks up the current NPC from game_state and builds the full prompt.
+    """
     # Import here to avoid circular import
     from session_utils import build_system_prompt
-    
-    # For regular NPCs, we need to get their data and build a basic prompt
-    # This is a simplified version that focuses on brief mode handling
-    
-    prompt_lines = []
-    
-    # Brief mode - concise responses
-    brief_mode = game_session_state.get('brief_mode', False)
-    
-    if brief_mode:
-        prompt_lines.append("")
-        prompt_lines.append("=" * 80)
-        prompt_lines.append("🚨 MODALITÀ BRIEF ATTIVA - MASSIMO 50-80 PAROLE 🚨")
-        prompt_lines.append("=" * 80)
-        prompt_lines.append("")
-        prompt_lines.append("⚠️  LIMITE INVALICABILE: MAX 80 PAROLE TOTALI PER RISPOSTA")
-        prompt_lines.append("⚠️  PENALITÀ: Risposte oltre 80 parole sono VIETATE e considerate ERRORE GRAVE")
-        prompt_lines.append("")
-        prompt_lines.append("REGOLE BREVITÀ:")
-        prompt_lines.append("1. CONTA LE PAROLE prima di rispondere - deve essere 50-80 parole MAX")
-        prompt_lines.append("2. NO ELENCHI NUMERATI lunghi (max 2 punti)")
-        prompt_lines.append("3. NO SPIEGAZIONI dettagliate - solo informazione essenziale")
-        prompt_lines.append("4. RISPOSTE DIRETTE - vai subito al punto")
-        prompt_lines.append("5. [GIVEN_ITEMS:...] NON conta nel limite di parole")
-        prompt_lines.append("6. MANTIENI personalità ma sii CONCISO")
-        prompt_lines.append("7. FRASI BREVI - preferisci punti, non paragrafi")
-        prompt_lines.append("")
-        prompt_lines.append("✅ ESEMPI DI RISPOSTE BRIEF CORRETTE (50-80 parole):")
-        prompt_lines.append("❌ VIETA: 'Benvenuto, caro avventuriero, in questo magnifico luogo ricco di storia e mistero...'")
-        prompt_lines.append("✅ USA: 'Ciao. Cerchi qualcosa di specifico? [GIVEN_ITEMS: cristallo, 10 Credits]'")
-        prompt_lines.append("")
-        prompt_lines.append("💡 RICORDA: Se la tua risposta è > 80 parole, è un ERRORE GRAVE")
-        prompt_lines.append("=" * 80)
-        prompt_lines.append("")
-    
-    return "\n".join(prompt_lines)
+    from terminal_formatter import TerminalFormatter
+
+    # Get NPC data from game state
+    db = game_session_state.get('db')
+    current_npc = game_session_state.get('current_npc')
+    story = game_session_state.get('storyboard_text', '')
+
+    if not current_npc or not db:
+        # Fallback: return empty string if we don't have enough context
+        return ""
+
+    # Get llm_wrapper if available for profile distillation
+    try:
+        from llm_wrapper import llm_wrapper
+        llm_func = llm_wrapper
+    except:
+        llm_func = None
+
+    # Call the full build_system_prompt which loads PREFIX files
+    try:
+        system_prompt = build_system_prompt(
+            npc=current_npc,
+            story=story,
+            TF=TerminalFormatter,
+            game_session_state=game_session_state,
+            conversation_summary_for_guide_context=None,  # Not for guides
+            llm_wrapper_func_for_distill=llm_func
+        )
+        return system_prompt
+    except Exception as e:
+        print(f"Warning: Error building NPC system prompt: {e}")
+        import traceback
+        traceback.print_exc()
+        return ""
 
 class ChatSession:
     """Gestisce una sessione di chat interattiva con un LLM."""
