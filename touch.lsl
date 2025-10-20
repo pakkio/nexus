@@ -301,9 +301,7 @@ process_sl_commands(string commands)
         {
             // Notecard command: notecard=name|content
             string notecard_data = llGetSubString(command_part, 9, -1);
-            llOwnerSay("Notecard command received: broadcasting to region for LSL notecard receiver");
-            // Broadcast the notecard command to the region so lsl_notecard_receiver.lsl can process it
-            llRegionSay(0, "[notecard=" + notecard_data + "]");
+            process_notecard(current_toucher, notecard_data);
         }
     }
 }
@@ -327,6 +325,94 @@ process_teleport(key avatar, string coords)
     {
         llOwnerSay("Invalid teleport coordinates: " + coords);
     }
+}
+
+// Process notecard command: notecard=NotecardName|Escaped_Content
+process_notecard(key avatar, string notecard_data)
+{
+    // Parse: "NotecardName|Escaped_Content"
+    integer pipe_pos = llSubStringIndex(notecard_data, "|");
+    if (pipe_pos == -1)
+    {
+        llOwnerSay("[ERROR] Notecard command malformed: no pipe separator");
+        return;
+    }
+
+    string notecard_name = llGetSubString(notecard_data, 0, pipe_pos - 1);
+    string escaped_content = llGetSubString(notecard_data, pipe_pos + 1, -1);
+
+    llOwnerSay("[NOTECARD] Creating notecard '" + notecard_name + "' for " + llKey2Name(avatar));
+    llOwnerSay("[NOTECARD] Content length: " + (string)llStringLength(escaped_content) + " chars");
+
+    // Unescape the content (reverse of Python's escape)
+    string content = unescape_notecard_content(escaped_content);
+
+    // Split content into lines
+    list notecard_lines = llParseString2List(content, ["\n"], []);
+
+    // Create the notecard
+    try
+    {
+        llOwnerSay("[NOTECARD] Calling osMakeNotecard with " + (string)llGetListLength(notecard_lines) + " lines");
+        osMakeNotecard(notecard_name, notecard_lines);
+
+        // Give the notecard to the player
+        llGiveInventory(avatar, notecard_name);
+        llOwnerSay("[NOTECARD] ✓ Notecard '" + notecard_name + "' given to " + llKey2Name(avatar));
+
+        // Optional: Remove from object inventory after giving
+        llRemoveInventory(notecard_name);
+    }
+    catch(exception e)
+    {
+        llOwnerSay("[ERROR] Failed to create/give notecard: " + llGetExceptionString(e));
+    }
+}
+
+// Unescape notecard content (reverse of Python escaping)
+// Python escapes: \\ → \\, " → \", \n → \n
+string unescape_notecard_content(string escaped)
+{
+    string result = "";
+    integer i = 0;
+    integer len = llStringLength(escaped);
+
+    while (i < len)
+    {
+        string char = llGetSubString(escaped, i, i);
+
+        if (char == "\\" && i + 1 < len)
+        {
+            string next_char = llGetSubString(escaped, i + 1, i + 1);
+            if (next_char == "n")
+            {
+                result += "\n";
+                i += 2;
+            }
+            else if (next_char == "\"")
+            {
+                result += "\"";
+                i += 2;
+            }
+            else if (next_char == "\\")
+            {
+                result += "\\";
+                i += 2;
+            }
+            else
+            {
+                result += char;
+                i += 1;
+            }
+        }
+        else
+        {
+            result += char;
+            i += 1;
+        }
+    }
+
+    return result;
 }
 
 // Function to end the current conversation
