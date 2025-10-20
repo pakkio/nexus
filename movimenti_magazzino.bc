@@ -1,0 +1,684 @@
+|*******************************************************************************
+|* tcmcs0000  0  VRC B61O a  code
+|* Stampa Movimenti di Magazzino
+|* Warehouse Movements Report
+|* Created for Nexus Project
+|* 2025-10-19
+|*******************************************************************************
+|* Form Type 4
+|*******************************************************************************
+|* Main table    : twhwmd400 Warehouse Transactions
+|* Form Type    : Type 4
+|* Description    : This session prints warehouse movements (receipts, issues,
+|*                  transfers) based on selection criteria including date range,
+|*                  warehouse, item, and movement type.
+|******************************************************************************
+
+|***************************** declaration section ****************************
+
+declaration:
+
+#ident "@(#)tcmcs0000  B61O_a_code  Rev.No. 1  19 Oct 25  nexus"
+
+|++++++    tables ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+    table    ttwhwmd400    |* Warehouse Transactions
+    table    ttwhwmd401    |* Warehouse Transaction Lines
+    table    ttwhina100    |* Warehouses
+    table    ttccom100     |* Business Partners
+    table    ttibd001      |* Items
+
+|***************************** form variables *********************************
+
+    |* Selection Range - Date Range
+    extern    domain    tcdate        mov.date.f
+    extern    domain    tcdate        mov.date.t
+    extern    domain    tcdsca        mov.date.f.desc
+    extern    domain    tcdsca        mov.date.t.desc
+
+    |* Selection Range - Warehouse
+    extern    domain    tcwhmd          wh.f
+    extern    domain    tcwhmd          wh.t
+    extern    domain    tcdsca          wh.f.desc
+    extern    domain    tcdsca          wh.t.desc
+
+    |* Selection Range - Item
+    extern    domain    tcitem          item.f
+    extern    domain    tcitem          item.t
+    extern    domain    tcdsca          item.f.desc
+    extern    domain    tcdsca          item.t.desc
+
+    |* Selection Range - Transaction Type
+    extern    domain    tcwhtr.type     tr.type.f
+    extern    domain    tcwhtr.type     tr.type.t
+    extern    domain    tcdsca          tr.type.f.desc
+    extern    domain    tcdsca          tr.type.t.desc
+
+    |* Selection Range - Business Partner
+    extern    domain    tccom.bpid      bp.f
+    extern    domain    tccom.bpid      bp.t
+    extern    domain    tcdsca          bp.f.desc
+    extern    domain    tcdsca          bp.t.desc
+
+    |* Options
+    extern    domain    tcyesno         print.details
+    extern    domain    tcyesno         print.totals
+    extern    domain    tcyesno         group.by.warehouse
+    extern    domain    tcyesno         group.by.item
+
+|***************************** report variables *******************************
+
+            long        report.id
+            long        total.transactions
+            long        total.lines
+        domain    tcqty         total.quantity
+        domain    tcqty         warehouse.total.quantity
+        domain    tcqty         item.total.quantity
+            long        warehouse.total.transactions
+            long        item.total.transactions
+
+        domain    tcwhmd      current.warehouse
+        domain    tcwhmd      current.item
+
+|***************************** program variables ******************************
+
+        domain    tcmcs.str132m    error.message
+
+|***************************** includes **************************************
+
+    #include <bic_dam>        |* DAL Support defines (tools)
+    #include "itcmcs2000"    |* DAL(-GUI) Support Defines
+
+|***************************** program section ******************************
+
+before.program:
+    |* Initialize variables
+    total.transactions = 0
+    total.lines = 0
+    total.quantity = 0
+    report.id = 0
+
+|***************************** group section *********************************
+
+group.1:
+init.group:
+    get.screen.defaults()
+    initialize.selection.ranges()
+
+|***************************** field section *********************************
+
+field.mov.date.f:
+when.field.changes:
+    mov.date.t = mov.date.f
+    mov.date.f.desc = string$(mov.date.f)
+    display("mov.date.t")
+    display("mov.date.f.desc")
+
+field.mov.date.t:
+check.input:
+    if mov.date.f > mov.date.t and mov.date.t <> 0 then
+        set.input.error("tdpur0001")
+        |* To date may not be before from date.
+        return
+    endif
+    mov.date.t.desc = string$(mov.date.t)
+    display("mov.date.t.desc")
+
+field.wh.f:
+before.zoom:
+    tdwhina100.whmd = wh.f
+when.field.changes:
+    wh.t = wh.f
+    wh.f.desc = get.warehouse.description(wh.f)
+    display("wh.t")
+    display("wh.f.desc")
+
+field.wh.t:
+before.zoom:
+    tdwhina100.whmd = wh.t
+when.field.changes:
+    wh.t.desc = get.warehouse.description(wh.t)
+    display("wh.t.desc")
+
+field.item.f:
+before.zoom:
+    tdibd001.item = item.f
+when.field.changes:
+    item.t = item.f
+    item.f.desc = get.item.description(item.f)
+    display("item.t")
+    display("item.f.desc")
+
+field.item.t:
+before.zoom:
+    tdibd001.item = item.t
+when.field.changes:
+    item.t.desc = get.item.description(item.t)
+    display("item.t.desc")
+
+field.tr.type.f:
+when.field.changes:
+    tr.type.t = tr.type.f
+    tr.type.f.desc = get.transaction.type.description(tr.type.f)
+    display("tr.type.t")
+    display("tr.type.f.desc")
+
+field.tr.type.t:
+when.field.changes:
+    tr.type.t.desc = get.transaction.type.description(tr.type.t)
+    display("tr.type.t.desc")
+
+field.bp.f:
+before.zoom:
+    tdccom100.bpid = bp.f
+when.field.changes:
+    bp.t = bp.f
+    bp.f.desc = get.business.partner.name(bp.f)
+    display("bp.t")
+    display("bp.f.desc")
+
+field.bp.t:
+before.zoom:
+    tdccom100.bpid = bp.t
+when.field.changes:
+    bp.t.desc = get.business.partner.name(bp.t)
+    display("bp.t.desc")
+
+|***************************** choice section ********************************
+
+choice.cont.process:
+before.choice:
+    check.all.input()
+on.choice:
+    execute(print.data)
+
+choice.print.data:
+before.choice:
+    if not open.report() then
+        choice.again()
+    endif
+on.choice:
+    process.warehouse.movements()
+after.choice:
+    close.report()
+    display.completion.message()
+
+|***************************** functions section ******************************
+
+functions:
+
+function void initialize.selection.ranges()
+{
+    |* Set minimum and maximum values for selection ranges
+    set.fmin(mov.date.f, domainof(mov.date.f))
+    set.fmax(mov.date.t, domainof(mov.date.t))
+    set.fmin(wh.f, domainof(wh.f))
+    set.fmax(wh.t, domainof(wh.t))
+    set.fmin(item.f, domainof(item.f))
+    set.fmax(item.t, domainof(item.t))
+    set.fmin(tr.type.f, domainof(tr.type.f))
+    set.fmax(tr.type.t, domainof(tr.type.t))
+    set.fmin(bp.f, domainof(bp.f))
+    set.fmax(bp.t, domainof(bp.t))
+
+    |* Set default options
+    print.details = tcyesno.yes
+    print.totals = tcyesno.yes
+    group.by.warehouse = tcyesno.no
+    group.by.item = tcyesno.no
+}
+
+function domain tcdsca get.warehouse.description(
+        domain    tcwhmd          i.warehouse)
+{
+        domain    tcdsca          description
+
+    if isspace(i.warehouse) then
+        return("")
+    endif
+
+    select    tdwhina100.desc:description
+    from    tdwhina100
+    where    tdwhina100._index1 = {:i.warehouse}
+    as set with 1 rows
+    selectdo
+    endselect
+
+    return(description)
+}
+
+function domain tcdsca get.item.description(
+        domain    tcitem          i.item)
+{
+        domain    tcdsca          description
+
+    if isspace(i.item) then
+        return("")
+    endif
+
+    select    tdibd001.dsca:description
+    from    tdibd001
+    where    tdibd001._index1 = {:i.item}
+    as set with 1 rows
+    selectdo
+    endselect
+
+    return(description)
+}
+
+function domain tcdsca get.transaction.type.description(
+        domain    tcwhtr.type     i.type)
+{
+        domain    tcdsca          description
+
+    |* Return domain description
+    description = enum.descr$("tcwhtr.type", i.type)
+
+    return(description)
+}
+
+function domain tcdsca get.business.partner.name(
+        domain    tccom.bpid      i.bp.id)
+{
+        domain    tcdsca          bp.name
+
+    if isspace(i.bp.id) then
+        return("")
+    endif
+
+    select    tdccom100.nama:bp.name
+    from    tdccom100
+    where    tdccom100._index1 = {:i.bp.id}
+    as set with 1 rows
+    selectdo
+    endselect
+
+    return(bp.name)
+}
+
+function boolean open.report()
+{
+    report.id = brp.open("rtcmcs000011000", "", 1)
+
+    if report.id < 0 then
+        mess("tcmcs00000.001", 1)
+        |* Cannot open report
+        return(false)
+    endif
+
+    return(true)
+}
+
+function void close.report()
+{
+    if report.id > 0 then
+        brp.close(report.id)
+    endif
+}
+
+function void process.warehouse.movements()
+{
+        long        transaction.count
+        boolean        first.record
+
+    transaction.count = 0
+    first.record = true
+    current.warehouse = ""
+    current.item = ""
+    warehouse.total.quantity = 0
+    warehouse.total.transactions = 0
+    item.total.quantity = 0
+    item.total.transactions = 0
+
+    |* Print report header
+    print.report.header()
+
+    |* Main selection query
+    if group.by.warehouse = tcyesno.yes and group.by.item = tcyesno.yes then
+        |* Process grouped by warehouse and item
+        process.movements.by.warehouse.and.item()
+    elseif group.by.warehouse = tcyesno.yes then
+        |* Process grouped by warehouse
+        process.movements.by.warehouse()
+    elseif group.by.item = tcyesno.yes then
+        |* Process grouped by item
+        process.movements.by.item()
+    else
+        |* Process in date sequence
+        process.movements.in.date.sequence()
+    endif
+
+    |* Print grand totals if requested
+    if print.totals = tcyesno.yes then
+        print.grand.totals()
+    endif
+}
+
+function void process.movements.in.date.sequence()
+{
+    select    tdwhwmd400.*
+    from    tdwhwmd400
+    where    tdwhwmd400._index1 between {:mov.date.f} and {:mov.date.t}
+    and      tdwhwmd400.whmd between :wh.f and :wh.t
+    and      tdwhwmd400.item between :item.f and :item.t
+    and      tdwhwmd400.trtype between :tr.type.f and :tr.type.t
+    and      tdwhwmd400.refcnt between :bp.f and :bp.t
+    order by tdwhwmd400.trdt, tdwhwmd400.whmd, tdwhwmd400.item
+    selectdo
+        process.single.transaction()
+        inc(total.transactions)
+    endselect
+
+    if total.transactions = 0 then
+        mess("tcmcs00000.002", 1)
+        |* No warehouse movements found matching selection criteria
+    endif
+}
+
+function void process.movements.by.warehouse()
+{
+    select    tdwhwmd400.*
+    from    tdwhwmd400
+    where    tdwhwmd400._index1 between {:mov.date.f} and {:mov.date.t}
+    and      tdwhwmd400.whmd between :wh.f and :wh.t
+    and      tdwhwmd400.item between :item.f and :item.t
+    and      tdwhwmd400.trtype between :tr.type.f and :tr.type.t
+    and      tdwhwmd400.refcnt between :bp.f and :bp.t
+    order by tdwhwmd400.whmd, tdwhwmd400.trdt, tdwhwmd400.item
+    selectdo
+        |* Check if warehouse changed
+        if tdwhwmd400.whmd <> current.warehouse and
+           not isspace(current.warehouse) then
+            print.warehouse.totals()
+            warehouse.total.quantity = 0
+            warehouse.total.transactions = 0
+        endif
+
+        current.warehouse = tdwhwmd400.whmd
+
+        process.single.transaction()
+        inc(total.transactions)
+        inc(warehouse.total.transactions)
+    endselect
+
+    |* Print last warehouse totals
+    if group.by.warehouse = tcyesno.yes and warehouse.total.transactions > 0 then
+        print.warehouse.totals()
+    endif
+
+    if total.transactions = 0 then
+        mess("tcmcs00000.002", 1)
+        |* No warehouse movements found matching selection criteria
+    endif
+}
+
+function void process.movements.by.item()
+{
+    select    tdwhwmd400.*
+    from    tdwhwmd400
+    where    tdwhwmd400._index1 between {:mov.date.f} and {:mov.date.t}
+    and      tdwhwmd400.whmd between :wh.f and :wh.t
+    and      tdwhwmd400.item between :item.f and :item.t
+    and      tdwhwmd400.trtype between :tr.type.f and :tr.type.t
+    and      tdwhwmd400.refcnt between :bp.f and :bp.t
+    order by tdwhwmd400.item, tdwhwmd400.trdt, tdwhwmd400.whmd
+    selectdo
+        |* Check if item changed
+        if tdwhwmd400.item <> current.item and
+           not isspace(current.item) then
+            print.item.totals()
+            item.total.quantity = 0
+            item.total.transactions = 0
+        endif
+
+        current.item = tdwhwmd400.item
+
+        process.single.transaction()
+        inc(total.transactions)
+        inc(item.total.transactions)
+    endselect
+
+    |* Print last item totals
+    if group.by.item = tcyesno.yes and item.total.transactions > 0 then
+        print.item.totals()
+    endif
+
+    if total.transactions = 0 then
+        mess("tcmcs00000.002", 1)
+        |* No warehouse movements found matching selection criteria
+    endif
+}
+
+function void process.movements.by.warehouse.and.item()
+{
+    select    tdwhwmd400.*
+    from    tdwhwmd400
+    where    tdwhwmd400._index1 between {:mov.date.f} and {:mov.date.t}
+    and      tdwhwmd400.whmd between :wh.f and :wh.t
+    and      tdwhwmd400.item between :item.f and :item.t
+    and      tdwhwmd400.trtype between :tr.type.f and :tr.type.t
+    and      tdwhwmd400.refcnt between :bp.f and :bp.t
+    order by tdwhwmd400.whmd, tdwhwmd400.item, tdwhwmd400.trdt
+    selectdo
+        |* Check if warehouse changed
+        if tdwhwmd400.whmd <> current.warehouse and
+           not isspace(current.warehouse) then
+            print.warehouse.totals()
+            warehouse.total.quantity = 0
+            warehouse.total.transactions = 0
+        endif
+
+        current.warehouse = tdwhwmd400.whmd
+
+        process.single.transaction()
+        inc(total.transactions)
+        inc(warehouse.total.transactions)
+    endselect
+
+    |* Print last warehouse totals
+    if group.by.warehouse = tcyesno.yes and warehouse.total.transactions > 0 then
+        print.warehouse.totals()
+    endif
+
+    if total.transactions = 0 then
+        mess("tcmcs00000.002", 1)
+        |* No warehouse movements found matching selection criteria
+    endif
+}
+
+function void process.single.transaction()
+{
+        domain    tcdsca        warehouse.desc
+        domain    tcdsca        item.desc
+        domain    tcdsca        tr.type.desc
+        domain    tcdsca        reference.text
+        domain    tcqty         transaction.quantity
+            long        line.count
+
+    |* Get descriptions
+    warehouse.desc = get.warehouse.description(tdwhwmd400.whmd)
+    item.desc = get.item.description(tdwhwmd400.item)
+    tr.type.desc = get.transaction.type.description(tdwhwmd400.trtype)
+    reference.text = tdwhwmd400.refcnt
+
+    |* Get transaction quantity (positive for receipts, negative for issues)
+    transaction.quantity = tdwhwmd400.qty
+
+    |* Print transaction header
+    print.transaction.header(warehouse.desc, item.desc, tr.type.desc, reference.text)
+
+    |* Process transaction lines if requested
+    line.count = 0
+
+    if print.details = tcyesno.yes then
+        select    tdwhwmd401.*
+        from    tdwhwmd401
+        where    tdwhwmd401._index1 = {:tdwhwmd400.trid}
+        selectdo
+            print.transaction.line()
+            inc(line.count)
+            inc(total.lines)
+        endselect
+    else
+        |* Count lines without printing details
+        select    count(*):line.count
+        from    tdwhwmd401
+        where    tdwhwmd401._index1 = {:tdwhwmd400.trid}
+        selectdo
+        endselect
+
+        total.lines = total.lines + line.count
+    endif
+
+    |* Print transaction footer with totals
+    print.transaction.footer(transaction.quantity, line.count)
+
+    |* Update totals
+    total.quantity = total.quantity + transaction.quantity
+    warehouse.total.quantity = warehouse.total.quantity + transaction.quantity
+    item.total.quantity = item.total.quantity + transaction.quantity
+}
+
+function void print.report.header()
+{
+    brp.ready(report.id)
+    brp.field(report.id, "report.title", "WAREHOUSE MOVEMENTS REPORT")
+    brp.field(report.id, "print.date", string$(utc.num()))
+    brp.field(report.id, "selection.criteria", build.selection.criteria.text())
+    brp.line(report.id, 1)
+}
+
+function domain tcmcs.str255m build.selection.criteria.text()
+{
+        domain    tcmcs.str255m    criteria.text
+
+    criteria.text = "Date: " & string$(mov.date.f) & " - " &
+                    string$(mov.date.t)
+
+    if not isspace(wh.f) or not isspace(wh.t) then
+        criteria.text = criteria.text & " | Warehouse: " &
+                        trim$(wh.f) & " - " &
+                        trim$(wh.t)
+    endif
+
+    if not isspace(item.f) or not isspace(item.t) then
+        criteria.text = criteria.text & " | Item: " &
+                        trim$(item.f) & " - " &
+                        trim$(item.t)
+    endif
+
+    if tr.type.f <> 0 or tr.type.t <> 0 then
+        criteria.text = criteria.text & " | Type: " &
+                        string$(tr.type.f) & " - " &
+                        string$(tr.type.t)
+    endif
+
+    if not isspace(bp.f) or not isspace(bp.t) then
+        criteria.text = criteria.text & " | BP: " &
+                        trim$(bp.f) & " - " &
+                        trim$(bp.t)
+    endif
+
+    return(criteria.text)
+}
+
+function void print.transaction.header(
+        domain    tcdsca        i.warehouse.desc,
+        domain    tcdsca        i.item.desc,
+        domain    tcdsca        i.tr.type.desc,
+        domain    tcdsca        i.reference.text)
+{
+    brp.ready(report.id)
+    brp.field(report.id, "transaction.id", tdwhwmd400.trid)
+    brp.field(report.id, "transaction.date", string$(tdwhwmd400.trdt))
+    brp.field(report.id, "warehouse.code", tdwhwmd400.whmd)
+    brp.field(report.id, "warehouse.description", i.warehouse.desc)
+    brp.field(report.id, "item.code", tdwhwmd400.item)
+    brp.field(report.id, "item.description", i.item.desc)
+    brp.field(report.id, "transaction.type", i.tr.type.desc)
+    brp.field(report.id, "transaction.reference", i.reference.text)
+    brp.field(report.id, "business.partner", tdwhwmd400.refcnt)
+    brp.line(report.id, 2)
+}
+
+function void print.transaction.line()
+{
+        domain    tcdsca        location.description
+        domain    tcdsca        lot.number
+        domain    tcdate        expiry.date
+
+    |* Get location description
+    |* Note: In actual implementation, you might need to fetch from a location table
+    location.description = tdwhwmd401.floc
+
+    |* Get lot information if applicable
+    lot.number = tdwhwmd401.lot
+    expiry.date = tdwhwmd401.expd
+
+    brp.ready(report.id)
+    brp.field(report.id, "line.number", str$(tdwhwmd401.lino))
+    brp.field(report.id, "from.location", tdwhwmd401.floc)
+    brp.field(report.id, "to.location", tdwhwmd401.tloc)
+    brp.field(report.id, "lot.number", lot.number)
+    brp.field(report.id, "expiry.date", string$(expiry.date))
+    brp.field(report.id, "line.quantity", str$(tdwhwmd401.qty))
+    brp.field(report.id, "unit.of.measure", tdwhwmd401.uom)
+    brp.line(report.id, 3)
+}
+
+function void print.transaction.footer(
+        domain    tcqty           i.transaction.quantity,
+            long        i.line.count)
+{
+    brp.ready(report.id)
+    brp.field(report.id, "transaction.line.count", str$(i.line.count))
+    brp.field(report.id, "transaction.quantity", str$(i.transaction.quantity))
+    brp.line(report.id, 4)
+}
+
+function void print.warehouse.totals()
+{
+    if print.totals = tcyesno.yes then
+        brp.ready(report.id)
+        brp.field(report.id, "warehouse.code", current.warehouse)
+        brp.field(report.id, "warehouse.description", get.warehouse.description(current.warehouse))
+        brp.field(report.id, "warehouse.transaction.count", str$(warehouse.total.transactions))
+        brp.field(report.id, "warehouse.total.quantity", str$(warehouse.total.quantity))
+        brp.line(report.id, 5)
+    endif
+}
+
+function void print.item.totals()
+{
+    if print.totals = tcyesno.yes then
+        brp.ready(report.id)
+        brp.field(report.id, "item.code", current.item)
+        brp.field(report.id, "item.description", get.item.description(current.item))
+        brp.field(report.id, "item.transaction.count", str$(item.total.transactions))
+        brp.field(report.id, "item.total.quantity", str$(item.total.quantity))
+        brp.line(report.id, 6)
+    endif
+}
+
+function void print.grand.totals()
+{
+    brp.ready(report.id)
+    brp.field(report.id, "total.transactions", str$(total.transactions))
+    brp.field(report.id, "total.lines", str$(total.lines))
+    brp.field(report.id, "grand.total.quantity", str$(total.quantity))
+    brp.line(report.id, 7)
+}
+
+function void display.completion.message()
+{
+        domain    tcmcs.str132m    message.text
+
+    message.text = "Warehouse movements report completed. Total transactions: " &
+                   str$(total.transactions) &
+                   " | Total quantity: " &
+                   str$(total.quantity)
+
+    mess(message.text, 0)
+}
+
+|***************************** end of script **********************************

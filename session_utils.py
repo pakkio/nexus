@@ -1,3 +1,4 @@
+import os
 import random
 import traceback
 import hashlib
@@ -89,27 +90,51 @@ def _load_npc_narrative_prefix(npc_area: str, npc_name: str) -> str:
   """Load NPC-specific narrative context prefix.
 
   Args:
-      npc_area: NPC's area (e.g., 'city', 'village', 'forest')
-      npc_name: NPC's name (e.g., 'irenna', 'garin', 'elira')
+      npc_area: NPC's area (e.g., 'city', 'village', 'forest', 'ancientruins')
+      npc_name: NPC's name (e.g., 'irenna', 'garin', 'elira', 'syra')
 
   Returns:
       str: Personalized narrative context for this NPC, or empty string if not found
   """
-  # Normalize area and name to lowercase for filename
-  area_normalized = npc_area.lower().replace(' ', '').replace('_', '')
-  name_normalized = npc_name.lower().replace(' ', '').replace('_', '')
+  # Normalize: lowercase, replace spaces/camelCase with lowercase
+  # Format: NPC_PREFIX.{area}.{name}.txt
+  area_normalized = npc_area.lower().replace(' ', '')
+  name_normalized = npc_name.lower().replace(' ', '')
 
-  prefix_filename = f"NPC_PREFIX.{area_normalized}.{name_normalized}.txt"
+  # DEBUG: Log what we're looking for
+  debug_prefix_search = os.environ.get('DEBUG_PREFIX_SEARCH', 'false').lower() == 'true'
+  if debug_prefix_search:
+    print(f"[DEBUG PREFIX] Looking for {npc_name} in {npc_area}")
+    print(f"[DEBUG PREFIX] Normalized: area='{area_normalized}', name='{name_normalized}'")
 
-  try:
-    with open(prefix_filename, 'r', encoding='utf-8') as f:
-      return f.read()
-  except FileNotFoundError:
-    # No personalized prefix for this NPC - that's okay, return empty
-    return ""
-  except Exception as e:
-    print(f"Warning: Error loading NPC prefix {prefix_filename}: {e}")
-    return ""
+  # Try multiple filename patterns for flexibility
+  possible_filenames = [
+    f"NPC_PREFIX.{area_normalized}.{name_normalized}.txt",
+    f"NPC_PREFIX.{npc_area.lower()}.{npc_name.lower()}.txt",
+  ]
+
+  for prefix_filename in possible_filenames:
+    if debug_prefix_search:
+      print(f"[DEBUG PREFIX] Trying: {prefix_filename}")
+    try:
+      with open(prefix_filename, 'r', encoding='utf-8') as f:
+        content = f.read()
+        if content.strip():  # Only return if file has content
+          if debug_prefix_search:
+            print(f"[DEBUG PREFIX] ✓ FOUND: {prefix_filename} ({len(content)} chars)")
+          return content
+    except FileNotFoundError:
+      if debug_prefix_search:
+        print(f"[DEBUG PREFIX] ✗ Not found: {prefix_filename}")
+      continue
+    except Exception as e:
+      print(f"Warning: Error loading NPC prefix {prefix_filename}: {e}")
+      continue
+
+  # No personalized prefix found for this NPC
+  if debug_prefix_search:
+    print(f"[DEBUG PREFIX] ✗ No PREFIX found for {npc_name}")
+  return ""
 
 def build_system_prompt(
     npc: Dict[str, Any],
@@ -153,6 +178,14 @@ def build_system_prompt(
 
     # Load NPC-specific narrative context FIRST (if available)
     npc_narrative_prefix = _load_npc_narrative_prefix(area, name)
+
+    # DEBUG: Log if PREFIX was loaded
+    debug_system_prompt = os.environ.get('DEBUG_SYSTEM_PROMPT', 'false').lower() == 'true'
+    if debug_system_prompt:
+      if npc_narrative_prefix:
+        print(f"[DEBUG PROMPT] ✓ PREFIX LOADED for {name}: {len(npc_narrative_prefix)} chars")
+      else:
+        print(f"[DEBUG PROMPT] ✗ NO PREFIX for {name}")
 
     prompt_lines = []
 
