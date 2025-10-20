@@ -650,48 +650,6 @@ string unescape_json_string(string input)
 }
 
 // Clean response text for speaking
-string clean_response_text(string response)
-{
-    // Remove Unicode escape sequences (like \ud83d\ude0a for emojis)
-    integer pos = llSubStringIndex(response, "\\u");
-    while (pos != -1) {
-        // Find the end of the unicode sequence (4 hex digits after \u)
-        if (pos + 5 < llStringLength(response)) {
-            string before = llGetSubString(response, 0, pos - 1);
-            string after = llGetSubString(response, pos + 6, -1);
-            response = before + after;
-        } else {
-            // If incomplete sequence at end, just remove it
-            response = llGetSubString(response, 0, pos - 1);
-        }
-        pos = llSubStringIndex(response, "\\u");
-    }
-
-    // Remove other escape sequences like \n
-    response = llDumpList2String(llParseString2List(response, ["\\n"], []), " ");
-    response = llDumpList2String(llParseString2List(response, ["\\r"], []), "");
-    response = llDumpList2String(llParseString2List(response, ["\\t"], []), " ");
-
-    // Remove markdown formatting
-    response = llDumpList2String(llParseString2List(response, ["**"], []), "");
-    response = llDumpList2String(llParseString2List(response, ["*"], []), "");
-
-    // Trim whitespace
-    while (llGetSubString(response, 0, 0) == " " && llStringLength(response) > 0) {
-        response = llGetSubString(response, 1, -1);
-    }
-    while (llGetSubString(response, -1, -1) == " " && llStringLength(response) > 0) {
-        response = llGetSubString(response, 0, -2);
-    }
-
-    // Limit length for LSL say function
-    if (llStringLength(response) > 1000) {
-        response = llGetSubString(response, 0, 996) + "...";
-    }
-
-    return response;
-}
-
 // Check server health during initialization
 check_server_health()
 {
