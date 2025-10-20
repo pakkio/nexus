@@ -222,7 +222,7 @@ handle_chat_response(string response_body)
 
     if (npc_response != "")
     {
-        // Clean the response text
+        // Clean the response text (remove Unicode, escape sequences, markdown, etc.)
         string clean_response = clean_response_text(npc_response);
 
         // Speak to the current toucher
@@ -242,6 +242,58 @@ handle_chat_response(string response_body)
         llOwnerSay("Processing SL commands: " + sl_commands);
         process_sl_commands(sl_commands);
     }
+}
+
+// Clean response text for speaking (comprehensive cleanup)
+string clean_response_text(string response)
+{
+    // Remove Unicode escape sequences (like \ud83d\ude0a for emojis)
+    integer pos = llSubStringIndex(response, "\\u");
+    while (pos != -1)
+    {
+        // Find the end of the unicode sequence (4 hex digits after \u)
+        if (pos + 5 < llStringLength(response))
+        {
+            string before = llGetSubString(response, 0, pos - 1);
+            string after = llGetSubString(response, pos + 6, -1);
+            response = before + after;
+        }
+        else
+        {
+            // If incomplete sequence at end, just remove it
+            response = llGetSubString(response, 0, pos - 1);
+        }
+        pos = llSubStringIndex(response, "\\u");
+    }
+
+    // Remove other escape sequences like \n, \r, \t
+    response = llDumpList2String(llParseString2List(response, ["\\n"], []), " ");
+    response = llDumpList2String(llParseString2List(response, ["\\r"], []), "");
+    response = llDumpList2String(llParseString2List(response, ["\\t"], []), " ");
+
+    // Remove markdown formatting
+    response = llDumpList2String(llParseString2List(response, ["**"], []), "");
+    response = llDumpList2String(llParseString2List(response, ["*"], []), "");
+
+    // Trim leading whitespace
+    while (llGetSubString(response, 0, 0) == " " && llStringLength(response) > 0)
+    {
+        response = llGetSubString(response, 1, -1);
+    }
+
+    // Trim trailing whitespace
+    while (llGetSubString(response, -1, -1) == " " && llStringLength(response) > 0)
+    {
+        response = llGetSubString(response, 0, -2);
+    }
+
+    // Limit length for LSL say function
+    if (llStringLength(response) > 2500)
+    {
+        response = llGetSubString(response, 0, 2496) + "...";
+    }
+
+    return response;
 }
 
 // Process SL commands from NPC response
