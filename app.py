@@ -891,7 +891,8 @@ def chat_with_npc():
                     include_teleport=teleport_offered,
                     npc_response=cleaned_response,
                     include_notecard=has_notecard,
-                    notecard_content=notecard_content
+                    notecard_content=notecard_content,
+                    notecard_name=notecard_name
                 )
 
                 # Update npc_response to remove the notecard command (keep only the dialogue)
@@ -1207,7 +1208,8 @@ def sense_player():
                 current_npc,
                 npc_response=cleaned_response,
                 include_notecard=has_notecard,
-                notecard_content=notecard_content
+                notecard_content=notecard_content,
+                notecard_name=notecard_name
             )
 
             # Update npc_response to remove the notecard command (keep only the dialogue)
