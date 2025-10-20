@@ -75,16 +75,18 @@ def generate_summary_for_llsettext(npc_response: str, npc_name: str = "NPC") -> 
         return summary + "..."
 
 
-def generate_sl_command_prefix(npc_data: Optional[Dict[str, Any]], include_teleport: bool = False, npc_response: str = "") -> str:
+def generate_sl_command_prefix(npc_data: Optional[Dict[str, Any]], include_teleport: bool = False, npc_response: str = "", include_notecard: bool = False, notecard_content: str = "") -> str:
     """Generate Second Life command prefix for NPC responses.
 
     Args:
         npc_data: Dictionary containing NPC data with SL fields
         include_teleport: If True, includes teleport coordinates from NPC data
         npc_response: The NPC's response text to generate summary for llSetText
+        include_notecard: If True, creates and gives a notecard to the player
+        notecard_content: The content for the notecard (efficient quoting preserved)
 
     Returns:
-        String in format [lookup=?;llSetText=?;emote=?;anim=?;teleport=?] or empty string if no NPC data
+        String in format [lookup=?;llSetText=?;emote=?;anim=?;teleport=?;notecard=?] or empty string if no NPC data
     """
     if not npc_data:
         return ""
@@ -95,6 +97,7 @@ def generate_sl_command_prefix(npc_data: Optional[Dict[str, Any]], include_telep
     lookup_str = npc_data.get('lookup', '')
     llsettext_str = npc_data.get('llsettext', '')
     teleport_str = npc_data.get('teleport', '')
+    notecard_name_str = npc_data.get('notecard_name', f"{npc_data.get('name', 'NPC')}_Note")
 
     # Parse comma-separated values and pick random ones
     emotes_list = [e.strip() for e in emotes_str.split(',') if e.strip()] if emotes_str else []
@@ -118,6 +121,17 @@ def generate_sl_command_prefix(npc_data: Optional[Dict[str, Any]], include_telep
     # The entire teleport string is treated as one coordinate set (x,y,z format)
     selected_teleport = teleport_str.strip() if include_teleport and teleport_str else ""
 
+    # Notecard: Create efficient quoted notecard content if requested
+    # Uses URL encoding for efficient LSL quoting to avoid choking the script
+    notecard_command = ""
+    if include_notecard and notecard_content:
+        # Efficient quoting: escape only necessary characters for LSL string
+        # Replace newlines with \n, quotes with \", backslashes with \\
+        escaped_content = notecard_content.replace("\\", "\\\\").replace('"', '\\"').replace("\n", "\\n")
+        # Truncate to reasonable LSL string length (~1024 chars for safety)
+        escaped_content = escaped_content[:1000]
+        notecard_command = f"notecard={notecard_name_str}|{escaped_content}"
+
     # Build the command prefix - only include non-empty fields
     command_parts = []
     if selected_lookup:
@@ -130,6 +144,8 @@ def generate_sl_command_prefix(npc_data: Optional[Dict[str, Any]], include_telep
         command_parts.append(f"anim={selected_animation}")
     if selected_teleport:
         command_parts.append(f"teleport={selected_teleport}")
+    if notecard_command:
+        command_parts.append(notecard_command)
 
     if command_parts:
         return f"[{';'.join(command_parts)}]"

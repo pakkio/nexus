@@ -9,6 +9,9 @@ from typing import List, Dict, Optional, Tuple, Any
 
 from dotenv import load_dotenv
 
+# Load environment variables at module import time
+load_dotenv()
+
 # Create a session with connection pooling for better performance
 _request_session = None
 
@@ -205,6 +208,140 @@ def collect_direct_api_statistics(model_name: str,
 # --- End collect_direct_api_statistics ---
 
 
+def _try_anthropic_api(messages: List[Dict[str, str]],
+                       model_name: str,
+                       formatting_function: Optional[callable],
+                       stream: bool,
+                       width: Optional[int],
+                       collect_stats: bool) -> Tuple[str, Optional[Dict[str, Any]]]:
+    """
+    Try to use Anthropic API directly for claude-haiku-4.5.
+    Returns (text, stats) tuple. If fails, stats will contain error.
+
+    Note: Anthropic API uses a separate top-level 'system' parameter,
+    not 'system' role in messages array.
+    """
+    api_key = os.environ.get("ANTHROPIC_API_KEY")
+    if not api_key:
+        logging.warning("ANTHROPIC_API_KEY not set, skipping Anthropic API")
+        return "", {"error": "ANTHROPIC_API_KEY not set"}
+
+    api_base = "https://api.anthropic.com/v1"
+    headers = {
+        "x-api-key": api_key,
+        "anthropic-version": "2023-06-01",
+        "content-type": "application/json",
+    }
+
+    # Map model name to Anthropic's Haiku 4.5
+    # claude-haiku-4-5 is the correct model ID for Haiku 4.5 on Anthropic API
+    # API will resolve it to claude-haiku-4-5-20251001
+    anthropic_model = "claude-haiku-4-5"
+    if "4.5" in model_name or model_name == "claude-haiku-4.5":
+        anthropic_model = "claude-haiku-4-5"  # Haiku 4.5
+
+    # Extract system message from messages array (Anthropic API requires it separately)
+    system_message = ""
+    user_messages = []
+    for msg in messages:
+        if msg.get("role") == "system":
+            system_message = msg.get("content", "")
+        else:
+            user_messages.append(msg)
+
+    payload = {
+        "model": anthropic_model,
+        "max_tokens": 512,
+        "messages": user_messages,
+        "stream": stream,
+    }
+
+    # Add system message if present
+    if system_message:
+        payload["system"] = system_message
+
+    start_time = time.time()
+    first_token_time = None
+    output_text = ""
+
+    try:
+        session = get_request_session()
+        response = session.post(
+            f"{api_base}/messages",
+            headers=headers,
+            json=payload,
+            stream=stream,
+            timeout=60
+        )
+
+        if response.status_code != 200:
+            logging.error(f"Anthropic API failed with status {response.status_code}: {response.text}")
+            return "", {"error": f"Anthropic API error {response.status_code}"}
+
+        if stream:
+            # Handle streaming from Anthropic
+            output_text, first_token_time = _process_anthropic_stream(response, formatting_function, width, first_token_time)
+        else:
+            # Handle non-streaming
+            response_data = response.json()
+            content = response_data.get("content", [])
+            if content and isinstance(content[0], dict):
+                output_text = content[0].get("text", "")
+
+        if collect_stats:
+            stats = {
+                "model": anthropic_model,
+                "total_time": time.time() - start_time,
+                "time_to_first_token": first_token_time - start_time if first_token_time else None,
+                "input_tokens": 0,  # Would need to parse from response
+                "output_tokens": 0,
+                "total_tokens": 0,
+            }
+            return output_text, stats
+
+        return output_text, None
+
+    except Exception as e:
+        logging.exception(f"Anthropic API call failed: {e}")
+        return "", {"error": f"Anthropic API error: {str(e)}"}
+
+
+def _process_anthropic_stream(response, formatting_function, width, first_token_time):
+    """Process Anthropic API streaming response"""
+    output_text = ""
+    try:
+        for line in response.iter_lines():
+            if line:
+                decoded = line.decode('utf-8').strip()
+                if not decoded.startswith("data:"):
+                    continue
+
+                json_str = decoded[5:].strip()
+                if not json_str:
+                    continue
+
+                try:
+                    chunk = json.loads(json_str)
+                    if chunk.get("type") == "content_block_delta":
+                        delta = chunk.get("delta", {})
+                        if delta.get("type") == "text_delta":
+                            token = delta.get("text", "")
+                            if token:
+                                if first_token_time is None:
+                                    first_token_time = time.time()
+                                output_text += token
+                                print(token, end='', flush=True)
+                except json.JSONDecodeError:
+                    pass
+
+        if output_text:
+            print("", flush=True)
+    except Exception as e:
+        logging.exception(f"Error processing Anthropic stream: {e}")
+
+    return output_text, first_token_time
+
+
 def llm_wrapper(messages: List[Dict[str, str]],
                 model_name: Optional[str] = None,
                 formatting_function: Optional[callable] = None,
@@ -215,6 +352,16 @@ def llm_wrapper(messages: List[Dict[str, str]],
         logging.error("llm_wrapper: Called with empty messages list.")
         return "[Errore: Nessun messaggio]", {"error": "No messages provided"}
 
+    # DUAL-PROVIDER SUPPORT: Try Anthropic API first for Haiku 4.5, fallback to OpenRouter
+    if model_name and model_name == "claude-haiku-4.5":
+        result = _try_anthropic_api(messages, model_name, formatting_function, stream, width, collect_stats)
+        if result[1] is None or "error" not in result[1]:  # Success or no error
+            return result
+        # If Anthropic API fails, log and fall through to OpenRouter fallback
+        logging.warning(f"Anthropic API failed for {model_name}, falling back to OpenRouter with claude-3.5-haiku")
+        model_name = "anthropic/claude-3.5-haiku"  # Fallback
+
+    # DEFAULT: Use OpenRouter
     api_key = os.environ.get("OPENROUTER_API_KEY")
     api_base = "https://openrouter.ai/api/v1"
     site_url = os.environ.get("OPENROUTER_APP_URL", "http://localhost")

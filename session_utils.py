@@ -86,6 +86,153 @@ def _format_storyboard_for_prompt(story_text: str, max_length: int = 300) -> str
     return truncated + "..."
   return story_text
 
+
+def _condense_antefatto_for_npc(story_text: str, target_chars: int = 800) -> str:
+  """
+  Condense ilpercorsodelcercastorie narrative to ~800 chars for regular NPCs.
+  Preserves key narrative points: 9 stages, main NPCs, central conflict.
+
+  Args:
+    story_text: Full storyboard text
+    target_chars: Target character count (~800 for regular NPCs)
+
+  Returns:
+    Condensed narrative (~800 chars)
+  """
+  if not isinstance(story_text, str) or not story_text.strip():
+    return "[Antefatto: La memoria della narrazione è ancora frammentaria.]"
+
+  # Extract the antefatto (Premessa) which is a concise summary
+  lines = story_text.split('\n')
+
+  # Build a condensed version highlighting the 9 stages and key NPCs
+  condensed_parts = [
+    "Il Cercastorie è un Narratore Cosmico che ha perso la memoria delle narrazioni.",
+    "Il suo compito: percorrere 9 tappe attraverso Eldoria per recuperarla.",
+    "Le 9 tappe del cammino:",
+    "1. VUOTO LIMINALE (Erasmus - Ambasciatore dell'Oblio)",
+    "2. ANTICHE ROVINE (Syra - Tessitrice incompleta)",
+    "3. TAVERNA (Jorin - Custode di Sogni Perduti)",
+    "4. FORGIA (Garin - Fabbro della Memoria)",
+    "5. FORESTA (Mara + Elira - Erborista e Custode della Foresta)",
+    "6. NESSO DEI SENTIERI (punto di convergenza delle missioni)",
+    "7. CITTÀ DI ELDORIA (Cassian il tiranno, Theron il rivoluzionario)",
+    "8. SANTUARIO DEI SUSSURRI (Lyra - Tessitrice Suprema, Boros - Guardiano della Montagna)",
+    "9. NESSO DEI SENTIERI (Meridia - Tessitrice del Destino per la Scelta Finale)",
+    "Conflitto centrale: Il Velo infranto si sta deteriorando. I Sussurri dell'Oblio consumano le narrazioni.",
+    "Tre scelte finali: preservare il Velo, trasformarlo, o dissolverlo.",
+  ]
+
+  condensed = "\n".join(condensed_parts)
+
+  # Truncate to target if needed
+  if len(condensed) > target_chars:
+    condensed = condensed[:target_chars].rsplit('\n', 1)[0]
+    if not condensed.endswith('.'):
+      condensed += "."
+
+  return condensed
+
+
+def _distill_previous_conversation(chat_history: List[Dict[str, str]], target_chars: int = 500) -> str:
+  """
+  Summarize previous NPC conversation to key decision points.
+  Extracts: what NPC offered, what player asked, key decisions made.
+
+  Args:
+    chat_history: Message history from ChatSession
+    target_chars: Target character count (~500 for regular NPCs)
+
+  Returns:
+    Distilled conversation summary (~500 chars)
+  """
+  if not chat_history or len(chat_history) < 2:
+    return ""
+
+  # Extract key information from the last few messages
+  recent_messages = chat_history[-6:] if len(chat_history) > 6 else chat_history
+
+  summary_parts = []
+
+  for msg in recent_messages:
+    role = msg.get('role', '')
+    content = msg.get('content', '')
+
+    if role == 'user':
+      # Player's last actions
+      if any(keyword in content.lower() for keyword in ['missione', 'missione', 'oggetto', 'dove', 'come', 'aiutami']):
+        summary_parts.append(f"Il Cercatore ha chiesto: {content[:100]}...")
+    elif role == 'assistant':
+      # NPC's key offers or requirements
+      if any(keyword in content.lower() for keyword in ['portami', 'dammi', 'se porti', 'cristallo', 'ciotola', 'minerale', 'trucioli']):
+        summary_parts.append(f"Missione offerta: {content[:100]}...")
+
+  distilled = " ".join(summary_parts)
+
+  # Truncate to target
+  if len(distilled) > target_chars:
+    distilled = distilled[:target_chars].rsplit(' ', 1)[0] + "..."
+
+  return distilled if distilled.strip() else ""
+
+
+def _enforce_system_prompt_size_limit(prompt_lines: List[str], max_chars: int = 4000, preserve_sections: List[str] = None) -> str:
+  """
+  Enforce size limit on system prompt while preserving critical sections.
+  Priority: Antefatto + Character data → Distilled profile → Game rules
+
+  Args:
+    prompt_lines: List of prompt lines/sections
+    max_chars: Maximum characters allowed (~4000 for regular NPCs)
+    preserve_sections: Sections that must be kept (game rules, character data, etc.)
+
+  Returns:
+    Properly sized prompt as single string
+  """
+  if preserve_sections is None:
+    preserve_sections = ["OBBLIGATORIE", "CRITICHE", "REGOLE LINGUISTICHE", "LINGUA OBBLIGATORIA"]
+
+  # Join all lines first
+  full_prompt = "\n".join(prompt_lines)
+
+  # If under limit, return as-is
+  if len(full_prompt) <= max_chars:
+    return full_prompt
+
+  # For regular NPCs, we want to keep:
+  # 1. Antefatto (early section)
+  # 2. Character data (Sei X, Motivazione, etc.)
+  # 3. Brief mode instructions if present
+  # 4. Player profile insights if present
+  # 5. Critical game rules
+
+  # SIMPLER APPROACH: Just trim from the end intelligently
+  # This preserves everything important at the beginning
+
+  lines = prompt_lines
+  current_size = len(full_prompt)
+
+  # If exceeds limit, progressively remove lines from the end
+  if current_size > max_chars:
+    # Start removing from the end, but keep minimum critical content
+    test_lines = lines[:]
+
+    while len("\n".join(test_lines)) > max_chars and len(test_lines) > 25:
+      # Remove groups of 5 lines from end to speed up process
+      test_lines = test_lines[:-5]
+
+    result = "\n".join(test_lines)
+
+    # If still over, trim last line carefully
+    if len(result) > max_chars:
+      result = result[:max_chars].rsplit('\n', 1)[0]
+      if result.endswith('^*'):  # Avoid cutting off formatting
+        result = result.rsplit(' ', 1)[0]
+
+    return result
+
+  return full_prompt
+
 def _load_npc_narrative_prefix(npc_area: str, npc_name: str) -> str:
   """Load NPC-specific narrative context prefix.
 
@@ -189,7 +336,20 @@ def build_system_prompt(
 
     prompt_lines = []
 
-    # Add personalized narrative context at the TOP if it exists
+    # For REGULAR NPCs: Add condensed antefatto FIRST (before PREFIX) to ensure it's never trimmed
+    is_regular_npc = name.lower() != (wise_guide_npc_name_from_state or "").lower()
+
+    if is_regular_npc:
+        # Add condensed antefatto at the very TOP so it survives trimming
+        # With 8KB budget, we can expand antefatto from 700 to 1200 chars for richer story context
+        prompt_lines.append("="*80)
+        prompt_lines.append("ANTEFATTO - IL TUO CONTESTO NARRATIVO")
+        prompt_lines.append("="*80)
+        condensed_antefatto = _condense_antefatto_for_npc(story, target_chars=1200)
+        prompt_lines.append(f"\n{condensed_antefatto}\n")
+        prompt_lines.append("="*80 + "\n")
+
+    # Add personalized narrative context (NPC PREFIX file)
     if npc_narrative_prefix:
         prompt_lines.append("="*80)
         prompt_lines.append("CONTESTO NARRATIVO PERSONALIZZATO PER TE")
@@ -284,16 +444,43 @@ def build_system_prompt(
         prompt_lines.append("")
         prompt_lines.append("="*60 + "\n")
 
-    # NPC awareness of player profile (distilled insights)
-    # MODIFIED: Check if current NPC is NOT the wise guide before adding distilled profile for regular NPCs
-    if player_profile and name.lower() != (wise_guide_npc_name_from_state or "").lower():
-        if llm_wrapper_func_for_distill and model_name_for_distill:
-            distilled_insights = get_distilled_profile_insights_for_npc(
-                player_profile, npc, story_context,
-                llm_wrapper_func_for_distill, model_name_for_distill, TF, game_session_state
+    # NPC awareness of player profile (distilled insights) and previous conversation
+    if is_regular_npc:
+        # For REGULAR NPCs: Add previous conversation summary (antefatto already added at top)
+        if game_session_state.get('last_npc_conversation_history'):
+            prompt_lines.append("\n" + "="*80)
+            prompt_lines.append("CIÒ CHE IL CERCATORE HA FATTO PRIMA (Interazione precedente)")
+            prompt_lines.append("="*80)
+            # With 8KB budget, we can capture more detailed previous conversation (800 chars instead of 400)
+            prev_conv_summary = _distill_previous_conversation(
+                game_session_state.get('last_npc_conversation_history', []),
+                target_chars=800
             )
-            if distilled_insights:
-                prompt_lines.append(f"\nSottile Consapevolezza del Cercatore (Adatta leggermente il tuo tono/approccio in base a questo): {distilled_insights}")
+            if prev_conv_summary:
+                prompt_lines.append(f"\n{prev_conv_summary}\n")
+            prompt_lines.append("="*80 + "\n")
+
+        # Add EXPANDED distilled player profile insights (with 8KB budget, can be more detailed)
+        if player_profile:
+            if llm_wrapper_func_for_distill and model_name_for_distill:
+                distilled_insights = get_distilled_profile_insights_for_npc(
+                    player_profile, npc, story_context,
+                    llm_wrapper_func_for_distill, model_name_for_distill, TF, game_session_state
+                )
+                if distilled_insights:
+                    prompt_lines.append(f"\nPROFILO PSICOLOGICO DEL CERCATORE (per adattare il tuo approccio):")
+                    prompt_lines.append(f"{distilled_insights}")
+
+                    # With 8KB budget, also add core traits directly for richer context
+                    core_traits = player_profile.get("core_traits", {})
+                    if core_traits:
+                        traits_str = ", ".join([f"{k}: {v}/10" for k, v in core_traits.items()])
+                        prompt_lines.append(f"\nTratti osservati: {traits_str}")
+
+                    # Add interaction style for richer NPC adaptation
+                    interaction_style = player_profile.get("interaction_style_summary", "")
+                    if interaction_style:
+                        prompt_lines.append(f"Stile di interazione: {interaction_style}")
 
     # Special context for the Wise Guide NPC when in hint mode
     # MODIFIED: Check if current NPC IS the wise guide
@@ -482,7 +669,27 @@ def build_system_prompt(
         "Esempio di risposta CORRETTA in cui NON DAI nulla perché il giocatore non ha fatto niente di speciale:",
         "NPC Dialogo: Hmm, non ti conosco abbastanza per fidarmi. Forse se mi portassi qualcosa che dimostra le tue intenzioni..."
     ])
-    return "\n".join(prompt_lines)
+
+    # Enforce size constraints
+    # For regular NPCs: ≤8KB (~8000 chars) to preserve token budget
+    #   Components: Antefatto (700) + PREFIX (1-2KB) + Character data (300) + Previous conv (800) + Game rules (~3KB) = ~6-8KB
+    #   8KB allows for: longer game rules + more detailed previous conversation summaries
+    #   Tokens: ~2000-2200 tokens system prompt + room for player messages
+    # For wise guides: allow more (no strict limit during /hint mode)
+    max_prompt_size = 8000 if is_regular_npc else 15000
+
+    final_prompt = _enforce_system_prompt_size_limit(
+        prompt_lines,
+        max_chars=max_prompt_size,
+        preserve_sections=["OBBLIGATORIE", "CRITICHE", "REGOLE LINGUISTICHE", "LINGUA OBBLIGATORIA", "COMPORTAMENTO", "ISTRUZIONI IMPORTANTI"]
+    )
+
+    # Debug: Log prompt size if enabled
+    if debug_system_prompt:
+        npc_type = "WISE_GUIDE" if not is_regular_npc else "REGULAR_NPC"
+        print(f"[DEBUG PROMPT] {npc_type} {name}: {len(final_prompt)} chars (max: {max_prompt_size})")
+
+    return final_prompt
 
 
 def load_and_prepare_conversation(
@@ -586,6 +793,12 @@ def save_current_conversation(db, player_id: str, current_npc: Optional[Dict[str
             history_to_save_to_db = chat_session.messages
             # print(f"{TF_class.DIM}[DEBUG] Saving {len(history_to_save_to_db)} messages to DB for {npc_code}{TF_class.RESET}") # Verbose
             db.save_conversation(player_id, npc_code, history_to_save_to_db)
+
+            # MODIFIED: Store conversation history in game_session_state for next NPC to reference
+            # This allows the next NPC to be aware of what the player just did
+            game_session_state['last_npc_conversation_history'] = chat_session.messages
+            game_session_state['last_npc_name'] = current_npc.get('name', 'Unknown')
+
         # else:
             # print(f"{TF_class.DIM}[DEBUG] No messages in session for {current_npc.get('name')}, skipping save.{TF_class.RESET}") # Verbose
     except Exception as e:
