@@ -19,6 +19,8 @@ integer TIMEOUT_SECONDS = 300;        // 5 minutes in seconds (300 seconds)
 // HTTP request tracking
 key chat_request_id;
 key leave_request_id;
+key health_request_id;           // Server health check request
+key npc_verify_request_id;       // NPC verification request
 
 default
 {
@@ -77,15 +79,19 @@ default
             return;
         }
 
-        // Set initial display text
-        llSetText("Tocca per parlare con " + NPC_NAME + "\n(Touch to talk)", <1.0, 1.0, 0.5>, 1.0);
+        // Set initial display text (verification in progress)
+        llSetText("Verifying " + NPC_NAME + "...", <1.0, 1.0, 0.5>, 1.0);
 
         // Initialize conversation state
         current_toucher = NULL_KEY;
         current_toucher_name = "";
         IS_CONVERSING = FALSE;
 
-        llOwnerSay("Touch-activated NPC '" + NPC_NAME + "' in area '" + CURRENT_AREA + "' initialized. Waiting for touch.");
+        llOwnerSay("Touch-activated NPC '" + NPC_NAME + "' in area '" + CURRENT_AREA + "' initialized.");
+        llOwnerSay("Starting verification...");
+
+        // Check server health and verify NPC configuration
+        check_server_health();
     }
 
     touch_start(integer total_number)
@@ -167,8 +173,34 @@ default
 
     http_response(key request_id, integer status, list metadata, string body)
     {
+        // Handle health check response
+        if (request_id == health_request_id)
+        {
+            if (status == 200)
+            {
+                handle_health_response(body);
+            }
+            else
+            {
+                llOwnerSay("✗ Server health check failed: " + (string)status);
+                llSetText("✗ Server unreachable\n" + NPC_NAME, <1.0, 0.0, 0.0>, 1.0);
+            }
+        }
+        // Handle NPC verification response
+        else if (request_id == npc_verify_request_id)
+        {
+            if (status == 200)
+            {
+                handle_npc_verification_response(body);
+            }
+            else
+            {
+                llOwnerSay("✗ NPC verification failed: " + (string)status);
+                llSetText("✗ NPC verification failed\n" + NPC_NAME, <1.0, 0.0, 0.0>, 1.0);
+            }
+        }
         // Handle chat responses
-        if (request_id == chat_request_id && IS_CONVERSING)
+        else if (request_id == chat_request_id && IS_CONVERSING)
         {
             if (status == 200)
             {
@@ -665,4 +697,95 @@ string clean_response_text(string response)
     }
 
     return response;
+}
+
+// Check server health during initialization
+check_server_health()
+{
+    list http_options = [
+        HTTP_METHOD, "GET",
+        HTTP_BODY_MAXLENGTH, 16384,
+        HTTP_VERIFY_CERT, FALSE
+    ];
+
+    health_request_id = llHTTPRequest(SERVER_URL + "/health", http_options, "");
+}
+
+// Handle health check response
+handle_health_response(string response_body)
+{
+    // Extract version from JSON
+    string version = extract_json_value(response_body, "version");
+    if (version != "")
+    {
+        llSetText("Eldoria v" + version + " - " + NPC_NAME + "\nVerifying NPC...", <1.0, 1.0, 0.0>, 1.0);
+        llOwnerSay("✓ Server health check passed. Version: " + version);
+    }
+    else
+    {
+        llSetText(NPC_NAME + "\nVerifying NPC...", <1.0, 1.0, 0.5>, 1.0);
+        llOwnerSay("✓ Server health check passed (version unknown)");
+    }
+
+    // Now verify NPC exists in database
+    verify_npc_exists();
+}
+
+// Verify NPC exists and check capabilities
+verify_npc_exists()
+{
+    string json_data = "{"
+        + "\"npc_name\":\"" + NPC_NAME + "\","
+        + "\"area\":\"" + CURRENT_AREA + "\""
+        + "}";
+
+    list http_options = [
+        HTTP_METHOD, "POST",
+        HTTP_MIMETYPE, "application/json",
+        HTTP_BODY_MAXLENGTH, 16384,
+        HTTP_VERIFY_CERT, FALSE
+    ];
+
+    npc_verify_request_id = llHTTPRequest(SERVER_URL + "/api/npc/verify", http_options, json_data);
+}
+
+// Handle NPC verification response
+handle_npc_verification_response(string response_body)
+{
+    string found = extract_json_value(response_body, "found");
+
+    if (found == "true")
+    {
+        string has_teleport = extract_json_value(response_body, "has_teleport");
+        string has_llsettext = extract_json_value(response_body, "has_llsettext");
+        string has_notecard = extract_json_value(response_body, "has_notecard");
+
+        // Build capabilities string
+        string capabilities = "";
+        if (has_teleport == "true") capabilities += "✓ Teleport | ";
+        if (has_llsettext == "true") capabilities += "✓ Text | ";
+        if (has_notecard == "true") capabilities += "✓ Notecard";
+
+        // Remove trailing " | " if present
+        if (llGetSubString(capabilities, -2, -1) == "| ")
+        {
+            capabilities = llGetSubString(capabilities, 0, -4);
+        }
+
+        llSetText("✓ " + NPC_NAME + " (" + CURRENT_AREA + ")\n[" + capabilities + "]\nTocca per parlare", <0.0, 1.0, 0.0>, 1.0);
+        llOwnerSay("✓ NPC configuration verified!");
+        llOwnerSay("  NPC: " + NPC_NAME + " in area: " + CURRENT_AREA);
+        llOwnerSay("  Capabilities: [" + capabilities + "]");
+    }
+    else
+    {
+        string error = extract_json_value(response_body, "error");
+        llSetText("✗ NPC not found\n" + NPC_NAME + " (" + CURRENT_AREA + ")", <1.0, 0.0, 0.0>, 1.0);
+        llOwnerSay("✗ ERROR: NPC not found in database");
+        llOwnerSay("  Requested: " + NPC_NAME + " in area: " + CURRENT_AREA);
+        if (error != "")
+        {
+            llOwnerSay("  Error message: " + error);
+        }
+    }
 }
