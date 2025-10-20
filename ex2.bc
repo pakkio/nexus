@@ -1,0 +1,376 @@
+|******************************************************************************
+|* txsls3200  0  VRC B61O a  code
+|* Generation of delivery schemes for fees
+|* ALTEAIN -
+|* 2022-01-28
+|******************************************************************************
+|* Form Type 4
+|******************************************************************************
+|* ID INFC21132001, Juan Pablo Franceschetti, 16-05-2022
+|* Added check on the contract line IC status
+|*
+|* ID INFC21133002, Alessandro Nonis, 16-05-2022
+|* Modified start date and end date
+|*
+|* ID INFC21133002_B, Juan Pablo Franceschetti, 17-05-2022
+|* Modified start date and end date
+|*
+|* ID INFC21151001, Juan Pablo Franceschetti, 08-06-2022
+|* changed delivery lines for annual frequency and invoice date calculation
+|*
+|* ID INFC21160001, Alessandro Nonis, 22-09-2022
+|* GAP 160
+|*
+|* ID INFC21113002, Alessandro Nonis, 21-10-2022
+|* quantity in tdsls304 = tdsls301
+|*
+|* ID INFC21082005, Alessandro Nonis, 08-11-2022
+|* modifica per selezione con raggruppamento = CNB (canoni)
+|* GAP 113 - modifica per date anno solare no
+|*
+|* ID INFC21113005, Alessandro Nonis, 17-11-2022
+|* GAP 113 - modifica per date anno solare no
+|*
+|* ID INFC21FIX025, Alessandro Nonis, 17-01-2023
+|* modifica generazione schemi consegna
+|*
+|* ID INFC21FIX047, Alessandro Nonis, 14-04-2023
+|* modifica per date superiori 2038
+|*
+|* ID INFC23G17001, Alessandro Nonis, 25-09-2023
+|* gap ng017 - aggiunto al "gruppo" elaborato "valorizzato provvisorio"
+|*
+|* ID INFC24113001, Guido Trossarello, 2023-01-15
+|* Fix valorizzazione invoice date tdsls304
+|******************************************************************************
+
+|****************************** declaration section ***************************
+declaration:
+
+#ident "@(#) IDINFC21132001, Juan Pablo Franceschetti, 2022-05-16, B61O_a_code"
+#ident "@(#) IDINFC21132002_B, Juan Pablo Franceschetti, 2022-05-17, B61O_a_code"
+#ident "@(#) IDINFC21151001, Juan Pablo Franceschetti, 2022-06-08, B61O_a_code"
+#ident "@(#) IDINFC21160001, Alessandro Nonis, 22-09-2022, B61O_a_code"
+#ident "@(#) IDINFC23G17001, Alessandro Nonis, 25-09-2023, B61O_a_code"
+#ident "@(#) IDINFC24113001, Guido Trossarello, 2023-01-15, B61O_a_code"
+
+    table    ttdsls300
+    table    ttdsls301
+    table    ttdsls304
+    table    ttxinf000
+
+    extern    domain    tccono        cono.f
+    extern    domain    tccono        cono.t
+    extern    domain    tcpono        pono.f
+    extern    domain    tcpono        pono.t
+
+    extern    domain    tcmcs.str15    ornocono
+    extern    domain    tcmcs.str100    errorline
+    extern        long        k.data, cono.num, g.i
+
+            long        report.id
+
+        domain    tcdate        edat, cdat, actual.date
+        domain    tcdate        process.date
+        domain    tcdate        invoice.date
+        domain    tcdate        end.date
+            long        ret, yy, mm, dd, hh, mi, se, months,
+                    yy2, mm2, dd2, hh2, mi2, se2
+            double        n.rate, rata
+        domain    tcdate        dummy.date
+        domain    tcmcs.long    skip.record
+
+    #include    <bic_dam>        |* Defines for DAL handling
+    #include    "itcmcs2000"        |* Defines for DAL(-GUI) Support
+
+|****************************** program section ********************************
+before.program:
+    tcmcs.dll0095.read.parm("txinf000")
+
+|****************************** group section **********************************
+
+group.1:
+init.group:
+    get.screen.defaults()
+
+
+|****************************** field section ***********************************
+field.cono.f:
+when.field.changes:
+    cono.t = cono.f
+
+field.pono.f:
+when.field.changes:
+    pono.t = pono.f
+
+|****************************** choice section **********************************
+choice.cont.process:
+on.choice:
+    process()
+
+|****************************** functions **********************************
+functions:
+
+function process()
+{
+        long        ret.304
+        boolean        last, first, error
+
+    report.id = 0
+
+    g.i = 0
+    select    tdsls301.*, tdsls300.*
+    from    tdsls301, tdsls300, tcibd001
+        ,tcmcs015
+    where    tdsls300._index1 inrange {:cono.f} and {:cono.t}
+    and    tdsls301._index1 inrange {tdsls300.cono, :pono.f}
+                     and {tdsls300.cono, :pono.t}
+    and    tcibd001._index1 = {tdsls301.item}
+    and    tcmcs015._index1 = {tcibd001.ctyp}
+    and    tcmcs015.cdf_ragr = txragr.cnb
+    and    tdsls300.icap = tcicap.free
+    and    tdsls300.cdf_stic = tccom.bpst.active
+    and    tdsls300.cdf_prov = tcyesno.no
+    and     tdsls301.cdf_istl = txicap.active
+    and    not exists (    select     tdsls304.*
+                from    tdsls304
+                where    tdsls304._index1 = {tdsls301.cono,
+                                tdsls301.pono,
+                                tdsls301.cofc})
+    selectdo
+        if tdsls301.edat = 0 then
+            |data riga contratto vuota - porto avanti 1 anno
+            cdat = tdsls301.cdat
+
+            ret = utc.to.date(tdsls301.cdat, yy, mm, dd, hh, mi, se)
+
+            edat = date.to.utc(yy + 1, mm, dd, 0, 0, 0)
+
+            edat = edat - 1
+        else
+            cdat = tdsls301.sdat
+            edat = tdsls301.edat
+        endif
+
+        actual.date = cdat
+        end.date = edat
+        process.date = cdat
+
+        error = false
+
+        |variabili per report
+        ornocono = trim$(tdsls301.cono) & trim$(str$(tdsls301.pono))
+        k.data = 0
+
+        last = false
+
+        while actual.date <= end.date
+            on case tdsls301.cdf_tfat
+                case txtfat.ant:
+                    |scrittura 304 ddta = actual.date
+                    ret = utc.to.date(actual.date, yy, mm, dd, hh, mi, se)
+                    actual.date = date.to.utc(yy, mm, 1, 0, 0, 0)
+
+                    mm = 1
+                    on case tdsls301.cdf_pfat
+                        case txpfat.ann:
+                            last = true
+                            break
+                    endcase
+                    break
+                case txtfat.pos:
+                    ret = utc.to.date(actual.date, yy, mm, dd, hh, mi, se)
+
+                    dd = tccom.dll0350.get.last.day.of.month(mm, yy)
+
+                    actual.date = date.to.utc(yy, mm, dd, 0, 0, 0)
+
+                    mm = 1
+                    break
+            endcase
+            process.date = actual.date
+
+            invoice.date = txint.dll0010.calculate.invoice.date(
+                    cdat,
+                    end.date,
+                    process.date,
+                    tdsls301.cdf_tfat,
+                    tdsls301.cdf_pfat,
+                    tdsls301.cdf_solr,
+                    dummy.date,
+                    dummy.date)
+
+            skip.record = false
+            on case tdsls301.cdf_tfat
+            case txtfat.ant:
+                invoice.date = max(tdsls301.sdat, invoice.date)
+                break
+            case txtfat.pos:
+                if invoice.date > tdsls301.edat then
+                    skip.record = true
+                endif
+            endcase
+
+            if not skip.record then
+                ret.304 = create.new.sales.contract.line(tdsls301.cono,
+                                tdsls301.pono,
+                                tdsls301.cofc,
+                                invoice.date,
+                                tdsls301.qoor,
+                                actual.date)
+            endif
+
+            |actual.date + mm
+            utc.add(actual.date, 0, mm, 0, 0, 0, 0, actual.date)
+            utc.add(process.date, 0, mm, 0, 0, 0, 0, process.date)
+
+            if actual.date = 0 then
+                last = true
+            endif
+
+            if not last then
+                check.date(end.date, actual.date, last)
+            else
+                actual.date = end.date + 1
+            endif
+
+            if ret.304 = 0 then
+                commit.transaction()
+            else
+                |report
+                print.error.report(report.id)
+                error = true
+                abort.transaction()
+                break
+            endif
+        endwhile
+    selectempty
+        mess("txsls32000.003", 1)
+    endselect
+
+    close.error.report(report.id)
+
+    mess("txsls32000.002", 1)
+}
+
+function boolean item.is.valid(domain    tcitem    i.item)
+{
+    select    ibd001.ctyp
+    from    tcibd001 ibd001
+    where    ibd001._index1 = {:i.item}
+    and    ibd001.ctyp = :txinf000.ctyp
+    as set with 1 rows
+    selectdo
+        return(true)
+    endselect
+
+    return(false)
+}
+
+function long calculate.months()
+{
+        long    year, mesi
+
+    ret = utc.to.date(tdsls301.cdat, yy, mm, dd, hh, mi, se)
+    ret = utc.to.date(tdsls301.edat, yy2, mm2, dd2, hh2, mi2, se2)
+
+    year = yy2-yy
+
+    mesi = (yy2-yy) * 12 + (mm2 - mm)
+
+    if dd2 > dd then
+        mesi = mesi + 1
+    endif
+
+    return(mesi)
+}
+
+function check.date(domain tcdate i.edat, ref domain tcdate io.data, ref boolean io.last)
+{
+    if io.data > i.edat then
+        io.data = i.edat
+        io.last = true
+    endif
+}
+
+function long create.new.sales.contract.line(
+                        domain    tccono        i.cono,
+                        domain    tcpono        i.pono,
+                        domain    tccwoc        i.cofc,
+                        domain    tcdate        i.idat,
+                        domain    tcqsl3        i.qoor,
+                        domain    tcdate        i.ddta)
+{
+        long    ret
+
+    db.retry.point()
+
+    select    tdsls304.*
+    from    tdsls304
+    where    tdsls304._index1 = {:i.cono, :i.pono, :i.cofc, :i.ddta}
+    as set with 1 rows
+    selectdo
+    selectempty
+        dal.new.object("tdsls304")
+        dal.set.field("tdsls304.cono", i.cono)
+        dal.set.field("tdsls304.pono", i.pono)
+        dal.set.field("tdsls304.cofc", i.cofc)
+        dal.set.field("tdsls304.sqnb", get.new.sequence.tdsls304(i.cono,
+                                    i.pono,
+                                    i.cofc))
+        dal.set.field("tdsls304.ddta", i.ddta)
+        dal.set.field("tdsls304.qoor", i.qoor)
+        dal.set.field("tdsls304.orno", "")
+        dal.set.field("tdsls304.posi", 0)
+        dal.set.field("tdsls304.lcmp", 0)
+        dal.set.field("tdsls304.cdf_idat", i.idat)
+        ret = dal.save.object("tdsls304")
+    endselect
+
+    return(ret)
+}
+
+function domain tcpono get.new.sequence.tdsls304(
+                        domain    tccono        i.cono,
+                        domain    tcpono        i.pono,
+                        domain    tccwoc        i.cofc)
+{
+    domain    tcpono        l.sqnb
+
+    l.sqnb = 0
+
+    select    MAX(tdsls304.sqnb):l.sqnb
+    from    tdsls304
+    where    tdsls304._index1 = {:i.cono, :i.pono, :i.cofc}
+    as set with 1 rows
+    selectdo
+    endselect
+
+    inc(l.sqnb)
+
+    return(l.sqnb)
+}
+
+function print.error.report(ref long i.reid)
+{
+    if i.reid = 0 then
+        i.reid = brp.open ("rtxsls320011000", "", 1)
+        if i.reid < 0 then
+            mess("txsls32000.001", 1)
+        endif
+    endif
+    while dal.get.error.message(errorline) >= 0
+        brp.ready(i.reid)
+        inc(k.data)
+    endwhile
+}
+
+
+function close.error.report(long i.reid)
+{
+    if i.reid > 0 then
+        brp.close(i.reid)
+    endif
+}
+
+|****************************** end of script *********************************
