@@ -485,22 +485,15 @@ process_notecard(key avatar, string notecard_data)
     list notecard_lines = llParseString2List(content, ["\n"], []);
 
     // Create the notecard
-    try
-    {
-        llOwnerSay("[NOTECARD] Calling osMakeNotecard with " + (string)llGetListLength(notecard_lines) + " lines");
-        osMakeNotecard(notecard_name, notecard_lines);
+    llOwnerSay("[NOTECARD] Calling osMakeNotecard with " + (string)llGetListLength(notecard_lines) + " lines");
+    osMakeNotecard(notecard_name, notecard_lines);
 
-        // Give the notecard to the player
-        llGiveInventory(avatar, notecard_name);
-        llOwnerSay("[NOTECARD] ✓ Notecard '" + notecard_name + "' given to " + llKey2Name(avatar));
+    // Give the notecard to the player
+    llGiveInventory(avatar, notecard_name);
+    llOwnerSay("[NOTECARD] ✓ Notecard '" + notecard_name + "' given to " + llKey2Name(avatar));
 
-        // Optional: Remove from object inventory after giving
-        llRemoveInventory(notecard_name);
-    }
-    catch(exception e)
-    {
-        llOwnerSay("[ERROR] Failed to create/give notecard: " + llGetExceptionString(e));
-    }
+    // Remove from object inventory after giving
+    llRemoveInventory(notecard_name);
 }
 
 // Unescape notecard content (reverse of Python escaping)
