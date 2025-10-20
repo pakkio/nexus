@@ -5,9 +5,9 @@
 // Resets automatically after 5 minutes of inactivity
 
 // Configuration
-string SERVER_URL = "http://localhost:5000";  // Your Nexus server URL
-string NPC_NAME;                              // Name of this NPC (will be set to object name)
-string CURRENT_AREA = "DefaultArea";          // Area name for context
+string SERVER_URL = "";                       // Will be read from object description
+string NPC_NAME;                              // Name of this NPC (will be parsed from object name)
+string CURRENT_AREA;                          // Area name (will be parsed from object name)
 
 // State variables
 key current_toucher = NULL_KEY;       // Key of the avatar currently in conversation
@@ -24,8 +24,58 @@ default
 {
     state_entry()
     {
-        // Get the object name to use as NPC name
-        NPC_NAME = llGetObjectName();
+        // Read server URL from object description
+        SERVER_URL = llStringTrim(llGetObjectDesc(), STRING_TRIM);
+
+        // Validate server URL
+        if (SERVER_URL == "" || llSubStringIndex(SERVER_URL, "http") != 0)
+        {
+            llOwnerSay("ERRORE CRITICO: URL del server non configurato correttamente!");
+            llOwnerSay("Imposta l'URL nella descrizione dell'oggetto (es: http://212.227.64.143:5000)");
+            llOwnerSay("Descrizione attuale: '" + SERVER_URL + "'");
+            llSetText("ERRORE: URL non configurato\n(Vedi console)", <1.0, 0.0, 0.0>, 1.0);
+            return;
+        }
+
+        // Parse object name to extract NPC name and area (format: "NPCName.AreaName")
+        string object_name = llGetObjectName();
+        list name_parts = llParseString2List(object_name, ["."], []);
+
+        if (llGetListLength(name_parts) >= 2)
+        {
+            // Extract NPC name (first part) and area (second part)
+            NPC_NAME = llList2String(name_parts, 0);
+            CURRENT_AREA = llList2String(name_parts, 1);
+
+            // Validate naming format
+            if (NPC_NAME == "" || CURRENT_AREA == "")
+            {
+                llOwnerSay("ERRORE: Nome o Area vuoti!");
+                llOwnerSay("Formato corretto: 'NomeNPC.NomeArea' (es: Elira.Forest)");
+                llSetText("ERRORE: Nome formato non valido\n" + object_name, <1.0, 0.5, 0.0>, 1.0);
+                return;
+            }
+
+            llOwnerSay("✓ NPC: " + NPC_NAME + " | Area: " + CURRENT_AREA);
+            llOwnerSay("✓ Server: " + SERVER_URL);
+        }
+        else
+        {
+            // Error for incorrect naming
+            llOwnerSay("ERRORE CRITICO: Nome oggetto non nel formato corretto!");
+            llOwnerSay("Nome attuale: '" + object_name + "'");
+            llOwnerSay("Formato richiesto: 'NomeNPC.NomeArea'");
+            llOwnerSay("Esempi validi:");
+            llOwnerSay("  • 'Lyra.SanctumOfWhispers'");
+            llOwnerSay("  • 'Jorin.Tavern'");
+            llOwnerSay("  • 'Elira.Forest'");
+
+            // Use fallback
+            NPC_NAME = object_name;
+            CURRENT_AREA = "Unknown";
+            llSetText("ERRORE: Nome non valido\n" + object_name + "\nVedi console", <1.0, 0.0, 0.0>, 1.0);
+            return;
+        }
 
         // Set initial display text
         llSetText("Tocca per parlare con " + NPC_NAME + "\n(Touch to talk)", <1.0, 1.0, 0.5>, 1.0);
@@ -35,7 +85,7 @@ default
         current_toucher_name = "";
         IS_CONVERSING = FALSE;
 
-        llOwnerSay("Touch-activated NPC initialized for " + NPC_NAME + ". Waiting for touch.");
+        llOwnerSay("Touch-activated NPC '" + NPC_NAME + "' in area '" + CURRENT_AREA + "' initialized. Waiting for touch.");
     }
 
     touch_start(integer total_number)
