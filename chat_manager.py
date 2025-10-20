@@ -203,9 +203,9 @@ def generate_sl_command_prefix(npc_data: Optional[Dict[str, Any]], include_telep
     if include_notecard and notecard_content:
         # Efficient quoting: escape only necessary characters for LSL string
         # Replace newlines with \n, quotes with \", backslashes with \\
-        escaped_content = notecard_content.replace("\\", "\\\\").replace('"', '\\"').replace("\n", "\\n")
-        # Truncate to reasonable LSL string length (~1024 chars for safety)
-        escaped_content = escaped_content[:1000]
+        # Truncate BEFORE escaping to avoid heap overflow in LSL scripts
+        truncated_content = notecard_content[:600]  # Reduced from 1000 to 600 for safety with escaping overhead
+        escaped_content = truncated_content.replace("\\", "\\\\").replace('"', '\\"').replace("\n", "\\n")
         notecard_command = f"notecard={notecard_name_str}|{escaped_content}"
 
     # Build the command prefix - only include non-empty fields
