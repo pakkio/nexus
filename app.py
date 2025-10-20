@@ -84,7 +84,8 @@ def parse_npc_file(filepath):
         'name': '', 'area': '', 'role': '', 'motivation': '',
         'goal': '', 'needed_object': '', 'treasure': '',
         'playerhint': '', 'dialogue_hooks': '', 'veil_connection': '', 'code': '',
-        'emotes': '', 'animations': '', 'lookup': '', 'llsettext': '', 'teleport': ''
+        'emotes': '', 'animations': '', 'lookup': '', 'llsettext': '', 'teleport': '',
+        'notecard_feature': ''
     }
     known_keys_map = {
         'Name:': 'name', 'Area:': 'area', 'Role:': 'role',
@@ -94,9 +95,10 @@ def parse_npc_file(filepath):
         'Veil Connection:': 'veil_connection',
         'Dialogue Hooks:': 'dialogue_hooks_header',
         'Emotes:': 'emotes', 'Animations:': 'animations',
-        'Lookup:': 'lookup', 'Llsettext:': 'llsettext', 'Teleport:': 'teleport'
+        'Lookup:': 'lookup', 'Llsettext:': 'llsettext', 'Teleport:': 'teleport',
+        'NOTECARD_FEATURE:': 'notecard_feature'
     }
-    simple_multiline_fields = ['motivation', 'goal', 'playerhint', 'veil_connection', 'emotes', 'animations', 'lookup', 'llsettext', 'teleport']
+    simple_multiline_fields = ['motivation', 'goal', 'playerhint', 'veil_connection', 'emotes', 'animations', 'lookup', 'llsettext', 'teleport', 'notecard_feature']
 
     current_field_being_parsed = None
     dialogue_hooks_lines = []
