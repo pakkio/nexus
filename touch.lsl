@@ -321,6 +321,11 @@ handle_chat_response(string response_body)
     // Process SL commands if present
     if (sl_commands != "")
     {
+        // Check if notecard command is present
+        if (llSubStringIndex(sl_commands, "notecard=") != -1)
+        {
+            llOwnerSay("[NOTECARD] Notecard command found - processing...");
+        }
         process_sl_commands(sl_commands);
     }
 }
