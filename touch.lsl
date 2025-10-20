@@ -321,7 +321,6 @@ handle_chat_response(string response_body)
     // Process SL commands if present
     if (sl_commands != "")
     {
-        llOwnerSay("Processing SL commands: " + sl_commands);
         process_sl_commands(sl_commands);
     }
 }
@@ -475,9 +474,6 @@ process_notecard(key avatar, string notecard_data)
     string notecard_name = llGetSubString(notecard_data, 0, pipe_pos - 1);
     string escaped_content = llGetSubString(notecard_data, pipe_pos + 1, -1);
 
-    llOwnerSay("[NOTECARD] Creating notecard '" + notecard_name + "' for " + llKey2Name(avatar));
-    llOwnerSay("[NOTECARD] Content length: " + (string)llStringLength(escaped_content) + " chars");
-
     // Unescape the content (reverse of Python's escape)
     string content = unescape_notecard_content(escaped_content);
 
@@ -485,12 +481,11 @@ process_notecard(key avatar, string notecard_data)
     list notecard_lines = llParseString2List(content, ["\n"], []);
 
     // Create the notecard
-    llOwnerSay("[NOTECARD] Calling osMakeNotecard with " + (string)llGetListLength(notecard_lines) + " lines");
     osMakeNotecard(notecard_name, notecard_lines);
 
     // Give the notecard to the player
     llGiveInventory(avatar, notecard_name);
-    llOwnerSay("[NOTECARD] ✓ Notecard '" + notecard_name + "' given to " + llKey2Name(avatar));
+    llOwnerSay("✓ Notecard '" + notecard_name + "' given to " + llKey2Name(avatar));
 
     // Remove from object inventory after giving
     llRemoveInventory(notecard_name);
