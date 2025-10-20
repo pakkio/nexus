@@ -7,6 +7,7 @@ load_dotenv()
 
 import time
 import random
+import re
 from typing import List, Dict, Optional, Tuple, Any
 import traceback # Added for more detailed error printing if needed
 
@@ -23,6 +24,79 @@ except ImportError as e:
         def format_terminal_text(text, width=80): import textwrap; return "\n".join(textwrap.wrap(text, width=width))
         @staticmethod
         def get_terminal_width(): return 80
+
+
+def extract_notecard_from_response(npc_response: str) -> Tuple[str, str, str]:
+    """Extract notecard command from NPC response if present.
+
+    Looks for format: [notecard=NotecardName|NotecardContent]
+
+    Args:
+        npc_response: The NPC's response text
+
+    Returns:
+        Tuple of (cleaned_response, notecard_name, notecard_content)
+        - cleaned_response: Response with notecard command removed
+        - notecard_name: Name of the notecard (empty if none found)
+        - notecard_content: Content of the notecard (empty if none found)
+    """
+    # Look for notecard command in format [notecard=Name|Content]
+    # We need to find the LAST closing bracket that's preceded by content
+
+    start_marker = "[notecard="
+    start_idx = npc_response.find(start_marker)
+
+    if start_idx == -1:
+        return npc_response, "", ""
+
+    # Find the pipe separator
+    pipe_idx = npc_response.find("|", start_idx)
+    if pipe_idx == -1:
+        return npc_response, "", ""
+
+    # Extract notecard name (between = and |)
+    notecard_name = npc_response[start_idx + len(start_marker):pipe_idx].strip()
+
+    # Now find the closing bracket. The content can contain brackets, so we need
+    # to find a ] that closes the command. Look for the last ] that makes sense.
+    # We'll use a simple heuristic: the closing bracket should be followed by
+    # content that doesn't start with a bracket (or is end of string or whitespace)
+
+    # Start searching for ] after the pipe
+    search_start = pipe_idx + 1
+    end_idx = -1
+
+    # Scan forward to find the closing bracket
+    # We look for patterns like: content] followed by non-bracket or end of string
+    for i in range(search_start, len(npc_response)):
+        if npc_response[i] == "]":
+            # Check if this could be the end
+            # Look at what comes after
+            after_idx = i + 1
+            if after_idx >= len(npc_response):
+                # End of string
+                end_idx = i
+                break
+            elif npc_response[after_idx] in (' ', '\n', '.', ',', '!', '?'):
+                # Followed by whitespace or punctuation
+                end_idx = i
+                break
+            # Otherwise, could be content with ] in it, keep searching
+
+    # If we didn't find a clear ending, look for the last ]
+    if end_idx == -1:
+        end_idx = npc_response.rfind("]", search_start)
+
+    if end_idx == -1:
+        return npc_response, "", ""
+
+    # Extract notecard content (between | and ])
+    notecard_content = npc_response[pipe_idx + 1:end_idx].strip()
+
+    # Remove the notecard command from the response
+    cleaned_response = npc_response[:start_idx] + npc_response[end_idx + 1:]
+
+    return cleaned_response.strip(), notecard_name, notecard_content
 
 
 def generate_summary_for_llsettext(npc_response: str, npc_name: str = "NPC") -> str:

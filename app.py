@@ -877,11 +877,29 @@ def chat_with_npc():
         try:
             current_npc = player_system.game_state.get('current_npc') if player_system.game_state else None
             if current_npc:
-                from chat_manager import generate_sl_command_prefix
+                from chat_manager import generate_sl_command_prefix, extract_notecard_from_response
                 # Check if teleport was offered in this turn
                 teleport_offered = player_system.game_state.get('teleport_offered_this_turn', False) if player_system.game_state else False
-                sl_commands = generate_sl_command_prefix(current_npc, include_teleport=teleport_offered, npc_response=npc_response)
-                logger.info(f"Generated SL commands: '{sl_commands}' (teleport_offered={teleport_offered})")
+
+                # Extract notecard command from NPC response if present
+                cleaned_response, notecard_name, notecard_content = extract_notecard_from_response(npc_response)
+                has_notecard = notecard_name and notecard_content
+
+                # Generate SL commands with notecard if present
+                sl_commands = generate_sl_command_prefix(
+                    current_npc,
+                    include_teleport=teleport_offered,
+                    npc_response=cleaned_response,
+                    include_notecard=has_notecard,
+                    notecard_content=notecard_content
+                )
+
+                # Update npc_response to remove the notecard command (keep only the dialogue)
+                if has_notecard:
+                    npc_response = cleaned_response
+                    logger.info(f"Extracted notecard '{notecard_name}' from NPC response")
+
+                logger.info(f"Generated SL commands: '{sl_commands}' (teleport_offered={teleport_offered}, has_notecard={has_notecard})")
         except Exception as sl_error:
             logger.warning(f"Error generating SL commands: {str(sl_error)}")
             sl_commands = ""
@@ -1174,13 +1192,30 @@ def sense_player():
         
         # Create a minimal response object for consistency
         response = {'current_area': npc_area}
-        
+
         # Generate Second Life commands for the current NPC
         sl_commands = ""
         try:
-            from chat_manager import generate_sl_command_prefix
-            sl_commands = generate_sl_command_prefix(current_npc, npc_response=npc_response)
-            logger.info(f"Generated SL commands (sense): '{sl_commands}'")
+            from chat_manager import generate_sl_command_prefix, extract_notecard_from_response
+
+            # Extract notecard command from NPC response if present
+            cleaned_response, notecard_name, notecard_content = extract_notecard_from_response(npc_response)
+            has_notecard = notecard_name and notecard_content
+
+            # Generate SL commands with notecard if present
+            sl_commands = generate_sl_command_prefix(
+                current_npc,
+                npc_response=cleaned_response,
+                include_notecard=has_notecard,
+                notecard_content=notecard_content
+            )
+
+            # Update npc_response to remove the notecard command (keep only the dialogue)
+            if has_notecard:
+                npc_response = cleaned_response
+                logger.info(f"Extracted notecard '{notecard_name}' from NPC response (sense)")
+
+            logger.info(f"Generated SL commands (sense): '{sl_commands}' (has_notecard={has_notecard})")
         except Exception as sl_error:
             logger.warning(f"Error generating SL commands in sense: {str(sl_error)}")
             sl_commands = ""
