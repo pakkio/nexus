@@ -315,6 +315,7 @@ def build_system_prompt(
     repeat_greeting = npc.get('repeat_greeting', '')
     conditional_responses = npc.get('conditional_responses', '')
     ai_behavior_notes = npc.get('ai_behavior_notes', '')
+    notecard_feature = npc.get('notecard_feature', '')
 
     # Get Second Life command options
     emotes = npc.get('emotes', '')
@@ -393,6 +394,11 @@ def build_system_prompt(
             prompt_lines.append("")
             prompt_lines.append("⚠️  FORMATO OBBLIGATORIO: Ogni risposta DEVE includere un suggerimento visibile con separatori (===, ---, 💡, ecc.) o [GIVEN_ITEMS: ...]")
             prompt_lines.append("ESEMPIO: 'Benvenuto. === Suggerimento: Convincimi con parole sincere o porta una Pozione da Mara ==='")
+            prompt_lines.append("")
+
+        if notecard_feature:
+            prompt_lines.append(f"🔹 NOTECARD FEATURE (GENERA NOTECARD QUANDO APPROPRIATO):")
+            prompt_lines.append(f"   {notecard_feature}")
             prompt_lines.append("")
 
     # Brief mode - concise responses
