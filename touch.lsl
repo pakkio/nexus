@@ -218,6 +218,7 @@ handle_chat_response(string response_body)
 {
     // Extract NPC response from JSON
     string npc_response = extract_json_value(response_body, "npc_response");
+    string sl_commands = extract_json_value(response_body, "sl_commands");
 
     if (npc_response != "")
     {
@@ -233,6 +234,98 @@ handle_chat_response(string response_body)
     else
     {
         //llRegionSayTo(current_toucher, 0, "Non capisco bene la tua domanda. Puoi ripetere?");
+    }
+
+    // Process SL commands if present
+    if (sl_commands != "")
+    {
+        llOwnerSay("Processing SL commands: " + sl_commands);
+        process_sl_commands(sl_commands);
+    }
+}
+
+// Process SL commands from NPC response
+process_sl_commands(string commands)
+{
+    // Commands format: [lookup=obj;llSetText=msg;emote=gesture;anim=action;teleport=x,y,z;notecard=name|content;...]
+    // Remove outer brackets if present
+    if (llGetSubString(commands, 0, 0) == "[")
+    {
+        commands = llGetSubString(commands, 1, -2);  // Remove [ and ]
+    }
+
+    // Split by semicolon to get individual commands
+    list command_parts = llParseString2List(commands, [";"], []);
+    integer i;
+    for (i = 0; i < llGetListLength(command_parts); i++)
+    {
+        string command_part = llList2String(command_parts, i);
+        command_part = llStringTrim(command_part, STRING_TRIM);
+
+        // Check for different command types
+        if (llSubStringIndex(command_part, "lookup=") == 0)
+        {
+            // Lookup command: lookup=object_name
+            string lookup_obj = llGetSubString(command_part, 7, -1);
+            llOwnerSay("Lookup object: " + lookup_obj);
+        }
+        else if (llSubStringIndex(command_part, "llSetText=") == 0)
+        {
+            // llSetText command: llSetText=message
+            string text_msg = llGetSubString(command_part, 10, -1);
+            text_msg = llUnescapeURL(text_msg);  // Unescape URL encoding if any
+            llSetText(text_msg, <1.0, 1.0, 1.0>, 1.0);
+            llOwnerSay("Setting floating text: " + text_msg);
+        }
+        else if (llSubStringIndex(command_part, "emote=") == 0)
+        {
+            // Emote command: emote=gesture_name
+            string emote = llGetSubString(command_part, 6, -1);
+            llOwnerSay("Emote: " + emote);
+            // Could trigger SL animations/gestures here
+        }
+        else if (llSubStringIndex(command_part, "anim=") == 0)
+        {
+            // Animation command: anim=animation_name
+            string anim = llGetSubString(command_part, 5, -1);
+            llOwnerSay("Animation: " + anim);
+            // Could trigger SL animations here
+        }
+        else if (llSubStringIndex(command_part, "teleport=") == 0)
+        {
+            // Teleport command: teleport=x,y,z
+            string teleport_coords = llGetSubString(command_part, 9, -1);
+            process_teleport(current_toucher, teleport_coords);
+        }
+        else if (llSubStringIndex(command_part, "notecard=") == 0)
+        {
+            // Notecard command: notecard=name|content
+            string notecard_data = llGetSubString(command_part, 9, -1);
+            llOwnerSay("Notecard command received: broadcasting to region for LSL notecard receiver");
+            // Broadcast the notecard command to the region so lsl_notecard_receiver.lsl can process it
+            llRegionSay(0, "[notecard=" + notecard_data + "]");
+        }
+    }
+}
+
+// Process teleport command
+process_teleport(key avatar, string coords)
+{
+    // Parse coordinates: "x,y,z"
+    list coord_parts = llParseString2List(coords, [","], []);
+    if (llGetListLength(coord_parts) == 3)
+    {
+        float x = (float)llList2String(coord_parts, 0);
+        float y = (float)llList2String(coord_parts, 1);
+        float z = (float)llList2String(coord_parts, 2);
+
+        vector teleport_pos = <x, y, z>;
+        llOwnerSay("Teleporting " + llKey2Name(avatar) + " to " + (string)teleport_pos);
+        llTeleportAgent(avatar, "", teleport_pos, <0, 0, 0>);
+    }
+    else
+    {
+        llOwnerSay("Invalid teleport coordinates: " + coords);
     }
 }
 
