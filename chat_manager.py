@@ -149,7 +149,7 @@ def generate_summary_for_llsettext(npc_response: str, npc_name: str = "NPC") -> 
         return summary + "..."
 
 
-def generate_sl_command_prefix(npc_data: Optional[Dict[str, Any]], include_teleport: bool = False, npc_response: str = "", include_notecard: bool = False, notecard_content: str = "") -> str:
+def generate_sl_command_prefix(npc_data: Optional[Dict[str, Any]], include_teleport: bool = False, npc_response: str = "", include_notecard: bool = False, notecard_content: str = "", notecard_name: str = "") -> str:
     """Generate Second Life command prefix for NPC responses.
 
     Args:
@@ -158,6 +158,7 @@ def generate_sl_command_prefix(npc_data: Optional[Dict[str, Any]], include_telep
         npc_response: The NPC's response text to generate summary for llSetText
         include_notecard: If True, creates and gives a notecard to the player
         notecard_content: The content for the notecard (efficient quoting preserved)
+        notecard_name: Explicit notecard name (if not provided, uses default from NPC data)
 
     Returns:
         String in format [lookup=?;llSetText=?;emote=?;anim=?;teleport=?;notecard=?] or empty string if no NPC data
@@ -171,7 +172,8 @@ def generate_sl_command_prefix(npc_data: Optional[Dict[str, Any]], include_telep
     lookup_str = npc_data.get('lookup', '')
     llsettext_str = npc_data.get('llsettext', '')
     teleport_str = npc_data.get('teleport', '')
-    notecard_name_str = npc_data.get('notecard_name', f"{npc_data.get('name', 'NPC')}_Note")
+    # Use explicit notecard_name if provided, otherwise use NPC default
+    notecard_name_str = notecard_name if notecard_name else npc_data.get('notecard_name', f"{npc_data.get('name', 'NPC')}_Note")
 
     # Parse comma-separated values and pick random ones
     emotes_list = [e.strip() for e in emotes_str.split(',') if e.strip()] if emotes_str else []
