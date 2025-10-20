@@ -307,10 +307,7 @@ handle_chat_response(string response_body)
         // Clean the response text (remove Unicode, escape sequences, markdown, etc.)
         string clean_response = clean_response_text(npc_response);
 
-        // Speak to the current toucher
-        llRegionSayTo(current_toucher, 0, clean_response);
-
-        // Also say in public for others to hear
+        // Say response in public (only once - removed duplicate llRegionSayTo)
         llSay(0, clean_response);
     }
     else
@@ -321,11 +318,6 @@ handle_chat_response(string response_body)
     // Process SL commands if present
     if (sl_commands != "")
     {
-        // Check if notecard command is present
-        if (llSubStringIndex(sl_commands, "notecard=") != -1)
-        {
-            llOwnerSay("[NOTECARD] Notecard command found - processing...");
-        }
         process_sl_commands(sl_commands);
     }
 }
