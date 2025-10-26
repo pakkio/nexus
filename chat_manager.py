@@ -43,10 +43,17 @@ def extract_notecard_from_response(npc_response: str) -> Tuple[str, str, str]:
     # Look for notecard command in format [notecard=Name|Content]
     # We need to find the LAST closing bracket that's preceded by content
 
+    import logging
+    logger = logging.getLogger(__name__)
+
     start_marker = "[notecard="
     start_idx = npc_response.find(start_marker)
 
     if start_idx == -1:
+        logger.warning(f"[NOTECARD_EXTRACT] ✗ NO [notecard=...] FOUND in LLM response")
+        logger.warning(f"[NOTECARD_EXTRACT] Response length: {len(npc_response)} chars")
+        logger.warning(f"[NOTECARD_EXTRACT] First 300 chars: {npc_response[:300]}")
+        logger.warning(f"[NOTECARD_EXTRACT] Last 300 chars: {npc_response[-300:]}")
         return npc_response, "", ""
 
     # Find the pipe separator
@@ -93,8 +100,17 @@ def extract_notecard_from_response(npc_response: str) -> Tuple[str, str, str]:
     # Extract notecard content (between | and ])
     notecard_content = npc_response[pipe_idx + 1:end_idx].strip()
 
+    # Strip all unicode escape sequences to ensure clean ASCII in notecard
+    import re
+    # Remove patterns like \ud83d, \u2713, etc - replace with nothing
+    notecard_content = re.sub(r'\\u[0-9a-fA-F]{4}', '', notecard_content)
+
     # Remove the notecard command from the response
     cleaned_response = npc_response[:start_idx] + npc_response[end_idx + 1:]
+
+    import logging
+    logger = logging.getLogger(__name__)
+    logger.info(f"[NOTECARD] ✓ EXTRACTED: name='{notecard_name}', content_length={len(notecard_content)}")
 
     return cleaned_response.strip(), notecard_name, notecard_content
 
@@ -118,6 +134,8 @@ def generate_summary_for_llsettext(npc_response: str, npc_name: str = "NPC") -> 
     clean_text = clean_text.replace('*', '').replace('_', '')
     # Remove LSL protocol-breaking characters
     clean_text = clean_text.replace(';', ',').replace(']', ')')
+    # Convert newlines to ~ for LSL line break processing
+    clean_text = clean_text.replace('\n', '~')
     # Remove common prefixes
     for prefix in [f"{npc_name} ti dice", f"{npc_name} ti informa", "*", "- "]:
         clean_text = clean_text.replace(prefix, "").strip()
@@ -202,10 +220,12 @@ def generate_sl_command_prefix(npc_data: Optional[Dict[str, Any]], include_telep
     notecard_command = ""
     if include_notecard and notecard_content:
         # Efficient quoting: escape only necessary characters for LSL string
-        # Replace newlines with \n, quotes with \", backslashes with \\
+        # IMPORTANT: Do NOT escape backslashes first - this breaks Unicode escape sequences
+        # Only escape quotes and newlines - Unicode chars (emojis) will pass through intact
         # Truncate BEFORE escaping to avoid heap overflow in LSL scripts
         truncated_content = notecard_content[:600]  # Reduced from 1000 to 600 for safety with escaping overhead
-        escaped_content = truncated_content.replace("\\", "\\\\").replace('"', '\\"').replace("\n", "\\n")
+        # Order matters! Escape quotes and newlines, but NOT backslashes (keeps Unicode intact)
+        escaped_content = truncated_content.replace('"', '\\"').replace("\n", "\\n")
         notecard_command = f"notecard={notecard_name_str}|{escaped_content}"
 
     # Build the command prefix - only include non-empty fields

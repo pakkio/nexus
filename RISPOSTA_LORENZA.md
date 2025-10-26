@@ -29,12 +29,12 @@ Il problema root cause era **il naming dei file PREFIX**. Quando è stato fatto 
 - Il sistema inietta automaticamente questo contesto nella system prompt
 - I personaggi rispondono con consapevolezza della storia completa
 
-### 2. ✓ NOMENCLATURA NPC (Cercatore vs Cercastorie vs Viandante)
-**Tuo feedback:** "Erasmus risponde chiamandolo Cercatore e non Cercastorie"
+### 2. ✓ NOMENCLATURA NPC (Cercastorie vs Cercastorie vs Viandante)
+**Tuo feedback:** "Erasmus risponde chiamandolo Cercastorie e non Cercastorie"
 
 **Status:** CORRETTO
 - Erasmus ora usa correttamente **"Cercastorie"** (Story Seeker)
-- Gli altri NPCs mantengono **"Cercatore"** come definito
+- Gli altri NPCs mantengono **"Cercastorie"** come definito
 - Updated: `NPC_PREFIX.liminalvoid.erasmus.txt`
 
 ### 3. ✓ TEMPO DI RISPOSTA
@@ -73,7 +73,7 @@ Il problema root cause era **il naming dei file PREFIX**. Quando è stato fatto 
 - Revisionati tutti i PREFIX file per grammatica italiana
 - Corretto nomenclatura specifica:
   - ✓ "boccettina azzurra" (non "fiore magico")
-  - ✓ "Cercatore" vs "Cercastorie"
+  - ✓ "Cercastorie" vs "Cercastorie"
   - ✓ "Viandante" mantenuto dove appropriato
   - ✓ "Sussurri dell'Oblio" coerente
   - ✓ "Tessitrice" / "Tessitori" coerenti
@@ -231,7 +231,7 @@ Ci piacerebbe il tuo feedback sulla:
 1. Velocità delle risposte (5-6 sec - accettabile?)
 2. Lunghezza risposte (reduced verbosity - ok?)
 3. Qualità narrativa (mantenuta ma più veloce?)
-4. Nomenclatura (Cercastorie/Cercatore/Viandante - corretta?)
+4. Nomenclatura (Cercastorie/Cercastorie/Viandante - corretta?)
 
 Fammi sapere se vuoi testare di nuovo o se ci sono altri dettagli tecnici che ti servono!
 

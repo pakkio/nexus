@@ -11,7 +11,7 @@
 Tutti gli **8 file NPC_PREFIX** sono stati completamente allineati al racconto "Il velo infranto - l'ultima versione" di Lorenza.
 
 Il sistema ora:
-- ✅ Usa la terminologia corretta (Cercatore, non Cercastorie)
+- ✅ Usa la terminologia corretta (Cercastorie, non Cercastorie)
 - ✅ Fornisce la boccettina azzurra come oggetto centrale
 - ✅ Ha quote esatte dal racconto
 - ✅ Chiarisce tutti i fraintendimenti narrativi
@@ -26,7 +26,7 @@ Il sistema ora:
 **File**: `NPC_PREFIX.liminalvoid.erasmus.txt`
 
 **Aggiornamenti**:
-- Quote esatte dal racconto: "Non sono morto, Cercatore..."
+- Quote esatte dal racconto: "Non sono morto, Cercastorie..."
 - Le tre scelte filosofiche (Preservare, Trasformare, Dissolvere)
 - Ruolo come primo incontro oltre il tempo
 
@@ -56,7 +56,7 @@ Il sistema ora:
 - ✨ **BOCCETTINA AZZURRA** - descritta come:
   - Contiene la Pozione di Guarigione
   - È il teleport magico verso Elira
-  - Ritorna il Cercatore indietro
+  - Ritorna il Cercastorie indietro
   - Oggetto CENTRALE al racconto
   
 - Identità: Erborista della Memoria, Guaritrice di Radici Perdute
@@ -111,7 +111,7 @@ Il sistema ora:
 **Aggiornamenti**:
 - Test: "ascoltare la natura senza imporre dominion"
 - Riceve la **boccettina azzurra** da Mara
-- Usa la boccettina per teleportare il Cercatore indietro
+- Usa la boccettina per teleportare il Cercastorie indietro
 - Rappresenta la voce della natura nella filosofia del quest
 
 **Status**: ✅ COMPLETO
@@ -139,7 +139,7 @@ Il sistema ora:
 - La **Partita a Scacchi** come test definitivo
 - Riceve il Cristallo di Memoria Antica da Syra
 - Ripara il Telaio dell'Eco con il Cristallo
-- Sincronizzazione finale: dichiara il Cercatore degno
+- Sincronizzazione finale: dichiara il Cercastorie degno
 - "Io sono la Tessitrice della Tradizione"
 
 **Status**: ✅ COMPLETO
@@ -172,7 +172,7 @@ MARA (Pragmatismo) ←→ ELIRA (Natura)
 
 ### Segnalati:
 1. ✅ **Boccettina azzurra** - Ora central, specificato in Mara e Elira
-2. ✅ **Erasmus chiama Cercatore** - Corretto ovunque
+2. ✅ **Erasmus chiama Cercastorie** - Corretto ovunque
 3. ✅ **Antefatto non chiaro** - Erasmus lo fornisce all'inizio
 4. ✅ **Percorso impossibile** - Chiaro in ogni NPC (direzioni, colori fiori)
 5. ✅ **Fraintendimenti sull'oggettiva** - Sciolti (Garin/Jorin chiarificati)
@@ -202,7 +202,7 @@ MARA (Pragmatismo) ←→ ELIRA (Natura)
 - Tutti i file PREFIX mantengono formato YAML/Markdown
 - Nessuna sintassi LSL (specifiche per Second Life)
 - Quote direttamente dal racconto di Lorenza
-- Terminology: Sempre "Cercatore", mai "Viandante" o "Cercastorie"
+- Terminology: Sempre "Cercastorie", mai "Viandante" o "Cercastorie"
 
 ---
 

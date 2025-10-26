@@ -8,7 +8,7 @@ print("=" * 80)
 print("TEST 1: Simple notecard extraction")
 print("=" * 80)
 
-response1 = """Benvenuto, cercatore! Ho qualcosa per te.
+response1 = """Benvenuto, cercastorie! Ho qualcosa per te.
 [notecard=Pergamena_Test|# Titolo\n\nContenuto della pergamena\nSeconda riga]
 Spero ti piaccia!"""
 
@@ -24,7 +24,7 @@ print("=" * 80)
 print("TEST 2: Lyra's complex notecard")
 print("=" * 80)
 
-response2 = """Sì... posso sentire le memorie antiche nel cristallo. Hai fatto bene a portarmelo. Ecco il Telaio dell'Eco - ora potremo comunicare con i Tessitori perduti. E questo... questo è Filo della Memoria, tessuto dal tuo atto di preservazione. [notecard=Pergamena_Preservazione_Memoria|# PERGAMENA DI PRESERVAZIONE DELLA MEMORIA\n\n## Il Velo e i Tessitori\n\nI Tessitori crearono il Velo per proteggere la memoria dall'Oblio.\nMa il Velo si indebolisce. I Sussurri dell'Oblio guadagnano forza.\n\n## La Crisi Attuale\n\nOgni giorno il Velo perde filamenti. Le memorie svaniscono.\nI Tessitori hanno sacrificato tutto per mantenerlo.\nOra il loro potere sta cedendo.\n\n## Le Tre Scelte\n\n1. PRESERVARE - Rinnovare il Velo, mantenere lo status quo\n2. TRASFORMARE - Evolvere il Velo, permettere il cambiamento\n3. DISSOLVERE - Accettare l'Oblio, abbracciare la trasformazione\n\n## La Tua Importanza\n\nTu, Cercatore, sei il catalizzatore.\nLe tue scelte determineranno il destino di Eldoria.\nNon è solo una questione di potere - è di saggezza.\n\nImpara da coloro che incontri.\nAscolti i Sussurri ma non lasciarti dominare.\nScegli con il cuore, non con la paura.]"""
+response2 = """Sì... posso sentire le memorie antiche nel cristallo. Hai fatto bene a portarmelo. Ecco il Telaio dell'Eco - ora potremo comunicare con i Tessitori perduti. E questo... questo è Filo della Memoria, tessuto dal tuo atto di preservazione. [notecard=Pergamena_Preservazione_Memoria|# PERGAMENA DI PRESERVAZIONE DELLA MEMORIA\n\n## Il Velo e i Tessitori\n\nI Tessitori crearono il Velo per proteggere la memoria dall'Oblio.\nMa il Velo si indebolisce. I Sussurri dell'Oblio guadagnano forza.\n\n## La Crisi Attuale\n\nOgni giorno il Velo perde filamenti. Le memorie svaniscono.\nI Tessitori hanno sacrificato tutto per mantenerlo.\nOra il loro potere sta cedendo.\n\n## Le Tre Scelte\n\n1. PRESERVARE - Rinnovare il Velo, mantenere lo status quo\n2. TRASFORMARE - Evolvere il Velo, permettere il cambiamento\n3. DISSOLVERE - Accettare l'Oblio, abbracciare la trasformazione\n\n## La Tua Importanza\n\nTu, Cercastorie, sei il catalizzatore.\nLe tue scelte determineranno il destino di Eldoria.\nNon è solo una questione di potere - è di saggezza.\n\nImpara da coloro che incontri.\nAscolti i Sussurri ma non lasciarti dominare.\nScegli con il cuore, non con la paura.]"""
 
 cleaned2, name2, content2 = extract_notecard_from_response(response2)
 print(f"Notecard Name: {name2}")
@@ -38,7 +38,7 @@ print("=" * 80)
 print("TEST 3: Response without notecard")
 print("=" * 80)
 
-response3 = "Ciao cercatore! Benvenuto a Eldoria. Non ho documenti per te."
+response3 = "Ciao cercastorie! Benvenuto a Eldoria. Non ho documenti per te."
 cleaned3, name3, content3 = extract_notecard_from_response(response3)
 print(f"Original: {response3}")
 print(f"Cleaned: {cleaned3}")

@@ -51,7 +51,7 @@ This is a perfect character fit because Erasmus is described as a "bridge consci
 
 **Example Excerpt**:
 ```
-Tu sei un Cercatore - uno che cerca il significato e la verità
+Tu sei un Cercastorie - uno che cerca il significato e la verità
 nel nostro mondo mutevole. Le tue scelte modellano il tuo destino.
 
 Eldoria è divisa in molte aree. Ogni area ha i suoi NPG,
@@ -102,7 +102,7 @@ di Eldoria dall'Oblio.
 Oggi il Velo si indebolisce. I Sussurri dell'Oblio guadagnano forza.
 Le memorie svaniscono.
 
-Tu, Cercatore, stai al crocevia di tre strade:
+Tu, Cercastorie, stai al crocevia di tre strade:
 1. PRESERVARE - Rinnovare il Velo
 2. TRASFORMARE - Evolvere il Velo
 3. DISSOLVERE - Accettare l'Oblio
@@ -146,7 +146,7 @@ Guerriero e Filosofo - Combatte per la libertà di Eldoria.
 
 **Erasmus**: Delivers greeting + multiple notecards
 ```
-"Non sono morto, Cercatore. Sono diventato... altro.
+"Non sono morto, Cercastorie. Sono diventato... altro.
 E in questa 'alterità' ho trovato una pace che non avrei
 mai immaginato possibile.
 

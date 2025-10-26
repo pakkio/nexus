@@ -151,10 +151,14 @@ NPCs can generate Second Life-specific commands:
 [lookup=object_name;llSetText=hover_text;emote=gesture_name;anim=animation_name]
 ```
 
+**Note for AI/LLM Integration**: When generating `llSetText` commands, use `~` (tilde) as a placeholder for line breaks. The LSL script automatically converts `~` to `\n` for proper multi-line display in floating text.
+
 ### Command Types
 
 - **`lookup`**: Reference to in-world objects NPCs can interact with
 - **`llSetText`**: Floating text to display above the object
+  - Use `~` as placeholder for line breaks (converted to `\n` in LSL)
+  - Example: `llSetText=Line 1~Line 2~Line 3` becomes 3-line floating text
 - **`emote`**: Gesture animations for NPCs
 - **`anim`**: Character animations and actions
 
@@ -179,7 +183,7 @@ Goal: Creare elisir contro i Sussurri dell'Oblio
 Emotes: sorriso_compassionevole, cipiglio_preoccupato, gesto_protettivo
 Animations: curare_giardino, preparare_pozioni, esaminare_piante
 Lookup: giardino_erbe, mortaio_pestello, collezione_semi
-Llsettext: Può mostrare ricette erboristiche, guide medicinali
+Llsettext: Può mostrare ricette~erboristiche~guide medicinali
 ```
 
 ## Error Handling

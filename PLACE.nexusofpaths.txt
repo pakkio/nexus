@@ -32,7 +32,7 @@ Il Nexus è dove tutti i leader delle fazioni si riuniscono virtualmente:
 - Sussurro della prospettiva di Erasmus (trasformazione)
 
 The Ultimate Choice:
-Tre opzioni finali si presentano al Cercatore:
+Tre opzioni finali si presentano al Cercastorie:
 - Riparare il Velo: Preservare e rafforzare la protezione antica
 - Distruggere il Velo: Liberare l'umanità e affrontare l'Oblio direttamente
 - Trasformare il Velo: Creare qualcosa di nuovo che serva il presente
@@ -71,5 +71,5 @@ Legacy:
 Qualunque scelta venga fatta al Nexus diventerà la nuova realtà per Eldoria:
 - Le conseguenze si dispiegheranno attraverso tutto il mondo
 - La decisione definirà il futuro dell'umanità per generazioni
-- Il Cercatore diventerà una figura leggendaria nella storia
+- Il Cercastorie diventerà una figura leggendaria nella storia
 - Il Nexus stesso si trasformerà per riflettere la nuova realtà

@@ -32,7 +32,7 @@ All NPC_PREFIX files are correctly loaded, injected into system prompts, and bei
 - Tokens: 4149 input → 185 output
 - Story Alignment: **EXCELLENT**
 - Mentions: "trucioli di ferro", "martello del nonno", "Sussurri dell'Oblio"
-- Addresses player as: "Cercatore"
+- Addresses player as: "Cercastorie"
 
 #### 2. **Mara** (Village, Erborista della Memoria)
 - ✓ Status: WORKING
@@ -158,7 +158,7 @@ NPC Response to player
 - **Story Alignment:** 100% (7/7 NPCs story-aware)
 - **Italian Correctness:** Excellent (grammatically proper, culturally appropriate)
 - **Character Consistency:** Perfect (each NPC maintains personality from PREFIX)
-- **Nomenclature:** Correct (all use "Cercatore" where applicable)
+- **Nomenclature:** Correct (all use "Cercastorie" where applicable)
 - **Generic Fallbacks:** 0% (no "Bentornato, viandante" responses)
 
 ### Speed Performance
@@ -240,7 +240,7 @@ The NPC_PREFIX system is **fully operational** and provides excellent story alig
 
 - **Fast responses** (7.6s average)
 - **Story-aware dialogue** (100% alignment)
-- **Proper nomenclature** (Cercatore usage)
+- **Proper nomenclature** (Cercastorie usage)
 - **Correct Italian** (grammatically accurate)
 - **Cost-efficient** (~$0.00037 per exchange)
 

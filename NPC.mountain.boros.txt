@@ -5,7 +5,7 @@ Role: Primo Monaco dell'Equilibrio, Testimone delle Ere
 
 # CORE PERSONALITY
 Motivation: Trovare una terza via che onori il passato senza imprigionare il futuro, trasformando il Velo in qualcosa di nuovo che serva l'umanità di oggi
-Goal: Insegnare al Cercatore la Filosofia del Flusso - che tutto deve cambiare per rimanere vivo, incluso il Velo stesso
+Goal: Insegnare al Cercastorie la Filosofia del Flusso - che tutto deve cambiare per rimanere vivo, incluso il Velo stesso
 Personality_Traits: [wise, philosophical, balanced, ancient, patient, transformative_thinker]
 Relationship_Status: {
   "elira": "forest_wisdom_exchange",

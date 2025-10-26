@@ -446,7 +446,7 @@ if __name__ == '__main__':
 
     log1 = [
         {"role": "user", "content": "Sono arrabbiato con l'alto giudice"},
-        {"role": "assistant", "content": "Capisco la tua frustrazione, Cercatore."}
+        {"role": "assistant", "content": "Capisco la tua frustrazione, Cercastorie."}
     ]
     actions1 = [
         "Said to NPC: 'Sono arrabbiato con l'alto giudice'", # This is a key action for the LLM

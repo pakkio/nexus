@@ -251,7 +251,7 @@ def _try_anthropic_api(messages: List[Dict[str, str]],
 
     payload = {
         "model": anthropic_model,
-        "max_tokens": 512,
+        "max_tokens": 2048,  # Increased from 512 to allow notecard generation
         "messages": user_messages,
         "stream": stream,
     }
@@ -430,7 +430,7 @@ def llm_wrapper(messages: List[Dict[str, str]],
         logging.info(f"GPT-5 reasoning enabled with effort=low")
     else:
         payload = { "model": model_name, "messages": messages, "stream": stream }
-        payload["max_tokens"] = 512
+        payload["max_tokens"] = 2048  # Increased from 512 to allow notecard generation
         payload["temperature"] = 0.7
         payload["top_p"] = 0.9
 
@@ -638,7 +638,7 @@ Suggest updates as JSON: {"trait_adjustments": {"curiosity": "+1"}, "analysis_no
             "X-Title": app_title,
         }
         payload = { "model": model_name, "messages": messages, "stream": stream, "include_reasoning": True }
-        payload["max_tokens"] = 512
+        payload["max_tokens"] = 2048  # Increased from 512 to allow notecard generation
         payload["temperature"] = 0.7
         payload["top_p"] = 0.9
         response = requests.post(

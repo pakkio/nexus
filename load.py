@@ -66,7 +66,7 @@ def parse_npc_file(filepath):
         'reward_credits': '', 'prerequisites': '', 'success_conditions': '', 'failure_conditions': '',
         'ai_behavior_notes': '', 'conversation_state_tracking': '', 'conditional_responses': '',
         'relationships': '', 'default_greeting': '', 'repeat_greeting': '',
-        'sl_commands': '', 'trading_rules': ''
+        'sl_commands': '', 'trading_rules': '', 'notecard_feature': ''
     }
     
     # Key mappings for both legacy and new schema
@@ -90,7 +90,8 @@ def parse_npc_file(filepath):
         'Conversation_State_Tracking:': 'conversation_state_tracking',
         'Conditional_Responses:': 'conditional_responses', 'Relationships:': 'relationships',
         'Default_Greeting:': 'default_greeting', 'Repeat_Greeting:': 'repeat_greeting',
-        'SL_Commands:': 'sl_commands', 'Trading_Rules:': 'trading_rules'
+        'SL_Commands:': 'sl_commands', 'Trading_Rules:': 'trading_rules',
+        'NOTECARD_FEATURE:': 'notecard_feature', 'Notecard_Feature:': 'notecard_feature'
     }
     
     # Fields that can extend across multiple lines
@@ -99,7 +100,7 @@ def parse_npc_file(filepath):
         'lookup', 'llsettext', 'teleport', 'personality_traits', 'relationship_status',
         'prerequisites', 'success_conditions', 'failure_conditions', 'ai_behavior_notes',
         'conversation_state_tracking', 'conditional_responses', 'relationships',
-        'default_greeting', 'repeat_greeting', 'sl_commands', 'trading_rules'
+        'default_greeting', 'repeat_greeting', 'sl_commands', 'trading_rules', 'notecard_feature'
     ]
 
     current_field_being_parsed = None
@@ -357,8 +358,8 @@ def load_to_mysql(storyboard_filepath, db_config):
                         dialogue_hooks, default_greeting, repeat_greeting, veil_connection, emotes, animations, lookup, llsettext, teleport,
                         ai_behavior_notes, conditional_responses, conversation_state_tracking, failure_conditions, personality_traits,
                         prerequisites, relationship_status, relationships, required_item, required_quantity, required_source,
-                        reward_credits, sl_commands, success_conditions, trading_rules, storyboard_id)
-                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+                        reward_credits, sl_commands, success_conditions, trading_rules, notecard_feature, storyboard_id)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
                 values = (
                     npc_code, npc_data.get('name', ''), npc_data.get('area', ''), npc_data.get('role', ''),
                     npc_data.get('motivation', ''), npc_data.get('goal', ''), npc_data.get('needed_object', ''),
@@ -373,7 +374,7 @@ def load_to_mysql(storyboard_filepath, db_config):
                     npc_data.get('required_item', ''), npc_data.get('required_quantity', 0),
                     npc_data.get('required_source', ''), npc_data.get('reward_credits', 0),
                     npc_data.get('sl_commands', ''), npc_data.get('success_conditions', ''),
-                    npc_data.get('trading_rules', ''), storyboard_id )
+                    npc_data.get('trading_rules', ''), npc_data.get('notecard_feature', ''), storyboard_id )
                 if npc_data.get('name') == 'Jorin':
                     print(f"DEBUG: Jorin default_greeting = {repr(npc_data.get('default_greeting', 'NOT_FOUND'))[:100]}")
                 try:

@@ -16,13 +16,13 @@
 
 ### 2. ✓ ERASMUS NOMENCLATURE - PARTIALLY ADDRESSED
 **Lorenza's Complaint:**
-> "Erasmus risponde a chi lo interroga chiamandolo Cercatore e non Cercastorie. gli altri personaggi usano la formula Viandante."
+> "Erasmus risponde a chi lo interroga chiamandolo Cercastorie e non Cercastorie. gli altri personaggi usano la formula Viandante."
 
 **Status:** FIXED IN PREFIX FILE
 **What Was Done:**
 - Updated `NPC_PREFIX.liminalvoid.erasmus.txt` to use "Cercastorie" throughout
 - Added clarification in IMPORTANT TERMINOLOGY section
-- Changed 6 references from "Cercatore" to "Cercastorie"
+- Changed 6 references from "Cercastorie" to "Cercastorie"
 
 **Remaining:** Need to verify LLM is using the updated PREFIX file (test in next session)
 
@@ -234,7 +234,7 @@
 ✓ **Updated all 8 NPC_PREFIX files** to latest story
 ✓ **Changed model from GPT-5-mini to Claude Haiku 3.5** (7.6x faster)
 ✓ **Verified PREFIX system working correctly** (tested all 7 NPCs)
-✓ **Fixed Erasmus nomenclature** (Cercastorie vs Cercatore)
+✓ **Fixed Erasmus nomenclature** (Cercastorie vs Cercastorie)
 ✓ **Added debugging tools** for PREFIX verification
 ✓ **Generated comprehensive documentation**
 

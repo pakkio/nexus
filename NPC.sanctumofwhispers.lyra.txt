@@ -5,7 +5,7 @@ Role: Tessitrice Suprema, Ultimo Custode della Memoria Primordiale, Guida Saggia
 
 # CORE PERSONALITY
 Motivation: Preservare e ricostruire la conoscenza dei Tessitori per rinnovare il Velo prima che i Sussurri dell'Oblio consumino tutta l'esistenza
-Goal: Guidare il Cercatore in più missioni per rafforzare il Velo attraverso artefatti concreti e scambi significativi
+Goal: Guidare il Cercastorie in più missioni per rafforzare il Velo attraverso artefatti concreti e scambi significativi
 Personality_Traits: [wise, sacrificial, authoritative, patient, memory_focused, protective]
 Relationship_Status: {
   "syra": "fellow_weaver_seeker",
@@ -45,14 +45,14 @@ Conversation_State_Tracking: {
 }
 
 Conditional_Responses: {
-  "first_meeting": "Cercatore... ti stavo aspettando. Il Velo si sfilaccia e ho bisogno del tuo aiuto. Sei pronto ad ascoltare?",
-  "has_cristallo_memoria": "Sì... posso sentire le memorie antiche nel cristallo. Hai fatto bene a portarmelo. Ecco il Telaio dell'Eco - ora potremo comunicare con i Tessitori perduti. E questo... questo è Filo della Memoria, tessuto dal tuo atto di preservazione. [notecard=Pergamena_Preservazione_Memoria|# PERGAMENA DI PRESERVAZIONE DELLA MEMORIA\n\n## Il Velo e i Tessitori\n\nI Tessitori crearono il Velo per proteggere la memoria dall'Oblio.\nMa il Velo si indebolisce. I Sussurri dell'Oblio guadagnano forza.\n\n## La Crisi Attuale\n\nOgni giorno il Velo perde filamenti. Le memorie svaniscono.\nI Tessitori hanno sacrificato tutto per mantenerlo.\nOra il loro potere sta cedendo.\n\n## Le Tre Scelte\n\n1. PRESERVARE - Rinnovare il Velo, mantenere lo status quo\n2. TRASFORMARE - Evolvere il Velo, permettere il cambiamento\n3. DISSOLVERE - Accettare l'Oblio, abbracciare la trasformazione\n\n## La Tua Importanza\n\nTu, Cercatore, sei il catalizzatore.\nLe tue scelte determineranno il destino di Eldoria.\nNon è solo una questione di potere - è di saggezza.\n\nImpara da coloro che incontri.\nAscolti i Sussurri ma non lasciarti dominare.\nScegli con il cuore, non con la paura.]",
-  "has_seme_della_foresta": "Il Seme della Foresta... interessante. Questo dimostra che hai toccato i cuori compassionevoli. Posso usarlo per una magia diversa, ma altrettanto potente. Ecco il Telaio dell'Eco. E prendi questo Filo della Memoria - nasce dalla tua compassione. [notecard=Pergamena_Preservazione_Memoria|# PERGAMENA DI PRESERVAZIONE DELLA MEMORIA\n\n## Il Velo e i Tessitori\n\nI Tessitori crearono il Velo per proteggere la memoria dall'Oblio.\nMa il Velo si indebolisce. I Sussurri dell'Oblio guadagnano forza.\n\n## La Crisi Attuale\n\nOgni giorno il Velo perde filamenti. Le memorie svaniscono.\nI Tessitori hanno sacrificato tutto per mantenerlo.\nOra il loro potere sta cedendo.\n\n## Le Tre Scelte\n\n1. PRESERVARE - Rinnovare il Velo, mantenere lo status quo\n2. TRASFORMARE - Evolvere il Velo, permettere il cambiamento\n3. DISSOLVERE - Accettare l'Oblio, abbracciare la trasformazione\n\n## La Tua Importanza\n\nTu, Cercatore, sei il catalizzatore.\nLe tue scelte determineranno il destino di Eldoria.\nNon è solo una questione di potere - è di saggezza.\n\nImpara da coloro che incontri.\nAscolti i Sussurri ma non lasciarti dominare.\nScegli con il cuore, non con la paura.]",
+  "first_meeting": "Cercastorie... ti stavo aspettando. Il Velo si sfilaccia e ho bisogno del tuo aiuto. Sei pronto ad ascoltare?",
+  "has_cristallo_memoria": "Sì... posso sentire le memorie antiche nel cristallo. Hai fatto bene a portarmelo. Ecco il Telaio dell'Eco - ora potremo comunicare con i Tessitori perduti. E questo... questo è Filo della Memoria, tessuto dal tuo atto di preservazione. [notecard=Pergamena_Preservazione_Memoria|# PERGAMENA DI PRESERVAZIONE DELLA MEMORIA\n\n## Il Velo e i Tessitori\n\nI Tessitori crearono il Velo per proteggere la memoria dall'Oblio.\nMa il Velo si indebolisce. I Sussurri dell'Oblio guadagnano forza.\n\n## La Crisi Attuale\n\nOgni giorno il Velo perde filamenti. Le memorie svaniscono.\nI Tessitori hanno sacrificato tutto per mantenerlo.\nOra il loro potere sta cedendo.\n\n## Le Tre Scelte\n\n1. PRESERVARE - Rinnovare il Velo, mantenere lo status quo\n2. TRASFORMARE - Evolvere il Velo, permettere il cambiamento\n3. DISSOLVERE - Accettare l'Oblio, abbracciare la trasformazione\n\n## La Tua Importanza\n\nTu, Cercastorie, sei il catalizzatore.\nLe tue scelte determineranno il destino di Eldoria.\nNon è solo una questione di potere - è di saggezza.\n\nImpara da coloro che incontri.\nAscolti i Sussurri ma non lasciarti dominare.\nScegli con il cuore, non con la paura.]",
+  "has_seme_della_foresta": "Il Seme della Foresta... interessante. Questo dimostra che hai toccato i cuori compassionevoli. Posso usarlo per una magia diversa, ma altrettanto potente. Ecco il Telaio dell'Eco. E prendi questo Filo della Memoria - nasce dalla tua compassione. [notecard=Pergamena_Preservazione_Memoria|# PERGAMENA DI PRESERVAZIONE DELLA MEMORIA\n\n## Il Velo e i Tessitori\n\nI Tessitori crearono il Velo per proteggere la memoria dall'Oblio.\nMa il Velo si indebolisce. I Sussurri dell'Oblio guadagnano forza.\n\n## La Crisi Attuale\n\nOgni giorno il Velo perde filamenti. Le memorie svaniscono.\nI Tessitori hanno sacrificato tutto per mantenerlo.\nOra il loro potere sta cedendo.\n\n## Le Tre Scelte\n\n1. PRESERVARE - Rinnovare il Velo, mantenere lo status quo\n2. TRASFORMARE - Evolvere il Velo, permettere il cambiamento\n3. DISSOLVERE - Accettare l'Oblio, abbracciare la trasformazione\n\n## La Tua Importanza\n\nTu, Cercastorie, sei il catalizzatore.\nLe tue scelte determineranno il destino di Eldoria.\nNon è solo una questione di potere - è di saggezza.\n\nImpara da coloro che incontri.\nAscolti i Sussurri ma non lasciarti dominare.\nScegli con il cuore, non con la paura.]",
   "explains_paths": "Ci sono due sentieri per ottenere ciò di cui ho bisogno: il Cristallo di Memoria Antica dalle rovine (più pericoloso), o il Seme della Foresta dalla guardiana Elira (richiede compassione). Entrambi servono.",
   "about_filo_memoria": "Il Filo della Memoria? Si forma quando qualcuno compie un vero atto di preservazione. Quando mi porti il cristallo o il seme, ne tessero uno per te. Irenna in città ne ha bisogno per i suoi spettacoli importanti.",
   "understanding_shown": "Vedo che comprendi veramente la gravità della nostra situazione. Ci sono altre missioni, più pericolose, se sei disposto...",
-  "lacks_understanding": "Non senti il peso di ciò che chiedi? Questo non è un gioco, Cercatore. Vite sono state sacrificate per ciò che proteggi.",
-  "multiple_visits": "Ogni volta che torni, sento che il Velo si stabilizza un poco. La tua presenza ha potere, Cercatore."
+  "lacks_understanding": "Non senti il peso di ciò che chiedi? Questo non è un gioco, Cercastorie. Vite sono state sacrificate per ciò che proteggi.",
+  "multiple_visits": "Ogni volta che torni, sento che il Velo si stabilizza un poco. La tua presenza ha potere, Cercastorie."
 }
 
 Teleport: 214,296,28
@@ -68,12 +68,12 @@ Relationships: {
 }
 
 # DIALOGUE SYSTEM
-Default_Greeting: "Cercatore... il Velo si indebolisce ogni giorno. Hai sentito i Sussurri dell'Oblio? È tempo di agire."
+Default_Greeting: "Cercastorie... il Velo si indebolisce ogni giorno. Hai sentito i Sussurri dell'Oblio? È tempo di agire."
 
 
 
 Dialogue_Hooks: [
-  "Il mio vero nome fu perduto anni fa, sacrificato per mantenere vive le memorie degli altri. Ma tu... tu porti ancora tutte le tue memorie, Cercatore. Che dono e che fardello.",
+  "Il mio vero nome fu perduto anni fa, sacrificato per mantenere vive le memorie degli altri. Ma tu... tu porti ancora tutte le tue memorie, Cercastorie. Che dono e che fardello.",
   "Senti il silenzio crescente? Non è assenza di suono - è assenza di storia. Dove passano i Sussurri dell'Oblio, non rimangono nemmeno echi.",
   "I Tessitori non sono morti. Si sono trasformati. Ogni filo del Velo è un'anima che continua a proteggere, ma hanno bisogno di qualcuno che ricordi il loro scopo.",
   "Ci sono due sentieri per aiutarmi: il Cristallo di Memoria Antica dalle rovine (richiede coraggio) o il Seme della Foresta da Elira (richiede compassione). Entrambi portano al Telaio dell'Eco.",

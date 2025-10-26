@@ -215,16 +215,17 @@ def preload_npcs():
                             cursor = conn.cursor()
                             sql = """INSERT INTO NPCs (code, name, area, role, motivation, goal, needed_object,
                                      treasure, playerhint, dialogue_hooks, veil_connection, emotes, animations,
-                                     lookup, llsettext, teleport, storyboard_id)
-                                     VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-                                     ON DUPLICATE KEY UPDATE name=VALUES(name), area=VALUES(area), role=VALUES(role)"""
+                                     lookup, llsettext, teleport, notecard_feature, storyboard_id)
+                                     VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                                     ON DUPLICATE KEY UPDATE name=VALUES(name), area=VALUES(area), role=VALUES(role), notecard_feature=VALUES(notecard_feature)"""
                             cursor.execute(sql, (
                                 npc_data.get('code'), npc_data.get('name'), npc_data.get('area'),
                                 npc_data.get('role'), npc_data.get('motivation'), npc_data.get('goal'),
                                 npc_data.get('needed_object'), npc_data.get('treasure'), npc_data.get('playerhint'),
                                 npc_data.get('dialogue_hooks'), npc_data.get('veil_connection'),
                                 npc_data.get('emotes'), npc_data.get('animations'), npc_data.get('lookup'),
-                                npc_data.get('llsettext'), npc_data.get('teleport'), npc_data.get('storyboard_id', 1)
+                                npc_data.get('llsettext'), npc_data.get('teleport'), npc_data.get('notecard_feature', ''),
+                                npc_data.get('storyboard_id', 1)
                             ))
                             conn.commit()
                         except Exception as db_err:
@@ -251,7 +252,7 @@ def preload_npcs():
 def initialize_game_system():
     """Initialize the game system with configuration from environment variables."""
     global game_system
-    
+
     # Configuration from environment variables
     use_mockup = os.getenv('NEXUS_USE_MOCKUP', 'true').lower() == 'true'
     mockup_dir = os.getenv('NEXUS_MOCKUP_DIR', 'database')
@@ -259,9 +260,29 @@ def initialize_game_system():
     profile_analysis_model = os.getenv('NEXUS_PROFILE_MODEL_NAME')
     wise_guide_model = os.getenv('NEXUS_WISE_GUIDE_MODEL_NAME')
     debug_mode = os.getenv('NEXUS_DEBUG_MODE', 'false').lower() == 'true'
-    
+
+    # MySQL configuration logging
+    db_host = os.getenv('DB_HOST', 'localhost')
+    db_name = os.getenv('DB_NAME', 'nexus_rpg')
+    db_user = os.getenv('DB_USER', 'root')
+
+    logger.info("=" * 80)
+    logger.info("DATABASE CONFIGURATION VERIFICATION")
+    logger.info("=" * 80)
+    logger.info(f"NEXUS_USE_MOCKUP: {use_mockup}")
+    if not use_mockup:
+        logger.info(f"DATABASE MODE: MySQL")
+        logger.info(f"  Host: {db_host}")
+        logger.info(f"  Database: {db_name}")
+        logger.info(f"  User: {db_user}")
+    else:
+        logger.info(f"DATABASE MODE: MOCKUP (File-based)")
+        logger.info(f"  Mockup Dir: {mockup_dir}")
+    logger.info(f"MODEL: {model_name}")
+    logger.info("=" * 80)
+
     logger.info(f"Initializing GameSystem with mockup={use_mockup}, model={model_name}")
-    
+
     # Initialize GameSystem - it will handle database configuration internally using environment variables
     from game_system_api import GameSystem
     game_system = GameSystem(
@@ -272,9 +293,9 @@ def initialize_game_system():
         wise_guide_model_name=wise_guide_model,
         debug_mode=debug_mode
     )
-    
-    logger.info(f"Initialized GameSystem with mockup={use_mockup}, model={model_name}")
-    
+
+    logger.info(f"✓ Initialized GameSystem with mockup={use_mockup}, model={model_name}")
+
     return game_system
 
 @app.before_request
@@ -316,10 +337,24 @@ def index():
 @app.route('/health', methods=['GET'])
 def health_check():
     """Health check endpoint."""
+    from datetime import datetime
+    import os
+
+    # Get server start time (from app.py file modification time as proxy)
+    app_file_path = __file__
+    app_mtime = os.path.getmtime(app_file_path)
+    app_modified = datetime.fromtimestamp(app_mtime).strftime('%Y-%m-%d %H:%M:%S')
+
+    # Current server time
+    current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
     return jsonify({
         'status': 'healthy',
         'service': 'nexus-api',
         'version': VERSION,
+        'server_time': current_time,
+        'app_last_modified': app_modified,
+        'process_id': os.getpid(),
         'uptime': 'n/a',  # Could be implemented with start time tracking
         'last_change': VERSION_CHANGELOG.get(VERSION, 'Unknown')
     })
@@ -883,24 +918,28 @@ def chat_with_npc():
                 # Check if teleport was offered in this turn
                 teleport_offered = player_system.game_state.get('teleport_offered_this_turn', False) if player_system.game_state else False
 
-                # Extract notecard command from NPC response if present
-                cleaned_response, notecard_name, notecard_content = extract_notecard_from_response(npc_response)
-                has_notecard = notecard_name and notecard_content
+                # Get notecard info from game_state (extracted in game_system_api.py)
+                notecard_info = player_system.game_state.get('notecard_extracted', {}) if player_system.game_state else {}
+                notecard_name = notecard_info.get('name', '')
+                notecard_content = notecard_info.get('content', '')
+                has_notecard = bool(notecard_name and notecard_content)
+
+                if has_notecard:
+                    logger.info(f"[NOTECARD] Using extracted notecard: '{notecard_name}' ({len(notecard_content)} chars)")
+                    # Clear the notecard from game state after using it
+                    if player_system.game_state and 'notecard_extracted' in player_system.game_state:
+                        del player_system.game_state['notecard_extracted']
 
                 # Generate SL commands with notecard if present
+                # Note: npc_response is already cleaned (notecard removed) in game_system_api.py
                 sl_commands = generate_sl_command_prefix(
                     current_npc,
                     include_teleport=teleport_offered,
-                    npc_response=cleaned_response,
+                    npc_response=npc_response,
                     include_notecard=has_notecard,
                     notecard_content=notecard_content,
                     notecard_name=notecard_name
                 )
-
-                # Update npc_response to remove the notecard command (keep only the dialogue)
-                if has_notecard:
-                    npc_response = cleaned_response
-                    logger.info(f"Extracted notecard '{notecard_name}' from NPC response")
 
                 logger.info(f"Generated SL commands: '{sl_commands}' (teleport_offered={teleport_offered}, has_notecard={has_notecard})")
         except Exception as sl_error:
