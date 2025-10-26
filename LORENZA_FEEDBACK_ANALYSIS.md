@@ -15,12 +15,12 @@
 
 ### 2. ⚠️ NPC NOMENCLATURE INCONSISTENCY
 **Issue:**
-- Erasmus calls player "Cercatore" (should be "Cercastorie")
+- Erasmus calls player "Cercastorie" (should be "Cercastorie")
 - Other NPCs use "Viandante" (should be consistent)
 **Status:** PARTIALLY ADDRESSED
 **Priority:** HIGH
 **Current State:**
-- PREFIX files use "Cercatore" for most NPCs
+- PREFIX files use "Cercastorie" for most NPCs
 - Need to verify Erasmus specifically uses "Cercastorie"
 - Need to verify other NPCs use consistent terminology
 

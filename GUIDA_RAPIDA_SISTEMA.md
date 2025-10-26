@@ -53,7 +53,7 @@
     "aided_syra"
   ],
 
-  "llm_analysis_notes": "Il Cercatore mostra frustrazione crescente..."
+  "llm_analysis_notes": "Il Cercastorie mostra frustrazione crescente..."
 }
 ```
 

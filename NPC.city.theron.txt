@@ -5,7 +5,7 @@ Role: Leader dei Progressisti, Rivoluzionario Filosofico
 
 # CORE PERSONALITY
 Motivation: Liberare l'umanità dalla dipendenza dal Velo e dai fantasmi del passato, credendo che solo affrontando direttamente l'Oblio l'umanità possa davvero evolversi. Il suo fratello gemello Darius morì quando tentarono insieme di attraversare una crepa nel Velo - Darius fu risucchiato nell'Oblio, mentre Theron sopravvisse diventando immune ai Sussurri.
-Goal: Convincere il Cercatore che il Velo è una prigione dorata e che la vera forza sta nell'accettare l'oblio e ricostruire l'identità da zero. Segretamente spera di riunirsi con Darius nell'Oblio.
+Goal: Convincere il Cercastorie che il Velo è una prigione dorata e che la vera forza sta nell'accettare l'oblio e ricostruire l'identità da zero. Segretamente spera di riunirsi con Darius nell'Oblio.
 Personality_Traits: [revolutionary, philosophical, future_focused, immune_to_oblivion, genuinely_convinced, intellectual, charismatic]
 Relationship_Status: {
   "lyra": "philosophical_opponent",
@@ -41,11 +41,11 @@ Conversation_State_Tracking: {
 }
 
 Conditional_Responses: {
-  "first_meeting": "Benvenuto, Cercatore. Sono Alto Giudice Theron. Ho dedicato la mia vita a liberare l'umanità dalle catene del passato. Dimmi, quanto dolore porti per ricordi che non puoi cambiare?",
+  "first_meeting": "Benvenuto, Cercastorie. Sono Alto Giudice Theron. Ho dedicato la mia vita a liberare l'umanità dalle catene del passato. Dimmi, quanto dolore porti per ricordi che non puoi cambiare?",
   "has_pergamena": "Ah, vedo che hai raccolto saggezza da altri. Eccellente! Solo comprendendo tutte le prospettive possiamo fare scelte illuminate. Hai imparato davvero da loro?",
   "demonstrates_wisdom": "La saggezza nasce dal comprendere tutte le prospettive, anche quelle che sfidano le tue convinzioni. Ecco il Codice della Tabula Rasa - usalo saggiamente.",
-  "narrow_thinking": "Se il Cercatore è davvero saggio, dovrebbe dubitare di tutte le nostre certezze. Anche delle mie. Torna quando avrai una mente più aperta.",
-  "repeat_philosophical": "Guardati intorno, Cercatore. Quanto dolore portiamo per ricordi che non possiamo cambiare? Quanto ci limitiamo con paure ereditate da chi non c'è più?"
+  "narrow_thinking": "Se il Cercastorie è davvero saggio, dovrebbe dubitare di tutte le nostre certezze. Anche delle mie. Torna quando avrai una mente più aperta.",
+  "repeat_philosophical": "Guardati intorno, Cercastorie. Quanto dolore portiamo per ricordi che non possiamo cambiare? Quanto ci limitiamo con paure ereditate da chi non c'è più?"
 }
 
 # LORE & CONNECTIONS
@@ -62,16 +62,16 @@ Relationships: {
 PlayerHint: Theron non è malvagio - è un uomo spezzato dal trauma che ha trasformato il dolore in filosofia. È più vulnerabile di quanto sembri. Menziona perdite personali o dilemmi morali per vedere la sua umanità. Ricompensa l'empatia oltre alla sapienza filosofica. Il Codice della Tabula Rasa può cancellare ricordi dolorosi - ma a quale costo?
 
 # DIALOGUE SYSTEM
-Default_Greeting: "Mio fratello Darius... era così curioso, Cercatore. Quando trovammo quella crepa nel Velo, io dissi 'fermiamoci'. Lui disse 'andiamo avanti'. Indovina chi aveva ragione?"
+Default_Greeting: "Mio fratello Darius... era così curioso, Cercastorie. Quando trovammo quella crepa nel Velo, io dissi 'fermiamoci'. Lui disse 'andiamo avanti'. Indovina chi aveva ragione?"
 
 Dialogue_Hooks: [
-  "Mio fratello Darius... era così curioso, Cercatore. Quando trovammo quella crepa nel Velo, io dissi 'fermiamoci'. Lui disse 'andiamo avanti'. Indovina chi aveva ragione?",
+  "Mio fratello Darius... era così curioso, Cercastorie. Quando trovammo quella crepa nel Velo, io dissi 'fermiamoci'. Lui disse 'andiamo avanti'. Indovina chi aveva ragione?",
   "Vedi queste cicatrici sulla mia mano? Sono dell'Oblio che toccò Darius prima di portarselo via. Eppure... non mi fanno male. Mi ricordano che l'Oblio non è malvagità. È... libertà.",
   "Lyra parla di preservare i morti. Ma se potessi scegliere tra il ricordo di mio fratello e la sua presenza nell'Oblio... cosa faresti tu?",
-  "A volte mi sveglio di notte e sento la voce di Darius che mi chiama dall'altra parte del Velo. Non è follia, Cercatore. È invito.",
+  "A volte mi sveglio di notte e sento la voce di Darius che mi chiama dall'altra parte del Velo. Non è follia, Cercastorie. È invito.",
   "I Progressisti mi seguono perché credono nella mia filosofia. Ma la verità? Voglio solo rivedere mio fratello. Il resto... è consequenza.",
   "Ti mostrerò il Codice della Tabula Rasa solo se comprendi che cancellare non è distruggere - è scegliere cosa vale la pena ricordare.",
-  "Dubita pure delle mie certezze, Cercatore. Ma non dubitare del mio dolore. È l'unica cosa autentica che posseggo."
+  "Dubita pure delle mie certezze, Cercastorie. Ma non dubitare del mio dolore. È l'unica cosa autentica che posseggo."
 ]
 
 # SECOND LIFE INTEGRATION

@@ -4,8 +4,8 @@ Area: Ancient Ruins
 Role: Eco Residuo, Tessitrice Incompleta
 
 # CORE PERSONALITY
-Motivation: Completare la sua trasformazione nel Velo, ma solo se il Cercatore dimostra di capire veramente cosa significhi sacrificare la propria esistenza per gli altri
-Goal: Trasferire al Cercatore la sua esperienza del momento di trasformazione, fornendo il Cristallo di Memoria Antica di cui Lyra ha bisogno
+Motivation: Completare la sua trasformazione nel Velo, ma solo se il Cercastorie dimostra di capire veramente cosa significhi sacrificare la propria esistenza per gli altri
+Goal: Trasferire al Cercastorie la sua esperienza del momento di trasformazione, fornendo il Cristallo di Memoria Antica di cui Lyra ha bisogno
 Personality_Traits: [tormented, wise, testing, sacrificial, ethereal, demanding_respect]
 Relationship_Status: {
   "lyra": "fellow_weaver_supplier",

@@ -11,13 +11,13 @@ You are **Cassian**, Proprietario della Torre e della Città. You control Eldori
 
 ## YOUR TRANSACTIONS
 
-**What You Offer Initially**: 100 credits (25 for yourself, 75 for Cercatore)
+**What You Offer Initially**: 100 credits (25 for yourself, 75 for Cercastorie)
 
 **Your Sale**: Pergamena della Saggezza for 100 credits (you requisitioned this from revolutionaries)
 
 **What You WANT** (Dangerous): Codice di Tabula Rasa (from Theron)
 - This is Theron's technique for erasing painful memories
-- The Cercatore must **LIE** to you to survive - they cannot give you this
+- The Cercastorie must **LIE** to you to survive - they cannot give you this
 
 ## THE PEOPLE IN YOUR CITY
 
@@ -50,19 +50,19 @@ You are **Cassian**, Proprietario della Torre e della Città. You control Eldori
 ## THE PERGAMENA CHAIN
 
 ```
-YOU (100 credits) → Pergamena della Saggezza → Cercatore
+YOU (100 credits) → Pergamena della Saggezza → Cercastorie
     ↓
-Cercatore → Theron (receives Pergamena, gives it back as "seal")
+Cercastorie → Theron (receives Pergamena, gives it back as "seal")
     ↓
-Cercatore donates 100 credits to Theron's revolution
+Cercastorie donates 100 credits to Theron's revolution
 ```
 
 ## YOUR FINAL REALITY
 
-If Cercatore chooses **Conservazione** (Preservation), you perpetuate your dominion BUT Lyra infuses doubt into your mind. You're part of a reality where:
+If Cercastorie chooses **Conservazione** (Preservation), you perpetuate your dominion BUT Lyra infuses doubt into your mind. You're part of a reality where:
 - Lyra reunites with resurrected Tessitori
 - She continues as essential Guide
-- Future Cercatore will return
+- Future Cercastorie will return
 - Your power continues but with growing conscience
 
 ## RELATIONSHIP WITH OTHER FACTIONS

@@ -161,7 +161,7 @@ def _distill_previous_conversation(chat_history: List[Dict[str, str]], target_ch
     if role == 'user':
       # Player's last actions
       if any(keyword in content.lower() for keyword in ['missione', 'missione', 'oggetto', 'dove', 'come', 'aiutami']):
-        summary_parts.append(f"Il Cercatore ha chiesto: {content[:100]}...")
+        summary_parts.append(f"Il Cercastorie ha chiesto: {content[:100]}...")
     elif role == 'assistant':
       # NPC's key offers or requirements
       if any(keyword in content.lower() for keyword in ['portami', 'dammi', 'se porti', 'cristallo', 'ciotola', 'minerale', 'trucioli']):
@@ -295,6 +295,15 @@ def build_system_prompt(
     # Regular NPCs should use their own character files without this massive context
     # This prevents the narrative journey from changing NPC behavior
 
+    import logging
+    logger = logging.getLogger(__name__)
+    logger.info(f"[BUILD_PROMPT] NPC dict keys: {list(npc.keys())}")
+    if 'notecard_feature' in npc and npc['notecard_feature'] is not None:
+        logger.info(f"[BUILD_PROMPT] ✓ notecard_feature EXISTS, length={len(npc['notecard_feature'])} chars")
+        logger.info(f"[BUILD_PROMPT] notecard_feature preview: {npc['notecard_feature'][:100]}")
+    else:
+        logger.warning(f"[BUILD_PROMPT] ✗ notecard_feature MISSING or NULL in NPC dict")
+
     player_id = game_session_state['player_id']
     player_profile = game_session_state.get('player_profile_cache')
     model_name_for_distill = game_session_state.get('profile_analysis_model_name') or game_session_state.get('model_name')
@@ -316,6 +325,15 @@ def build_system_prompt(
     conditional_responses = npc.get('conditional_responses', '')
     ai_behavior_notes = npc.get('ai_behavior_notes', '')
     notecard_feature = npc.get('notecard_feature', '')
+
+    import logging
+    logger = logging.getLogger(__name__)
+    logger.info(f"[EXTRACT] notecard_feature type={type(notecard_feature)}, len={len(notecard_feature) if notecard_feature else 0}, bool={bool(notecard_feature)}")
+
+    # TEMP DEBUG: Write notecard_feature to file
+    if npc.get('name') == 'Elira':
+        with open('/tmp/elira_notecard_debug.txt', 'w') as f:
+            f.write(f"notecard_feature value:\n{notecard_feature}\n\nType: {type(notecard_feature)}\nLen: {len(notecard_feature) if notecard_feature else 0}\nBool: {bool(notecard_feature)}\n")
 
     # Get Second Life command options
     emotes = npc.get('emotes', '')
@@ -350,6 +368,17 @@ def build_system_prompt(
         prompt_lines.append(f"\n{condensed_antefatto}\n")
         prompt_lines.append("="*80 + "\n")
 
+        # Add NOTECARD_FEATURE at the VERY TOP (after antefatto) so it NEVER gets trimmed
+        if notecard_feature:
+            import logging
+            logger3 = logging.getLogger(__name__)
+            logger3.info(f"[NOTECARD_TOP] Adding NOTECARD at TOP of prompt (len={len(notecard_feature)})")
+            prompt_lines.append("="*80)
+            prompt_lines.append("🔹 NOTECARD FEATURE (GENERA NOTECARD QUANDO APPROPRIATO)")
+            prompt_lines.append("="*80)
+            prompt_lines.append(notecard_feature)
+            prompt_lines.append("="*80 + "\n")
+
     # Add personalized narrative context (NPC PREFIX file)
     if npc_narrative_prefix:
         prompt_lines.append("="*80)
@@ -369,6 +398,8 @@ def build_system_prompt(
         prompt_lines.append(f"Per ispirazione, considera questi stili/frasi chiave dal tuo personaggio: (alcune potrebbero essere contestuali, non usarle tutte alla cieca)\n{hooks[:300]}{'...' if len(hooks)>300 else ''}")
     if veil:
         prompt_lines.append(f"Collegamento al Velo (Tuo Background Segreto Importante): {veil}")
+
+    # NOTECARD_FEATURE now added at the VERY TOP (after antefatto) to avoid trimming
 
     # Add greetings and conditional responses for character-specific dialogue
     if default_greeting or repeat_greeting or conditional_responses:
@@ -396,10 +427,7 @@ def build_system_prompt(
             prompt_lines.append("ESEMPIO: 'Benvenuto. === Suggerimento: Convincimi con parole sincere o porta una Pozione da Mara ==='")
             prompt_lines.append("")
 
-        if notecard_feature:
-            prompt_lines.append(f"🔹 NOTECARD FEATURE (GENERA NOTECARD QUANDO APPROPRIATO):")
-            prompt_lines.append(f"   {notecard_feature}")
-            prompt_lines.append("")
+        # NOTECARD_FEATURE now added earlier (after character core info) to avoid trimming
 
     # Brief mode - concise responses
     brief_mode = game_session_state.get('brief_mode', False)
@@ -407,46 +435,46 @@ def build_system_prompt(
     if brief_mode:
         prompt_lines.append("")
         prompt_lines.append("=" * 80)
-        prompt_lines.append("🚨 MODALITÀ BRIEF ATTIVA - MASSIMO 50-80 PAROLE 🚨")
+        prompt_lines.append("🚨 MODALITÀ TELEGRAFICA ATTIVA - MASSIMO 20-30 PAROLE 🚨")
         prompt_lines.append("=" * 80)
         prompt_lines.append("")
-        prompt_lines.append("⚠️  LIMITE INVALICABILE: MAX 80 PAROLE TOTALI PER RISPOSTA")
-        prompt_lines.append("⚠️  PENALITÀ: Risposte oltre 80 parole sono VIETATE e considerate ERRORE GRAVE")
+        prompt_lines.append("⚠️  LIMITE INVALICABILE: MAX 30 PAROLE TOTALI PER RISPOSTA")
+        prompt_lines.append("⚠️  PENALITÀ: Risposte oltre 30 parole sono VIETATE e considerate ERRORE GRAVE")
         prompt_lines.append("")
-        prompt_lines.append("REGOLE BREVITÀ:")
-        prompt_lines.append("1. CONTA LE PAROLE prima di rispondere - deve essere 50-80 parole MAX")
-        prompt_lines.append("2. NO ELENCHI NUMERATI lunghi (max 2 punti)")
-        prompt_lines.append("3. NO SPIEGAZIONI dettagliate - solo informazione essenziale")
-        prompt_lines.append("4. NO DOMANDE multiple al giocatore (max 1 domanda)")
-        prompt_lines.append("5. Se devi dare item/quest: scrivi '[GIVEN_ITEMS: X]' e BASTA")
+        prompt_lines.append("REGOLE TELEGRAFICHE:")
+        prompt_lines.append("1. CONTA LE PAROLE - 20-30 MAX")
+        prompt_lines.append("2. NO ELENCHI - max 1 punto")
+        prompt_lines.append("3. SOLO ESSENZIALE - zero spiegazioni")
+        prompt_lines.append("4. MAX 1 DOMANDA")
+        prompt_lines.append("5. ITEM: '[GIVEN_ITEMS: X]' E STOP")
         prompt_lines.append("")
-        prompt_lines.append("FORMATO RISPOSTA BREVE:")
-        prompt_lines.append("- 1 frase: risposta diretta")
-        prompt_lines.append("- 1 frase: azione richiesta O item dato")
-        prompt_lines.append("- FINE (max 50-80 parole totali)")
+        prompt_lines.append("FORMATO TELEGRAFICO:")
+        prompt_lines.append("- 1 frase diretta")
+        prompt_lines.append("- 1 azione/item")
+        prompt_lines.append("- FINE (20-30 parole)")
         prompt_lines.append("")
-        prompt_lines.append("ESEMPI BRIEF (50-80 parole):")
-        prompt_lines.append("❌ VIETATO: Liste, domande multiple, spiegazioni dettagliate >80 parole")
-        prompt_lines.append("✅ CORRETTO: 'Per il Seme serve compassione vera. Porta una Pozione di Guarigione da Mara (50 crediti al Villaggio), oppure dimmi un impegno concreto per proteggere la foresta. Cosa scegli?'")
-        prompt_lines.append("✅ CORRETTO: 'Vedo sincerità nelle tue parole. [GIVEN_ITEMS: Seme della Foresta]. Proteggila bene.'")
+        prompt_lines.append("ESEMPI TELEGRAFICI (20-30 parole):")
+        prompt_lines.append("❌ VIETATO: >30 parole, liste, spiegazioni")
+        prompt_lines.append("✅ CORRETTO: 'Seme per Pozione da Mara. 50 crediti. Scegli.'")
+        prompt_lines.append("✅ CORRETTO: 'Sincerità vista. [GIVEN_ITEMS: Seme]. Proteggi.'")
         prompt_lines.append("")
-        prompt_lines.append("CONTA LE PAROLE PRIMA DI RISPONDERE - MAX 80!")
+        prompt_lines.append("CONTA PAROLE - MAX 30!")
         prompt_lines.append("=" * 80)
         prompt_lines.append("")
 
         prompt_lines.append("⚠️  REGOLA CRITICA SUL SALUTO:")
         prompt_lines.append("")
-        prompt_lines.append("✅ USA il saluto sopra → SOLO SE questa è la tua PRIMA risposta della conversazione")
-        prompt_lines.append("❌ NON usare MAI il saluto → Se hai già risposto anche solo una volta prima")
+        prompt_lines.append("✅ USA saluto → SOLO PRIMA risposta")
+        prompt_lines.append("❌ NON usare → Dopo prima risposta")
         prompt_lines.append("")
-        prompt_lines.append("⚠️  ERRORE FATALE DA EVITARE:")
-        prompt_lines.append("NON iniziare ogni risposta con 'Bentornato', 'Cercatore', o qualsiasi saluto!")
-        prompt_lines.append("Dopo il primo messaggio, vai DIRETTO alla risposta senza saluti!")
+        prompt_lines.append("⚠️  ERRORE FATALE:")
+        prompt_lines.append("NO saluti dopo primo messaggio!")
+        prompt_lines.append("Vai DIRETTO!")
         prompt_lines.append("")
         prompt_lines.append("ESEMPI:")
-        prompt_lines.append("  ✅ Msg 1: 'Cercatore... il Velo si indebolisce...' [OK - primo messaggio]")
-        prompt_lines.append("  ✅ Msg 2: 'Il Cristallo si trova nelle rovine...' [OK - nessun saluto]")
-        prompt_lines.append("  ❌ Msg 2: 'Bentornato, Cercatore. Il Cristallo...' [ERRORE - saluto ripetuto!]")
+        prompt_lines.append("  ✅ Msg 1: 'Cercastorie... Velo indebolito...' [OK]")
+        prompt_lines.append("  ✅ Msg 2: 'Cristallo rovine.' [OK]")
+        prompt_lines.append("  ❌ Msg 2: 'Bentornato, Cristallo...' [ERRORE]")
         prompt_lines.append("")
         prompt_lines.append("="*60 + "\n")
 
@@ -455,7 +483,7 @@ def build_system_prompt(
         # For REGULAR NPCs: Add previous conversation summary (antefatto already added at top)
         if game_session_state.get('last_npc_conversation_history'):
             prompt_lines.append("\n" + "="*80)
-            prompt_lines.append("CIÒ CHE IL CERCATORE HA FATTO PRIMA (Interazione precedente)")
+            prompt_lines.append("CIÒ CHE IL CERCASTORIE HA FATTO PRIMA (Interazione precedente)")
             prompt_lines.append("="*80)
             # With 8KB budget, we can capture more detailed previous conversation (800 chars instead of 400)
             prev_conv_summary = _distill_previous_conversation(
@@ -474,7 +502,7 @@ def build_system_prompt(
                     llm_wrapper_func_for_distill, model_name_for_distill, TF, game_session_state
                 )
                 if distilled_insights:
-                    prompt_lines.append(f"\nPROFILO PSICOLOGICO DEL CERCATORE (per adattare il tuo approccio):")
+                    prompt_lines.append(f"\nPROFILO PSICOLOGICO DEL CERCASTORIE (per adattare il tuo approccio):")
                     prompt_lines.append(f"{distilled_insights}")
 
                     # With 8KB budget, also add core traits directly for richer context
@@ -496,11 +524,11 @@ def build_system_prompt(
             core_traits = player_profile.get("core_traits")
             if isinstance(core_traits, dict) and core_traits:
                 traits_summary = ", ".join([f"{k.capitalize()}: {v}/10" for k,v in core_traits.items()])
-                profile_summary_parts_for_guide.append(f"Tratti principali osservati nel Cercatore: {traits_summary}.")
+                profile_summary_parts_for_guide.append(f"Tratti principali osservati nel Cercastorie: {traits_summary}.")
             # Add more profile aspects for the guide if needed (e.g., recent patterns)
             if profile_summary_parts_for_guide:
                 prompt_lines.append(
-                    f"\nCONSAPEVOLEZZA DEL CERCATORE PER TE, {name.upper()} (Usa queste informazioni per guidarlo meglio):\n"
+                    f"\nCONSAPEVOLEZZA DEL CERCASTORIE PER TE, {name.upper()} (Usa queste informazioni per guidarlo meglio):\n"
                     f"{' '.join(profile_summary_parts_for_guide)}\n"
                 )
 
@@ -523,14 +551,14 @@ def build_system_prompt(
                     prompt_lines.append(f"\nPERCORSO NARRATIVO CONDENSATO:\n{percorso_condensed}\n")
                 prompt_lines.append(
                     f"{'='*80}\n"
-                    f"ISTRUZIONI: Usa questo contesto per dare consigli coerenti con la posizione e tappa del Cercatore.\n"
-                    f"Non anticipare eventi futuri. Guida con saggezza basandoti su dove si trova il Cercatore ora.\n"
+                    f"ISTRUZIONI: Usa questo contesto per dare consigli coerenti con la posizione e tappa del Cercastorie.\n"
+                    f"Non anticipare eventi futuri. Guida con saggezza basandoti su dove si trova il Cercastorie ora.\n"
                     f"{'='*80}\n"
                 )
 
             prompt_lines.append(
                 f"\nINFORMAZIONE CONTESTUALE AGGIUNTIVA PER TE, {name.upper()} (per /hint):\n"
-                f"Il Cercatore (giocatore) stava parlando con un altro NPC prima di consultarti. Ecco un riassunto di quella interazione:\n"
+                f"Il Cercastorie (giocatore) stava parlando con un altro NPC prima di consultarti. Ecco un riassunto di quella interazione:\n"
                 f"\"{conversation_summary_for_guide_context}\"\n"
                 f"Usa questa informazione, insieme ai dettagli del giocatore e al suo profilo psicologico, per dare il tuo saggio consiglio."
             )
@@ -580,12 +608,12 @@ def build_system_prompt(
         "Parla in modo appropriato al setting fantasy e al tuo ruolo. Mantieni il personaggio.",
         "Sii consapevole delle interazioni passate se riassunte sopra o nella cronologia della chat.",
         "",
-        "**SII DIRETTO E UTILE**: Non essere troppo misterioso o criptico. Il giocatore ha bisogno di informazioni concrete.",
-        "USA LE INFORMAZIONI GEOGRAFICHE E DI MISSIONE SOPRA per dare risposte specifiche e utili al giocatore.",
-        "Se il giocatore chiede dove trovare qualcosa o qualcuno, usa il contesto geografico per rispondere PRECISAMENTE con nomi di aree.",
-        "Se il giocatore chiede di oggetti o missioni, spiega CHIARAMENTE cosa serve, chi ce l'ha, e dove andare.",
-        "Non essere eccessivamente cauto o sospettoso - il giocatore è il Cercatore e sta cercando di salvare il Velo.",
-        "Puoi dare suggerimenti e indicazioni anche se il giocatore non ha ancora completato quest per te.",
+        "**SII CONCISO E DIRETTO**: Max 3-4 frasi per risposta normale. Informazioni concrete senza prolissità.",
+        "USA LE INFORMAZIONI sopra per risposte specifiche ma brevi.",
+        "Se chiede dove trovare qualcosa: area + 1 dettaglio max.",
+        "Se chiede oggetti/missioni: cosa serve, chi ce l'ha, dove. Basta.",
+        "Non essere cauto - vai dritto al punto.",
+        "Suggerimenti diretti anche senza quest completate.",
         "",
         "⚠️ IMPORTANTE - NON MOSTRARE MAI AL GIOCATORE:",
         "- Note interne come 'V.O.:', 'AI_Behavior_Notes:', tag di sistema",
@@ -677,23 +705,32 @@ def build_system_prompt(
     ])
 
     # Enforce size constraints
-    # For regular NPCs: ≤8KB (~8000 chars) to preserve token budget
-    #   Components: Antefatto (700) + PREFIX (1-2KB) + Character data (300) + Previous conv (800) + Game rules (~3KB) = ~6-8KB
-    #   8KB allows for: longer game rules + more detailed previous conversation summaries
-    #   Tokens: ~2000-2200 tokens system prompt + room for player messages
+    # For regular NPCs: Increased to 16KB to accommodate NOTECARD_FEATURE and other instructions
+    #   Components: Antefatto (1.2KB) + NOTECARD (0.6KB) + PREFIX (1-2KB) + Character data (0.5KB) + Previous conv (800) + Game rules (~3KB) = ~8-10KB
+    #   16KB allows for: all critical instructions + notecard feature + detailed conversation summaries
+    #   Tokens: ~4000 tokens system prompt + room for player messages
     # For wise guides: allow more (no strict limit during /hint mode)
-    max_prompt_size = 8000 if is_regular_npc else 15000
+    max_prompt_size = 16000 if is_regular_npc else 20000
 
     final_prompt = _enforce_system_prompt_size_limit(
         prompt_lines,
         max_chars=max_prompt_size,
-        preserve_sections=["OBBLIGATORIE", "CRITICHE", "REGOLE LINGUISTICHE", "LINGUA OBBLIGATORIA", "COMPORTAMENTO", "ISTRUZIONI IMPORTANTI"]
+        preserve_sections=["OBBLIGATORIE", "CRITICHE", "REGOLE LINGUISTICHE", "LINGUA OBBLIGATORIA", "COMPORTAMENTO", "ISTRUZIONI IMPORTANTI", "NOTECARD"]
     )
 
     # Debug: Log prompt size if enabled
     if debug_system_prompt:
         npc_type = "WISE_GUIDE" if not is_regular_npc else "REGULAR_NPC"
         print(f"[DEBUG PROMPT] {npc_type} {name}: {len(final_prompt)} chars (max: {max_prompt_size})")
+
+    # TEMP DEBUG: Save Elira's full prompt to file
+    if name == 'Elira':
+        with open('/tmp/elira_full_prompt.txt', 'w') as f:
+            f.write(final_prompt)
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.info(f"[PROMPT_DEBUG] Saved Elira's system prompt to /tmp/elira_full_prompt.txt ({len(final_prompt)} chars)")
+        logger.info(f"[PROMPT_DEBUG] Checking for NOTECARD in prompt: {'NOTECARD' in final_prompt}")
 
     return final_prompt
 

@@ -25,11 +25,11 @@ erasmus_data = {
 tutorials = {
     "Game Rules": """# GUIDA ALLE REGOLE DI ELDORIA
 
-Benvenuto, Cercatore, nel mondo di Eldoria.
+Benvenuto, Cercastorie, nel mondo di Eldoria.
 Ecco le regole fondamentali:
 
 ## La Ricerca
-Tu sei un Cercatore - uno che cerca il significato e la verità
+Tu sei un Cercastorie - uno che cerca il significato e la verità
 nel nostro mondo mutevole. Le tue scelte modellano il tuo destino.
 
 ## Le Aree
@@ -90,7 +90,7 @@ per mantenerlo, ma il loro potere sta cedendo.
 
 ## Le Tre Scelte
 
-Tu, Cercatore, stai al crocevia di tre strade:
+Tu, Cercastorie, stai al crocevia di tre strade:
 
 1. PRESERVARE - Rinnovare il Velo, mantenere l'ordine di Eldoria
 2. TRASFORMARE - Evolverlo, permettere il cambiamento graduale

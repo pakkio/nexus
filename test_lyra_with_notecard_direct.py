@@ -44,7 +44,7 @@ Ora il loro potere sta cedendo.
 
 ## La Tua Importanza
 
-Tu, Cercatore, sei il catalizzatore.
+Tu, Cercastorie, sei il catalizzatore.
 Le tue scelte determineranno il destino di Eldoria.
 Non è solo una questione di potere - è di saggezza.
 

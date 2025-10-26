@@ -36,7 +36,7 @@ except ImportError as e:
                 response = f"Mock response from {self.current_npc_name} to '{player_input}' for {self.player_id}."
                 if player_input.lower() == "/exit": self.status = "exit"; response = "You have mock-exited."
                 if player_input.lower() == "/help": response = "Mock Help: /go, /talk, /exit. *This is italic* and **this is bold**."
-                if player_input.lower() == "hi": response = "Lyra: *Lyra's form appears as you return, the soft light of the Sanctum of Whispers reflecting off her ever-present, focused gaze.*\n\n\"Welcome back, Cercatore. The loom does not tire, nor does the Velo's tear. Have you contemplated the task ahead? Are you now ready to begin seeking the fragments of memory, or do you still hesitate before the burden I offer?\""
+                if player_input.lower() == "hi": response = "Lyra: *Lyra's form appears as you return, the soft light of the Sanctum of Whispers reflecting off her ever-present, focused gaze.*\n\n\"Welcome back, Cercastorie. The loom does not tire, nor does the Velo's tear. Have you contemplated the task ahead? Are you now ready to begin seeking the fragments of memory, or do you still hesitate before the burden I offer?\""
 
                 return {'npc_response': response, 'system_messages': ["Mock system message."],
                         'player_id': self.player_id, 'current_area': "MockRegion",

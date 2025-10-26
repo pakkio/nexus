@@ -9,7 +9,7 @@ Central_Premise: Per secoli, il mondo di Eldoria è stato protetto dal Velo, una
 
 Crisis_Description: I Sussurri dell'Oblio stanno cancellando memorie, storie e persino l'esistenza stessa. Ogni PNG custodisce un indizio, una chiave, o una maledizione collegata a questo disfacimento.
 
-Player_Role: Il Cercatore - un narratore cosmico che ha perso il potere di creare storie e deve recuperarlo per salvare l'Yperverso dalla dissoluzione nel silenzio assoluto.
+Player_Role: Il Cercastorie - un narratore cosmico che ha perso il potere di creare storie e deve recuperarlo per salvare l'Yperverso dalla dissoluzione nel silenzio assoluto.
 
 # NARRATIVE STRUCTURE
 Act_1: ["Discovery_of_Crisis", "Meeting_Key_NPCs", "Understanding_Veil_Nature"]

@@ -5,7 +5,7 @@
 
 ## 📖 PREMESSA FILOSOFICA
 
-Il sistema narrativo di Eldoria non si limita a creare dialoghi coerenti: costruisce **relazioni emergenti** tra personaggi e giocatore attraverso un triplice livello di caratterizzazione. Ogni NPC possiede tre fonti di identità che si integrano armonicamente, mentre il giocatore è osservato da un sistema psicologico che evolve nel tempo, permettendo ai personaggi di adattare sottilmente le loro risposte alla personalità emergente del Cercatore.
+Il sistema narrativo di Eldoria non si limita a creare dialoghi coerenti: costruisce **relazioni emergenti** tra personaggi e giocatore attraverso un triplice livello di caratterizzazione. Ogni NPC possiede tre fonti di identità che si integrano armonicamente, mentre il giocatore è osservato da un sistema psicologico che evolve nel tempo, permettendo ai personaggi di adattare sottilmente le loro risposte alla personalità emergente del Cercastorie.
 
 ---
 
@@ -278,7 +278,7 @@ def build_system_prompt(npc, story, game_session_state):
             player_profile, npc, story, llm_wrapper, model_name
         )
         prompt.append(f"""
-        Sottile Consapevolezza del Cercatore:
+        Sottile Consapevolezza del Cercastorie:
         {insights}
 
         Adatta leggermente il tuo tono/approccio in base a questo.
@@ -306,8 +306,8 @@ NOTE COMPORTAMENTALI: Mara è pragmatica, non filosofica...
 
 MAPPA OGGETTI: Pozione → Elira → Seme → Boros...
 
-⭐ SOTTILE CONSAPEVOLEZZA DEL CERCATORE:
-Il Cercatore mostra alta curiosità (8/10) e pragmatismo (7/10).
+⭐ SOTTILE CONSAPEVOLEZZA DEL CERCASTORIE:
+Il Cercastorie mostra alta curiosità (8/10) e pragmatismo (7/10).
 Apprezza risposte dirette e concrete. Ha dimostrato compassione verso
 chi soffre. Considera di sottolineare l'urgenza pratica della situazione
 delle piante morenti - risuonerà con la sua natura orientata all'azione.
@@ -389,7 +389,7 @@ DEFAULT_PROFILE = {
 
     # NOTE ANALISI LLM
     "llm_analysis_notes": """
-    Recentemente, il Cercatore ha mostrato uno scetticismo crescente
+    Recentemente, il Cercastorie ha mostrato uno scetticismo crescente
     verso l'autorità, specialmente nelle interazioni con Lyra e Theron.
     Le sue azioni rivelano un mix di assertività e frustrazione sottostante,
     suggerendo uno spostamento da curiosità cauta a confronto diretto.
@@ -459,7 +459,7 @@ def get_profile_update_suggestions_from_llm(profile, log, actions):
       "new_decision_patterns": ["verbally_confrontational_with_theron"],
       "new_key_experiences_tags": ["paid_theron_for_info"],
       "updated_philosophical_leaning": "progressist",
-      "analysis_notes": "Il Cercatore mostra frustrazione crescente..."
+      "analysis_notes": "Il Cercastorie mostra frustrazione crescente..."
     }}
     """
 
@@ -539,7 +539,7 @@ def get_distilled_profile_insights_for_npc(player_profile, npc_data):
 
     # Chiedi all'AI di tradurre per QUESTO NPC specifico
     prompt = f"""
-    Profilo psicologico del Cercatore:
+    Profilo psicologico del Cercastorie:
     {json.dumps(summary)}
 
     NPC che sta parlando:
@@ -548,9 +548,9 @@ def get_distilled_profile_insights_for_npc(player_profile, npc_data):
     - Motivazione: {npc_data['motivation']}
 
     Fornisci 1-2 insight CONCISI per questo NPC su come adattare
-    sottilmente la conversazione in base alla psicologia del Cercatore.
+    sottilmente la conversazione in base alla psicologia del Cercastorie.
 
-    Esempio: "Il Cercatore mostra alta pragmaticità - sottolinea
+    Esempio: "Il Cercastorie mostra alta pragmaticità - sottolinea
     benefici concreti piuttosto che filosofia astratta."
     """
 
@@ -560,7 +560,7 @@ def get_distilled_profile_insights_for_npc(player_profile, npc_data):
 
 **Output per Mara** (esempio):
 ```
-Il Cercatore mostra alta curiosità (8/10) e pragmatismo (7/10).
+Il Cercastorie mostra alta curiosità (8/10) e pragmatismo (7/10).
 Apprezza risposte dirette e concrete. Ha dimostrato compassione
 verso chi soffre di perdita di memoria. Considera di sottolineare
 l'urgenza pratica della situazione delle piante morenti - risuonerà
@@ -569,7 +569,7 @@ con la sua natura orientata all'azione. Evita filosofie astratte.
 
 **Output per Lyra** (esempio):
 ```
-Il Cercatore ha recentemente sviluppato scetticismo verso autorità
+Il Cercastorie ha recentemente sviluppato scetticismo verso autorità
 (confronto con Theron). Mostra inclinazione "progressist" verso
 l'Oblio. Potrebbe mettere in discussione la tua filosofia di
 preservazione. Prepara argomentazioni pratiche sui benefici della
@@ -578,7 +578,7 @@ memoria, non solo idealismo. Rispetta la sua crescente assertività.
 
 **Output per Theron** (esempio):
 ```
-Il Cercatore ha espresso frustrazione verso figure di autorità.
+Il Cercastorie ha espresso frustrazione verso figure di autorità.
 Crescente allineamento con filosofia della libertà attraverso oblio.
 Approccio diretto funzionerà meglio di argomentazioni sottili.
 Riconosci la sua evoluzione da osservatore a partecipante attivo.
@@ -640,8 +640,8 @@ RISPOSTE CONDIZIONALI:
 MAPPA OGGETTI:
 - Pozione → Elira (Forest) → Seme → Boros (Mountain)...
 
-⭐ SOTTILE CONSAPEVOLEZZA DEL CERCATORE:
-Il Cercatore mostra alta pragmaticità (7/10) e crescente scetticismo
+⭐ SOTTILE CONSAPEVOLEZZA DEL CERCASTORIE:
+Il Cercastorie mostra alta pragmaticità (7/10) e crescente scetticismo
 (7/10) dopo recente confronto con autorità. Apprezza risposte dirette
 e concrete. Ha dimostrato compassione verso chi soffre.
 
@@ -726,7 +726,7 @@ Hai i crediti?
 │  │ INSIGHT CONTESTUALI PER NPC                    │             │
 │  │ get_distilled_profile_insights_for_npc()       │             │
 │  ├────────────────────────────────────────────────┤             │
-│  │ "Il Cercatore mostra alta pragmaticità.       │             │
+│  │ "Il Cercastorie mostra alta pragmaticità.       │             │
 │  │  Sottolinea urgenza pratica piuttosto che      │             │
 │  │  filosofia astratta. Scetticismo crescente     │             │
 │  │  verso autorità - apprezza onestà diretta."    │             │
@@ -757,7 +757,7 @@ Hai i crediti?
 │ │ "Mappa oggetti... [GIVEN_ITEMS] format... Lingua italiana" │ │
 │ ├─────────────────────────────────────────────────────────────┤ │
 │ │ ⭐ SEZIONE 6: ADATTAMENTO PSICOLOGICO (200-500B) ⭐        │ │
-│ │ "Sottile Consapevolezza del Cercatore:                     │ │
+│ │ "Sottile Consapevolezza del Cercastorie:                     │ │
 │ │  Alta pragmaticità - sottolinea urgenza pratica...         │ │
 │ │  Scetticismo crescente - apprezza onestà diretta..."       │ │
 │ └─────────────────────────────────────────────────────────────┘ │

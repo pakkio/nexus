@@ -22,6 +22,11 @@ key leave_request_id;
 key health_request_id;           // Server health check request
 key npc_verify_request_id;       // NPC verification request
 
+// Color feedback tracking
+float request_start_time = 0.0;  // When request was sent
+vector RED = <1.0, 0.0, 0.0>;   // Thinking color
+vector WHITE = <1.0, 1.0, 1.0>; // Ready color
+
 default
 {
     state_entry()
@@ -35,7 +40,7 @@ default
             llOwnerSay("ERRORE CRITICO: URL del server non configurato correttamente!");
             llOwnerSay("Imposta l'URL nella descrizione dell'oggetto (es: http://212.227.64.143:5000)");
             llOwnerSay("Descrizione attuale: '" + SERVER_URL + "'");
-            llSetText("ERRORE: URL non configurato\n(Vedi console)", <1.0, 0.0, 0.0>, 1.0);
+            llSetText("ERRORE:\nURL non configurato\n(Vedi console)", <1.0, 0.0, 0.0>, 1.0);
             return;
         }
 
@@ -54,7 +59,7 @@ default
             {
                 llOwnerSay("ERRORE: Nome o Area vuoti!");
                 llOwnerSay("Formato corretto: 'NomeNPC.NomeArea' (es: Elira.Forest)");
-                llSetText("ERRORE: Nome formato non valido\n" + object_name, <1.0, 0.5, 0.0>, 1.0);
+                llSetText("ERRORE:\nNome formato non valido\n" + object_name, <1.0, 0.5, 0.0>, 1.0);
                 return;
             }
 
@@ -75,12 +80,12 @@ default
             // Use fallback
             NPC_NAME = object_name;
             CURRENT_AREA = "Unknown";
-            llSetText("ERRORE: Nome non valido\n" + object_name + "\nVedi console", <1.0, 0.0, 0.0>, 1.0);
+            llSetText("ERRORE:\nNome non valido\n" + object_name + "\nVedi console", <1.0, 0.0, 0.0>, 1.0);
             return;
         }
 
         // Set initial display text (verification in progress)
-        llSetText("Verifying " + NPC_NAME + "...", <1.0, 1.0, 0.5>, 1.0);
+        llSetText("Verifying\n" + NPC_NAME + "...", <1.0, 1.0, 0.5>, 1.0);
 
         // Initialize conversation state
         current_toucher = NULL_KEY;
@@ -141,7 +146,7 @@ default
             call_sense_endpoint(toucher_name);
 
             // Update display
-            llSetText("Sto parlando con " + toucher_name + "\n(Conversing)", <0.0, 1.0, 0.0>, 1.0);
+            llSetText("Sto parlando con\n" + toucher_name + "\n(Conversing)", <0.0, 1.0, 0.0>, 1.0);
         }
     }
 
@@ -155,8 +160,16 @@ default
             // Reset the timeout since there was activity (message received)
             llSetTimerEvent(TIMEOUT_SECONDS);
 
-            // Call the chat API to get NPC response
-            call_message_endpoint(message, name);
+            // Check for special commands starting with /
+            if (llGetSubString(message, 0, 0) == "/" && llStringLength(message) > 1)
+            {
+                process_local_command(message, name);
+            }
+            else
+            {
+                // Call the chat API to get NPC response
+                call_message_endpoint(message, name);
+            }
         }
     }
 
@@ -183,7 +196,7 @@ default
             else
             {
                 llOwnerSay("✗ Server health check failed: " + (string)status);
-                llSetText("✗ Server unreachable\n" + NPC_NAME, <1.0, 0.0, 0.0>, 1.0);
+                llSetText("✗ Server\nunreachable\n" + NPC_NAME, <1.0, 0.0, 0.0>, 1.0);
             }
         }
         // Handle NPC verification response
@@ -196,22 +209,33 @@ default
             else
             {
                 llOwnerSay("✗ NPC verification failed: " + (string)status);
-                llSetText("✗ NPC verification failed\n" + NPC_NAME, <1.0, 0.0, 0.0>, 1.0);
+                llSetText("✗ NPC verification\nfailed\n" + NPC_NAME, <1.0, 0.0, 0.0>, 1.0);
             }
         }
         // Handle chat responses
         else if (request_id == chat_request_id && IS_CONVERSING)
         {
+            // Calculate response time
+            float response_time = llGetTime() - request_start_time;
+
             if (status == 200)
             {
+                // Set object to WHITE - ready
+                llSetColor(WHITE, ALL_SIDES);
+
                 // Parse and respond with NPC response
                 handle_chat_response(body);
+
+                // Add timing info to chat
+                integer seconds = (integer)response_time;
+                llOwnerSay("[⏱ Tempo risposta: " + (string)seconds + " secondi]");
 
                 // Reset the timeout since there was activity (response received)
                 llSetTimerEvent(TIMEOUT_SECONDS);
             }
             else
             {
+                llSetColor(WHITE, ALL_SIDES);
                 llOwnerSay("HTTP Error " + (string)status + ": " + body);
                 llSay(0, "Scusa, al momento non posso risponderti.");
 
@@ -250,7 +274,47 @@ call_sense_endpoint(string avatar_name)
         HTTP_VERIFY_CERT, FALSE
     ];
 
+    // Set object to RED - thinking/processing
+    llSetColor(RED, ALL_SIDES);
+    request_start_time = llGetTime();
+
     chat_request_id = llHTTPRequest(SERVER_URL + "/sense", http_options, json_data);
+}
+
+// Process local commands like /brief
+process_local_command(string command, string avatar_name)
+{
+    llOwnerSay("Processing local command: " + command);
+    
+    if (command == "/brief")
+    {
+        // Toggle brief mode by sending special message to server
+        string json_data = "{"
+            + "\"message\":\"" + escape_json_string(command) + "\","
+            + "\"player_name\":\"" + avatar_name + "\","
+            + "\"npc_name\":\"" + NPC_NAME + "\","
+            + "\"area\":\"" + CURRENT_AREA + "\""
+            + "}";
+
+        list http_options = [
+            HTTP_METHOD, "POST",
+            HTTP_MIMETYPE, "application/json",
+            HTTP_BODY_MAXLENGTH, 16384,
+            HTTP_VERIFY_CERT, FALSE
+        ];
+
+        // Set object to RED - thinking/processing
+        llSetColor(RED, ALL_SIDES);
+        request_start_time = llGetTime();
+
+        chat_request_id = llHTTPRequest(SERVER_URL + "/api/chat", http_options, json_data);
+        llOwnerSay("Sent /brief command to server");
+    }
+    else
+    {
+        // For unknown commands, send to server as regular message
+        call_message_endpoint(command, avatar_name);
+    }
 }
 
 // Function to call the chat endpoint for messages
@@ -269,6 +333,10 @@ call_message_endpoint(string message, string avatar_name)
         HTTP_BODY_MAXLENGTH, 16384,
         HTTP_VERIFY_CERT, FALSE
     ];
+
+    // Set object to RED - thinking/processing
+    llSetColor(RED, ALL_SIDES);
+    request_start_time = llGetTime();
 
     chat_request_id = llHTTPRequest(SERVER_URL + "/api/chat", http_options, json_data);
 }
@@ -377,14 +445,32 @@ string clean_response_text(string response)
 // Process SL commands from NPC response
 process_sl_commands(string commands)
 {
-    // Commands format: [lookup=obj;llSetText=msg;emote=gesture;anim=action;teleport=x,y,z;notecard=name|content;...]
+    // Commands format: [lookup=obj;llSetText=msg;emote=gesture;anim=action;teleport=x,y,z;notecard=name|content]
+    // IMPORTANT: notecard must be last because it can contain semicolons in content
+
     // Remove outer brackets if present
     if (llGetSubString(commands, 0, 0) == "[")
     {
         commands = llGetSubString(commands, 1, -2);  // Remove [ and ]
     }
 
-    // Split by semicolon to get individual commands
+    // Check if there's a notecard command (extract it first to avoid semicolon issues)
+    string notecard_data = "";
+    integer notecard_pos = llSubStringIndex(commands, "notecard=");
+    if (notecard_pos != -1)
+    {
+        // Extract everything after "notecard=" until end
+        notecard_data = llGetSubString(commands, notecard_pos + 9, -1);
+        // Remove notecard from commands string to process other commands
+        commands = llGetSubString(commands, 0, notecard_pos - 1);
+        // Remove trailing semicolon if present
+        if (llGetSubString(commands, -1, -1) == ";")
+        {
+            commands = llGetSubString(commands, 0, -2);
+        }
+    }
+
+    // Split remaining commands by semicolon
     list command_parts = llParseString2List(commands, [";"], []);
     integer i;
     for (i = 0; i < llGetListLength(command_parts); i++)
@@ -392,33 +478,37 @@ process_sl_commands(string commands)
         string command_part = llList2String(command_parts, i);
         command_part = llStringTrim(command_part, STRING_TRIM);
 
+        // Skip empty parts
+        if (command_part == "") jump continue;
+
         // Check for different command types
         if (llSubStringIndex(command_part, "lookup=") == 0)
         {
             // Lookup command: lookup=object_name
             string lookup_obj = llGetSubString(command_part, 7, -1);
-            llOwnerSay("Lookup object: " + lookup_obj);
+            // Removed llOwnerSay to avoid duplicate output
         }
         else if (llSubStringIndex(command_part, "llSetText=") == 0)
         {
             // llSetText command: llSetText=message
             string text_msg = llGetSubString(command_part, 10, -1);
             text_msg = llUnescapeURL(text_msg);  // Unescape URL encoding if any
+
+            // Convert ~ to \n for line breaks (AI uses ~ as placeholder)
+            text_msg = llDumpList2String(llParseString2List(text_msg, ["~"], []), "\n");
+
             llSetText(text_msg, <1.0, 1.0, 1.0>, 1.0);
-            llOwnerSay("Setting floating text: " + text_msg);
         }
         else if (llSubStringIndex(command_part, "emote=") == 0)
         {
             // Emote command: emote=gesture_name
             string emote = llGetSubString(command_part, 6, -1);
-            llOwnerSay("Emote: " + emote);
             // Could trigger SL animations/gestures here
         }
         else if (llSubStringIndex(command_part, "anim=") == 0)
         {
             // Animation command: anim=animation_name
             string anim = llGetSubString(command_part, 5, -1);
-            llOwnerSay("Animation: " + anim);
             // Could trigger SL animations here
         }
         else if (llSubStringIndex(command_part, "teleport=") == 0)
@@ -427,12 +517,14 @@ process_sl_commands(string commands)
             string teleport_coords = llGetSubString(command_part, 9, -1);
             process_teleport(current_toucher, teleport_coords);
         }
-        else if (llSubStringIndex(command_part, "notecard=") == 0)
-        {
-            // Notecard command: notecard=name|content
-            string notecard_data = llGetSubString(command_part, 9, -1);
-            process_notecard(current_toucher, notecard_data);
-        }
+
+        @continue;
+    }
+
+    // Process notecard last (if present)
+    if (notecard_data != "")
+    {
+        process_notecard(current_toucher, notecard_data);
     }
 }
 
@@ -464,7 +556,7 @@ process_notecard(key avatar, string notecard_data)
     integer pipe_pos = llSubStringIndex(notecard_data, "|");
     if (pipe_pos == -1)
     {
-        llOwnerSay("[ERROR] Notecard command malformed: no pipe separator");
+        // Silent fail - malformed notecard
         return;
     }
 
@@ -482,7 +574,6 @@ process_notecard(key avatar, string notecard_data)
 
     // Give the notecard to the player
     llGiveInventory(avatar, notecard_name);
-    llOwnerSay("✓ Notecard '" + notecard_name + "' given to " + llKey2Name(avatar));
 
     // Remove from object inventory after giving
     llRemoveInventory(notecard_name);
@@ -569,7 +660,7 @@ end_conversation()
         IS_CONVERSING = FALSE;
 
         // Update display
-        llSetText("Tocca per parlare con " + NPC_NAME + "\n(Touch to talk)", <1.0, 1.0, 0.5>, 1.0);
+        llSetText("Tocca per parlare\ncon " + NPC_NAME + "\n(Touch to talk)", <1.0, 1.0, 0.5>, 1.0);
     }
 }
 
@@ -661,12 +752,12 @@ handle_health_response(string response_body)
     string version = extract_json_value(response_body, "version");
     if (version != "")
     {
-        llSetText("Eldoria v" + version + " - " + NPC_NAME + "\nVerifying NPC...", <1.0, 1.0, 0.0>, 1.0);
+        llSetText("Eldoria v" + version + "\n" + NPC_NAME + "\nVerifying NPC...", <1.0, 1.0, 0.0>, 1.0);
         llOwnerSay("✓ Server health check passed. Version: " + version);
     }
     else
     {
-        llSetText(NPC_NAME + "\nVerifying NPC...", <1.0, 1.0, 0.5>, 1.0);
+        llSetText(NPC_NAME + "\nVerifying\nNPC...", <1.0, 1.0, 0.5>, 1.0);
         llOwnerSay("✓ Server health check passed (version unknown)");
     }
 
@@ -715,7 +806,7 @@ handle_npc_verification_response(string response_body)
             capabilities = llGetSubString(capabilities, 0, -4);
         }
 
-        llSetText("✓ " + NPC_NAME + " (" + CURRENT_AREA + ")\n[" + capabilities + "]\nTocca per parlare", <0.0, 1.0, 0.0>, 1.0);
+        llSetText("✓ " + NPC_NAME + "\n(" + CURRENT_AREA + ")\n[" + capabilities + "]\nTocca per parlare", <0.0, 1.0, 0.0>, 1.0);
         llOwnerSay("✓ NPC configuration verified!");
         llOwnerSay("  NPC: " + NPC_NAME + " in area: " + CURRENT_AREA);
         llOwnerSay("  Capabilities: [" + capabilities + "]");
@@ -723,7 +814,7 @@ handle_npc_verification_response(string response_body)
     else
     {
         string error = extract_json_value(response_body, "error");
-        llSetText("✗ NPC not found\n" + NPC_NAME + " (" + CURRENT_AREA + ")", <1.0, 0.0, 0.0>, 1.0);
+        llSetText("✗ NPC not found\n" + NPC_NAME + "\n(" + CURRENT_AREA + ")", <1.0, 0.0, 0.0>, 1.0);
         llOwnerSay("✗ ERROR: NPC not found in database");
         llOwnerSay("  Requested: " + NPC_NAME + " in area: " + CURRENT_AREA);
         if (error != "")

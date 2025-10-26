@@ -353,6 +353,24 @@ class _SinglePlayerGameSystem:
                     msg = self.game_state['chat_session'].messages[i]
                     if msg.get('role') == 'assistant':
                         final_npc_dialogue_for_return = msg.get('content', '')
+
+                        # Extract notecard if present
+                        logger.info(f"[NOTECARD_CHECK] Response has [notecard=: {'[notecard=' in final_npc_dialogue_for_return}, length={len(final_npc_dialogue_for_return)}")
+                        if '[notecard=' in final_npc_dialogue_for_return:
+                            logger.info("[NOTECARD_EXTRACTION] Found notecard in response, extracting...")
+                            from chat_manager import extract_notecard_from_response
+                            cleaned_response, notecard_name, notecard_content = extract_notecard_from_response(final_npc_dialogue_for_return)
+                            logger.info(f"[NOTECARD_EXTRACTION] Extracted: name='{notecard_name}', content_len={len(notecard_content)}")
+                            if notecard_name and notecard_content:
+                                # Store notecard info in game state for SL commands generation
+                                self.game_state['notecard_extracted'] = {
+                                    'name': notecard_name,
+                                    'content': notecard_content
+                                }
+                                # Replace response with cleaned version (notecard removed)
+                                final_npc_dialogue_for_return = cleaned_response
+                                logger.info(f"[NOTECARD] Extracted '{notecard_name}' from NPC response ({len(notecard_content)} chars)")
+
                         if self.game_state['debug_mode']:
                             self.game_state['system_messages_buffer'].append(f"[Debug] NPC response length: {len(final_npc_dialogue_for_return)}")
                         if self.game_state.get('current_npc'):

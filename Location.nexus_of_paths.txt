@@ -6,7 +6,7 @@ Access_Level: Restricted_Endgame
 # CORE DESCRIPTION
 Setting_Description: Un crocevia mistico dove tutti i sentieri di Eldoria convergono. Al centro si erge un antico cerchio di pietre coperte di rune, con Meridia che tesse al grande Telaio del Nuovo Inizio. L'aria vibra di potenziale e destino.
 
-Veil_Connection: Il Nexus è il punto di maggiore tensione del Velo, dove tutte le linee di forza convergono. È qui che la scelta finale del Cercatore avrà effetto su tutto l'Yperverso.
+Veil_Connection: Il Nexus è il punto di maggiore tensione del Velo, dove tutte le linee di forza convergono. È qui che la scelta finale del Cercastorie avrà effetto su tutto l'Yperverso.
 
 # INHABITANTS  
 Primary_NPC: meridia_destiny_weaver
@@ -100,5 +100,5 @@ Entry_Requirements: {
   "Story_Completion": "Must_have_completed_major_faction_questlines",
   "Artifact_Possession": "Requires_Chiave_Maestra_from_multiple_sources",
   "Wisdom_Demonstration": "Must_show_understanding_of_all_philosophical_positions",
-  "Character_Growth": "Cercatore_must_have_evolved_beyond_initial_state"
+  "Character_Growth": "Cercastorie_must_have_evolved_beyond_initial_state"
 }
