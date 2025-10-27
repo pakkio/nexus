@@ -1,32 +1,55 @@
-// Simplified Touch-Activated NPC Dialogue System
-// Uses /sense endpoint for simple LSL-friendly responses
-// Activated by touch - only listens to the toucher during conversation
-// Maintains dialogue state with the toucher until they leave range or touch again
-// Resets automatically after 5 minutes of inactivity
+// Enhanced Touch-Activated NPC System with AI-Driven Animations
+// - Spawns NPC from notecard on first touch
+// - Discovers animations in inventory
+// - Interprets AI responses to play animations automatically
+// - Full conversation system with HTTP brain communication
 
-// Configuration
+// ========================================
+// CONFIGURATION
+// ========================================
 string SERVER_URL = "";                       // Will be read from object description
-string NPC_NAME;                              // Name of this NPC (will be parsed from object name)
-string CURRENT_AREA;                          // Area name (will be parsed from object name)
+string NPC_NAME;                              // Name of this NPC (parsed from object name)
+string CURRENT_AREA;                          // Area name (parsed from object name)
 
-// State variables
+// ========================================
+// NPC SPAWNING & ANIMATION SYSTEM
+// ========================================
+key npcKey = NULL_KEY;                // Key of spawned NPC
+string appearanceNotecard = "";       // Notecard containing NPC appearance
+list availableAnims = [];             // List of body animations in inventory
+list availableEmotes = [];            // List of facial expressions in inventory
+string currentAnim = "";              // Currently playing body animation
+string currentEmote = "";             // Currently playing facial expression
+integer npcIsSpawned = FALSE;         // Track if NPC is spawned
+
+// ========================================
+// CONVERSATION STATE
+// ========================================
 key current_toucher = NULL_KEY;       // Key of the avatar currently in conversation
 string current_toucher_name = "";     // Name of the current toucher
 integer listen_handle = -1;           // Handle for the listen event
 integer IS_CONVERSING = FALSE;        // Flag to track if in active conversation
 integer TIMEOUT_SECONDS = 300;        // 5 minutes in seconds (300 seconds)
 
-// HTTP request tracking
+// ========================================
+// HTTP REQUEST TRACKING
+// ========================================
 key chat_request_id;
 key leave_request_id;
-key health_request_id;           // Server health check request
-key npc_verify_request_id;       // NPC verification request
+key health_request_id;
+key npc_verify_request_id;
 
-// Color feedback tracking
-float request_start_time = 0.0;  // When request was sent
-vector RED = <1.0, 0.0, 0.0>;   // Thinking color
-vector WHITE = <1.0, 1.0, 1.0>; // Ready color
+// ========================================
+// VISUAL FEEDBACK
+// ========================================
+float request_start_time = 0.0;      // When request was sent
+vector RED = <1.0, 0.0, 0.0>;        // Thinking color
+vector WHITE = <1.0, 1.0, 1.0>;      // Ready color
+vector GREEN = <0.0, 1.0, 0.0>;      // NPC spawned color
 
+// ========================================
+// MAIN STATE
+// ========================================
 default
 {
     state_entry()
@@ -63,8 +86,12 @@ default
                 return;
             }
 
+            // Set appearance notecard name (same as NPC name)
+            appearanceNotecard = NPC_NAME;
+
             llOwnerSay("✓ NPC: " + NPC_NAME + " | Area: " + CURRENT_AREA);
             llOwnerSay("✓ Server: " + SERVER_URL);
+            llOwnerSay("✓ Appearance Notecard: " + appearanceNotecard);
         }
         else
         {
@@ -84,16 +111,20 @@ default
             return;
         }
 
-        // Set initial display text (verification in progress)
+        // Load animations from inventory
+        loadAnimationsFromInventory();
+
+        // Set initial display text
         llSetText("Verifying\n" + NPC_NAME + "...", <1.0, 1.0, 0.5>, 1.0);
 
         // Initialize conversation state
         current_toucher = NULL_KEY;
         current_toucher_name = "";
         IS_CONVERSING = FALSE;
+        npcIsSpawned = FALSE;
 
-        llOwnerSay("Touch-activated NPC '" + NPC_NAME + "' in area '" + CURRENT_AREA + "' initialized.");
-        llOwnerSay("Starting verification...");
+        llOwnerSay("Touch-activated NPC '" + NPC_NAME + "' initialized.");
+        llOwnerSay("Animations loaded: " + (string)llGetListLength(availableAnims) + " body, " + (string)llGetListLength(availableEmotes) + " facial");
 
         // Check server health and verify NPC configuration
         check_server_health();
@@ -101,8 +132,20 @@ default
 
     touch_start(integer total_number)
     {
-        key toucher = llDetectedKey(0);
-        string toucher_name = llDetectedName(0);
+        key toucher;
+        string toucher_name;
+
+        toucher = llDetectedKey(0);
+        toucher_name = llDetectedName(0);
+
+        // If NPC is not spawned, spawn it first
+        if (!npcIsSpawned)
+        {
+            spawnNPC();
+            llOwnerSay("NPC " + NPC_NAME + " spawned for " + toucher_name);
+            // Don't start conversation yet - let them touch again
+            return;
+        }
 
         // Check if this is the same person who is already in conversation
         if (IS_CONVERSING && current_toucher == toucher)
@@ -146,7 +189,7 @@ default
             call_sense_endpoint(toucher_name);
 
             // Update display
-            llSetText("Sto parlando con\n" + toucher_name + "\n(Conversing)", <0.0, 1.0, 0.0>, 1.0);
+            llSetText("Sto parlando con\n" + toucher_name + "\n(Conversing)", GREEN, 1.0);
         }
     }
 
@@ -215,11 +258,15 @@ default
         // Handle chat responses
         else if (request_id == chat_request_id && IS_CONVERSING)
         {
+            float response_time;
+
             // Calculate response time
-            float response_time = llGetTime() - request_start_time;
+            response_time = llGetTime() - request_start_time;
 
             if (status == 200)
             {
+                integer seconds;
+
                 // Set object to WHITE - ready
                 llSetColor(WHITE, ALL_SIDES);
 
@@ -227,7 +274,7 @@ default
                 handle_chat_response(body);
 
                 // Add timing info to chat
-                integer seconds = (integer)response_time;
+                seconds = (integer)response_time;
                 llOwnerSay("[⏱ Tempo risposta: " + (string)seconds + " secondi]");
 
                 // Reset the timeout since there was activity (response received)
@@ -258,19 +305,166 @@ default
     }
 }
 
+// ========================================
+// NPC SPAWNING & ANIMATION FUNCTIONS
+// ========================================
+
+// Load animations from inventory - separate body animations from facial expressions
+loadAnimationsFromInventory()
+{
+    integer i;
+    string anim;
+
+    availableAnims = [];
+    availableEmotes = [];
+    i = 0;
+
+    while (i < llGetInventoryNumber(INVENTORY_ANIMATION))
+    {
+        anim = llGetInventoryName(INVENTORY_ANIMATION, i);
+
+        // Check if it's a facial expression (emote)
+        if (llSubStringIndex(anim, "express_") == 0)
+        {
+            availableEmotes += [anim];
+        }
+        else
+        {
+            // Regular body animation
+            availableAnims += [anim];
+        }
+
+        i = i + 1;
+    }
+
+    llOwnerSay("Loaded " + (string)llGetListLength(availableAnims) + " body animations");
+    llOwnerSay("Loaded " + (string)llGetListLength(availableEmotes) + " facial expressions");
+}
+
+// Spawn the NPC from the appearance notecard
+spawnNPC()
+{
+    vector pos;
+    rotation rot;
+
+    // Check if notecard exists
+    if (llGetInventoryType(appearanceNotecard) != INVENTORY_NOTECARD)
+    {
+        llOwnerSay("ERROR: Appearance notecard '" + appearanceNotecard + "' not found in inventory!");
+        llSetText("ERROR:\nNotecard missing\n" + appearanceNotecard, <1.0, 0.0, 0.0>, 1.0);
+        return;
+    }
+
+    // Get spawn position (slightly in front of object)
+    pos = llGetPos() + <1.0, 0.0, 0.0> * llGetRot();
+    rot = llGetRot();
+
+    // Create NPC from notecard
+    npcKey = osNpcCreate(NPC_NAME, "NPCLastName", pos, appearanceNotecard);
+
+    if (npcKey != NULL_KEY)
+    {
+        npcIsSpawned = TRUE;
+
+        // Set NPC rotation to face the object
+        osNpcSetRot(npcKey, rot);
+
+        llOwnerSay("✓ NPC spawned successfully: " + NPC_NAME);
+        llOwnerSay("  NPC Key: " + (string)npcKey);
+        llSetText("✓ " + NPC_NAME + "\nTocca per parlare\n(Touch to talk)", GREEN, 1.0);
+    }
+    else
+    {
+        llOwnerSay("✗ Failed to spawn NPC!");
+        llSetText("✗ Spawn failed\n" + NPC_NAME, <1.0, 0.0, 0.0>, 1.0);
+    }
+}
+
+// Play body animation on NPC
+playAnimation(string anim)
+{
+    integer i;
+
+    // Check if animation exists in inventory
+    if (llGetInventoryType(anim) != INVENTORY_ANIMATION)
+    {
+        llOwnerSay("Animation '" + anim + "' not found in inventory");
+        return;
+    }
+
+    // Stop current animation if playing
+    if (currentAnim != "" && npcKey != NULL_KEY)
+    {
+        osNpcStopAnimation(npcKey, currentAnim);
+    }
+
+    // Play new animation
+    if (npcKey != NULL_KEY)
+    {
+        osNpcPlayAnimation(npcKey, anim);
+        currentAnim = anim;
+        llOwnerSay("Playing body animation: " + anim);
+    }
+}
+
+// Stop current body animation
+stopAnimation()
+{
+    if (currentAnim != "" && npcKey != NULL_KEY)
+    {
+        osNpcStopAnimation(npcKey, currentAnim);
+        currentAnim = "";
+    }
+}
+
+// Play facial expression on NPC
+playEmote(string emote)
+{
+    // Stop current emote if playing
+    if (currentEmote != "" && npcKey != NULL_KEY)
+    {
+        osNpcStopAnimation(npcKey, currentEmote);
+    }
+
+    // Play new emote
+    if (npcKey != NULL_KEY)
+    {
+        osNpcPlayAnimation(npcKey, emote);
+        currentEmote = emote;
+        llOwnerSay("Playing facial expression: " + emote);
+    }
+}
+
+// Stop current facial expression
+stopEmote()
+{
+    if (currentEmote != "" && npcKey != NULL_KEY)
+    {
+        osNpcStopAnimation(npcKey, currentEmote);
+        currentEmote = "";
+    }
+}
+
+// ========================================
+// HTTP COMMUNICATION FUNCTIONS
+// ========================================
+
 // Function to call the sense endpoint for initial greeting
 call_sense_endpoint(string avatar_name)
 {
-    string json_data = "{"
+    string json_data;
+    list http_options;
+
+    json_data = "{"
         + "\"name\":\"" + avatar_name + "\","
         + "\"npcname\":\"" + NPC_NAME + "\","
         + "\"area\":\"" + CURRENT_AREA + "\""
         + "}";
 
-    list http_options = [
+    http_options = [
         HTTP_METHOD, "POST",
         HTTP_MIMETYPE, "application/json",
-        HTTP_BODY_MAXLENGTH, 16384,
+        HTTP_BODY_MAXLENGTH, 8192,  // Reduced from 16384 to prevent heap overflow
         HTTP_VERIFY_CERT, FALSE
     ];
 
@@ -284,19 +478,22 @@ call_sense_endpoint(string avatar_name)
 // Process local commands like /brief
 process_local_command(string command, string avatar_name)
 {
+    string json_data;
+    list http_options;
+
     llOwnerSay("Processing local command: " + command);
-    
+
     if (command == "/brief")
     {
         // Toggle brief mode by sending special message to server
-        string json_data = "{"
+        json_data = "{"
             + "\"message\":\"" + escape_json_string(command) + "\","
             + "\"player_name\":\"" + avatar_name + "\","
             + "\"npc_name\":\"" + NPC_NAME + "\","
             + "\"area\":\"" + CURRENT_AREA + "\""
             + "}";
 
-        list http_options = [
+        http_options = [
             HTTP_METHOD, "POST",
             HTTP_MIMETYPE, "application/json",
             HTTP_BODY_MAXLENGTH, 16384,
@@ -320,17 +517,20 @@ process_local_command(string command, string avatar_name)
 // Function to call the chat endpoint for messages
 call_message_endpoint(string message, string avatar_name)
 {
-    string json_data = "{"
+    string json_data;
+    list http_options;
+
+    json_data = "{"
         + "\"message\":\"" + escape_json_string(message) + "\","
         + "\"player_name\":\"" + avatar_name + "\","
         + "\"npc_name\":\"" + NPC_NAME + "\","
         + "\"area\":\"" + CURRENT_AREA + "\""
         + "}";
 
-    list http_options = [
+    http_options = [
         HTTP_METHOD, "POST",
         HTTP_MIMETYPE, "application/json",
-        HTTP_BODY_MAXLENGTH, 16384,
+        HTTP_BODY_MAXLENGTH, 8192,  // Reduced from 16384 to prevent heap overflow
         HTTP_VERIFY_CERT, FALSE
     ];
 
@@ -344,7 +544,10 @@ call_message_endpoint(string message, string avatar_name)
 // Function to call the leave endpoint (signal that avatar is leaving conversation)
 call_leave_endpoint(string avatar_name)
 {
-    string json_data = "{"
+    string json_data;
+    list http_options;
+
+    json_data = "{"
         + "\"player_name\":\"" + avatar_name + "\","
         + "\"npc_name\":\"" + NPC_NAME + "\","
         + "\"area\":\"" + CURRENT_AREA + "\","
@@ -353,27 +556,39 @@ call_leave_endpoint(string avatar_name)
         + "\"status\":\"end\""
         + "}";
 
-    list http_options = [
+    http_options = [
         HTTP_METHOD, "POST",
         HTTP_MIMETYPE, "application/json",
-        HTTP_BODY_MAXLENGTH, 16384,
+        HTTP_BODY_MAXLENGTH, 8192,  // Reduced from 16384 to prevent heap overflow
         HTTP_VERIFY_CERT, FALSE
     ];
 
     leave_request_id = llHTTPRequest(SERVER_URL + "/api/leave_npc", http_options, json_data);
 }
 
-// Handle the response from the chat endpoint
+// ========================================
+// RESPONSE HANDLING FUNCTIONS
+// ========================================
+
+// Handle the response from the chat endpoint - now with animation parsing!
 handle_chat_response(string response_body)
 {
+    string npc_response;
+    string sl_commands;
+    string clean_response;
+
     // Extract NPC response from JSON
-    string npc_response = extract_json_value(response_body, "npc_response");
-    string sl_commands = extract_json_value(response_body, "sl_commands");
+    npc_response = extract_json_value(response_body, "npc_response");
+    sl_commands = extract_json_value(response_body, "sl_commands");
 
     if (npc_response != "")
     {
+        // PARSE ANIMATION COMMANDS from NPC response before cleaning
+        // Format: [anim=animation_name;face=emotion_name]
+        parseAndPlayAnimations(npc_response);
+
         // Clean the response text (remove Unicode, escape sequences, markdown, etc.)
-        string clean_response = clean_response_text(npc_response);
+        clean_response = clean_response_text(npc_response);
 
         // Say response in public (only once - removed duplicate llRegionSayTo)
         llSay(0, clean_response);
@@ -390,18 +605,121 @@ handle_chat_response(string response_body)
     }
 }
 
+// NEW FUNCTION: Parse animation commands from AI response
+// Looks for patterns like [anim=STAND TALK 1] or [face=express_smile] or [anim=TALK2;face=express_sad]
+parseAndPlayAnimations(string response)
+{
+    integer start;
+    integer end;
+    string commands;
+    list command_parts;
+    integer i;
+    string part;
+    string anim_name;
+    string face_name;
+
+    // Look for [anim=...] or [anim=...;face=...] pattern
+    start = llSubStringIndex(response, "[anim=");
+    if (start == -1)
+    {
+        // Try alternate pattern [face=...]
+        start = llSubStringIndex(response, "[face=");
+    }
+
+    if (start != -1)
+    {
+        // Find closing bracket
+        end = llSubStringIndex(llGetSubString(response, start, -1), "]");
+        if (end != -1)
+        {
+            // Extract command string
+            commands = llGetSubString(response, start + 1, start + end - 1);
+
+            llOwnerSay("Found animation command: [" + commands + "]");
+
+            // Split by semicolon to separate anim= and face=
+            command_parts = llParseString2List(commands, [";"], []);
+
+            for (i = 0; i < llGetListLength(command_parts); i++)
+            {
+                part = llStringTrim(llList2String(command_parts, i), STRING_TRIM);
+
+                // Check for anim=
+                if (llSubStringIndex(part, "anim=") == 0)
+                {
+                    anim_name = llGetSubString(part, 5, -1);
+                    anim_name = llStringTrim(anim_name, STRING_TRIM);
+
+                    if (anim_name != "")
+                    {
+                        playAnimation(anim_name);
+                    }
+                }
+                // Check for face=
+                else if (llSubStringIndex(part, "face=") == 0)
+                {
+                    face_name = llGetSubString(part, 5, -1);
+                    face_name = llStringTrim(face_name, STRING_TRIM);
+
+                    if (face_name != "")
+                    {
+                        playEmote(face_name);
+                    }
+                }
+            }
+        }
+    }
+}
+
 // Clean response text for speaking (comprehensive cleanup)
 string clean_response_text(string response)
 {
+    integer pos;
+    string before;
+    string after;
+
+    // Remove animation command tags before displaying
+    // Pattern: [anim=...] or [face=...] or [anim=...;face=...]
+    pos = llSubStringIndex(response, "[anim=");
+    while (pos != -1)
+    {
+        integer end_pos;
+
+        end_pos = llSubStringIndex(llGetSubString(response, pos, -1), "]");
+        if (end_pos != -1)
+        {
+            before = llGetSubString(response, 0, pos - 1);
+            after = llGetSubString(response, pos + end_pos + 1, -1);
+            response = before + after;
+        }
+        pos = llSubStringIndex(response, "[anim=");
+    }
+
+    // Also remove standalone [face=...] tags
+    pos = llSubStringIndex(response, "[face=");
+    while (pos != -1)
+    {
+        integer end_pos;
+
+        end_pos = llSubStringIndex(llGetSubString(response, pos, -1), "]");
+        if (end_pos != -1)
+        {
+            before = llGetSubString(response, 0, pos - 1);
+            after = llGetSubString(response, pos + end_pos + 1, -1);
+            response = before + after;
+        }
+        pos = llSubStringIndex(response, "[face=");
+    }
+
     // Remove Unicode escape sequences (like \ud83d\ude0a for emojis)
-    integer pos = llSubStringIndex(response, "\\u");
+    pos = llSubStringIndex(response, "\\u");
     while (pos != -1)
     {
         // Find the end of the unicode sequence (4 hex digits after \u)
         if (pos + 5 < llStringLength(response))
         {
-            string before = llGetSubString(response, 0, pos - 1);
-            string after = llGetSubString(response, pos + 6, -1);
+            before = llGetSubString(response, 0, pos - 1);
+            after = llGetSubString(response, pos + 6, -1);
             response = before + after;
         }
         else
@@ -445,6 +763,17 @@ string clean_response_text(string response)
 // Process SL commands from NPC response
 process_sl_commands(string commands)
 {
+    string notecard_data;
+    integer notecard_pos;
+    list command_parts;
+    integer i;
+    string command_part;
+    string lookup_obj;
+    string text_msg;
+    string emote;
+    string anim;
+    string teleport_coords;
+
     // Commands format: [lookup=obj;llSetText=msg;emote=gesture;anim=action;teleport=x,y,z;notecard=name|content]
     // IMPORTANT: notecard must be last because it can contain semicolons in content
 
@@ -455,8 +784,8 @@ process_sl_commands(string commands)
     }
 
     // Check if there's a notecard command (extract it first to avoid semicolon issues)
-    string notecard_data = "";
-    integer notecard_pos = llSubStringIndex(commands, "notecard=");
+    notecard_data = "";
+    notecard_pos = llSubStringIndex(commands, "notecard=");
     if (notecard_pos != -1)
     {
         // Extract everything after "notecard=" until end
@@ -471,11 +800,10 @@ process_sl_commands(string commands)
     }
 
     // Split remaining commands by semicolon
-    list command_parts = llParseString2List(commands, [";"], []);
-    integer i;
+    command_parts = llParseString2List(commands, [";"], []);
     for (i = 0; i < llGetListLength(command_parts); i++)
     {
-        string command_part = llList2String(command_parts, i);
+        command_part = llList2String(command_parts, i);
         command_part = llStringTrim(command_part, STRING_TRIM);
 
         // Skip empty parts
@@ -485,13 +813,13 @@ process_sl_commands(string commands)
         if (llSubStringIndex(command_part, "lookup=") == 0)
         {
             // Lookup command: lookup=object_name
-            string lookup_obj = llGetSubString(command_part, 7, -1);
+            lookup_obj = llGetSubString(command_part, 7, -1);
             // Removed llOwnerSay to avoid duplicate output
         }
         else if (llSubStringIndex(command_part, "llSetText=") == 0)
         {
             // llSetText command: llSetText=message
-            string text_msg = llGetSubString(command_part, 10, -1);
+            text_msg = llGetSubString(command_part, 10, -1);
             text_msg = llUnescapeURL(text_msg);  // Unescape URL encoding if any
 
             // Convert ~ to \n for line breaks (AI uses ~ as placeholder)
@@ -501,20 +829,23 @@ process_sl_commands(string commands)
         }
         else if (llSubStringIndex(command_part, "emote=") == 0)
         {
-            // Emote command: emote=gesture_name
-            string emote = llGetSubString(command_part, 6, -1);
-            // Could trigger SL animations/gestures here
+            // Emote command: emote=gesture_name (now plays facial expression)
+            emote = llGetSubString(command_part, 6, -1);
+            if (llSubStringIndex(emote, "express_") == 0)
+            {
+                playEmote(emote);
+            }
         }
         else if (llSubStringIndex(command_part, "anim=") == 0)
         {
-            // Animation command: anim=animation_name
-            string anim = llGetSubString(command_part, 5, -1);
-            // Could trigger SL animations here
+            // Animation command: anim=animation_name (plays body animation)
+            anim = llGetSubString(command_part, 5, -1);
+            playAnimation(anim);
         }
         else if (llSubStringIndex(command_part, "teleport=") == 0)
         {
             // Teleport command: teleport=x,y,z
-            string teleport_coords = llGetSubString(command_part, 9, -1);
+            teleport_coords = llGetSubString(command_part, 9, -1);
             process_teleport(current_toucher, teleport_coords);
         }
 
@@ -531,15 +862,21 @@ process_sl_commands(string commands)
 // Process teleport command
 process_teleport(key avatar, string coords)
 {
+    list coord_parts;
+    float x;
+    float y;
+    float z;
+    vector teleport_pos;
+
     // Parse coordinates: "x,y,z"
-    list coord_parts = llParseString2List(coords, [","], []);
+    coord_parts = llParseString2List(coords, [","], []);
     if (llGetListLength(coord_parts) == 3)
     {
-        float x = (float)llList2String(coord_parts, 0);
-        float y = (float)llList2String(coord_parts, 1);
-        float z = (float)llList2String(coord_parts, 2);
+        x = (float)llList2String(coord_parts, 0);
+        y = (float)llList2String(coord_parts, 1);
+        z = (float)llList2String(coord_parts, 2);
 
-        vector teleport_pos = <x, y, z>;
+        teleport_pos = <x, y, z>;
         llOwnerSay("Teleporting " + llKey2Name(avatar) + " to " + (string)teleport_pos);
         llTeleportAgent(avatar, "", teleport_pos, <0, 0, 0>);
     }
@@ -552,22 +889,28 @@ process_teleport(key avatar, string coords)
 // Process notecard command: notecard=NotecardName|Escaped_Content
 process_notecard(key avatar, string notecard_data)
 {
+    integer pipe_pos;
+    string notecard_name;
+    string escaped_content;
+    string content;
+    list notecard_lines;
+
     // Parse: "NotecardName|Escaped_Content"
-    integer pipe_pos = llSubStringIndex(notecard_data, "|");
+    pipe_pos = llSubStringIndex(notecard_data, "|");
     if (pipe_pos == -1)
     {
         // Silent fail - malformed notecard
         return;
     }
 
-    string notecard_name = llGetSubString(notecard_data, 0, pipe_pos - 1);
-    string escaped_content = llGetSubString(notecard_data, pipe_pos + 1, -1);
+    notecard_name = llGetSubString(notecard_data, 0, pipe_pos - 1);
+    escaped_content = llGetSubString(notecard_data, pipe_pos + 1, -1);
 
     // Unescape the content (reverse of Python's escape)
-    string content = unescape_notecard_content(escaped_content);
+    content = unescape_notecard_content(escaped_content);
 
     // Split content into lines
-    list notecard_lines = llParseString2List(content, ["\n"], []);
+    notecard_lines = llParseString2List(content, ["\n"], []);
 
     // Create the notecard
     osMakeNotecard(notecard_name, notecard_lines);
@@ -580,20 +923,25 @@ process_notecard(key avatar, string notecard_data)
 }
 
 // Unescape notecard content (reverse of Python escaping)
-// Python escapes: \\ → \\, " → \", \n → \n
 string unescape_notecard_content(string escaped)
 {
-    string result = "";
-    integer i = 0;
-    integer len = llStringLength(escaped);
+    string result;
+    integer i;
+    integer len;
+    string char;
+    string next_char;
+
+    result = "";
+    i = 0;
+    len = llStringLength(escaped);
 
     while (i < len)
     {
-        string char = llGetSubString(escaped, i, i);
+        char = llGetSubString(escaped, i, i);
 
         if (char == "\\" && i + 1 < len)
         {
-            string next_char = llGetSubString(escaped, i + 1, i + 1);
+            next_char = llGetSubString(escaped, i + 1, i + 1);
             if (next_char == "n")
             {
                 result += "\n";
@@ -654,15 +1002,19 @@ end_conversation()
             llSay(0, "È stato un piacere parlare con te, " + current_toucher_name + "! A presto.");
         }
 
-        // Reset state
+        // Reset conversation state
         current_toucher = NULL_KEY;
         current_toucher_name = "";
         IS_CONVERSING = FALSE;
 
         // Update display
-        llSetText("Tocca per parlare\ncon " + NPC_NAME + "\n(Touch to talk)", <1.0, 1.0, 0.5>, 1.0);
+        llSetText("✓ " + NPC_NAME + "\nTocca per parlare\n(Touch to talk)", GREEN, 1.0);
     }
 }
+
+// ========================================
+// UTILITY FUNCTIONS
+// ========================================
 
 // Utility function to escape JSON string characters
 string escape_json_string(string input)
@@ -679,26 +1031,34 @@ string escape_json_string(string input)
 // Extract value from JSON string (simple implementation with escape handling)
 string extract_json_value(string json, string mykey)
 {
-    string search_key = "\"" + mykey + "\":\"";
-    integer start_pos = llSubStringIndex(json, search_key);
+    string search_key;
+    integer start_pos;
+    integer pos;
+    integer json_len;
+    string current_char;
+    integer backslash_count;
+    integer check_pos;
+
+    search_key = "\"" + mykey + "\":\"";
+    start_pos = llSubStringIndex(json, search_key);
 
     if (start_pos == -1) return "";
 
     start_pos += llStringLength(search_key);
 
     // Find the closing quote, but handle escaped quotes
-    integer pos = start_pos;
-    integer json_len = llStringLength(json);
+    pos = start_pos;
+    json_len = llStringLength(json);
 
     while (pos < json_len)
     {
-        string current_char = llGetSubString(json, pos, pos);
+        current_char = llGetSubString(json, pos, pos);
 
         if (current_char == "\"")
         {
             // Check if this quote is escaped by counting preceding backslashes
-            integer backslash_count = 0;
-            integer check_pos = pos - 1;
+            backslash_count = 0;
+            check_pos = pos - 1;
 
             while (check_pos >= start_pos && llGetSubString(json, check_pos, check_pos) == "\\")
             {
@@ -732,11 +1092,16 @@ string unescape_json_string(string input)
     return input;
 }
 
-// Clean response text for speaking
+// ========================================
+// SERVER VERIFICATION FUNCTIONS
+// ========================================
+
 // Check server health during initialization
 check_server_health()
 {
-    list http_options = [
+    list http_options;
+
+    http_options = [
         HTTP_METHOD, "GET",
         HTTP_BODY_MAXLENGTH, 16384,
         HTTP_VERIFY_CERT, FALSE
@@ -748,8 +1113,10 @@ check_server_health()
 // Handle health check response
 handle_health_response(string response_body)
 {
+    string version;
+
     // Extract version from JSON
-    string version = extract_json_value(response_body, "version");
+    version = extract_json_value(response_body, "version");
     if (version != "")
     {
         llSetText("Eldoria v" + version + "\n" + NPC_NAME + "\nVerifying NPC...", <1.0, 1.0, 0.0>, 1.0);
@@ -768,15 +1135,18 @@ handle_health_response(string response_body)
 // Verify NPC exists and check capabilities
 verify_npc_exists()
 {
-    string json_data = "{"
+    string json_data;
+    list http_options;
+
+    json_data = "{"
         + "\"npc_name\":\"" + NPC_NAME + "\","
         + "\"area\":\"" + CURRENT_AREA + "\""
         + "}";
 
-    list http_options = [
+    http_options = [
         HTTP_METHOD, "POST",
         HTTP_MIMETYPE, "application/json",
-        HTTP_BODY_MAXLENGTH, 16384,
+        HTTP_BODY_MAXLENGTH, 8192,  // Reduced from 16384 to prevent heap overflow
         HTTP_VERIFY_CERT, FALSE
     ];
 
@@ -786,16 +1156,23 @@ verify_npc_exists()
 // Handle NPC verification response
 handle_npc_verification_response(string response_body)
 {
-    string found = extract_json_value(response_body, "found");
+    string found;
+    string has_teleport;
+    string has_llsettext;
+    string has_notecard;
+    string capabilities;
+    string error;
+
+    found = extract_json_value(response_body, "found");
 
     if (found == "true")
     {
-        string has_teleport = extract_json_value(response_body, "has_teleport");
-        string has_llsettext = extract_json_value(response_body, "has_llsettext");
-        string has_notecard = extract_json_value(response_body, "has_notecard");
+        has_teleport = extract_json_value(response_body, "has_teleport");
+        has_llsettext = extract_json_value(response_body, "has_llsettext");
+        has_notecard = extract_json_value(response_body, "has_notecard");
 
         // Build capabilities string
-        string capabilities = "";
+        capabilities = "";
         if (has_teleport == "true") capabilities += "✓ Teleport | ";
         if (has_llsettext == "true") capabilities += "✓ Text | ";
         if (has_notecard == "true") capabilities += "✓ Notecard";
@@ -806,14 +1183,17 @@ handle_npc_verification_response(string response_body)
             capabilities = llGetSubString(capabilities, 0, -4);
         }
 
-        llSetText("✓ " + NPC_NAME + "\n(" + CURRENT_AREA + ")\n[" + capabilities + "]\nTocca per parlare", <0.0, 1.0, 0.0>, 1.0);
+        llSetText("✓ " + NPC_NAME + "\n(" + CURRENT_AREA + ")\n[" + capabilities + "]\n🎭 Tocca per creare NPC", <0.0, 1.0, 0.0>, 1.0);
         llOwnerSay("✓ NPC configuration verified!");
         llOwnerSay("  NPC: " + NPC_NAME + " in area: " + CURRENT_AREA);
         llOwnerSay("  Capabilities: [" + capabilities + "]");
+        llOwnerSay("  Available body animations: " + llList2CSV(availableAnims));
+        llOwnerSay("  Available facial expressions: " + llList2CSV(availableEmotes));
+        llOwnerSay("Touch to spawn NPC and start conversation!");
     }
     else
     {
-        string error = extract_json_value(response_body, "error");
+        error = extract_json_value(response_body, "error");
         llSetText("✗ NPC not found\n" + NPC_NAME + "\n(" + CURRENT_AREA + ")", <1.0, 0.0, 0.0>, 1.0);
         llOwnerSay("✗ ERROR: NPC not found in database");
         llOwnerSay("  Requested: " + NPC_NAME + " in area: " + CURRENT_AREA);

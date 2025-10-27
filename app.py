@@ -51,10 +51,17 @@ def normalize_text_for_lsl(text):
     """
     Normalizza il testo per LSL convertendo caratteri accentati in equivalenti ASCII.
     à => a', è => e', ì => i', ò => o', ù => u', ç => c'
+    Also limits length to prevent LSL heap overflow (max 2000 chars for safety)
     """
     if not text:
         return text
-    
+
+    # CRITICAL: Limit length to prevent LSL heap overflow
+    # LSL has 1MB heap limit, responses must be kept small
+    MAX_RESPONSE_LENGTH = 2000
+    if len(text) > MAX_RESPONSE_LENGTH:
+        text = text[:MAX_RESPONSE_LENGTH - 3] + "..."
+
     # Mapping personalizzato per caratteri italiani
     replacements = {
         'à': "a'", 'á': "a'", 'â': 'a', 'ã': 'a', 'ä': 'a',
@@ -71,11 +78,11 @@ def normalize_text_for_lsl(text):
         'Ù': "U'", 'Ú': "U'", 'Û': 'U', 'Ü': 'U',
         'Ç': "C'", 'Ñ': 'N'
     }
-    
+
     # Applica le sostituzioni
     for char, replacement in replacements.items():
         text = text.replace(char, replacement)
-    
+
     return text
 
 def parse_npc_file(filepath):

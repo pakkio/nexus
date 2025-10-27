@@ -356,6 +356,7 @@ class _SinglePlayerGameSystem:
 
                         # Extract notecard if present
                         logger.info(f"[NOTECARD_CHECK] Response has [notecard=: {'[notecard=' in final_npc_dialogue_for_return}, length={len(final_npc_dialogue_for_return)}")
+                        notecard_was_extracted = False
                         if '[notecard=' in final_npc_dialogue_for_return:
                             logger.info("[NOTECARD_EXTRACTION] Found notecard in response, extracting...")
                             from chat_manager import extract_notecard_from_response
@@ -369,7 +370,55 @@ class _SinglePlayerGameSystem:
                                 }
                                 # Replace response with cleaned version (notecard removed)
                                 final_npc_dialogue_for_return = cleaned_response
+                                notecard_was_extracted = True
                                 logger.info(f"[NOTECARD] Extracted '{notecard_name}' from NPC response ({len(notecard_content)} chars)")
+
+                        # AUTO-TREASURE SYSTEM: If notecard given and NPC has treasure + player has required item
+                        # automatically append treasure to [GIVEN_ITEMS:] tag
+                        if notecard_was_extracted:
+                            current_npc = self.game_state.get('current_npc', {})
+                            npc_treasure = current_npc.get('treasure')
+                            npc_required_item = current_npc.get('required_item')
+                            player_inventory = self.game_state.get('player_inventory', [])
+                            
+                            logger.info(f"[AUTO_TREASURE] Notecard extracted. NPC treasure={npc_treasure}, required_item={npc_required_item}, player_inventory={player_inventory}")
+                            
+                            # Check if NPC has treasure defined and player has required item
+                            if npc_treasure and npc_required_item:
+                                # Check if player has the required item (case-insensitive)
+                                player_has_required_item = any(
+                                    item.lower() == npc_required_item.lower() 
+                                    for item in player_inventory
+                                )
+                                
+                                if player_has_required_item:
+                                    logger.info(f"[AUTO_TREASURE] ✓ Player has '{npc_required_item}' - auto-adding treasure '{npc_treasure}'")
+                                    
+                                    # Check if [GIVEN_ITEMS:] already exists in response
+                                    if '[GIVEN_ITEMS:' in final_npc_dialogue_for_return:
+                                        # Append to existing tag
+                                        tag_start = final_npc_dialogue_for_return.find('[GIVEN_ITEMS:')
+                                        tag_end = final_npc_dialogue_for_return.find(']', tag_start)
+                                        if tag_end != -1:
+                                            existing_items = final_npc_dialogue_for_return[tag_start+13:tag_end].strip()
+                                            if existing_items:
+                                                new_items = f"{existing_items}, {npc_treasure}"
+                                            else:
+                                                new_items = npc_treasure
+                                            final_npc_dialogue_for_return = (
+                                                final_npc_dialogue_for_return[:tag_start+13] + 
+                                                new_items + 
+                                                final_npc_dialogue_for_return[tag_end:]
+                                            )
+                                            logger.info(f"[AUTO_TREASURE] Appended to existing [GIVEN_ITEMS:] tag")
+                                    else:
+                                        # Add new [GIVEN_ITEMS:] tag at the end
+                                        final_npc_dialogue_for_return += f" [GIVEN_ITEMS: {npc_treasure}]"
+                                        logger.info(f"[AUTO_TREASURE] Added new [GIVEN_ITEMS: {npc_treasure}] tag")
+                                else:
+                                    logger.info(f"[AUTO_TREASURE] ✗ Player doesn't have required item '{npc_required_item}'")
+                            else:
+                                logger.info(f"[AUTO_TREASURE] No auto-treasure applicable (treasure={npc_treasure}, required={npc_required_item})")
 
                         if self.game_state['debug_mode']:
                             self.game_state['system_messages_buffer'].append(f"[Debug] NPC response length: {len(final_npc_dialogue_for_return)}")
