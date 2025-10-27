@@ -21,6 +21,14 @@ Required_Quantity: 50
 Required_Source: player_resources
 Treasure: pozione_di_guarigione
 Reward_Credits: 0
+Optional_Items: {
+  "latte_della_memoria": {
+    "cost": 10,
+    "source": "Mucche madri del villaggio",
+    "description": "Latte speciale che aiuta a risvegliare ricordi frammentari",
+    "note": "Optional narrative item for Jorin's identity crisis quest"
+  }
+}
 Prerequisites: ["understanding_of_healing_compassion", "willingness_to_pay_for_rare_materials"]
 Success_Conditions: ["player_pays_50_credits", "player_demonstrates_care_for_wounded"]
 Failure_Conditions: ["player_lacks_funds", "player_shows_no_compassion"]
@@ -46,6 +54,7 @@ Conversation_State_Tracking: {
 Conditional_Responses: {
   "first_meeting": "Benvenuto! Sono Mara, l'erborista del villaggio. Mia nonna mi insegnò a riconoscere la Foglia Blu. Ieri sono andata a raccoglierla e... non c'era. Non solo morta - mai esistita.",
   "player_asks_for_potion": "Certo, posso farti una Pozione di Guarigione. I materiali rari costano 50 Crediti. Se li hai, posso preparartela subito. [Poi usa [GIVEN_ITEMS: Pozione di Guarigione, -50 Credits] quando il player conferma]",
+  "player_asks_for_latte": "Ah, il latte_della_memoria! Le mucche madri del villaggio producono questo latte speciale. Costa 10 Crediti. Alcuni dicono che risveglia ricordi dimenticati - utile per chi è tormentato da visioni frammentarie. [Usa [GIVEN_ITEMS: latte_della_memoria, -10 Credits] quando il player conferma]",
   "insufficient_funds": "Mi dispiace, ma ho bisogno di 50 Crediti per i materiali rari. Non è avidità - è sopravvivenza. Alcune erbe ora esistono solo nei mercati più lontani. Hai controllato il tuo inventario? A volte abbiamo risorse che dimentichiamo di avere. Prova con /inventory per vedere cosa possiedi.",
   "player_ready_to_pay": "Perfetto! Ecco la tua Pozione di Guarigione. Non è una cura per tutto, ma ripara le ferite e mostra che ti importa del dolore degli altri. [GIVEN_ITEMS: Pozione di Guarigione, -50 Credits]",
   "about_disappearing_plants": "Ho un intero giardino di piante che nessun altro ricorda. È come essere l'ultimo custode di un mondo che sta svanendo.",
@@ -73,7 +82,9 @@ Dialogue_Hooks: [
   "Ho un intero giardino di piante che nessun altro ricorda. È come essere l'ultimo custode di un mondo che sta svanendo.",
   "La Pozione di Guarigione non è una cura per tutto. Ma ripara le ferite e mostra che ti importa del dolore degli altri.",
   "Portami 50 Crediti per materiali rari, e ti farò una Pozione di Guarigione. Elira apprezza coloro che si prendono cura dei feriti.",
-  "La gente viene da me per medicine per disturbi che non ricorda di aver mai avuto. È terrificante."
+  "La gente viene da me per medicine per disturbi che non ricorda di aver mai avuto. È terrificante.",
+  "Le mucche del villaggio producono un latte speciale - latte_della_memoria. Costa 10 crediti. Alcuni dicono che aiuta a risvegliare ricordi dimenticati.",
+  "Se conosci qualcuno tormentato da memorie frammentarie, il latte_della_memoria potrebbe aiutarlo. Le madri del villaggio lo tengono per casi speciali."
 ]
 
 # SECOND LIFE INTEGRATION
@@ -102,8 +113,11 @@ Teleport: 259,183,23
 # TRADING MECHANICS
 Trading_Rules: {
   "accepts": ["crediti"],
-  "provides": ["pozione_di_guarigione", "botanical_knowledge", "herbal_medicines"],
-  "exchange_rates": {"50_crediti": "pozione_di_guarigione"},
+  "provides": ["pozione_di_guarigione", "latte_della_memoria", "botanical_knowledge", "herbal_medicines"],
+  "exchange_rates": {
+    "50_crediti": "pozione_di_guarigione",
+    "10_crediti": "latte_della_memoria"
+  },
   "reputation_required": "demonstrated_compassion_for_wounded",
   "special_conditions": ["must_understand_healing_value", "materials_increasingly_rare"]
 }
