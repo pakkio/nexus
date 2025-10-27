@@ -289,7 +289,7 @@ curl -X POST http://localhost:5000/sense \
 ### Dialogo 1: Apertura Emotiva
 **Giocatore**: "I am curious about your philosophy. What happened with your brother Darius?"
 
-**Theron**: "Mio fratello Darius... era così curioso, Cercatore. Quando trovammo quella crepa nel Velo, io dissi 'fermiamoci'. Lui disse 'andiamo avanti'. Indovina chi aveva ragione?
+**Theron**: "Mio fratello Darius... era così curioso, Cercastorie. Quando trovammo quella crepa nel Velo, io dissi 'fermiamoci'. Lui disse 'andiamo avanti'. Indovina chi aveva ragione?
 
 La sua ricerca di verità lo ha portato nell'Oblio. E ora, io credo che solo affrontando l'Oblio possiamo davvero liberarci dalle catene del passato. Cosa pensi di questa idea?"
 
@@ -300,7 +300,7 @@ La sua ricerca di verità lo ha portato nell'Oblio. E ora, io credo che solo aff
 ### Dialogo 2: Filosofia dell'Oblio
 **Giocatore**: "Your philosophy is intriguing. If the Oblivion took Darius, do you believe he still exists in some form there? Is that why you see it as liberation rather than destruction?"
 
-**Theron**: "È una domanda profonda, Cercatore. Credo che l'Oblio non sia solo una fine, ma anche un nuovo inizio. Darius potrebbe esistere ancora, in un modo che non possiamo comprendere. La sua essenza, la sua curiosità, potrebbero essere parte di un tutto più grande.
+**Theron**: "È una domanda profonda, Cercastorie. Credo che l'Oblio non sia solo una fine, ma anche un nuovo inizio. Darius potrebbe esistere ancora, in un modo che non possiamo comprendere. La sua essenza, la sua curiosità, potrebbero essere parte di un tutto più grande.
 
 La vera liberazione sta nell'abbandonare il peso dei ricordi dolorosi e costruire una nuova identità. Solo affrontando l'Oblio possiamo evolverci. Ma dimmi, cosa ne pensi? È possibile trovare forza nell'accettare l'ignoto?"
 
@@ -309,7 +309,7 @@ La vera liberazione sta nell'abbandonare il peso dei ricordi dolorosi e costruir
 ### Dialogo 3: Confronto con Prospettive Multiple
 **Giocatore**: "There is strength in accepting the unknown, but also wisdom in preserving what came before. I have spoken with Lyra, who believes memories are sacred, and Cassian, who holds information as power. Each perspective has merit. What would you say to those who fear that erasing the past means losing who we are?"
 
-**Theron**: "La paura di perdere ciò che siamo è comprensibile, Cercatore. Le memorie ci definiscono, ma possono anche intrappolarci in cicli di dolore e rimpianto. La saggezza sta nel riconoscere che il nostro vero sé non è solo il nostro passato, ma anche le scelte che facciamo nel presente.
+**Theron**: "La paura di perdere ciò che siamo è comprensibile, Cercastorie. Le memorie ci definiscono, ma possono anche intrappolarci in cicli di dolore e rimpianto. La saggezza sta nel riconoscere che il nostro vero sé non è solo il nostro passato, ma anche le scelte che facciamo nel presente.
 
 Il Velo ci offre una prigione dorata. Affrontare l'Oblio non significa cancellare il nostro essere, ma liberarsi da pesi che non ci appartengono più. Dobbiamo imparare a costruire la nostra identità non solo su ciò che è stato, ma su ciò che possiamo diventare. E tu, come vedi il legame tra passato e futuro?"
 
@@ -318,7 +318,7 @@ Il Velo ci offre una prigione dorata. Affrontare l'Oblio non significa cancellar
 ### Dialogo 4: Sfida Filosofica e Vulnerabilità
 **Giocatore**: "The past and future are not enemies but part of a cycle. Perhaps the wisdom lies not in choosing one over the other, but in understanding when to hold on and when to let go. Your immunity to the Whispers - is it truly freedom, or does it mean you cannot hear warnings that others might need?"
 
-**Theron**: "Le tue parole risuonano con saggezza, Cercatore. Il ciclo tra passato e futuro è complesso e intricato. È vero, la libertà che ho guadagnato dalla mia immunità ai Sussurri porta con sé un prezzo.
+**Theron**: "Le tue parole risuonano con saggezza, Cercastorie. Il ciclo tra passato e futuro è complesso e intricato. È vero, la libertà che ho guadagnato dalla mia immunità ai Sussurri porta con sé un prezzo.
 
 Non posso sentire gli avvertimenti che altri possono percepire, e questo a volte mi fa sentire isolato. La libertà può sembrare un dono, ma porta con sé la solitudine. Ciò che ho guadagnato in chiarezza, l'ho perso in connessione.
 
@@ -329,9 +329,9 @@ La vera saggezza è trovare equilibrio, capire quando ascoltare e quando agire. 
 ### Dialogo 5: Conclusione e Mutuo Rispetto
 **Giocatore**: "Thank you, Alto Giudice. Your honesty about the cost of your freedom is itself a form of wisdom. I will continue my journey, carrying the lessons from all who have shared their truths with me - preserving what should not be forgotten, but not being imprisoned by what must be released."
 
-**Theron**: "Le tue parole sono un faro di speranza, Cercatore. Comprendere la necessità di preservare e, al contempo, di lasciar andare è una rara saggezza. Ogni incontro, ogni lezione, è un passo verso la liberazione.
+**Theron**: "Le tue parole sono un faro di speranza, Cercastorie. Comprendere la necessità di preservare e, al contempo, di lasciar andare è una rara saggezza. Ogni incontro, ogni lezione, è un passo verso la liberazione.
 
-Ti auguro un viaggio illuminato e consapevole. Ricorda, ogni scelta che fai modella non solo il tuo cammino, ma anche il futuro di coloro che ti circondano. Se mai avrai bisogno di un faro in questo viaggio, io sarò qui, pronto a condividere ulteriori riflessioni. Buona fortuna, Cercatore."
+Ti auguro un viaggio illuminato e consapevole. Ricorda, ogni scelta che fai modella non solo il tuo cammino, ma anche il futuro di coloro che ti circondano. Se mai avrai bisogno di un faro in questo viaggio, io sarò qui, pronto a condividere ulteriori riflessioni. Buona fortuna, Cercastorie."
 
 **Commento**: Conclusione perfetta che bilancia chiusura ed apertura. Theron riconosce la sintesi filosofica del giocatore (preservare E lasciar andare) come "rara saggezza" - il sistema sta riconoscendo che il giocatore ha dimostrato la profondità filosofica richiesta per la quest futura. Il "sarò qui" mantiene la porta aperta per interazioni future. Nota che Theron non cerca di convertire il giocatore alla sua filosofia - rispetta la posizione sintetica raggiunta.
 

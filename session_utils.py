@@ -394,6 +394,26 @@ def build_system_prompt(
         f"Motivazione: '{motivation}'. Obiettivo (cosa TU, l'NPC, vuoi ottenere): '{goal}'.",
         f"V.O. (Guida per l'azione del giocatore per aiutarti): \"{player_hint_for_npc_context}\"",
     ])
+    
+    # Add player inventory information so NPC can see what player has
+    player_inventory = game_session_state.get('player_inventory', [])
+    player_credits = game_session_state.get('player_credits_cache', 0)
+    if player_inventory or player_credits > 0:
+        prompt_lines.append("")
+        prompt_lines.append("="*60)
+        prompt_lines.append("📦 INVENTARIO GIOCATORE (cosa ha attualmente)")
+        prompt_lines.append("="*60)
+        if player_credits > 0:
+            prompt_lines.append(f"💰 Crediti: {player_credits}")
+        if player_inventory:
+            prompt_lines.append(f"🎒 Oggetti: {', '.join(player_inventory)}")
+        else:
+            prompt_lines.append("🎒 Nessun oggetto nell'inventario")
+        prompt_lines.append("⚠️  IMPORTANTE: Puoi vedere cosa ha il giocatore. Se ha l'oggetto che chiedi, DEVI:")
+        prompt_lines.append("   1. Riconoscerlo esplicitamente ('Vedo che hai il {item}!')")
+        prompt_lines.append("   2. Completare lo scambio usando [GIVEN_ITEMS: TuoOggetto]")
+        prompt_lines.append("="*60)
+        prompt_lines.append("")
     if hooks:
         prompt_lines.append(f"Per ispirazione, considera questi stili/frasi chiave dal tuo personaggio: (alcune potrebbero essere contestuali, non usarle tutte alla cieca)\n{hooks[:300]}{'...' if len(hooks)>300 else ''}")
     if veil:

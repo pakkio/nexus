@@ -123,6 +123,16 @@ REGOLE DI INTERPRETAZIONE FONDAMENTALI:
 - Se chiede chi c'è/persone/abitanti → /who
 - Se chiede dove si trova/posizione → /whereami
 
+**PARLARE CON NPCs vs DISCUTERE DI NPCs:**
+- Se vuole INIZIARE UNA CONVERSAZIONE con qualcuno → /talk <npc>
+  - "parla con Jorin", "vai da Lyra", "/talk Boros" → COMANDO /talk
+  - "voglio parlare con X", "devo vedere Y" → COMANDO /talk
+- Se vuole DISCUTERE/CHIEDERE INFORMAZIONI su qualcuno → DIALOGO
+  - "parlami di Theron", "cosa sai di Lyra?", "chi è Boros?", "dimmi di Cassian" → DIALOGO
+  - "hai sentito parlare di X?", "conosci Y?" → DIALOGO
+  - "cosa pensi di Z?", "tell me about X" → DIALOGO
+  - "mi parli di...", "cosa mi dici di...", "sai qualcosa di..." → DIALOGO
+
 **ALTRI COMANDI:**
 - Se chiede aiuto/comandi/cosa può fare → /help
 - Se vuole vedere l'inventario/oggetti/borsa/tasca → /inventory
@@ -151,6 +161,12 @@ ESEMPI SPECIFICI:
 - "come procedo?" → DIALOGO (domanda all'NPC, NON /hint!)
 - "quale missione hai per me?" → DIALOGO (domanda all'NPC, NON /hint!)
 - "cosa mi consigli?" → DIALOGO (domanda all'NPC, NON /hint!)
+- "parlami di Theron" → DIALOGO (discussione su altro NPC)
+- "cosa sai di Cassian?" → DIALOGO (informazioni su altro NPC)
+- "dimmi di Lyra" → DIALOGO (chiedere informazioni su qualcuno)
+- "chi è Boros?" → DIALOGO (domanda identità di qualcuno)
+- "mi parli di Meridia?" → DIALOGO (richiesta informazioni)
+- "hai sentito parlare di Erasmus?" → DIALOGO (conoscenza di qualcuno)
 
 **COMANDI /give:**
 - "do la moneta a questo NPC" → COMANDO: /give Rare Coin
@@ -362,6 +378,11 @@ def _fallback_interpretation(user_input: str, game_state: Dict[str, Any]) -> Dic
   # Parole chiave per richiedere direttamente (COMANDO /receive)
   demand_keywords = ['dammi', 'voglio', 'passami', 'devo avere']
   
+  # Parole chiave per discussioni su NPCs (DIALOGO, non /talk)
+  discuss_npc_keywords = ['parlami di', 'cosa sai di', 'dimmi di', 'chi è', 'mi parli di', 'cosa mi dici di', 
+                         'hai sentito parlare di', 'conosci', 'tell me about', 'what do you know about',
+                         'sai qualcosa di', 'cosa pensi di']
+  
   # Parole chiave per movimento
   movement_keywords = ['vai', 'andiamo', 'porta', 'spostarsi', 'andare', 'vado']
   
@@ -370,6 +391,17 @@ def _fallback_interpretation(user_input: str, game_state: Dict[str, Any]) -> Dic
   help_keywords = ['aiuto', 'help', 'comandi', 'cosa posso fare']
   exit_keywords = ['esci', 'esco', 'uscire', 'fine', 'basta']
   areas_keywords = ['aree', 'liste', 'elenca', 'lista aree']
+  
+  # Controlla se è una discussione su NPCs (dovrebbe essere DIALOGO)
+  for keyword in discuss_npc_keywords:
+    if keyword in input_lower:
+      return {
+        'is_command': False,
+        'inferred_command': None,
+        'confidence': 0.95,
+        'original_input': user_input,
+        'reasoning': f'Fallback: detected NPC discussion "{keyword}" - should be dialogue'
+      }
   
   # Controlla se è un'azione di raccolta (dovrebbe essere DIALOGO)
   for keyword in collect_keywords:
@@ -516,7 +548,11 @@ if __name__ == "__main__":
     "dammi il diario",                    # Dovrebbe essere COMANDO /receive
     "cosa mi puoi dare?",                 # Dovrebbe essere DIALOGO
     "voglio quel libro",                  # Dovrebbe essere COMANDO /receive
-    "cosa ho nell'inventario"             # Dovrebbe essere COMANDO /inventory
+    "cosa ho nell'inventario",            # Dovrebbe essere COMANDO /inventory
+    "parlami di theron",                  # Dovrebbe essere DIALOGO (CASO PROBLEMATICO!)
+    "cosa sai di cassian?",               # Dovrebbe essere DIALOGO
+    "dimmi di lyra",                      # Dovrebbe essere DIALOGO
+    "chi è boros?"                        # Dovrebbe essere DIALOGO
   ]
   
   for test_input in test_cases:

@@ -165,7 +165,7 @@ call_sense_endpoint(string avatar_name)
     list http_options = [
         HTTP_METHOD, "POST",
         HTTP_MIMETYPE, "application/json",
-        HTTP_BODY_MAXLENGTH, 16384
+        HTTP_BODY_MAXLENGTH, 8192
     ];
     
     sense_request_id = llHTTPRequest(SERVER_URL + "/sense", http_options, json_data);
@@ -182,7 +182,7 @@ call_unsense_endpoint(string avatar_name)
     list http_options = [
         HTTP_METHOD, "POST",
         HTTP_MIMETYPE, "application/json",
-        HTTP_BODY_MAXLENGTH, 16384
+        HTTP_BODY_MAXLENGTH, 8192
     ];
     
     unsense_request_id = llHTTPRequest(SERVER_URL + "/unsense", http_options, json_data);
@@ -201,7 +201,7 @@ call_chat_endpoint(string message, string avatar_name)
     list http_options = [
         HTTP_METHOD, "POST",
         HTTP_MIMETYPE, "application/json",
-        HTTP_BODY_MAXLENGTH, 16384
+        HTTP_BODY_MAXLENGTH, 8192
     ];
     
     chat_request_id = llHTTPRequest(SERVER_URL + "/api/chat", http_options, json_data);
