@@ -105,7 +105,8 @@ def parse_npc_file(filepath):
         'Lookup:': 'lookup', 'Llsettext:': 'llsettext', 'Teleport:': 'teleport',
         'NOTECARD_FEATURE:': 'notecard_feature'
     }
-    simple_multiline_fields = ['motivation', 'goal', 'playerhint', 'veil_connection', 'emotes', 'animations', 'lookup', 'llsettext', 'teleport', 'notecard_feature']
+    simple_multiline_fields = ['motivation', 'goal', 'playerhint', 'veil_connection', 'emotes', 'animations', 'lookup', 'llsettext', 'notecard_feature']
+    # Note: 'teleport' is NOT multiline - it should only capture coordinates on the same line
 
     current_field_being_parsed = None
     dialogue_hooks_lines = []
@@ -937,10 +938,28 @@ def chat_with_npc():
                     if player_system.game_state and 'notecard_extracted' in player_system.game_state:
                         del player_system.game_state['notecard_extracted']
 
+                # Check if teleport is to another NPC (not current NPC)
+                teleport_target_npc_name = player_system.game_state.get('teleport_target_npc') if player_system.game_state else None
+                npc_for_teleport = current_npc  # Default: use current NPC's coordinates
+                
+                if teleport_offered and teleport_target_npc_name:
+                    # Look up the target NPC to get their teleport coordinates
+                    target_npc_data = game_system.db.get_npc_by_name(teleport_target_npc_name)
+                    if target_npc_data and target_npc_data.get('teleport'):
+                        logger.info(f"[TELEPORT] Using target NPC '{teleport_target_npc_name}' coordinates: {target_npc_data.get('teleport')}")
+                        # Create a modified NPC dict with target's teleport coords but current NPC's other data
+                        npc_for_teleport = dict(current_npc)
+                        npc_for_teleport['teleport'] = target_npc_data.get('teleport')
+                    else:
+                        logger.warning(f"[TELEPORT] Target NPC '{teleport_target_npc_name}' not found or has no teleport coords, using current NPC")
+                    # Clear the teleport_target_npc after use
+                    if player_system.game_state:
+                        player_system.game_state['teleport_target_npc'] = None
+
                 # Generate SL commands with notecard if present
                 # Note: npc_response is already cleaned (notecard removed) in game_system_api.py
                 sl_commands = generate_sl_command_prefix(
-                    current_npc,
+                    npc_for_teleport,
                     include_teleport=teleport_offered,
                     npc_response=npc_response,
                     include_notecard=has_notecard,
