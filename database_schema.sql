@@ -62,6 +62,7 @@ CREATE TABLE IF NOT EXISTS NPCs (
     veil_connection TEXT NULL,
     emotes TEXT NULL,
     animations TEXT NULL,
+    facial_expressions TEXT NULL,
     lookup TEXT NULL,
     llsettext TEXT NULL,
     teleport TEXT NULL,
