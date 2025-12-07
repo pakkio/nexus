@@ -6,10 +6,13 @@ import mysql.connector
 import os
 import sys
 import json
+import logging
 from typing import List, Dict, Optional, Any, Set, Tuple # Tuple added
 from datetime import datetime
 import traceback
 import copy # For deepcopy
+
+logger = logging.getLogger(__name__)
 
 try:
     from terminal_formatter import TerminalFormatter
@@ -231,8 +234,8 @@ class DbManager:
                                 if 'code' not in npc_data or not npc_data['code']:
                                     npc_data['code'] = filename.replace('.json', '')
                                 return npc_data
-                        except Exception:
-                            pass
+                        except Exception as e:
+                            logger.debug(f"Error loading NPC file {filename}: {e}")
             return None
         else:  # DB
             conn = None
@@ -244,6 +247,7 @@ class DbManager:
                 cursor.execute(query, (name.strip(),))
                 return cursor.fetchone()
             except Exception as e:
+                logger.debug(f"DB error getting NPC by name '{name}': {e}")
                 return None
             finally:
                 if cursor:

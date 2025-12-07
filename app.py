@@ -85,6 +85,31 @@ def normalize_text_for_lsl(text):
 
     return text
 
+def get_teleport_npc_data(game_system, current_npc: dict, target_npc_name: str) -> dict:
+    """Get NPC data with teleport coordinates for target NPC.
+    
+    Args:
+        game_system: The game system with database access
+        current_npc: Current NPC data (used for non-teleport fields)
+        target_npc_name: Name of NPC to teleport to
+        
+    Returns:
+        NPC dict with target's teleport coords, or current_npc if target not found
+    """
+    if not target_npc_name:
+        return current_npc
+        
+    target_npc_data = game_system.db.get_npc_by_name(target_npc_name)
+    if target_npc_data and target_npc_data.get('teleport'):
+        logger.info(f"[TELEPORT] Using target NPC '{target_npc_name}' coordinates: {target_npc_data.get('teleport')}")
+        # Create modified NPC dict with target's teleport coords but current NPC's other data
+        npc_for_teleport = dict(current_npc)
+        npc_for_teleport['teleport'] = target_npc_data.get('teleport')
+        return npc_for_teleport
+    else:
+        logger.warning(f"[TELEPORT] Target NPC '{target_npc_name}' not found or has no teleport coords, using current NPC")
+        return current_npc
+
 def parse_npc_file(filepath):
     """Parse NPC file and return NPC data dictionary."""
     data = {
@@ -940,18 +965,10 @@ def chat_with_npc():
 
                 # Check if teleport is to another NPC (not current NPC)
                 teleport_target_npc_name = player_system.game_state.get('teleport_target_npc') if player_system.game_state else None
-                npc_for_teleport = current_npc  # Default: use current NPC's coordinates
+                npc_for_teleport = current_npc
                 
                 if teleport_offered and teleport_target_npc_name:
-                    # Look up the target NPC to get their teleport coordinates
-                    target_npc_data = game_system.db.get_npc_by_name(teleport_target_npc_name)
-                    if target_npc_data and target_npc_data.get('teleport'):
-                        logger.info(f"[TELEPORT] Using target NPC '{teleport_target_npc_name}' coordinates: {target_npc_data.get('teleport')}")
-                        # Create a modified NPC dict with target's teleport coords but current NPC's other data
-                        npc_for_teleport = dict(current_npc)
-                        npc_for_teleport['teleport'] = target_npc_data.get('teleport')
-                    else:
-                        logger.warning(f"[TELEPORT] Target NPC '{teleport_target_npc_name}' not found or has no teleport coords, using current NPC")
+                    npc_for_teleport = get_teleport_npc_data(game_system, current_npc, teleport_target_npc_name)
                     # Clear the teleport_target_npc after use
                     if player_system.game_state:
                         player_system.game_state['teleport_target_npc'] = None
