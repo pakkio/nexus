@@ -179,14 +179,17 @@ def generate_sl_command_prefix(npc_data: Optional[Dict[str, Any]], include_telep
         notecard_name: Explicit notecard name (if not provided, uses default from NPC data)
 
     Returns:
-        String in format [lookup=?;llSetText=?;emote=?;anim=?;teleport=?;notecard=?] or empty string if no NPC data
+        String in format [lookup=?;llSetText=?;face=?;anim=?;teleport=?;notecard=?] or empty string if no NPC data
+        Note: face= and anim= are mutually exclusive - only ONE will be included per command
     """
     if not npc_data:
         return ""
 
     # Get SL fields from NPC data
-    emotes_str = npc_data.get('emotes', '')
+    # NOTE: emotes_str is intentionally NOT used for server commands - it contains descriptive labels,
+    # not actual SL animations. It remains in NPC files purely for LLM context.
     animations_str = npc_data.get('animations', '')
+    facial_expressions_str = npc_data.get('facial_expressions', '')
     lookup_str = npc_data.get('lookup', '')
     llsettext_str = npc_data.get('llsettext', '')
     teleport_str = npc_data.get('teleport', '')
@@ -194,14 +197,30 @@ def generate_sl_command_prefix(npc_data: Optional[Dict[str, Any]], include_telep
     notecard_name_str = notecard_name if notecard_name else npc_data.get('notecard_name', f"{npc_data.get('name', 'NPC')}_Note")
 
     # Parse comma-separated values and pick random ones
-    emotes_list = [e.strip() for e in emotes_str.split(',') if e.strip()] if emotes_str else []
     animations_list = [a.strip() for a in animations_str.split(',') if a.strip()] if animations_str else []
+    facial_expressions_list = [f.strip() for f in facial_expressions_str.split(',') if f.strip()] if facial_expressions_str else []
     lookup_list = [l.strip() for l in lookup_str.split(',') if l.strip()] if lookup_str else []
     llsettext_list = [t.strip() for t in llsettext_str.split(',') if t.strip()] if llsettext_str else []
 
-    # Select random values from each category
-    selected_emote = random.choice(emotes_list) if emotes_list else ""
-    selected_animation = random.choice(animations_list) if animations_list else ""
+    # Randomly choose EITHER a body animation OR a facial expression (not both)
+    # NPCs can only play one animation at a time in OpenSimulator
+    selected_animation = ""
+    selected_facial_expression = ""
+    
+    # Combine both lists for random selection
+    animation_options = []
+    if animations_list:
+        animation_options.extend([('anim', a) for a in animations_list])
+    if facial_expressions_list:
+        animation_options.extend([('face', f) for f in facial_expressions_list])
+    
+    if animation_options:
+        anim_type, anim_value = random.choice(animation_options)
+        if anim_type == 'anim':
+            selected_animation = anim_value
+        else:
+            selected_facial_expression = anim_value
+    
     selected_lookup = random.choice(lookup_list) if lookup_list else ""
 
     # Generate summary from npc_response if available, otherwise use predefined llsettext
@@ -234,8 +253,8 @@ def generate_sl_command_prefix(npc_data: Optional[Dict[str, Any]], include_telep
         command_parts.append(f"lookup={selected_lookup}")
     if selected_llsettext:
         command_parts.append(f"llSetText={selected_llsettext}")
-    if selected_emote:
-        command_parts.append(f"emote={selected_emote}")
+    if selected_facial_expression:
+        command_parts.append(f"face={selected_facial_expression}")
     if selected_animation:
         command_parts.append(f"anim={selected_animation}")
     if selected_teleport:

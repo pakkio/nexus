@@ -9,34 +9,191 @@ Central_Premise: Per secoli, il mondo di Eldoria è stato protetto dal Velo, una
 
 Crisis_Description: I Sussurri dell'Oblio stanno cancellando memorie, storie e persino l'esistenza stessa. Ogni PNG custodisce un indizio, una chiave, o una maledizione collegata a questo disfacimento.
 
-Player_Role: Il Cercastorie - un narratore cosmico che ha perso il potere di creare storie e deve recuperarlo per salvare l'Yperverso dalla dissoluzione nel silenzio assoluto.
+Player_Role: Il Cercastorie - un narratore cosmico che ha perso il potere di creare storie e deve recuperarlo per salvare l'Iperverso dalla dissoluzione nel silenzio assoluto.
 
-# NARRATIVE STRUCTURE
-Act_1: ["Discovery_of_Crisis", "Meeting_Key_NPCs", "Understanding_Veil_Nature"]
-Act_2: ["Gathering_Artifacts", "Faction_Interactions", "Philosophical_Choices"]
-Act_3: ["Final_Choice_Preparation", "Convergence_at_Nexus", "Veil_Destiny_Decision"]
+# THE NINE TAPPE - JOURNEY STRUCTURE
+# This storyboard follows the detailed 9-stage journey documented in "ilpercorsodelcercastorie"
+
+## TAPPA 1 - VUOTO LIMINALE (Liminal Void)
+Location: liminalvoid
+NPC: Erasmus
+Philosophical_Theme: Oblio come trasformazione naturale vs. resistenza al cambiamento
+Key_Moment: Il Cercastorie incontra Erasmus, Ambasciatore dell'Oblio, che lo introduce alle tre scelte possibili
+Quest_Element: Erasmus spiega che il Cercastorie deve recuperare la memoria attraverso un viaggio a Eldoria
+Narrative_Function: Introduzione filosofica - pone le domande fondamentali sul destino del Velo
+Erasmus_Choice_Framework: {
+  "Preserve_Veil": "Lo rispetterò",
+  "Transform_Veil": "Lo celebrerò", 
+  "Dissolve_Veil": "Ti accoglierò nell'infinito"
+}
+
+## TAPPA 2 - ANTICHE ROVINE (Ancient Ruins)
+Location: ancientruins
+NPC: Syra
+Philosophical_Theme: Sacrificio personale per il bene collettivo
+Key_Moment: Syra, Eco residua della prima Tessitrice, chiede la Ciotola Sacra per completare la trasformazione nel Velo
+Quest_Chain_Start: Syra → richiede ciotola_offerta_sacra (da Jorin) → darà cristallo_memoria_antica (per Lyra)
+Memory_Recovery: Il Cercastorie recupera memorie dolorose della Grande Madre e della guerra
+Narrative_Function: Introduce il tema del sacrificio e della trasformazione
+Syra_Philosophy: "Il cristallo non è solo memoria. È emozione pura. Ti brucerà, ti cambierà."
+
+## TAPPA 3 - VILLAGGIO E TAVERNA (Village Tavern)
+Location: village, tavern
+NPC: Jorin
+Philosophical_Theme: Verità vs. memoria frammentata, identità incerta
+Key_Moment: Jorin raccoglie sogni impossibili e memorie che potrebbero essere false - è un Custode inconsapevole
+Quest_Chain: Jorin → richiede trucioli_ferro (da Garin) → darà ciotola_offerta_sacra (per Syra)
+Identity_Crisis: Jorin ha visioni di essere stato monaco amanuense, filosofo, cronista degli Iperurani
+Memory_Item: latte_della_memoria (dalle mucche del villaggio) - aiuta a risvegliare ricordi frammentari
+Narrative_Function: Esplora l'ambiguità della verità e il valore della memoria incerta
+Jorin_Mystery: Scriptorium, Tabula Rasa, Iperurani - frammenti di vite passate o false memorie?
+
+## TAPPA 4 - BOTTEGA DEL FABBRO (Blacksmith)
+Location: village
+NPC: Garin
+Philosophical_Theme: Passione, amore nell'azione, oggetti che resistono all'Oblio
+Key_Moment: Garin forgia oggetti con "memoria" - resistono ai Sussurri perché creati con amore
+Quest_Chain: Garin → richiede minerale_ferro_antico (da Boros) → darà trucioli_ferro (per Jorin)
+Community_Theme: Il villaggio è diviso dall'invidia - Garin vuole forgiare "anelli di riconciliazione"
+Narrative_Function: Introduce il tema della passione come resistenza all'Oblio
+Garin_Philosophy: "Solo mani indifferenti fanno strumenti dimenticabili. Solo cuori indifferenti dimenticano davvero."
+
+## TAPPA 5 - FORESTA E ERBORISTA (Forest)
+Location: forest, village
+NPCs: Mara, Elira
+Philosophical_Theme: Guarigione, cura, natura come fonte di equilibrio
+Key_Moment: Mara offre 50 crediti e boccetta curativa per Elira; Elira valuta se il Cercastorie è degno del Nodo Primordiale
+Quest_Element: Mara → dà boccettina_curativa + 50 crediti → Cercastorie porta boccetta a Elira → accesso al Nodo Primordiale
+Teleport_Magic: Vasetto azzurro permette teleport Mara ↔ Elira
+Narrative_Function: Natura come forza curativa contro la dimenticanza
+Elira_Test: "Sei degno di accedere al Nodo se sai ascoltare la natura senza imporle il tuo dominio"
+
+## TAPPA 6 - NESSO DEI SENTIERI BLOCCATO (Blocked Nexus)
+Location: nexusofpaths (blocked)
+NPC: None (barrier message)
+Philosophical_Theme: Necessità di completare le missioni prima di accedere al destino finale
+Key_Moment: Un muro si alza con messaggio: "FINCHÉ LA CIOTOLA SACRA... NON GIUNGERA' NELLE MANI DI SYRA NULLA POTRA' ACCADERE"
+Narrative_Function: Checkpoint narrativo - costringe il giocatore a completare le quest prima del finale
+Redirect: Il Cercastorie deve deviare verso la città di Eldoria
+
+## TAPPA 7 - CITTÀ DI ELDORIA (City)
+Location: city
+NPCs: Cassian, Theron, Irenna
+Philosophical_Theme: Potere, denaro, resistenza, libertà vs. oppressione
+Key_Moments:
+  - Cassian OFFRE 75 crediti (tiene 25) + pergamena_della_saggezza, CHIEDE codice_tabula_rasa
+  - Theron difende la libertà e l'Oblio come misericordia, rifiuta di dare il Codice a Cassian
+  - Irenna usa teatro sotterraneo per preservare memorie attraverso spettacoli
+  - Il Cercastorie DONA 100 crediti a Theron per sostenere i rivoluzionari
+Quest_Chain: 
+  - Cassian → dà pergamena_della_saggezza + 75 crediti → vuole codice_tabula_rasa (Theron lo nega)
+  - Theron → riceve pergamena_della_saggezza dal Cercastorie → dà prospettiva filosofica dell'Oblio come liberazione
+Underground_Theater: Teatro sotterraneo di Irenna (teleport via grata) preserva storie con marionette
+Narrative_Function: Confronto tra fazioni - Opportunisti (Cassian) vs. Progressisti (Theron) vs. Artisti (Irenna)
+Cassian_Philosophy: "Informazione è l'unica valuta che mantiene valore. La memoria è potere."
+Theron_Philosophy: "Distruggere il Velo non è cattiveria - è misericordia verso anime intrappolate nel dolore"
+
+## TAPPA 8 - SANTUARIO DEI SUSSURRI E MONTAGNA (Sanctum & Mountain)
+Location: sanctumofwhispers, mountain
+NPCs: Lyra, Boros
+Philosophical_Theme: Memoria vs. Flusso, conservazione vs. cambiamento, scacchi come metafora del destino
+Key_Moments:
+  - Boros custodisce il Seme di Foresta (da Elira) e minerale_ferro_antico - filosofia del Flusso
+  - Lyra è la Tessitrice Suprema, custodisce telaio_eco (inceppato senza cristallo_memoria_antica)
+  - PARTITA A SCACCHI con Lyra - metafora di strategia e destino
+  - Il Cercastorie dona 100 crediti a Boros per curare le fonti della montagna
+Quest_Completion:
+  - Boros → riceve 100 crediti → dà minerale_ferro_antico (per Garin)
+  - Lyra → aspetta cristallo_memoria_antica + ciotola_offerta_sacra per riparare telaio_eco
+Teleport_Network: Pietra ai piedi di Boros → base montagna; Pietra torre → ritorno a Lyra
+Chess_Symbolism: Confronto vs. guerra, rispetto vs. odio - nuove regole per la scacchiera della realtà?
+Narrative_Function: Culmine filosofico - Preservazionisti (Lyra) vs. Balancisti (Boros)
+Lyra_Philosophy: "I Tessitori si sono sacrificati per proteggere. Il Velo ha bisogno di artefatti per guarire."
+Boros_Philosophy: "Tutto deve cambiare per rimanere vivo, compreso il Velo stesso"
+
+## TAPPA 9 - NESSO DEI SENTIERI FINALE (Final Nexus)
+Location: nexusofpaths
+NPC: Meridia
+Philosophical_Theme: Scelta finale, chiave_maestra come metafora della coscienza
+Key_Moments:
+  - Meridia è l'ultima Tessitrice NON sacrificata, custodisce telaio_del_nuovo_inizio
+  - La Chiave Magistrale è METAFORA - si trova "nell'officina della coscienza"
+  - Tutti i personaggi si riuniscono nel teatro di Irenna per assistere alla Scelta Finale
+  - Il Cercastorie sceglie il destino del Velo in piena coscienza e consapevolezza
+Final_Quest: Meridia chiede chiave_maestra → Il Cercastorie capisce che è metafora filosofica, non oggetto fisico
+Final_Choice: {
+  "Preserve": "Mantenere Velo, onorare sacrifici Tessitori, stabilità ma stagnazione",
+  "Transform": "Trasformare Velo in ponte tra mondi, equilibrio tra memoria e cambiamento",
+  "Dissolve": "Dissolvere Velo, libertà dall'odio e dolore, nuova narrazione senza errori del passato"
+}
+Narrative_Climax: Teatro di Irenna ospita tutti i personaggi per la decisione finale
+Narrative_Function: Risoluzione - ogni personaggio compie la propria scelta in base alla filosofia
+Meridia_Philosophy: "Ho aspettato millenni per chi fosse degno di compiere la Scelta Finale. Il Telaio del Nuovo Inizio può tessere qualsiasi destino tu scelga."
+
+# QUEST CHAIN DEPENDENCIES (Chessboard Logic)
+Quest_Sequence: {
+  "Primary_Chain": [
+    "Syra → richiede ciotola_offerta_sacra → darà cristallo_memoria_antica",
+    "Jorin → richiede trucioli_ferro → darà ciotola_offerta_sacra", 
+    "Garin → richiede minerale_ferro_antico → darà trucioli_ferro",
+    "Boros → richiede 100 crediti → darà minerale_ferro_antico"
+  ],
+  "Credit_Sources": [
+    "Mara → dà 50 crediti (no requirements)",
+    "Cassian → dà 75 crediti + pergamena_della_saggezza (no requirements)"
+  ],
+  "Final_Requirements": [
+    "Lyra → richiede cristallo_memoria_antica + ciotola_offerta_sacra → sblocca telaio_eco",
+    "Meridia → richiede comprensione metafora chiave_maestra → permette Scelta Finale"
+  ],
+  "Optional_Donations": [
+    "Theron ← 100 crediti (supporto rivoluzionari)",
+    "Boros ← 100 crediti (cura fonti montagna)"
+  ]
+}
 
 # FACTION DYNAMICS
 Factions: {
   "Preservationists": {
     "leader": "Lyra",
+    "members": ["Syra"],
     "goal": "Repair_and_strengthen_Veil",
-    "philosophy": "Memory_and_sacrifice_preserve_civilization"
+    "philosophy": "Memory_and_sacrifice_preserve_civilization",
+    "artifact": "cristallo_memoria_antica, telaio_eco"
   },
   "Progressionists": {
     "leader": "Theron", 
-    "goal": "Destroy_Veil_embrace_Oblivion",
-    "philosophy": "Forgetting_pain_enables_growth_and_freedom"
+    "members": ["Irenna"],
+    "goal": "Destroy_Veil_embrace_Oblivion_as_mercy",
+    "philosophy": "Forgetting_pain_enables_growth_and_freedom",
+    "artifact": "codice_tabula_rasa (technique to selectively erase painful memories)"
   },
   "Balancists": {
     "leader": "Boros",
-    "goal": "Transform_Velo_into_something_new",
-    "philosophy": "Change_and_flow_are_necessary_for_life"
+    "members": ["Elira", "Mara"],
+    "goal": "Transform_Veil_into_flowing_balance",
+    "philosophy": "Change_and_flow_are_necessary_for_life",
+    "artifact": "seme_foresta, minerale_ferro_antico"
   },
   "Opportunists": {
     "leader": "Cassian",
+    "members": [],
     "goal": "Survive_and_profit_regardless_outcome",
-    "philosophy": "Information_and_adaptation_ensure_survival"
+    "philosophy": "Information_and_memory_are_power_and_currency",
+    "artifact": "pergamena_della_saggezza (stolen from revolutionaries)"
+  },
+  "Uncertain_Keepers": {
+    "members": ["Jorin", "Garin"],
+    "goal": "Preserve_through_craft_without_full_awareness",
+    "philosophy": "Passion_and_community_create_meaning",
+    "artifact": "ciotola_offerta_sacra, trucioli_ferro"
+  },
+  "Final_Arbiters": {
+    "leader": "Meridia",
+    "members": ["Erasmus"],
+    "goal": "Enable_conscious_choice_without_imposing_answer",
+    "philosophy": "True_choice_requires_full_awareness_of_consequences",
+    "artifact": "telaio_del_nuovo_inizio, chiave_maestra (metaphorical)"
   }
 }
 
@@ -46,48 +203,219 @@ Primary_Themes: [
   "Sacrifice_vs_Self_Preservation", 
   "Order_vs_Chaos",
   "Individual_Choice_vs_Collective_Good",
-  "The_Power_and_Burden_of_Stories"
+  "The_Power_and_Burden_of_Stories",
+  "Passion_as_Resistance_to_Oblivion",
+  "Truth_vs_Constructed_Memory",
+  "Healing_and_Reconciliation",
+  "Power_and_Oppression",
+  "Freedom_through_Forgetting_vs_Wisdom_through_Remembering"
 ]
 
 Philosophical_Questions: [
   "What_is_worth_preserving_at_any_cost?",
   "Can_forgetting_trauma_be_a_form_of_healing?",
   "Who_has_the_right_to_decide_what_is_remembered?",
-  "Is_it_better_to_suffer_with_memory_or_be_free_through_oblivion?"
+  "Is_it_better_to_suffer_with_memory_or_be_free_through_oblivion?",
+  "Can_passion_and_love_make_objects_and_memories_resist_erasure?",
+  "Is_uncertain_memory_better_than_no_memory_at_all?",
+  "Can_war_be_replaced_by_confrontation,_hatred_by_respect?"
 ]
+
+# KEY ARTIFACTS AND THEIR NARRATIVE SIGNIFICANCE
+Artifacts: {
+  "cristallo_memoria_antica": {
+    "holder": "Syra",
+    "destination": "Lyra",
+    "significance": "Contains echo of first Weaver's sacrifice - unlocks telaio_eco",
+    "emotional_weight": "Burns and changes whoever receives it"
+  },
+  "ciotola_offerta_sacra": {
+    "holder": "Jorin",
+    "destination": "Syra",
+    "significance": "Ritual vessel with pure water - allows Syra to complete transformation into Veil",
+    "symbolic_meaning": "Lustral rites, purification, sacred offering"
+  },
+  "trucioli_ferro": {
+    "holder": "Garin",
+    "destination": "Jorin",
+    "significance": "Iron shavings that feed Jorin's memory",
+    "symbolic_meaning": "Byproducts of passionate craft sustain memory"
+  },
+  "minerale_ferro_antico": {
+    "holder": "Boros",
+    "destination": "Garin",
+    "significance": "Ancient iron ore used to forge keys to Narrative Nodes and reconciliation chains",
+    "symbolic_meaning": "Raw material of transformation and community binding"
+  },
+  "latte_della_memoria": {
+    "source": "Mucche madri del villaggio",
+    "effect": "Awakens fragmented memories when drunk",
+    "narrative_use": "Jorin drinks it and recalls scriptorium, Iperurani, philosophical past"
+  },
+  "pergamena_della_saggezza": {
+    "origin": "Requisitioned from revolutionaries by Cassian",
+    "holder": "Cassian → Cercastorie → Theron",
+    "significance": "Philosophical document Theron values - returned to rightful owner",
+    "symbolic_meaning": "Knowledge stolen by oppressors, reclaimed by freedom fighters"
+  },
+  "codice_tabula_rasa": {
+    "holder": "Theron (protected)",
+    "desired_by": "Cassian",
+    "significance": "Technique to selectively erase painful/limiting memories",
+    "narrative_tension": "Cassian wants it to silence ethical qualms; Theron protects it for those seeking true freedom"
+  },
+  "telaio_eco": {
+    "holder": "Lyra",
+    "status": "Jammed until cristallo_memoria_antica + ciotola_offerta_sacra rituals complete",
+    "significance": "Allows reading memories woven into Veil, communication with dead Weavers",
+    "symbolic_meaning": "Bridge between past sacrifices and present choices"
+  },
+  "telaio_del_nuovo_inizio": {
+    "holder": "Meridia",
+    "significance": "Can weave preservation, destruction, or transformation with equal facility",
+    "narrative_function": "Physical manifestation of final choice - impartial tool of destiny"
+  },
+  "chiave_maestra": {
+    "nature": "METAPHORICAL - exists in 'officina della coscienza' (workshop of consciousness)",
+    "significance": "Each person can forge their own Master Key through conscious awareness",
+    "narrative_revelation": "Cercastorie realizes it's not a physical object but philosophical awakening",
+    "symbolic_meaning": "Opens the Primordial Node of narrative - conscious choice over destiny"
+  },
+  "seme_foresta": {
+    "source": "Elira",
+    "holder": "Boros",
+    "significance": "Forest seed teaching balance - holds Flusso del Pensiero steady",
+    "symbolic_meaning": "Nature's wisdom balancing Past and Future tensions"
+  }
+}
 
 # PROGRESSION MECHANICS
 Player_Growth: {
-  "Wisdom_Points": "Earned_through_philosophical_understanding",
-  "Artifact_Collection": "Physical_items_enable_story_progression",
-  "Faction_Relationships": "NPC_trust_levels_affect_available_choices",
-  "Memory_Fragments": "Recovered_stories_strengthen_narrative_power"
+  "Wisdom_Points": "Earned_through_philosophical_understanding_in_each_TAPPA",
+  "Artifact_Collection": "Physical_items_enable_story_progression_chess_logic",
+  "Faction_Relationships": "NPC_trust_levels_affect_available_perspectives",
+  "Memory_Fragments": "Recovered_stories_strengthen_narrative_power",
+  "Credit_Economy": "125_credits_available_(50_Mara_+_75_Cassian)_enables_donations_to_Theron/Boros"
 }
 
 # CLIMAX STRUCTURE
+Final_Choice_Location: Nesso dei Sentieri (Meridia's domain)
+Final_Choice_Witnesses: All NPCs gather in Irenna's theater for final spectacle
+Final_Choice_Enabler: Meridia and her telaio_del_nuovo_inizio
+
 Final_Choice_Options: [
-  "Preserve_Veil": "Maintain_current_system_honor_Weaver_sacrifice",
-  "Transform_Veil": "Reshape_barrier_allow_controlled_change", 
-  "Dissolve_Veil": "Embrace_Oblivion_start_fresh_without_painful_memories"
+  "Preserve_Veil": "Maintain_current_system_honor_Weaver_sacrifice_Lyra_philosophy",
+  "Transform_Veil": "Reshape_barrier_into_bridge_between_worlds_Boros_philosophy", 
+  "Dissolve_Veil": "Embrace_Oblivion_start_fresh_without_painful_memories_Theron_philosophy"
 ]
 
 Choice_Consequences: {
-  "Preserve": "Stability_but_stagnation_existing_pain_preserved",
-  "Transform": "Balanced_outcome_some_loss_some_gain_uncertainty",
-  "Dissolve": "Freedom_but_loss_of_all_history_complete_restart"
+  "Preserve": {
+    "outcome": "Stability_but_stagnation_existing_pain_preserved",
+    "winners": ["Lyra", "Syra", "Cassian"],
+    "effect": "Weavers restored to life, Veil reinforced, oppressive systems continue, war narratives persist"
+  },
+  "Transform": {
+    "outcome": "Balanced_outcome_some_loss_some_gain_uncertainty",
+    "winners": ["Boros", "Elira", "Mara", "Meridia"],
+    "effect": "Veil becomes bridge between worlds, controlled change, Syra transforms into doorway"
+  },
+  "Dissolve": {
+    "outcome": "Freedom_but_loss_of_all_history_complete_restart",
+    "winners": ["Theron", "Irenna", "Erasmus"],
+    "effect": "Liberation from pain and oppression, new narratives without hatred/violence, but all history lost"
+  }
+}
+
+Narrative_Resolution: "Each character accepts or celebrates the choice based on their philosophy. The world changes according to choice - but the change is both external (environment) and internal (perspective). Those who look with conscious awareness see their chosen reality manifest."
+
+# SPECIAL NARRATIVE MOMENTS
+Chess_Game_with_Lyra: {
+  "location": "Sanctum of Whispers",
+  "significance": "Metaphor for life, conflict resolution, strategy",
+  "question": "Can 'confrontation' replace 'war', 'respect' replace 'hatred', 'wisdom' replace 'folly'?",
+  "outcome": "Cercastorie proves strategic thinking and moral awareness - earns telaio_eco access"
+}
+
+Underground_Theater: {
+  "location": "Beneath Eldoria city (teleport via grata)",
+  "host": "Irenna",
+  "purpose": "Preserve stories through puppet theater - memories cling to marionettes",
+  "final_act": "Needs ending - Cercastorie's final choice provides the conclusion",
+  "significance": "Art as resistance to Oblivion - stories keep memories from dissolving"
+}
+
+Master_Key_Revelation: {
+  "context": "Meridia asks Cercastorie to find chiave_maestra",
+  "test": "Can Cercastorie recognize it's metaphorical, not physical?",
+  "answer": "Key is forged in 'officina della coscienza' - conscious choice is the key",
+  "significance": "Philosophical awakening - agency comes from awareness, not objects"
+}
+
+Memory_Recovery_Arc: {
+  "TAPPA_1": "Introduction to Oblivion concept",
+  "TAPPA_2": "Personal memories of Grande Madre and war resurface",
+  "TAPPA_3": "Uncertainty about truth and false memories",
+  "TAPPA_4": "Passion as anchor against forgetting",
+  "TAPPA_5": "Nature and healing as memory preservation",
+  "TAPPA_6": "Blocked access forces completion of missions",
+  "TAPPA_7": "Political awareness - power of information and memory",
+  "TAPPA_8": "Strategic thinking - chess as memory and planning",
+  "TAPPA_9": "Full consciousness and awareness - worthy of Final Choice"
 }
 
 # AI GUIDANCE
 DM_Notes: {
   "Tone": "Philosophical_introspective_high_stakes_emotional",
-  "Pacing": "Allow_time_for_reflection_between_major_revelations",
-  "NPC_Behavior": "Each_faction_leader_should_present_compelling_arguments",
-  "Player_Agency": "No_choice_should_feel_obviously_correct_all_have_merit_and_cost"
+  "Pacing": "Allow_time_for_reflection_between_TAPPE_revelations",
+  "NPC_Behavior": "Each_faction_leader_should_present_compelling_arguments_no_obvious_right_answer",
+  "Player_Agency": "No_choice_should_feel_obviously_correct_all_have_merit_and_cost",
+  "Quest_Structure": "Use_chessboard_logic_items_must_flow_in_correct_sequence",
+  "Credit_Economy": "Player_receives_125_total_can_donate_to_causes_they_support",
+  "Philosophical_Depth": "Each_TAPPA_introduces_new_philosophical_dimension",
+  "Teleport_Network": "Use_magical_objects_for_spatial_transitions_maintains_immersion",
+  "Final_Choice": "Must_be_made_with_full_consciousness_and_awareness_no_manipulation"
 }
+
+Critical_Story_Beats: [
+  "Erasmus_frames_three_choices_at_beginning",
+  "Syra_warns_crystal_will_burn_and_change_recipient",
+  "Jorin_reveals_identity_uncertainty_monk_philosopher_chronicler",
+  "Garin_teaches_passion_prevents_forgetting",
+  "Mara_Elira_test_respect_for_nature",
+  "Barrier_blocks_Nexus_until_missions_complete",
+  "Cassian_tries_to_buy_loyalty_with_credits_and_pergamena",
+  "Theron_refuses_to_give_Codice_protects_revolutionary_freedom",
+  "Irenna_underground_theater_needs_ending",
+  "Boros_teaches_Flusso_philosophy_everything_must_change",
+  "Lyra_chess_game_tests_strategy_and_moral_awareness",
+  "Meridia_Master_Key_test_metaphor_vs_literalism",
+  "All_gather_in_theater_for_Final_Choice_witness",
+  "Each_character_manifests_their_chosen_reality_based_on_philosophy"
+]
 
 # INTEGRATION NOTES
 Second_Life_Adaptation: {
   "Environmental_Storytelling": "Use_visual_anomalies_to_show_Veil_deterioration",
   "NPC_Interactions": "Leverage_SL_social_dynamics_for_faction_roleplay",
-  "Immersive_Elements": "Weather_lighting_changes_reflect_Veil_stability"
+  "Immersive_Elements": "Weather_lighting_changes_reflect_Veil_stability",
+  "Teleport_Network": "Magical_objects_enable_TAPPA_transitions_(vasetto_azzurro,_pietre,_grata)",
+  "Theater_Mechanics": "Underground_city_accessible_via_grata_teleport",
+  "Quest_Tracking": "Inventory_system_tracks_artifacts_through_9_TAPPE",
+  "NPC_Animations": "Each_NPC_has_unique_emotes_reflecting_personality_and_philosophy"
+}
+
+Narrative_Coherence_Notes: {
+  "source_document": "ilpercorsodelcercastorie - detailed 9-stage journey narrative",
+  "alignment_status": "Storyboard now reflects complete TAPPE structure with all NPCs, quests, and philosophical themes",
+  "key_fixes": [
+    "Added all 9 TAPPE with specific locations and NPCs",
+    "Documented complete quest chain dependencies (chessboard logic)",
+    "Included all key artifacts with symbolic meanings",
+    "Mapped faction philosophies to narrative choices",
+    "Documented special moments: chess game, underground theater, Master Key revelation",
+    "Clarified credit economy: 125 available, optional donations",
+    "Added memory recovery arc across 9 TAPPE",
+    "Specified final choice consequences for each character"
+  ]
 }

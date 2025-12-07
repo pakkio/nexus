@@ -79,6 +79,7 @@ def parse_npc_file(filepath):
         'Dialogue Hooks:': 'dialogue_hooks_header',
         'Dialogue_Hooks:': 'dialogue_hooks_header',  # Support underscore version
         'Emotes:': 'emotes', 'Animations:': 'animations',
+        'FacialExpressions:': 'facial_expressions',
         'Lookup:': 'lookup', 'Llsettext:': 'llsettext', 'Teleport:': 'teleport',
         # New schema
         'ID:': 'id', 'Personality_Traits:': 'personality_traits',
@@ -96,7 +97,7 @@ def parse_npc_file(filepath):
     
     # Fields that can extend across multiple lines
     simple_multiline_fields = [
-        'motivation', 'goal', 'playerhint', 'veil_connection', 'emotes', 'animations',
+        'motivation', 'goal', 'playerhint', 'veil_connection', 'emotes', 'animations', 'facial_expressions',
         'lookup', 'llsettext', 'teleport', 'personality_traits', 'relationship_status',
         'prerequisites', 'success_conditions', 'failure_conditions', 'ai_behavior_notes',
         'conversation_state_tracking', 'conditional_responses', 'relationships',
@@ -174,6 +175,43 @@ def parse_npc_file(filepath):
         for key, value in data.items():
             if key != 'dialogue_hooks' and isinstance(value, str):
                 data[key] = value.strip()
+
+        # Extract Animations, FacialExpressions, Emotes, Lookup, Llsettext from sl_commands JSON
+        if data.get('sl_commands'):
+            try:
+                # sl_commands may contain multiple JSON blocks - extract only the first one (SL_Commands)
+                sl_commands_str = data['sl_commands'].strip()
+                
+                # Find the first complete JSON object
+                brace_count = 0
+                json_end = -1
+                for i, char in enumerate(sl_commands_str):
+                    if char == '{':
+                        brace_count += 1
+                    elif char == '}':
+                        brace_count -= 1
+                        if brace_count == 0:
+                            json_end = i + 1
+                            break
+                
+                if json_end > 0:
+                    first_json = sl_commands_str[:json_end]
+                    sl_commands_data = json.loads(first_json)
+                    
+                    # Extract and convert to comma-separated strings (for compatibility with existing code)
+                    if 'Animations' in sl_commands_data:
+                        data['animations'] = ', '.join(sl_commands_data['Animations']) if isinstance(sl_commands_data['Animations'], list) else ''
+                    if 'FacialExpressions' in sl_commands_data:
+                        data['facial_expressions'] = ', '.join(sl_commands_data['FacialExpressions']) if isinstance(sl_commands_data['FacialExpressions'], list) else ''
+                    if 'Emotes' in sl_commands_data:
+                        data['emotes'] = ', '.join(sl_commands_data['Emotes']) if isinstance(sl_commands_data['Emotes'], list) else ''
+                    if 'Lookup' in sl_commands_data:
+                        data['lookup'] = ', '.join(sl_commands_data['Lookup']) if isinstance(sl_commands_data['Lookup'], list) else ''
+                    if 'Llsettext' in sl_commands_data:
+                        data['llsettext'] = sl_commands_data['Llsettext'] if isinstance(sl_commands_data['Llsettext'], str) else ''
+            except (json.JSONDecodeError, TypeError, ValueError) as e:
+                # If sl_commands is not valid JSON, silently skip extraction
+                pass
 
         if not data.get('name') or not data.get('area'):
             print(f"{TerminalFormatter.YELLOW}Warning: NPC file '{filepath}' missing Name or Area.{TerminalFormatter.RESET}")
