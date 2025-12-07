@@ -398,22 +398,23 @@ def build_system_prompt(
     # Add player inventory information so NPC can see what player has
     player_inventory = game_session_state.get('player_inventory', [])
     player_credits = game_session_state.get('player_credits_cache', 0)
-    if player_inventory or player_credits > 0:
-        prompt_lines.append("")
-        prompt_lines.append("="*60)
-        prompt_lines.append("📦 INVENTARIO GIOCATORE (cosa ha attualmente)")
-        prompt_lines.append("="*60)
-        if player_credits > 0:
-            prompt_lines.append(f"💰 Crediti: {player_credits}")
-        if player_inventory:
-            prompt_lines.append(f"🎒 Oggetti: {', '.join(player_inventory)}")
-        else:
-            prompt_lines.append("🎒 Nessun oggetto nell'inventario")
-        prompt_lines.append("⚠️  IMPORTANTE: Puoi vedere cosa ha il giocatore. Se ha l'oggetto che chiedi, DEVI:")
-        prompt_lines.append("   1. Riconoscerlo esplicitamente ('Vedo che hai il {item}!')")
-        prompt_lines.append("   2. Completare lo scambio usando [GIVEN_ITEMS: TuoOggetto]")
-        prompt_lines.append("="*60)
-        prompt_lines.append("")
+    # Always show inventory section so NPC knows player's resources
+    prompt_lines.append("")
+    prompt_lines.append("="*60)
+    prompt_lines.append("📦 INVENTARIO GIOCATORE (cosa ha attualmente)")
+    prompt_lines.append("="*60)
+    # Always show credits (even if 0) so NPC knows player can/cannot afford things
+    prompt_lines.append(f"💰 Crediti: {player_credits}")
+    if player_inventory:
+        prompt_lines.append(f"🎒 Oggetti: {', '.join(player_inventory)}")
+    else:
+        prompt_lines.append("🎒 Nessun oggetto nell'inventario")
+    prompt_lines.append("⚠️  IMPORTANTE: Puoi vedere cosa ha il giocatore. Se ha l'oggetto che chiedi, DEVI:")
+    prompt_lines.append("   1. Riconoscerlo esplicitamente ('Vedo che hai il {item}!')")
+    prompt_lines.append("   2. Completare lo scambio usando [GIVEN_ITEMS: TuoOggetto]")
+    prompt_lines.append("⚠️  CREDITI: Se il giocatore vuole comprare qualcosa ma ha ZERO crediti, RIFIUTA gentilmente.")
+    prompt_lines.append("="*60)
+    prompt_lines.append("")
     if hooks:
         prompt_lines.append(f"Per ispirazione, considera questi stili/frasi chiave dal tuo personaggio: (alcune potrebbero essere contestuali, non usarle tutte alla cieca)\n{hooks[:300]}{'...' if len(hooks)>300 else ''}")
     if veil:
@@ -591,14 +592,27 @@ def build_system_prompt(
     if teleport_locations:
         teleport_instructions = [
             "\n=== TELEPORT CAPABILITY ===",
-            f"You have the ability to teleport players to: {teleport_locations}",
-            "IMPORTANT: When the player asks to be teleported or agrees to teleportation:",
-            "- You MUST add the tag [OFFER_TELEPORT] at the VERY END of your response",
-            "- The tag must be EXACTLY [OFFER_TELEPORT] - no spaces, no variations",
-            "- It triggers the actual teleport mechanism",
-            "Example correct response: 'Certo, ti teletrasporto al mio teatro! [OFFER_TELEPORT]'",
-            "Example when player says 'si' or 'teleportami': 'Perfetto, partiamo! [OFFER_TELEPORT]'",
-            "CRITICAL: Without [OFFER_TELEPORT] tag, the teleport will NOT work!",
+            f"Your location coordinates: {teleport_locations}",
+            "",
+            "TELEPORT RULES:",
+            "1. You can teleport players to YOUR location using [OFFER_TELEPORT]",
+            "2. You can teleport players to ANOTHER NPC using [TELEPORT_TO:npc_name]",
+            "3. NEVER invent or guess coordinates - use only the tags above",
+            "4. If player asks to go somewhere unknown, politely explain you don't know that location",
+            "",
+            "HOW TO TELEPORT:",
+            "- To your location: Add [OFFER_TELEPORT] at the END of your response",
+            "- To another NPC: Add [TELEPORT_TO:npc_name] at the END (e.g., [TELEPORT_TO:Lyra])",
+            "",
+            "KNOWN NPCs you can teleport to:",
+            "Erasmus (liminalvoid), Syra (ancientruins), Jorin (tavern), Garin (village),",
+            "Mara (village), Elira (forest), Meridia (nexusofpaths), Theron (city),",
+            "Cassian (city), Irenna (city), Lyra (sanctumofwhispers), Boros (mountain)",
+            "",
+            "Examples:",
+            "- Player asks 'portami da te': 'Certo, vieni! [OFFER_TELEPORT]'",
+            "- Player asks 'portami da Lyra': 'Ti porto al Sanctum! [TELEPORT_TO:Lyra]'",
+            "- Player asks about unknown place: 'Non conosco quel luogo.'",
             "=== END TELEPORT ===\n"
         ]
         prompt_lines.extend(teleport_instructions)

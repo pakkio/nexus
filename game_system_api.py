@@ -483,11 +483,27 @@ class _SinglePlayerGameSystem:
                                     except Exception as e:
                                         logger.error(f"[ITEM-PROCESSING] Failed to update credits: {e}")
 
-                # Check for [OFFER_TELEPORT] tag and store flag
+                # Check for [OFFER_TELEPORT] or [TELEPORT_TO:npc_name] tags
                 # Also auto-detect teleport offers based on keywords
                 teleport_offered = False
+                teleport_target_npc = None  # Will hold target NPC name if [TELEPORT_TO:name] is used
+                
                 if final_npc_dialogue_for_return:
-                    if "[OFFER_TELEPORT]" in final_npc_dialogue_for_return:
+                    # SAFETY: Strip any AI-generated [teleport=X,Y,Z] tags - only server should generate these
+                    ai_teleport_pattern = r'\[teleport=[\d,.\s]+\]'
+                    if re.search(ai_teleport_pattern, final_npc_dialogue_for_return, re.IGNORECASE):
+                        logger.warning(f"[TELEPORT] Stripped AI-generated teleport tag from response (should use [OFFER_TELEPORT] or [TELEPORT_TO:name] instead)")
+                        final_npc_dialogue_for_return = re.sub(ai_teleport_pattern, '', final_npc_dialogue_for_return, flags=re.IGNORECASE).strip()
+                    
+                    # Check for [TELEPORT_TO:npc_name] - teleport to another NPC
+                    teleport_to_pattern = r'\[TELEPORT_TO:([^\]]+)\]'
+                    teleport_to_match = re.search(teleport_to_pattern, final_npc_dialogue_for_return, re.IGNORECASE)
+                    if teleport_to_match:
+                        teleport_target_npc = teleport_to_match.group(1).strip()
+                        logger.info(f"[TELEPORT] Detected teleport to another NPC: '{teleport_target_npc}'")
+                        final_npc_dialogue_for_return = re.sub(teleport_to_pattern, '', final_npc_dialogue_for_return, flags=re.IGNORECASE).strip()
+                        teleport_offered = True
+                    elif "[OFFER_TELEPORT]" in final_npc_dialogue_for_return:
                         logger.info(f"[TELEPORT] Detected teleport offer via [OFFER_TELEPORT] tag")
                         final_npc_dialogue_for_return = final_npc_dialogue_for_return.replace("[OFFER_TELEPORT]", "").strip()
                         teleport_offered = True
@@ -500,6 +516,7 @@ class _SinglePlayerGameSystem:
                             teleport_offered = True
 
                 self.game_state['teleport_offered_this_turn'] = teleport_offered
+                self.game_state['teleport_target_npc'] = teleport_target_npc  # None = use current NPC's coords
 
             elif self.game_state['debug_mode']:
                  self.game_state['system_messages_buffer'].append("[Debug] No new NPC response marked this turn for API return construction.")
