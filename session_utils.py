@@ -605,9 +605,7 @@ def build_system_prompt(
             "- To another NPC: Add [TELEPORT_TO:npc_name] at the END (e.g., [TELEPORT_TO:Lyra])",
             "",
             "KNOWN NPCs you can teleport to:",
-            "Erasmus (liminalvoid), Syra (ancientruins), Jorin (tavern), Garin (village),",
-            "Mara (village), Elira (forest), Meridia (nexusofpaths), Theron (city),",
-            "Cassian (city), Irenna (city), Lyra (sanctumofwhispers), Boros (mountain)",
+            _build_known_npcs_for_teleport(game_session_state.get('db')),
             "",
             "Examples:",
             "- Player asks 'portami da te': 'Certo, vieni! [OFFER_TELEPORT]'",
@@ -1051,6 +1049,51 @@ def refresh_known_npcs_list(db, TF_class: type) -> List[Dict[str, Any]]:
   except Exception as e:
     print(f"{TF_class.RED}Error refreshing NPC list: {e}{TF_class.RESET}")
     return []
+
+def _build_known_npcs_for_teleport(db) -> str:
+  """Build a formatted string of known NPCs for teleport instructions.
+  
+  Queries the database for all NPCs and formats them as:
+  'NpcName (area), NpcName2 (area2), ...'
+  
+  Args:
+      db: Database manager instance
+      
+  Returns:
+      Formatted string of NPCs, or fallback hardcoded list if query fails
+  """
+  fallback_list = (
+    "Erasmus (liminalvoid), Syra (ancientruins), Jorin (tavern), Garin (village), "
+    "Mara (village), Elira (forest), Meridia (nexusofpaths), Theron (city), "
+    "Cassian (city), Irenna (city), Lyra (sanctumofwhispers), Boros (mountain)"
+  )
+  
+  try:
+    if db is None:
+      return fallback_list
+      
+    npcs = db.list_npcs_by_area()
+    if not npcs:
+      return fallback_list
+    
+    # Format as "Name (area)" for each NPC
+    npc_entries = []
+    for npc in npcs:
+      name = npc.get('name', '')
+      area = npc.get('area', '')
+      if name and area:
+        npc_entries.append(f"{name} ({area.lower()})")
+    
+    if not npc_entries:
+      return fallback_list
+    
+    return ", ".join(npc_entries)
+  except Exception as e:
+    import logging
+    logger = logging.getLogger(__name__)
+    logger.warning(f"Failed to build dynamic NPC list for teleport: {e}")
+    return fallback_list
+
 
 def normalize_area_name(area_raw: str) -> str:
   """Normalize area name from NPC file format to display format.
