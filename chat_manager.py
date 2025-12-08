@@ -115,12 +115,16 @@ def extract_notecard_from_response(npc_response: str) -> Tuple[str, str, str]:
     return cleaned_response.strip(), notecard_name, notecard_content
 
 
-def generate_summary_for_llsettext(npc_response: str, npc_name: str = "NPC") -> str:
+def generate_summary_for_llsettext(npc_response: str, npc_name: str = "NPC", use_llm: bool = True) -> str:
     """Generate a short summary of the NPC response for llSetText display.
+
+    Uses LLM to create a condensed, meaningful summary of the response.
+    Falls back to heuristic truncation if LLM fails.
 
     Args:
         npc_response: The full NPC response text
         npc_name: Name of the NPC
+        use_llm: If True, use LLM for summarization (default True)
 
     Returns:
         Short summary (max 80 chars) suitable for llSetText
@@ -128,36 +132,76 @@ def generate_summary_for_llsettext(npc_response: str, npc_name: str = "NPC") -> 
     if not npc_response:
         return ""
 
-    # Clean up the response text
+    # Clean up the response text first
     clean_text = npc_response.strip()
-    # Remove markdown and formatting
     clean_text = clean_text.replace('*', '').replace('_', '')
-    # Remove LSL protocol-breaking characters
-    clean_text = clean_text.replace(';', ',').replace(']', ')')
-    # Convert newlines to ~ for LSL line break processing
-    clean_text = clean_text.replace('\n', '~')
+    
+    # If text is already short enough, just clean and return
+    if len(clean_text) <= 80:
+        clean_text = clean_text.replace(';', ',').replace(']', ')').replace('\n', ' ')
+        return clean_text
+
+    # Try LLM summarization
+    if use_llm:
+        try:
+            from llm_wrapper import llm_wrapper
+            import os
+            
+            model = os.environ.get("OPENROUTER_DEFAULT_MODEL", "google/gemini-2.5-flash")
+            
+            messages = [
+                {"role": "system", "content": "You are a text condenser. Output ONLY the condensed text, nothing else. No quotes, no explanations."},
+                {"role": "user", "content": f"Condense this NPC dialogue to max 70 characters, keeping the core meaning. Use Italian:\n\n{clean_text}"}
+            ]
+            
+            summary, stats = llm_wrapper(
+                messages=messages,
+                model_name=model,
+                stream=False,
+                collect_stats=False
+            )
+            
+            if summary and len(summary.strip()) > 0:
+                summary = summary.strip()
+                # Clean for LSL
+                summary = summary.replace(';', ',').replace(']', ')').replace('\n', ' ')
+                summary = summary.replace('"', '').replace("'", "")  # Remove quotes LLM might add
+                # Truncate if still too long
+                if len(summary) > 80:
+                    words = summary.split()
+                    result = ""
+                    for word in words:
+                        if len(result + " " + word) > 77:
+                            break
+                        result += (" " + word if result else word)
+                    summary = result + "..."
+                return summary
+        except Exception as e:
+            import logging
+            logging.getLogger(__name__).warning(f"LLM summary failed, using fallback: {e}")
+
+    # Fallback: heuristic summarization
+    clean_text = clean_text.replace(';', ',').replace(']', ')').replace('\n', '~')
+    
     # Remove common prefixes
     for prefix in [f"{npc_name} ti dice", f"{npc_name} ti informa", "*", "- "]:
         clean_text = clean_text.replace(prefix, "").strip()
 
-    # Take first sentence or first 80 characters
+    # Take first sentence or truncate
     if '.' in clean_text:
         first_sentence = clean_text.split('.')[0].strip()
         if len(first_sentence) <= 80:
             return first_sentence
-        # If first sentence is too long, truncate at word boundary
         words = first_sentence.split()
         summary = ""
         for word in words:
-            if len(summary + " " + word) > 77:  # Leave room for "..."
+            if len(summary + " " + word) > 77:
                 break
             summary += (" " + word if summary else word)
         return summary + "..."
     else:
-        # No period found, just truncate
         if len(clean_text) <= 80:
             return clean_text
-        # Truncate at word boundary
         words = clean_text.split()
         summary = ""
         for word in words:
