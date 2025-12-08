@@ -515,15 +515,7 @@ def build_system_prompt(
         ]
         prompt_lines.extend(teleport_instructions)
 
-    # Add enhanced world context for better NPC responses
-    try:
-        from enhanced_context_builder import EnhancedContextBuilder
-        context_builder = EnhancedContextBuilder(game_session_state['db'])
-        enhanced_context = context_builder.build_comprehensive_context(max_length=1500)
-        prompt_lines.append(f"\n{enhanced_context}")
-    except Exception as e:
-        # Fallback if enhanced context fails
-        print(f"Warning: Enhanced context failed: {e}")
+    # Enhanced context builder removed - module doesn't exist and system works fine without it
 
     prompt_lines.extend([
         f"\nContesto Globale del Mondo (Eldoria): {story_context}",
