@@ -1,0 +1,20 @@
+{
+  "name": "Tavern",
+  "id": "location_tavern",
+  "area_type": "Social_Hub",
+  "access_level": "Public",
+  "setting_description": "Una taverna accogliente con tavoli di legno scuro, un focolare sempre acceso, e scaffali pieni di bottiglie dai riflessi dorati. L'atmosfera \u00e8 calda e invitante, con il profumo di cibo speziato e il mormorio di conversazioni.",
+  "veil_connection": "La taverna si trova su un punto di flusso delle memorie del Velo. I viaggiatori qui spesso hanno sogni vividi che sono echi di ricordi tessuti nel Velo stesso.",
+  "primary_npcs": "jorin_tavern",
+  "secondary_npcs": "[\"traveling_merchants\", \"local_villagers\", \"dream_sharers\"]",
+  "npc_density": "High_social_traffic",
+  "interactive_objects": "[\n\"focolare_taverna\",\n\"diario_sogni\",\n\"scaffale_bottiglie\",\n\"registro_ospiti\",\n\"collezione_monete_misteriose\",\n\"tavoli_racconto\"\n]",
+  "atmospheric_elements": "[\n\"warm_lighting\",\n\"storytelling_ambiance\",\n\"dream_whispers_in_corners\",\n\"memory_echoes_from_veil\"\n]",
+  "location_purpose": "[\n\"Information_gathering\",\n\"Story_collection\",\n\"Dream_interpretation\",\n\"Social_networking\",\n\"Quest_item_trading\"\n]",
+  "special_properties": "{\n\"Dream_Enhancement\": \"Visitors_experience_vivid_dreams_containing_veil_memories\",\n\"Story_Preservation\": \"Tales_told_here_resist_oblivion_whispers_longer\",\n\"Memory_Nexus\": \"Junction_point_for_scattered_veil_memories\"\n}",
+  "sl_environment": "{\n\"Build_Style\": \"Medieval_fantasy_warm_inviting\",\n\"Interactive_Elements\": [\"fireplace\", \"bar_counter\", \"storytelling_circle\", \"dream_journal\"],\n\"Atmospheric_Settings\": [\"warm_lighting\", \"ambient_tavern_sounds\", \"particle_effects_for_memory_wisps\"],\n\"Social_Features\": [\"group_seating\", \"performance_area\", \"private_conversation_nooks\"]\n}",
+  "connected_locations": "[\n\"village_garin_forge\",\n\"ancient_ruins_syra\",\n\"paths_to_city\",\n\"forest_edge\"\n]",
+  "quest_relevance": "{\n\"Primary_Quest\": \"Sacred_Bowl_Trading_Hub\",\n\"Secondary_Quests\": [\"Dream_Collection\", \"Story_Preservation\", \"Traveler_Information\"],\n\"Faction_Neutrality\": \"Safe_meeting_ground_for_all_factions\"\n}",
+  "storyboard_id": 1,
+  "created_at": "2025-10-27T09:24:46.118749"
+}

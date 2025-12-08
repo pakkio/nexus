@@ -1,0 +1,20 @@
+{
+  "name": "Rovine Antiche",
+  "id": "location_rovine_antiche",
+  "area_type": "Archaeological_Site",
+  "access_level": "Open_dangerous",
+  "setting_description": "Resti maestosi di una civilt\u00e0 perduta, dove colonne spezzate e archi crollati testimoniano una grandezza dimenticata. Edera e muschio ricoprono le antiche sculture, mentre stanze segrete si aprono nei sotterranei. L'aria \u00e8 densa di mistero e il suono del vento tra le rovine sembra sussurrare segreti di epoche remote.",
+  "veil_connection": "Le Rovine Antiche sono un epicentro di memorie stratificate, dove millenni di storia si sono sedimentati nel Velo. Ogni pietra \u00e8 impregnata di ricordi di una civilt\u00e0 che comprendeva profondamente la natura del Velo stesso. Chi esplora questi luoghi pu\u00f2 accedere a frammenti di conoscenza ancestrale.",
+  "primary_npcs": "ancient_guardian",
+  "secondary_npcs": "[\"spectral_archaeologist\", \"stone_whisperers\", \"memory_echoes\", \"treasure_seekers\", \"ruin_scholars\"]",
+  "npc_density": "Medium_exploration_encounters",
+  "interactive_objects": "[\n\"altare_dei_ricordi\",\n\"biblioteca_di_pietra\",\n\"mappa_stellare_antica\",\n\"camere_sepolte\",\n\"statue_parlanti\",\n\"pozzi_della_saggezza\"\n]",
+  "atmospheric_elements": "[\n\"ancient_stone_resonance\",\n\"whispers_of_the_past\",\n\"filtered_sunlight_through_ruins\",\n\"echo_of_footsteps\",\n\"mystical_energy_currents\"\n]",
+  "location_purpose": "[\n\"Archaeological_discovery\",\n\"Ancient_knowledge_acquisition\",\n\"Artifact_collection\",\n\"Historical_research\",\n\"Veil_mastery_learning\"\n]",
+  "special_properties": "{\n\"Ancestral_Knowledge\": \"Access_to_advanced_veil_manipulation_techniques\",\n\"Memory_Layers\": \"Multiple_historical_periods_accessible_through_exploration\",\n\"Guardian_Trials\": \"Ancient_tests_that_unlock_deeper_understanding\",\n\"Artifact_Resonance\": \"Ancient_items_here_maintain_their_original_power\"\n}",
+  "sl_environment": "{\n\"Build_Style\": \"Grand_ancient_ruins_with_mysterious_architecture\",\n\"Interactive_Elements\": [\"crumbling_columns\", \"hidden_chambers\", \"ancient_altars\", \"mystical_symbols\"],\n\"Atmospheric_Settings\": [\"ruins_ambiance\", \"mystical_lighting\", \"dust_particle_effects\"],\n\"Exploration_Features\": [\"multi_level_exploration\", \"hidden_passages\", \"archaeological_dig_sites\"]\n}",
+  "connected_locations": "[\n\"ancient_ruins_main_site\",\n\"forest_ruins_pathway\",\n\"mountain_ancient_observatory\",\n\"underground_passages_to_city\"\n]",
+  "quest_relevance": "{\n\"Primary_Quest\": \"Lost_Civilization_Mysteries\",\n\"Secondary_Quests\": [\"Artifact_Recovery\", \"Guardian_Communion\", \"Historical_Reconstruction\"],\n\"Knowledge_Source\": \"Advanced_understanding_of_veil_mechanics\",\n\"Cultural_Heritage\": \"Preservation_of_ancient_wisdom_and_traditions\"\n}",
+  "storyboard_id": 1,
+  "created_at": "2025-10-27T09:24:46.119763"
+}

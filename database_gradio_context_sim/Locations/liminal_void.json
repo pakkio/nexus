@@ -1,0 +1,20 @@
+{
+  "name": "Liminal Void",
+  "id": "location_liminal_void",
+  "area_type": "Metaphysical_Zone",
+  "access_level": "Restricted_Advanced",
+  "setting_description": "Uno spazio esistenziale che sfida ogni comprensione fisica. Il vuoto liminale appare come un'estensione infinita di nebbia opalescente dove il concetto stesso di direzione perde significato. Qui la realt\u00e0 \u00e8 fluida, e frammenti di memorie perdute fluttuano come isole di luce in un mare di incertezza.",
+  "veil_connection": "Il Liminal Void \u00e8 il cuore stesso del Velo, dove tutte le memorie dimenticate convergono prima di dissolversi nell'oblio. \u00c8 qui che i frammenti di storie perdute cercano di ricomporsi, e dove chi \u00e8 abbastanza coraggioso pu\u00f2 tentare di recuperare ci\u00f2 che sembrava perduto per sempre.",
+  "primary_npcs": "void_keeper",
+  "secondary_npcs": "[\"memory_fragments_personified\", \"lost_souls\", \"echo_entities\", \"void_wanderers\"]",
+  "npc_density": "Sparse_ethereal_encounters",
+  "interactive_objects": "[\n\"cristalli_di_memoria\",\n\"ponti_di_pensiero\",\n\"pozze_di_oblio\",\n\"torri_di_ricordi_sospesi\",\n\"portali_temporali\",\n\"specchi_dell_anima\"\n]",
+  "atmospheric_elements": "[\n\"opalescent_mist\",\n\"floating_memory_fragments\",\n\"reality_distortions\",\n\"whispers_from_nowhere\",\n\"shifting_perspectives\"\n]",
+  "location_purpose": "[\n\"Memory_recovery\",\n\"Reality_navigation\",\n\"Soul_fragment_integration\",\n\"Existential_understanding\",\n\"Advanced_veil_manipulation\"\n]",
+  "special_properties": "{\n\"Reality_Fluidity\": \"Physical_laws_bend_to_consciousness_and_memory\",\n\"Memory_Reconstruction\": \"Lost_memories_can_be_pieced_together_here\",\n\"Soul_Healing\": \"Fragmented_consciousness_can_find_integration\",\n\"Temporal_Displacement\": \"Time_flows_differently_or_not_at_all\"\n}",
+  "sl_environment": "{\n\"Build_Style\": \"Abstract_ethereal_impossible_architecture\",\n\"Interactive_Elements\": [\"floating_platforms\", \"memory_crystals\", \"reality_anchors\", \"void_portals\"],\n\"Atmospheric_Settings\": [\"particle_systems\", \"reality_distortion_effects\", \"ethereal_lighting\"],\n\"Navigation_Features\": [\"teleportation_points\", \"gravity_defying_paths\", \"consciousness_based_movement\"]\n}",
+  "connected_locations": "[\n\"nexus_of_paths_deep_access\",\n\"sanctum_of_whispers_hidden_passage\",\n\"ancient_ruins_secret_chamber\",\n\"void_entrance_points\"\n]",
+  "quest_relevance": "{\n\"Primary_Quest\": \"Ultimate_Memory_Recovery\",\n\"Secondary_Quests\": [\"Soul_Integration\", \"Reality_Mastery\", \"Void_Understanding\"],\n\"Endgame_Content\": \"Final_confrontation_with_oblivion_itself\",\n\"Risk_Level\": \"High_potential_for_consciousness_loss\"\n}",
+  "storyboard_id": 1,
+  "created_at": "2025-10-27T09:24:46.120096"
+}

@@ -1,0 +1,20 @@
+{
+  "name": "Sanctum of Whispers",
+  "id": "location_sanctum_whispers",
+  "area_type": "Sacred_Site",
+  "access_level": "Open_but_Reverent",
+  "setting_description": "Un antico santuario costruito con pietre bianche che sembrano brillare di luce propria. Grandi archi si aprono verso il cielo, e il vento che passa attraverso le colonne produce suoni melodici. Al centro si trova un altare tessitore coperto di simboli antichi.",
+  "veil_connection": "Il Sanctum \u00e8 uno dei punti dove il Velo \u00e8 pi\u00f9 sottile. Qui Lyra pu\u00f2 sentire direttamente i Sussurri dell'Oblio e comunicare con i Tessitori morti attraverso il tessuto stesso del Velo.",
+  "primary_npcs": "lyra_sanctum",
+  "secondary_npcs": "[\"weaver_spirits\", \"memory_echoes\", \"pilgrims\"]",
+  "npc_density": "Low_sacred_presence",
+  "interactive_objects": "[\n\"altare_tessitore\",\n\"telaio_eco\",\n\"cristallo_memoria_display\",\n\"arazzo_antico\",\n\"fili_velo_visibili\",\n\"cerchio_meditazione\"\n]",
+  "atmospheric_elements": "[\n\"ethereal_lighting\",\n\"whispers_of_weavers\",\n\"memory_fragments_floating\",\n\"sacred_silence\",\n\"veil_shimmer_effects\"\n]",
+  "location_purpose": "[\n\"Primary_quest_hub\",\n\"Weaver_communication\",\n\"Memory_restoration\",\n\"Veil_diagnosis\",\n\"Spiritual_guidance\"\n]",
+  "special_properties": "{\n\"Veil_Sensitivity\": \"Direct_connection_to_veil_allows_sensing_deterioration\",\n\"Memory_Amplification\": \"Ancient_memories_are_stronger_and_clearer_here\",\n\"Weaver_Communication\": \"Portal_for_speaking_with_sacrificed_weavers\",\n\"Healing_Presence\": \"Restores_mental_energy_and_clarity_to_visitors\"\n}",
+  "sl_environment": "{\n\"Build_Style\": \"Ancient_temple_ethereal_mystical\",\n\"Interactive_Elements\": [\"weaver_altar\", \"memory_crystals\", \"sacred_tapestries\", \"meditation_circles\"],\n\"Atmospheric_Settings\": [\"mystical_lighting\", \"wind_chime_sounds\", \"particle_effects_for_memories\", \"floating_text_for_whispers\"],\n\"Sacred_Features\": [\"teleportation_restrictions\", \"quiet_zones\", \"reverent_behavior_prompts\"]\n}",
+  "connected_locations": "[\n\"ancient_ruins_syra\",\n\"nexus_of_paths_meridia\",\n\"mountain_boros\",\n\"pathways_to_all_areas\"\n]",
+  "quest_relevance": "{\n\"Primary_Quest\": \"Veil_Restoration_Central_Hub\",\n\"Secondary_Quests\": [\"Memory_Crystal_Integration\", \"Weaver_Communication\", \"Veil_Diagnosis\"],\n\"Faction_Role\": \"Preservationist_Stronghold_Neutral_Sacred_Ground\"\n}",
+  "storyboard_id": 1,
+  "created_at": "2025-10-27T09:24:46.118128"
+}

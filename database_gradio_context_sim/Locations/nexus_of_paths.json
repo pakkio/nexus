@@ -1,0 +1,20 @@
+{
+  "name": "Nexus of Paths",
+  "id": "location_nexus_paths",
+  "area_type": "Convergence_Point",
+  "access_level": "Restricted_Endgame",
+  "setting_description": "Un crocevia mistico dove tutti i sentieri di Eldoria convergono. Al centro si erge un antico cerchio di pietre coperte di rune, con Meridia che tesse al grande Telaio del Nuovo Inizio. L'aria vibra di potenziale e destino.",
+  "veil_connection": "Il Nexus \u00e8 il punto di maggiore tensione del Velo, dove tutte le linee di forza convergono. \u00c8 qui che la scelta finale del Cercastorie avr\u00e0 effetto su tutto l'Yperverso.",
+  "primary_npcs": "meridia_destiny_weaver",
+  "secondary_npcs": "[\"faction_representatives\", \"weaver_spirits\", \"destiny_echoes\"]",
+  "npc_density": "Variable_based_on_story_progress",
+  "interactive_objects": "[\n\"telaio_nuovo_inizio\",\n\"cerchio_pietre_runiche\",\n\"chiave_maestra_pedestal\",\n\"fili_destino_visibili\",\n\"convergence_altar\",\n\"irenna_puppet_theater_final\"\n]",
+  "atmospheric_elements": "[\n\"destiny_energy_crackling\",\n\"all_paths_visible_simultaneously\",\n\"veil_tension_palpable\",\n\"temporal_flux_effects\",\n\"cosmic_significance_aura\"\n]",
+  "location_purpose": "[\n\"Final_choice_resolution\",\n\"Faction_convergence\",\n\"Destiny_determination\",\n\"Veil_fate_decision\",\n\"Story_climax_staging\"\n]",
+  "special_properties": "{\n\"Veil_Nexus\": \"All_veil_energy_lines_converge_here_amplifying_effects\",\n\"Temporal_Stability\": \"Past_present_future_can_be_sensed_simultaneously\",\n\"Choice_Amplification\": \"Decisions_made_here_affect_entire_universe\",\n\"Memory_Convergence\": \"All_collected_memories_and_artifacts_resonate_together\"\n}",
+  "sl_environment": "{\n\"Build_Style\": \"Epic_mystical_convergence_point_cosmic_scale\",\n\"Interactive_Elements\": [\"destiny_loom\", \"runic_circles\", \"faction_gathering_areas\", \"choice_implementation_altar\"],\n\"Atmospheric_Settings\": [\"dramatic_lighting\", \"cosmic_sound_effects\", \"visual_choice_previews\", \"universal_resonance_effects\"],\n\"Epic_Features\": [\"large_gathering_space\", \"multiple_camera_angles\", \"dramatic_revelation_staging\", \"universe_transformation_effects\"]\n}",
+  "connected_locations": "[\n\"all_major_locations_converge_here\",\n\"sanctum_of_whispers_via_sacred_path\",\n\"city_via_political_route\",\n\"ancient_ruins_via_memory_path\",\n\"mountain_via_wisdom_trail\"\n]",
+  "quest_relevance": "{\n\"Ultimate_Destination\": \"Final_goal_of_all_quest_lines\",\n\"Choice_Culmination\": \"Where_all_previous_decisions_lead\",\n\"Universe_Transformation\": \"Implementation_point_for_cosmic_change\",\n\"Story_Resolution\": \"Narrative_climax_and_conclusion\"\n}",
+  "storyboard_id": 1,
+  "created_at": "2025-10-27T09:24:46.119457"
+}
