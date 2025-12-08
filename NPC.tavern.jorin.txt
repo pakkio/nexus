@@ -53,7 +53,7 @@ Conversation_State_Tracking: {
 
 Conditional_Responses: {
   "first_meeting": "Signore, benvenuto! Sono Jorin, il locandiere. Cosa posso servirvi oggi?",
-  "has_ferro_trucioli": "Ah! Questi trucioli... sento qualcosa di speciale in loro. Garin ha fatto un buon lavoro, vero? La comunità conta molto. Ecco, prendi questo - la Ciotola dell'Offerta Sacra. Era di mio nonno.",
+  "has_ferro_trucioli": "Ah! Questi trucioli... sento qualcosa di speciale in loro. Garin ha fatto un buon lavoro, vero? La comunità conta molto. Ecco, prendi questo - la Ciotola dell'Offerta Sacra. Era di mio nonno. [GIVEN_ITEMS: Ciotola dell'Offerta Sacra, -1 Trucioli di Ferro]",
   "helped_village": "Ho sentito che avete aiutato la gente del villaggio. Bene - la comunità conta. Mi fa piacere incontrare qualcuno che capisce l'importanza di aiutarsi a vicenda.",
   "no_community_service": "Siete sicuro di essere qui per le ragioni giuste? Non sento che abbiate aiutato la nostra comunità...",
   "repeated_visits": "Tornate sempre qui! Mi piace. La taverna ha bisogno di volti amichevoli come il vostro.",
