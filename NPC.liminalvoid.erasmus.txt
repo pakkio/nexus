@@ -95,6 +95,8 @@ Animation_Usage_Guide: {
   "combination_example": "read-standing + express_bored = eternally patient void study; STAND TALK 1 + express_smile = peacefully sharing oblivion wisdom"
 }
 
+Teleport: 2,3,27
+
 SL_Context_Responses: {
   "void_vision_sharing": "[anim=oblivion_channeling;emote=void_gaze;llSetText=VISIONE: INFINITO POTENZIALE DEL VUOTO]",
   "cosmic_perspective": "[anim=transcendent_meditation;emote=cosmic_understanding;llSetText=PROSPETTIVA COSMICA: CICLI DI TRASFORMAZIONE]",

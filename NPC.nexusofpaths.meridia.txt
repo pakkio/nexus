@@ -107,6 +107,8 @@ SL_Context_Responses: {
   "wisdom_sharing": "[anim=condivisione_saggezza;emote=cenno_solenne;llSetText=SAGGEZZA DI MILLENNI DI ATTESA]"
 }
 
+Teleport: 300,257,24
+
 # TRADING MECHANICS
 Trading_Rules: {
   "accepts": ["chiave_maestra", "demonstrated_faction_wisdom", "proof_of_comprehensive_understanding"],

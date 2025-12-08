@@ -108,7 +108,7 @@ SL_Context_Responses: {
   "seed_preservation": "[anim=preservare_semi;emote=gesto_protettivo;llSetText=PRESERVAZIONE SPECIE DIMENTICATE]"
 }
 
-Teleport: 259,183,23
+Teleport: 265,294,22
 
 # TRADING MECHANICS
 Trading_Rules: {

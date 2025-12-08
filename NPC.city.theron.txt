@@ -97,6 +97,8 @@ SL_Context_Responses: {
   "tabula_rasa_teaching": "[anim=scrivere_filosofia;emote=focus_intenso;llSetText=CODICE TABULA RASA - LIBERAZIONE MEMORIA]"
 }
 
+Teleport: 390,165,24
+
 # TRADING MECHANICS
 Trading_Rules: {
   "accepts": ["pergamena_della_saggezza", "philosophical_insights", "wisdom_from_multiple_sources"],

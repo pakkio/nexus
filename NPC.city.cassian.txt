@@ -99,6 +99,8 @@ SL_Context_Responses: {
   "payment_received": "[anim=contare_monete;emote=sorriso_sapiente;llSetText=TRANSAZIONE COMPLETATA]"
 }
 
+Teleport: 363,162,24
+
 # TRADING MECHANICS
 Trading_Rules: {
   "accepts": ["codice_tabula_rasa"],

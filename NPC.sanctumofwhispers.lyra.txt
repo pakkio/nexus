@@ -57,7 +57,7 @@ Conditional_Responses: {
   "multiple_visits": "Ogni volta che torni, sento che il Velo si stabilizza un poco. La tua presenza ha potere, Cercastorie."
 }
 
-Teleport: 214,296,28
+Teleport: 411,281,41
 
 # LORE & CONNECTIONS
 Veil_Connection: Lyra è una discendente diretta dei Tessitori, l'ultima della sua stirpe. Può sentire fisicamente lo sfilacciarsi del Velo come dolore nel suo corpo. Ha sacrificato parte della sua memoria personale per mantenere vivi i ricordi più cruciali dei Tessitori - non ricorda più il suo nome di nascita o la famiglia, esistendo ora solo come Custode.
