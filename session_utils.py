@@ -394,27 +394,9 @@ def build_system_prompt(
         f"Motivazione: '{motivation}'. Obiettivo (cosa TU, l'NPC, vuoi ottenere): '{goal}'.",
         f"V.O. (Guida per l'azione del giocatore per aiutarti): \"{player_hint_for_npc_context}\"",
     ])
-    
-    # Add player inventory information so NPC can see what player has
-    player_inventory = game_session_state.get('player_inventory', [])
-    player_credits = game_session_state.get('player_credits_cache', 0)
-    # Always show inventory section so NPC knows player's resources
-    prompt_lines.append("")
-    prompt_lines.append("="*60)
-    prompt_lines.append("📦 INVENTARIO GIOCATORE (cosa ha attualmente)")
-    prompt_lines.append("="*60)
-    # Always show credits (even if 0) so NPC knows player can/cannot afford things
-    prompt_lines.append(f"💰 Crediti: {player_credits}")
-    if player_inventory:
-        prompt_lines.append(f"🎒 Oggetti: {', '.join(player_inventory)}")
-    else:
-        prompt_lines.append("🎒 Nessun oggetto nell'inventario")
-    prompt_lines.append("⚠️  IMPORTANTE: Puoi vedere cosa ha il giocatore. Se ha l'oggetto che chiedi, DEVI:")
-    prompt_lines.append("   1. Riconoscerlo esplicitamente ('Vedo che hai il {item}!')")
-    prompt_lines.append("   2. Completare lo scambio usando [GIVEN_ITEMS: TuoOggetto]")
-    prompt_lines.append("⚠️  CREDITI: Se il giocatore vuole comprare qualcosa ma ha ZERO crediti, RIFIUTA gentilmente.")
-    prompt_lines.append("="*60)
-    prompt_lines.append("")
+
+    # MOVED: Player inventory moved to END for better caching
+    # Continue with static content first
     if hooks:
         prompt_lines.append(f"Per ispirazione, considera questi stili/frasi chiave dal tuo personaggio: (alcune potrebbero essere contestuali, non usarle tutte alla cieca)\n{hooks[:300]}{'...' if len(hooks)>300 else ''}")
     if veil:
@@ -499,90 +481,8 @@ def build_system_prompt(
         prompt_lines.append("")
         prompt_lines.append("="*60 + "\n")
 
-    # NPC awareness of player profile (distilled insights) and previous conversation
-    if is_regular_npc:
-        # For REGULAR NPCs: Add previous conversation summary (antefatto already added at top)
-        if game_session_state.get('last_npc_conversation_history'):
-            prompt_lines.append("\n" + "="*80)
-            prompt_lines.append("CIÒ CHE IL CERCASTORIE HA FATTO PRIMA (Interazione precedente)")
-            prompt_lines.append("="*80)
-            # With 8KB budget, we can capture more detailed previous conversation (800 chars instead of 400)
-            prev_conv_summary = _distill_previous_conversation(
-                game_session_state.get('last_npc_conversation_history', []),
-                target_chars=800
-            )
-            if prev_conv_summary:
-                prompt_lines.append(f"\n{prev_conv_summary}\n")
-            prompt_lines.append("="*80 + "\n")
-
-        # Add EXPANDED distilled player profile insights (with 8KB budget, can be more detailed)
-        if player_profile:
-            if llm_wrapper_func_for_distill and model_name_for_distill:
-                distilled_insights = get_distilled_profile_insights_for_npc(
-                    player_profile, npc, story_context,
-                    llm_wrapper_func_for_distill, model_name_for_distill, TF, game_session_state
-                )
-                if distilled_insights:
-                    prompt_lines.append(f"\nPROFILO PSICOLOGICO DEL CERCASTORIE (per adattare il tuo approccio):")
-                    prompt_lines.append(f"{distilled_insights}")
-
-                    # With 8KB budget, also add core traits directly for richer context
-                    core_traits = player_profile.get("core_traits", {})
-                    if core_traits:
-                        traits_str = ", ".join([f"{k}: {v}/10" for k, v in core_traits.items()])
-                        prompt_lines.append(f"\nTratti osservati: {traits_str}")
-
-                    # Add interaction style for richer NPC adaptation
-                    interaction_style = player_profile.get("interaction_style_summary", "")
-                    if interaction_style:
-                        prompt_lines.append(f"Stile di interazione: {interaction_style}")
-
-    # Special context for the Wise Guide NPC when in hint mode
-    # MODIFIED: Check if current NPC IS the wise guide
-    if name.lower() == (wise_guide_npc_name_from_state or "").lower():
-        if player_profile: # Wise guide gets more direct profile info
-            profile_summary_parts_for_guide = []
-            core_traits = player_profile.get("core_traits")
-            if isinstance(core_traits, dict) and core_traits:
-                traits_summary = ", ".join([f"{k.capitalize()}: {v}/10" for k,v in core_traits.items()])
-                profile_summary_parts_for_guide.append(f"Tratti principali osservati nel Cercastorie: {traits_summary}.")
-            # Add more profile aspects for the guide if needed (e.g., recent patterns)
-            if profile_summary_parts_for_guide:
-                prompt_lines.append(
-                    f"\nCONSAPEVOLEZZA DEL CERCASTORIE PER TE, {name.upper()} (Usa queste informazioni per guidarlo meglio):\n"
-                    f"{' '.join(profile_summary_parts_for_guide)}\n"
-                )
-
-        if conversation_summary_for_guide_context: # This is passed only when starting hint session
-            # IMPORTANT: Add narrative context ONLY for wise guide during hint mode
-            # Use CONDENSED version (~1.3KB) instead of full version (~70KB) for better performance
-            mappa = game_session_state.get('mappa_personaggi_luoghi', '')
-            percorso_condensed = game_session_state.get('percorso_narratore_condensed', '')
-            # percorso_full = game_session_state.get('percorso_narratore_tappe', '')  # Available if needed
-
-            if mappa or percorso_condensed:
-                prompt_lines.append(
-                    f"\n{'='*80}\n"
-                    f"CONTESTO NARRATIVO (Solo per te come Guida Saggia):\n"
-                    f"{'='*80}\n"
-                )
-                if mappa:
-                    prompt_lines.append(f"MAPPA PERSONAGGI E LUOGHI:\n{mappa}\n")
-                if percorso_condensed:
-                    prompt_lines.append(f"\nPERCORSO NARRATIVO CONDENSATO:\n{percorso_condensed}\n")
-                prompt_lines.append(
-                    f"{'='*80}\n"
-                    f"ISTRUZIONI: Usa questo contesto per dare consigli coerenti con la posizione e tappa del Cercastorie.\n"
-                    f"Non anticipare eventi futuri. Guida con saggezza basandoti su dove si trova il Cercastorie ora.\n"
-                    f"{'='*80}\n"
-                )
-
-            prompt_lines.append(
-                f"\nINFORMAZIONE CONTESTUALE AGGIUNTIVA PER TE, {name.upper()} (per /hint):\n"
-                f"Il Cercastorie (giocatore) stava parlando con un altro NPC prima di consultarti. Ecco un riassunto di quella interazione:\n"
-                f"\"{conversation_summary_for_guide_context}\"\n"
-                f"Usa questa informazione, insieme ai dettagli del giocatore e al suo profilo psicologico, per dare il tuo saggio consiglio."
-            )
+    # MOVED: Previous conversation, player profile, and wise guide context moved to END for better caching
+    # Continue with static content
 
     # REMOVED: Second Life command generation instructions for LLM
     # SL commands are now generated server-side via generate_sl_command_prefix() in chat_manager.py
@@ -735,6 +635,121 @@ def build_system_prompt(
         "Esempio di risposta CORRETTA in cui NON DAI nulla perché il giocatore non ha fatto niente di speciale:",
         "NPC Dialogo: Hmm, non ti conosco abbastanza per fidarmi. Forse se mi portassi qualcosa che dimostra le tue intenzioni..."
     ])
+
+    # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    # DYNAMIC CONTENT SECTION - Added at END for optimal caching
+    # Everything above this line is STATIC and can be cached by the LLM
+    # Everything below this line is DYNAMIC and changes per request
+    # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+    # Add player inventory information so NPC can see what player has
+    player_inventory = game_session_state.get('player_inventory', [])
+    player_credits = game_session_state.get('player_credits_cache', 0)
+    # Always show inventory section so NPC knows player's resources
+    prompt_lines.append("")
+    prompt_lines.append("="*60)
+    prompt_lines.append("📦 INVENTARIO GIOCATORE (cosa ha attualmente)")
+    prompt_lines.append("="*60)
+    # Always show credits (even if 0) so NPC knows player can/cannot afford things
+    prompt_lines.append(f"💰 Crediti: {player_credits}")
+    if player_inventory:
+        prompt_lines.append(f"🎒 Oggetti: {', '.join(player_inventory)}")
+    else:
+        prompt_lines.append("🎒 Nessun oggetto nell'inventario")
+    prompt_lines.append("⚠️  IMPORTANTE: Puoi vedere cosa ha il giocatore. Se ha l'oggetto che chiedi, DEVI:")
+    prompt_lines.append("   1. Riconoscerlo esplicitamente ('Vedo che hai il {item}!')")
+    prompt_lines.append("   2. Completare lo scambio usando [GIVEN_ITEMS: TuoOggetto]")
+    prompt_lines.append("⚠️  CREDITI: Se il giocatore vuole comprare qualcosa ma ha ZERO crediti, RIFIUTA gentilmente.")
+    prompt_lines.append("="*60)
+    prompt_lines.append("")
+
+    # NPC awareness of player profile (distilled insights) and previous conversation
+    if is_regular_npc:
+        # For REGULAR NPCs: Add previous conversation summary
+        if game_session_state.get('last_npc_conversation_history'):
+            prompt_lines.append("\n" + "="*80)
+            prompt_lines.append("CIÒ CHE IL CERCASTORIE HA FATTO PRIMA (Interazione precedente)")
+            prompt_lines.append("="*80)
+            # With 8KB budget, we can capture more detailed previous conversation (800 chars instead of 400)
+            prev_conv_summary = _distill_previous_conversation(
+                game_session_state.get('last_npc_conversation_history', []),
+                target_chars=800
+            )
+            if prev_conv_summary:
+                prompt_lines.append(f"\n{prev_conv_summary}\n")
+            prompt_lines.append("="*80 + "\n")
+
+        # Add EXPANDED distilled player profile insights (with 8KB budget, can be more detailed)
+        if player_profile:
+            if llm_wrapper_func_for_distill and model_name_for_distill:
+                distilled_insights = get_distilled_profile_insights_for_npc(
+                    player_profile, npc, story_context,
+                    llm_wrapper_func_for_distill, model_name_for_distill, TF, game_session_state
+                )
+                if distilled_insights:
+                    prompt_lines.append(f"\nPROFILO PSICOLOGICO DEL CERCASTORIE (per adattare il tuo approccio):")
+                    prompt_lines.append(f"{distilled_insights}")
+
+                    # With 8KB budget, also add core traits directly for richer context
+                    core_traits = player_profile.get("core_traits", {})
+                    if core_traits:
+                        traits_str = ", ".join([f"{k}: {v}/10" for k, v in core_traits.items()])
+                        prompt_lines.append(f"\nTratti osservati: {traits_str}")
+
+                    # Add interaction style for richer NPC adaptation
+                    interaction_style = player_profile.get("interaction_style_summary", "")
+                    if interaction_style:
+                        prompt_lines.append(f"Stile di interazione: {interaction_style}")
+
+    # Special context for the Wise Guide NPC when in hint mode
+    if name.lower() == (wise_guide_npc_name_from_state or "").lower():
+        if player_profile: # Wise guide gets more direct profile info
+            profile_summary_parts_for_guide = []
+            core_traits = player_profile.get("core_traits")
+            if isinstance(core_traits, dict) and core_traits:
+                traits_summary = ", ".join([f"{k.capitalize()}: {v}/10" for k,v in core_traits.items()])
+                profile_summary_parts_for_guide.append(f"Tratti principali osservati nel Cercastorie: {traits_summary}.")
+            # Add more profile aspects for the guide if needed (e.g., recent patterns)
+            if profile_summary_parts_for_guide:
+                prompt_lines.append(
+                    f"\nCONSAPEVOLEZZA DEL CERCASTORIE PER TE, {name.upper()} (Usa queste informazioni per guidarlo meglio):\n"
+                    f"{' '.join(profile_summary_parts_for_guide)}\n"
+                )
+
+        if conversation_summary_for_guide_context: # This is passed only when starting hint session
+            # IMPORTANT: Add narrative context ONLY for wise guide during hint mode
+            # Use CONDENSED version (~1.3KB) instead of full version (~70KB) for better performance
+            mappa = game_session_state.get('mappa_personaggi_luoghi', '')
+            percorso_condensed = game_session_state.get('percorso_narratore_condensed', '')
+            # percorso_full = game_session_state.get('percorso_narratore_tappe', '')  # Available if needed
+
+            if mappa or percorso_condensed:
+                prompt_lines.append(
+                    f"\n{'='*80}\n"
+                    f"CONTESTO NARRATIVO (Solo per te come Guida Saggia):\n"
+                    f"{'='*80}\n"
+                )
+                if mappa:
+                    prompt_lines.append(f"MAPPA PERSONAGGI E LUOGHI:\n{mappa}\n")
+                if percorso_condensed:
+                    prompt_lines.append(f"\nPERCORSO NARRATIVO CONDENSATO:\n{percorso_condensed}\n")
+                prompt_lines.append(
+                    f"{'='*80}\n"
+                    f"ISTRUZIONI: Usa questo contesto per dare consigli coerenti con la posizione e tappa del Cercastorie.\n"
+                    f"Non anticipare eventi futuri. Guida con saggezza basandoti su dove si trova il Cercastorie ora.\n"
+                    f"{'='*80}\n"
+                )
+
+            prompt_lines.append(
+                f"\nINFORMAZIONE CONTESTUALE AGGIUNTIVA PER TE, {name.upper()} (per /hint):\n"
+                f"Il Cercastorie (giocatore) stava parlando con un altro NPC prima di consultarti. Ecco un riassunto di quella interazione:\n"
+                f"\"{conversation_summary_for_guide_context}\"\n"
+                f"Usa questa informazione, insieme ai dettagli del giocatore e al suo profilo psicologico, per dare il tuo saggio consiglio."
+            )
+
+    # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    # END DYNAMIC CONTENT SECTION
+    # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
     # Enforce size constraints
     # For regular NPCs: Increased to 16KB to accommodate NOTECARD_FEATURE and other instructions
