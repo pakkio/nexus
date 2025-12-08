@@ -910,8 +910,37 @@ class DbManager:
                 if conn and conn.is_connected(): conn.close()
         return inventory_list_cleaned
 
-    def save_inventory(self, player_id: str, inventory_list: List[str]) -> None:
-        if not player_id: return
+    def _ensure_player_state_exists(self, player_id: str) -> bool:
+        """Ensure PlayerState row exists for player_id (required for FK constraints). Returns True on success."""
+        if not player_id:
+            return False
+        if self.use_mockup:
+            return True  # Mockup doesn't have FK constraints
+        
+        conn = None; cursor = None
+        try:
+            conn = self.connect(); cursor = conn.cursor()
+            # Use INSERT IGNORE to create if not exists, do nothing if exists
+            sql = """INSERT IGNORE INTO PlayerState (player_id, current_area, credits, last_seen) 
+                     VALUES (%s, 'Liminal Void', 100, NOW())"""
+            cursor.execute(sql, (player_id,))
+            conn.commit()
+            if cursor.rowcount > 0:
+                logging.info(f"[PLAYER-STATE] Created PlayerState for new player: {player_id}")
+            return True
+        except Exception as e:
+            logging.error(f"[PLAYER-STATE] FAILED to ensure PlayerState for {player_id}: {e}")
+            if conn: conn.rollback()
+            return False
+        finally:
+            if cursor: cursor.close()
+            if conn and conn.is_connected(): conn.close()
+
+    def save_inventory(self, player_id: str, inventory_list: List[str]) -> bool:
+        """Save inventory to DB/file. Returns True on success, False on failure."""
+        if not player_id: 
+            logging.warning("[INVENTORY-DB] save_inventory called with empty player_id")
+            return False
         cleaned_inventory = sorted(list(set(self._clean_item_name(item) for item in inventory_list if item and str(item).strip())))
 
         if self.use_mockup:
@@ -919,20 +948,35 @@ class DbManager:
             os.makedirs(os.path.dirname(inv_file), exist_ok=True)
             try:
                 with open(inv_file, 'w', encoding='utf-8') as f: json.dump(cleaned_inventory, f, ensure_ascii=False, indent=2)
-            except Exception as e: print(f"{TerminalFormatter.YELLOW}Warning: Error saving mockup inventory to {inv_file}: {e}{TerminalFormatter.RESET}")
+                logging.info(f"[INVENTORY-MOCKUP] Saved inventory for {player_id}: items={cleaned_inventory}")
+                return True
+            except Exception as e: 
+                logging.error(f"[INVENTORY-MOCKUP] FAILED to save inventory for {player_id}: {e}")
+                print(f"{TerminalFormatter.YELLOW}Warning: Error saving mockup inventory to {inv_file}: {e}{TerminalFormatter.RESET}")
+                return False
         else: # DB
             conn = None; cursor = None
             try:
+                # Ensure PlayerState exists first (FK constraint)
+                self._ensure_player_state_exists(player_id)
+                
                 conn = self.connect(); cursor = conn.cursor(); conn.start_transaction()
                 cursor.execute("DELETE FROM PlayerInventory WHERE player_id = %s", (player_id,))
+                deleted_count = cursor.rowcount
+                inserted_count = 0
                 if cleaned_inventory:
                     sql = "INSERT INTO PlayerInventory (player_id, item_name) VALUES (%s, %s)"
                     values = [(player_id, item) for item in cleaned_inventory]
                     cursor.executemany(sql, values)
+                    inserted_count = cursor.rowcount
                 conn.commit()
+                logging.info(f"[INVENTORY-DB] Saved inventory for {player_id}: deleted={deleted_count}, inserted={inserted_count}, items={cleaned_inventory}")
+                return True
             except Exception as e:
-                # print(f"{TerminalFormatter.RED}DB error saving inventory for {player_id}: {e}{TerminalFormatter.RESET}")
+                logging.error(f"[INVENTORY-DB] FAILED to save inventory for {player_id}: {e}")
+                print(f"{TerminalFormatter.RED}DB error saving inventory for {player_id}: {e}{TerminalFormatter.RESET}")
                 if conn: conn.rollback()
+                return False
             finally:
                 if cursor: cursor.close()
                 if conn and conn.is_connected(): conn.close()
@@ -942,19 +986,29 @@ class DbManager:
         if game_state and 'TerminalFormatter' in game_state: TF = game_state['TerminalFormatter']
 
         cleaned_item_name = self._clean_item_name(item_name)
-        if not cleaned_item_name: print(f"{TF.RED}Error: Item name cannot be empty.{TF.RESET}"); return False
-        if not player_id: print(f"{TF.RED}Error: Player ID required.{TF.RESET}"); return False
+        if not cleaned_item_name: 
+            logging.error(f"[INVENTORY] add_item_to_inventory: empty item name")
+            print(f"{TF.RED}Error: Item name cannot be empty.{TF.RESET}"); return False
+        if not player_id: 
+            logging.error(f"[INVENTORY] add_item_to_inventory: empty player_id")
+            print(f"{TF.RED}Error: Player ID required.{TF.RESET}"); return False
 
         current_inventory = self.load_inventory(player_id)
-        if cleaned_item_name not in current_inventory:
+        if cleaned_item_name.lower() not in [item.lower() for item in current_inventory]:
             current_inventory.append(cleaned_item_name)
-            self.save_inventory(player_id, current_inventory)
-            print(f"{TF.BRIGHT_GREEN}[Game System]: '{item_name.strip()}' added to your inventory! (as '{cleaned_item_name}'){TF.RESET}")
-            if game_state and 'player_inventory' in game_state:
-                game_state['player_inventory'] = self.load_inventory(player_id)
-            return True
+            save_success = self.save_inventory(player_id, current_inventory)
+            if save_success:
+                logging.info(f"[INVENTORY] Added '{cleaned_item_name}' to {player_id}'s inventory")
+                print(f"{TF.BRIGHT_GREEN}[Game System]: '{item_name.strip()}' added to your inventory! (as '{cleaned_item_name}'){TF.RESET}")
+                if game_state and 'player_inventory' in game_state:
+                    game_state['player_inventory'] = self.load_inventory(player_id)
+                return True
+            else:
+                logging.error(f"[INVENTORY] FAILED to add '{cleaned_item_name}' to {player_id}'s inventory - save_inventory returned False")
+                print(f"{TF.RED}[Game System]: Failed to save '{item_name.strip()}' to inventory!{TF.RESET}")
+                return False
         else:
-            # print(f"{TF.DIM}'{item_name.strip()}' (as '{cleaned_item_name}') is already in your inventory.{TF.RESET}")
+            logging.debug(f"[INVENTORY] '{cleaned_item_name}' already in {player_id}'s inventory")
             return False
 
     def find_item_by_partial_name(self, player_id: str, partial_name: str) -> str:
@@ -964,11 +1018,13 @@ class DbManager:
             return ""
         
         inventory = self.load_inventory(player_id)
-        matches = [item for item in inventory if cleaned_partial in item]
+        # Compare lowercased versions for matching, but return original item name
+        matches = [item for item in inventory if cleaned_partial in item.lower()]
         
-        # Return exact match if found
-        if cleaned_partial in inventory:
-            return cleaned_partial
+        # Return exact match if found (case-insensitive)
+        for item in inventory:
+            if cleaned_partial == item.lower():
+                return item
         
         # Return unique partial match
         if len(matches) == 1:
@@ -981,7 +1037,8 @@ class DbManager:
         cleaned_item_name = self._clean_item_name(item_name)
         if not cleaned_item_name or not player_id: return False
         inventory = self.load_inventory(player_id)
-        return cleaned_item_name in inventory
+        # Case-insensitive check
+        return any(item.lower() == cleaned_item_name for item in inventory)
 
     def remove_item_from_inventory(self, player_id: str, item_name: str, game_state: Optional[Dict[str, Any]] = None) -> bool:
         TF = TerminalFormatter
@@ -992,8 +1049,15 @@ class DbManager:
         if not player_id: print(f"{TF.RED}Error: Player ID required for item removal.{TF.RESET}"); return False
 
         current_inventory = self.load_inventory(player_id)
-        if cleaned_item_name in current_inventory:
-            current_inventory.remove(cleaned_item_name)
+        # Find item with case-insensitive match
+        item_to_remove = None
+        for item in current_inventory:
+            if item.lower() == cleaned_item_name:
+                item_to_remove = item
+                break
+        
+        if item_to_remove:
+            current_inventory.remove(item_to_remove)
             self.save_inventory(player_id, current_inventory)
             if game_state and 'player_inventory' in game_state:
                 game_state['player_inventory'] = current_inventory
@@ -1081,11 +1145,22 @@ class DbManager:
                                                current_area = VALUES(current_area), current_npc_code = VALUES(current_npc_code),
                                                plot_flags = VALUES(plot_flags), credits = VALUES(credits), brief_mode = VALUES(brief_mode), last_seen = NOW(); \
                       """
-                plot_flags_json = json.dumps(data_to_persist['plot_flags'])
+                # Sanitize plot_flags to convert bytes to strings
+                plot_flags = data_to_persist['plot_flags']
+                if isinstance(plot_flags, dict):
+                    sanitized_flags = {}
+                    for k, v in plot_flags.items():
+                        key = k.decode('utf-8') if isinstance(k, bytes) else str(k)
+                        val = v.decode('utf-8') if isinstance(v, bytes) else v
+                        sanitized_flags[key] = val
+                    plot_flags = sanitized_flags
+                plot_flags_json = json.dumps(plot_flags) if plot_flags else '{}'
                 values = (player_id, data_to_persist['current_area'], data_to_persist['current_npc_code'], plot_flags_json, data_to_persist['credits'], data_to_persist['brief_mode'])
                 cursor.execute(sql, values); conn.commit()
+                logging.info(f"[PLAYER-STATE-DB] Saved state for {player_id}: credits={data_to_persist['credits']}, area={data_to_persist['current_area']}")
             except Exception as e:
-                # print(f"{TerminalFormatter.RED}DB error saving state for P:{player_id}: {e}{TerminalFormatter.RESET}")
+                logging.error(f"[PLAYER-STATE-DB] FAILED to save state for {player_id}: {e}")
+                print(f"{TerminalFormatter.RED}DB error saving state for P:{player_id}: {e}{TerminalFormatter.RESET}")
                 if conn: conn.rollback()
             finally:
                 if cursor: cursor.close()
@@ -1099,12 +1174,16 @@ class DbManager:
         TF = game_state_context.get('TerminalFormatter', TerminalFormatter)
         current_credits = self.get_player_credits(player_id)
         new_credits = current_credits + amount_change
-        if new_credits < 0: return False
+        logging.info(f"[CREDITS] update_player_credits: player={player_id}, current={current_credits}, change={amount_change}, new={new_credits}")
+        if new_credits < 0: 
+            logging.warning(f"[CREDITS] Blocked: new_credits would be negative ({new_credits})")
+            return False
         player_state = self.load_player_state(player_id)
         player_state['credits'] = new_credits
         self.save_player_state(player_id, player_state)
         if 'player_credits_cache' in game_state_context:
             game_state_context['player_credits_cache'] = new_credits
+        logging.info(f"[CREDITS] Updated credits for {player_id}: {current_credits} -> {new_credits}")
         return True
 
     # --- Player Profile Management (IMPLEMENTED) ---

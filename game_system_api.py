@@ -443,14 +443,23 @@ class _SinglePlayerGameSystem:
                                 potential_items = [item.strip() for item in given_items_str.split(',') if item.strip()]
                                 logger.info(f"[ITEM-PROCESSING] Processing items: {potential_items}")
                                 
+                                items_to_remove = []
                                 for item_str in potential_items:
                                     credit_match = re.match(r"(-?\d+)\s+credits?", item_str, re.IGNORECASE)
                                     if credit_match:
                                         credits_given += int(credit_match.group(1))
                                         logger.info(f"[ITEM-PROCESSING] Found credits: {credit_match.group(1)}")
                                     else:
-                                        items_given_names.append(item_str)
-                                        logger.info(f"[ITEM-PROCESSING] Found item: {item_str}")
+                                        # Check for item removal pattern: "-1 item_name" (requires a number after minus)
+                                        # Pattern: minus sign, followed by a number, followed by whitespace, followed by item name
+                                        removal_match = re.match(r"-(\d+)\s+(.+)", item_str)
+                                        if removal_match:
+                                            item_to_remove = removal_match.group(2).strip()
+                                            items_to_remove.append(item_to_remove)
+                                            logger.info(f"[ITEM-PROCESSING] Found item to REMOVE: '{item_to_remove}'")
+                                        else:
+                                            items_given_names.append(item_str)
+                                            logger.info(f"[ITEM-PROCESSING] Found item to ADD: {item_str}")
                                 
                                 # Add items to inventory
                                 player_id = self.game_state.get('player_id')
@@ -469,6 +478,19 @@ class _SinglePlayerGameSystem:
                                             self.game_state['actions_this_turn_for_profile'].append(f"Received '{item_name}' from {npc_name}")
                                         else:
                                             logger.error(f"[ITEM-PROCESSING] Failed to add '{item_name}' to inventory")
+                                
+                                # Remove items from inventory (for "-1 item_name" patterns)
+                                if items_to_remove and player_id and db:
+                                    for item_name in items_to_remove:
+                                        logger.info(f"[ITEM-PROCESSING] Removing '{item_name}' from inventory for {player_id}")
+                                        if db.remove_item_from_inventory(player_id, item_name, self.game_state):
+                                            logger.info(f"[ITEM-PROCESSING] Successfully removed '{item_name}' from inventory")
+                                            npc_name = current_npc.get('name', 'NPC')
+                                            if 'actions_this_turn_for_profile' not in self.game_state:
+                                                self.game_state['actions_this_turn_for_profile'] = []
+                                            self.game_state['actions_this_turn_for_profile'].append(f"Gave '{item_name}' to {npc_name}")
+                                        else:
+                                            logger.warning(f"[ITEM-PROCESSING] Could not remove '{item_name}' from inventory (not found or already removed)")
                                 
                                 # Handle credits
                                 if credits_given != 0 and player_id and db:

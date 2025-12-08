@@ -147,7 +147,8 @@ def generate_summary_for_llsettext(npc_response: str, npc_name: str = "NPC", use
             from llm_wrapper import llm_wrapper
             import os
             
-            model = os.environ.get("OPENROUTER_DEFAULT_MODEL", "google/gemini-2.5-flash")
+            # Use fast model for llSetText summaries (simple task, speed matters)
+            model = os.environ.get("NEXUS_LLSETTEXT_MODEL", os.environ.get("OPENROUTER_DEFAULT_MODEL", "google/gemini-2.5-flash"))
             
             messages = [
                 {"role": "system", "content": "You are a text condenser. Output ONLY the condensed text, nothing else. No quotes, no explanations."},

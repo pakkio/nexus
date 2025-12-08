@@ -57,7 +57,7 @@ Conversation_State_Tracking: {
 
 Conditional_Responses: {
   "first_meeting": "Benvenuto, viaggiatore. Pochi salgono fin qui sulla montagna. Cerchi saggezza o solo riparo dal vento?",
-  "has_seme_foresta": "Ah, il seme della foresta... Elira ti ha insegnato bene l'equilibrio naturale. Prendi questo Minerale di Ferro Antico - Garin ne avrà bisogno. Ma ricorda: anche il metallo deve imparare a fluire.",
+  "has_seme_foresta": "Ah, il seme della foresta... Elira ti ha insegnato bene l'equilibrio naturale. Prendi questo Minerale di Ferro Antico - Garin ne avrà bisogno. Ma ricorda: anche il metallo deve imparare a fluire. [GIVEN_ITEMS: Minerale di Ferro Antico, -1 Seme della Foresta]",
   "seeks_simple_answers": "Le risposte semplici sono per le domande semplici. Ma il destino del Velo non è una domanda semplice, vero?",
   "shows_wisdom": "Vedo che cominci a comprendere. La saggezza non sta nel scegliere tra estremi, ma nel trovare la danza tra di essi.",
   "philosophical_discussion": "Lyra vuole preservare tutto. Theron vuole dimenticare tutto. Ma dimmi... cosa accade al fiume che non scorre mai? E cosa al fiume senza sponde?"

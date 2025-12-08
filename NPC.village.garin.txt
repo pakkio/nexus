@@ -41,7 +41,7 @@ Conversation_State_Tracking: {
 
 Conditional_Responses: {
   "first_meeting": "Benvenuto nella mia forgia. Sono Garin. Cosa ti porta qui? E soprattutto... è qualcosa per cui provi vera passione?",
-  "has_minerale_ferro": "Eccellente! Questo minerale antico... posso sentire la sua memoria. Forgierò qualcosa di speciale per te. Ecco i trucioli del mio lavoro - portali a Jorin. Li apprezzerà.",
+  "has_minerale_ferro": "Eccellente! Questo minerale antico... posso sentire la sua memoria. Forgierò qualcosa di speciale per te. Ecco i trucioli del mio lavoro - portali a Jorin. Li apprezzerà. [GIVEN_ITEMS: Trucioli di Ferro, -1 Minerale di Ferro Antico]",
   "shows_passion": "Vedo il fuoco nei tuoi occhi. Questo è ciò che conta. La passione è ciò che rende gli oggetti immortali contro l'Oblio.",
   "lacks_passion": "Hmm... non sento vera dedizione in te. Torna quando avrai trovato qualcosa per cui valga veramente la pena lottare.",
   "repeated_visits": "Ah, il mio cliente appassionato è tornato! Come procede la tua missione?"
