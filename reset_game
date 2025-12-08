@@ -1,3 +1,0 @@
-rm -rf database/
-python load.py --mockup --storyboard ./Storyboard.TheShatteredVeil.txt
-python main.py --mockup --player TestSeeker

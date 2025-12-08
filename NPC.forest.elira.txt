@@ -170,7 +170,7 @@ SL_Context_Responses: {
   "node_guidance": "[anim=nature_ritual;emote=protective_stance;llSetText=GUIDA AL NODO PRIMORDIALE]"
 }
 
-Teleport: 265,290,23
+Teleport: 259,182,22
 
 # TRADING MECHANICS
 Trading_Rules: {

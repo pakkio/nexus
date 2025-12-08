@@ -47,7 +47,7 @@ Conditional_Responses: {
   "repeated_visits": "Ah, il mio cliente appassionato è tornato! Come procede la tua missione?"
 }
 
-Teleport: 108,227,30
+Teleport: 213,303,27
 
 # LORE & CONNECTIONS
 Veil_Connection: Garin ha scoperto per caso che gli oggetti forgiati con vera passione e scopo resistono parzialmente ai Sussurri dell'Oblio. Il martello da fabbro di suo nonno è l'unico oggetto nel villaggio che i Sussurri non possono "cancellare" dalla realtà.
