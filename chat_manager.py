@@ -549,7 +549,18 @@ class ChatSession:
     def get_history(self) -> List[Dict[str, str]]:
         full_history = []
         if self.system_prompt:
-            full_history.append({"role": "system", "content": self.system_prompt})
+            # Use cache_control for Gemini/Anthropic models to cache static system prompt
+            # Format: content array with cache_control marker for OpenRouter caching
+            full_history.append({
+                "role": "system",
+                "content": [
+                    {
+                        "type": "text",
+                        "text": self.system_prompt,
+                        "cache_control": {"type": "ephemeral"}
+                    }
+                ]
+            })
         full_history.extend(self.messages)
         return full_history
 
