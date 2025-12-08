@@ -179,6 +179,8 @@ def collect_direct_api_statistics(model_name: str,
         "input_tokens": approx_input_tokens,
         "output_tokens": approx_output_tokens,
         "total_tokens": approx_input_tokens + approx_output_tokens,
+        "cached_tokens": 0,  # NEW: Track cached tokens for prompt caching analysis
+        "cache_hit": False,   # NEW: Boolean flag for cache hit
         "error": None
     }
 
@@ -196,6 +198,24 @@ def collect_direct_api_statistics(model_name: str,
                 if isinstance(total_tokens, (int, float)): stats["total_tokens"] = int(total_tokens)
                 elif isinstance(stats["input_tokens"], int) and isinstance(stats["output_tokens"], int):
                     stats["total_tokens"] = stats["input_tokens"] + stats["output_tokens"]
+
+                # NEW: Extract cached token information from OpenRouter/Vertex AI response
+                # OpenRouter may include prompt_tokens_details or cached_tokens in usage
+                prompt_tokens_details = usage_info.get("prompt_tokens_details")
+                if prompt_tokens_details and isinstance(prompt_tokens_details, dict):
+                    cached = prompt_tokens_details.get("cached_tokens", 0)
+                    if isinstance(cached, (int, float)):
+                        stats["cached_tokens"] = int(cached)
+                        stats["cache_hit"] = stats["cached_tokens"] > 0
+                        logging.info(f"✓ Cache hit: {stats['cached_tokens']} tokens cached ({stats['cached_tokens']/stats['input_tokens']*100:.1f}% of input)")
+
+                # Alternative: Some APIs use "cached_tokens" directly in usage
+                if "cached_tokens" in usage_info:
+                    cached = usage_info.get("cached_tokens", 0)
+                    if isinstance(cached, (int, float)):
+                        stats["cached_tokens"] = int(cached)
+                        stats["cache_hit"] = stats["cached_tokens"] > 0
+
             except (TypeError, KeyError, ValueError) as e:
                 logging.warning(f"Could not extract precise token usage: {e} in {usage_info}", exc_info=False)
     elif response_data and isinstance(response_data, dict) and 'error' in response_data : # Error came from response_data
