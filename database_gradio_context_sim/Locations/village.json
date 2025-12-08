@@ -1,0 +1,20 @@
+{
+  "name": "Village",
+  "id": "location_village",
+  "area_type": "Residential_Community",
+  "access_level": "Public",
+  "setting_description": "Un pittoresco villaggio con case di pietra e legno dai tetti di paglia, dove il fumo sale placido dai camini e i giardini fioriti colorano le strade acciottolate. La vita scorre tranquilla tra botteghe artigiane, mercati locali e la piazza centrale dove i bambini giocano e gli anziani condividono storie al tramonto.",
+  "veil_connection": "Il villaggio \u00e8 costruito su un nodo di memorie quotidiane, dove i ricordi semplici della vita di tutti i giorni si intrecciano nel Velo. Le tradizioni familiari e le storie tramandate di generazione in generazione creano un tessuto denso di memorie condivise che rafforzano la coesione della comunit\u00e0.",
+  "primary_npcs": "garin_village_elder",
+  "secondary_npcs": "[\"village_blacksmith\", \"herb_collector\", \"story_keeper\", \"children_playing\", \"merchant_travelers\"]",
+  "npc_density": "High_community_interaction",
+  "interactive_objects": "[\n\"pozzo_del_villaggio\",\n\"mercato_centrale\",\n\"fucina_del_fabbro\",\n\"biblioteca_comunitaria\",\n\"giardini_delle_erbe\",\n\"campanile_antico\"\n]",
+  "atmospheric_elements": "[\n\"smoke_from_chimneys\",\n\"sounds_of_daily_life\",\n\"flower_garden_scents\",\n\"children_laughter\",\n\"community_warmth\"\n]",
+  "location_purpose": "[\n\"Community_interaction\",\n\"Resource_trading\",\n\"Information_gathering\",\n\"Craft_learning\",\n\"Cultural_immersion\"\n]",
+  "special_properties": "{\n\"Community_Memory\": \"Collective_memories_strengthen_individual_connections_to_veil\",\n\"Tradition_Keeper\": \"Ancient_customs_preserve_important_historical_knowledge\",\n\"Safe_Haven\": \"Protected_location_where_travelers_can_rest_and_recuperate\",\n\"Craft_Mastery\": \"Artisans_here_infuse_their_work_with_memory_fragments\"\n}",
+  "sl_environment": "{\n\"Build_Style\": \"Quaint_medieval_village_with_community_spaces\",\n\"Interactive_Elements\": [\"village_square\", \"market_stalls\", \"craftsman_workshops\", \"community_well\"],\n\"Atmospheric_Settings\": [\"village_sounds\", \"seasonal_decorations\", \"smoke_particle_effects\"],\n\"Social_Features\": [\"gathering_spaces\", \"performance_areas\", \"community_events\"]\n}",
+  "connected_locations": "[\n\"tavern_village_center\",\n\"forest_village_outskirts\",\n\"mountain_trade_routes\",\n\"paths_to_city\"\n]",
+  "quest_relevance": "{\n\"Primary_Quest\": \"Community_Bonds_and_Traditions\",\n\"Secondary_Quests\": [\"Artisan_Apprenticeship\", \"Village_History_Discovery\", \"Local_Problem_Solving\"],\n\"Social_Hub\": \"Central_location_for_community_based_storylines\",\n\"Cultural_Preservation\": \"Keeper_of_traditional_knowledge_and_customs\"\n}",
+  "storyboard_id": 1,
+  "created_at": "2025-10-27T09:24:46.120685"
+}

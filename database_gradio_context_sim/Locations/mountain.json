@@ -1,0 +1,20 @@
+{
+  "name": "Mountain",
+  "id": "location_mountain",
+  "area_type": "Highland_Wilderness",
+  "access_level": "Open_challenging",
+  "setting_description": "Imponenti vette rocciose che si ergono verso il cielo, con sentieri serpentini che si inerpicano tra dirupi e crepacci. L'aria \u00e8 sottile e pura, e il vento trasporta echi di antiche leggende. Caverne nascoste e altipiani nascosti custodiscono segreti di epoche remote, mentre il panorama offre una vista mozzafiato su tutto il mondo sottostante.",
+  "veil_connection": "Le montagne sono pilastri che sostengono il Velo stesso, luoghi dove le memorie pi\u00f9 profonde e durature trovano rifugio. Le cime pi\u00f9 alte toccano quasi il tessuto della realt\u00e0, e chi raggiunge queste vette pu\u00f2 percepire la vastit\u00e0 delle storie che il Velo contiene.",
+  "primary_npcs": "mountain_sage",
+  "secondary_npcs": "[\"stone_guardians\", \"mountain_spirits\", \"hermit_monks\", \"crystal_miners\", \"wind_speakers\"]",
+  "npc_density": "Low_isolated_encounters",
+  "interactive_objects": "[\n\"osservatorio_delle_stelle\",\n\"ponte_di_pietra_antico\",\n\"caverna_dei_cristalli\",\n\"altare_del_vento\",\n\"monastero_abbandonato\",\n\"sentiero_dei_pellegrini\"\n]",
+  "atmospheric_elements": "[\n\"thin_mountain_air\",\n\"echoing_winds\",\n\"crystalline_silence\",\n\"starlit_nights\",\n\"ancient_stone_presence\"\n]",
+  "location_purpose": "[\n\"Meditation_and_wisdom_seeking\",\n\"High_altitude_exploration\",\n\"Crystal_and_mineral_collection\",\n\"Spiritual_enlightenment\",\n\"Panoramic_world_observation\"\n]",
+  "special_properties": "{\n\"Veil_Proximity\": \"Closer_to_the_fabric_of_reality_enhanced_perception\",\n\"Ancient_Wisdom\": \"Mountain_spirits_share_knowledge_of_deep_memories\",\n\"Crystal_Resonance\": \"Mountain_crystals_amplify_veil_connections\",\n\"Weather_Mastery\": \"Mountain_winds_carry_messages_across_distances\"\n}",
+  "sl_environment": "{\n\"Build_Style\": \"Majestic_mountain_peaks_with_ancient_structures\",\n\"Interactive_Elements\": [\"climbing_paths\", \"observation_platforms\", \"crystal_caves\", \"wind_altars\"],\n\"Atmospheric_Settings\": [\"mountain_weather_effects\", \"elevation_lighting\", \"crystal_particle_effects\"],\n\"Challenge_Features\": [\"difficult_terrain\", \"weather_challenges\", \"endurance_requirements\"]\n}",
+  "connected_locations": "[\n\"forest_mountain_path\",\n\"ancient_ruins_highland_entrance\",\n\"village_mountain_trade_route\",\n\"sky_bridges_to_nexus\"\n]",
+  "quest_relevance": "{\n\"Primary_Quest\": \"Wisdom_of_the_Peaks\",\n\"Secondary_Quests\": [\"Crystal_Harmonics\", \"Wind_Message_Delivery\", \"Ancient_Observatory_Activation\"],\n\"Spiritual_Growth\": \"Location_for_character_development_and_enlightenment\",\n\"Veil_Understanding\": \"Deep_insights_into_the_nature_of_memory_and_reality\"\n}",
+  "storyboard_id": 1,
+  "created_at": "2025-10-27T09:24:46.119067"
+}

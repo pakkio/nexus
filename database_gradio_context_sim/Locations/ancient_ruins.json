@@ -1,0 +1,20 @@
+{
+  "name": "Rovine Antiche",
+  "id": "location_ancient_ruins",
+  "area_type": "Sacred_Ruins",
+  "access_level": "",
+  "setting_description": "Rovine di un tempio dei Tessitori con un'aura di sacrificio incompiuto. Syra si manifesta qui come presenza spettrale, n\u00e9 viva n\u00e9 morta. Colonne spezzate si stagliano contro il cielo, mentre un altare sacrificale incompleto domina il centro delle rovine.",
+  "veil_connection": "Luogo dove un sacrificio dei Tessitori non \u00e8 riuscito a completarsi, creando una zona instabile tra vita, morte e Velo.",
+  "primary_npcs": "",
+  "secondary_npcs": "",
+  "npc_density": "",
+  "interactive_objects": "",
+  "atmospheric_elements": "",
+  "location_purpose": "",
+  "special_properties": "",
+  "sl_environment": "",
+  "connected_locations": "",
+  "quest_relevance": "\"Source_of_cristallo_memoria_antica_required_for_lyra_missions\"\nHidden_Elements: [\"failed_transformation_apparatus\", \"incomplete_weaver_memories\", \"ritual_requirements\"]",
+  "storyboard_id": 1,
+  "created_at": "2025-10-27T09:24:46.118466"
+}

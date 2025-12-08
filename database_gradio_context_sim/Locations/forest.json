@@ -1,0 +1,20 @@
+{
+  "name": "Forest",
+  "id": "location_forest",
+  "area_type": "Wilderness_Zone",
+  "access_level": "Open",
+  "setting_description": "Una foresta antica e misteriosa dove alberi secolari si ergono come guardiani silenziosi. La luce del sole filtra attraverso le foglie creando giochi d'ombra che danzano sul terreno coperto di muschio. Il profumo di terra umida e resina si mescola con il mormorio del vento tra le fronde.",
+  "veil_connection": "La foresta \u00e8 un luogo dove il Velo si manifesta attraverso i sussurri del vento e le ombre che sembrano muoversi di vita propria. Gli alberi pi\u00f9 antichi custodiscono memorie di ere passate, e chi sa ascoltare pu\u00f2 sentire gli echi delle storie dimenticate.",
+  "primary_npcs": "None",
+  "secondary_npcs": "[\"forest_spirits\", \"ancient_dryads\", \"lost_travelers\", \"woodland_creatures\"]",
+  "npc_density": "Low_scattered_encounters",
+  "interactive_objects": "[\n\"albero_dei_sussurri\",\n\"circolo_di_pietre_antiche\",\n\"ruscello_cristallino\",\n\"capanna_abbandonata\",\n\"sentieri_intrecciati\",\n\"funghi_luminescenti\"\n]",
+  "atmospheric_elements": "[\n\"filtered_sunlight\",\n\"whispers_in_wind\",\n\"rustling_leaves\",\n\"mysterious_shadows\",\n\"ancient_tree_presence\"\n]",
+  "location_purpose": "[\n\"Exploration\",\n\"Resource_gathering\",\n\"Hidden_path_discovery\",\n\"Spirit_encounters\",\n\"Memory_fragment_collection\"\n]",
+  "special_properties": "{\n\"Memory_Echoes\": \"Ancient_trees_whisper_fragments_of_forgotten_stories\",\n\"Path_Shifting\": \"Forest_paths_change_based_on_travelers_intent\",\n\"Spirit_Sanctuary\": \"Safe_haven_for_forest_spirits_and_nature_entities\"\n}",
+  "sl_environment": "{\n\"Build_Style\": \"Mystical_forest_with_ancient_trees\",\n\"Interactive_Elements\": [\"ancient_trees\", \"stone_circle\", \"stream\", \"hidden_clearings\"],\n\"Atmospheric_Settings\": [\"dappled_lighting\", \"forest_sounds\", \"particle_effects_for_spirits\"],\n\"Exploration_Features\": [\"multiple_pathways\", \"hidden_areas\", \"climbing_elements\"]\n}",
+  "connected_locations": "[\n\"village_outskirts\",\n\"ancient_ruins_entrance\",\n\"mountain_foothills\",\n\"tavern_back_path\"\n]",
+  "quest_relevance": "{\n\"Primary_Quest\": \"Memory_Fragment_Collection\",\n\"Secondary_Quests\": [\"Spirit_Communication\", \"Lost_Artifact_Discovery\", \"Nature_Preservation\"],\n\"Exploration_Value\": \"Gateway_to_hidden_areas_and_forgotten_paths\"\n}",
+  "storyboard_id": 1,
+  "created_at": "2025-10-27T09:24:46.120384"
+}

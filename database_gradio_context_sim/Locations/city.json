@@ -1,0 +1,20 @@
+{
+  "name": "City",
+  "id": "location_city",
+  "area_type": "Urban_Hub",
+  "access_level": "Controlled_Access",
+  "setting_description": "Una metropoli imponente con grattacieli che si stagliano contro il Velo. La City domina lo skyline mentre la citt\u00e0 bassa si estende ai suoi piedi. Grandi Occhi di sorveglianza sorvegliano ogni angolo, ma esistono sempre zone d'ombra dove i ribelli si nascondono.",
+  "veil_connection": "La citt\u00e0 rappresenta il tentativo dell'umanit\u00e0 di controllare e sfruttare il Velo per il potere. I documenti burocratici resistono misteriosamente ai Sussurri dell'Oblio, creando un archivio involontario di memoria.",
+  "primary_npcs": "",
+  "secondary_npcs": "[\"city_guards\", \"bureaucrats\", \"citizens\", \"rebels\", \"merchants\"]",
+  "npc_density": "Very_High_Urban_Population",
+  "interactive_objects": "[\n\"grandi_occhi_surveillance\",\n\"municipi_buildings\",\n\"underground_tunnels\",\n\"rebel_hideouts\",\n\"bureaucratic_archives\",\n\"puppet_theater_hidden\"\n]",
+  "atmospheric_elements": "[\n\"surveillance_oppression\",\n\"urban_noise_bustle\",\n\"hidden_rebellion_whispers\",\n\"bureaucratic_maze_confusion\",\n\"technology_vs_magic_tension\"\n]",
+  "location_purpose": "[\n\"Faction_conflict_hub\",\n\"Political_intrigue\",\n\"Information_trading\",\n\"Revolutionary_planning\",\n\"Bureaucratic_navigation\"\n]",
+  "special_properties": "{\n\"Surveillance_State\": \"Great_Eyes_monitor_most_activities_limiting_freedom\",\n\"Document_Resistance\": \"Official_papers_resist_Oblivion_Whispers_better\",\n\"Underground_Network\": \"Hidden_passages_connect_resistance_sites\",\n\"Information_Economy\": \"Knowledge_and_secrets_are_primary_currency\"\n}",
+  "sl_environment": "{\n\"Build_Style\": \"Cyberpunk_dystopian_with_fantasy_elements\",\n\"Interactive_Elements\": [\"surveillance_cameras\", \"government_buildings\", \"underground_entrances\", \"puppet_theater\"],\n\"Atmospheric_Settings\": [\"urban_ambient_sounds\", \"surveillance_alerts\", \"rebel_graffiti\", \"holographic_displays\"],\n\"Social_Features\": [\"faction_roleplay_areas\", \"secret_meeting_rooms\", \"public_forums\", \"information_trading_posts\"]\n}",
+  "connected_locations": "[\n\"nexus_of_paths\",\n\"sanctum_of_whispers\",\n\"village_and_surrounding_areas\",\n\"underground_resistance_network\"\n]",
+  "quest_relevance": "{\n\"Primary_Quests\": [\"Faction_Choice_Hub\", \"Information_Gathering\", \"Revolutionary_Planning\"],\n\"Secondary_Quests\": [\"Document_Acquisition\", \"Surveillance_Evasion\", \"Underground_Network_Navigation\"],\n\"Endgame_Significance\": \"Final_faction_decisions_made_here_before_nexus_convergence\"\n}",
+  "storyboard_id": 1,
+  "created_at": "2025-10-27T09:24:46.117753"
+}
