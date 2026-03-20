@@ -1115,6 +1115,18 @@ class DbManager:
                 if conn and conn.is_connected(): conn.close()
         return loaded_state_data if loaded_state_data else copy.deepcopy(default_state_data)
 
+    def _sanitize_for_json(self, data: Any) -> Any:
+        """Recursively sanitize data for JSON serialization, converting bytes to strings."""
+        if isinstance(data, bytes):
+            return data.decode('utf-8', errors='replace')
+        elif isinstance(data, dict):
+            return {self._sanitize_for_json(k): self._sanitize_for_json(v) for k, v in data.items()}
+        elif isinstance(data, list):
+            return [self._sanitize_for_json(item) for item in data]
+        elif isinstance(data, tuple):
+            return tuple(self._sanitize_for_json(item) for item in data)
+        return data
+
     def save_player_state(self, player_id: str, state_data: Dict[str, Any]) -> None:
         if not player_id or not state_data: return
 
@@ -1128,6 +1140,9 @@ class DbManager:
             'credits': int(credits_to_save),
             'brief_mode': state_data.get('brief_mode', False)
         }
+        # Sanitize all data to ensure bytes are converted to strings for JSON serialization
+        data_to_persist = self._sanitize_for_json(data_to_persist)
+        
         if self.use_mockup:
             state_file = self.player_state_file_template.format(player_id=player_id)
             os.makedirs(os.path.dirname(state_file), exist_ok=True)
@@ -1145,16 +1160,8 @@ class DbManager:
                                                current_area = VALUES(current_area), current_npc_code = VALUES(current_npc_code),
                                                plot_flags = VALUES(plot_flags), credits = VALUES(credits), brief_mode = VALUES(brief_mode), last_seen = NOW(); \
                       """
-                # Sanitize plot_flags to convert bytes to strings
-                plot_flags = data_to_persist['plot_flags']
-                if isinstance(plot_flags, dict):
-                    sanitized_flags = {}
-                    for k, v in plot_flags.items():
-                        key = k.decode('utf-8') if isinstance(k, bytes) else str(k)
-                        val = v.decode('utf-8') if isinstance(v, bytes) else v
-                        sanitized_flags[key] = val
-                    plot_flags = sanitized_flags
-                plot_flags_json = json.dumps(plot_flags) if plot_flags else '{}'
+                # data_to_persist is already sanitized by _sanitize_for_json above
+                plot_flags_json = json.dumps(data_to_persist['plot_flags']) if data_to_persist['plot_flags'] else '{}'
                 values = (player_id, data_to_persist['current_area'], data_to_persist['current_npc_code'], plot_flags_json, data_to_persist['credits'], data_to_persist['brief_mode'])
                 cursor.execute(sql, values); conn.commit()
                 logging.info(f"[PLAYER-STATE-DB] Saved state for {player_id}: credits={data_to_persist['credits']}, area={data_to_persist['current_area']}")
