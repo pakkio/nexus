@@ -480,8 +480,21 @@ class _SinglePlayerGameSystem:
                                             logger.error(f"[ITEM-PROCESSING] Failed to add '{item_name}' to inventory")
                                 
                                 # Remove items from inventory (for "-1 item_name" patterns)
+                                # But skip if player already gave an item this turn via /give command
+                                item_given_this_turn = self.game_state.get('item_given_to_npc_this_turn')
+                                item_already_given_name = (
+                                    item_given_this_turn.get('item_name', '').lower() 
+                                    if item_given_this_turn and item_given_this_turn.get('type') == 'item' 
+                                    else None
+                                )
+                                
                                 if items_to_remove and player_id and db:
                                     for item_name in items_to_remove:
+                                        # Skip removal if this item was already given via /give command
+                                        if item_already_given_name and item_name.lower() in item_already_given_name or (item_already_given_name and item_already_given_name in item_name.lower()):
+                                            logger.info(f"[ITEM-PROCESSING] Skipping removal of '{item_name}' - player already gave it via /give command this turn")
+                                            continue
+                                        
                                         logger.info(f"[ITEM-PROCESSING] Removing '{item_name}' from inventory for {player_id}")
                                         if db.remove_item_from_inventory(player_id, item_name, self.game_state):
                                             logger.info(f"[ITEM-PROCESSING] Successfully removed '{item_name}' from inventory")
@@ -492,18 +505,29 @@ class _SinglePlayerGameSystem:
                                         else:
                                             logger.warning(f"[ITEM-PROCESSING] Could not remove '{item_name}' from inventory (not found or already removed)")
                                 
-                                # Handle credits
+                                # Handle credits - but skip if player already gave credits this turn via /give command
+                                # This prevents double-deduction when player uses "/give 50 Credits" and NPC responds with [GIVEN_ITEMS: ..., -50 Credits]
+                                # Note: item_given_this_turn was already fetched above for item removal check
+                                credits_already_given_this_turn = (
+                                    item_given_this_turn and 
+                                    item_given_this_turn.get('type') == 'currency' and
+                                    credits_given < 0  # Only skip for negative credits (deductions)
+                                )
+                                
                                 if credits_given != 0 and player_id and db:
-                                    logger.info(f"[ITEM-PROCESSING] Processing {credits_given} credits for {player_id}")
-                                    try:
-                                        db.update_player_credits(player_id, credits_given, self.game_state)
-                                        logger.info(f"[ITEM-PROCESSING] Successfully updated credits by {credits_given}")
-                                        # Update cached credits in game state
-                                        if 'player_info' in self.game_state:
-                                            current_credits = self.game_state['player_info'].get('credits', 0)
-                                            self.game_state['player_info']['credits'] = current_credits + credits_given
-                                    except Exception as e:
-                                        logger.error(f"[ITEM-PROCESSING] Failed to update credits: {e}")
+                                    if credits_already_given_this_turn:
+                                        logger.info(f"[ITEM-PROCESSING] Skipping credit deduction of {credits_given} - player already gave credits via /give command this turn")
+                                    else:
+                                        logger.info(f"[ITEM-PROCESSING] Processing {credits_given} credits for {player_id}")
+                                        try:
+                                            db.update_player_credits(player_id, credits_given, self.game_state)
+                                            logger.info(f"[ITEM-PROCESSING] Successfully updated credits by {credits_given}")
+                                            # Update cached credits in game state
+                                            if 'player_info' in self.game_state:
+                                                current_credits = self.game_state['player_info'].get('credits', 0)
+                                                self.game_state['player_info']['credits'] = current_credits + credits_given
+                                        except Exception as e:
+                                            logger.error(f"[ITEM-PROCESSING] Failed to update credits: {e}")
 
                 # Check for [OFFER_TELEPORT] or [TELEPORT_TO:npc_name] tags
                 # Also auto-detect teleport offers based on keywords

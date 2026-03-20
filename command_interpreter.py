@@ -120,14 +120,15 @@ REGOLE DI INTERPRETAZIONE FONDAMENTALI:
 
 **MOVIMENTO E NAVIGAZIONE:**
 - Se il giocatore vuole spostarsi/andare da qualche parte → /go <area_inglese>
-- Se chiede chi c'è/persone/abitanti → /who
 - Se chiede dove si trova/posizione → /whereami
+- NOTA: "chi c'è qui?", "chi sono gli altri?" durante conversazione con NPC → DIALOGO, non /who!
 
 **PARLARE CON NPCs vs DISCUTERE DI NPCs:**
-- Se vuole INIZIARE UNA CONVERSAZIONE con qualcuno → /talk <npc>
-  - "parla con Jorin", "vai da Lyra", "/talk Boros" → COMANDO /talk
-  - "voglio parlare con X", "devo vedere Y" → COMANDO /talk
-- Se vuole DISCUTERE/CHIEDERE INFORMAZIONI su qualcuno → DIALOGO
+- Se vuole INIZIARE UNA CONVERSAZIONE con qualcuno QUI E ORA → /talk <npc>
+  - "parla con Jorin", "/talk Boros", "voglio parlare con Jorin" → COMANDO /talk
+  - NOTA: frasi come "vai da X", "vado da X", "andrò da X" sono DIALOGO, non comandi!
+- Se MENZIONA un NPC o parla di PIANI FUTURI → DIALOGO
+  - "vado da Boros", "andrò da Lyra", "parlo con Theron dopo" → DIALOGO (piani futuri)
   - "parlami di Theron", "cosa sai di Lyra?", "chi è Boros?", "dimmi di Cassian" → DIALOGO
   - "hai sentito parlare di X?", "conosci Y?" → DIALOGO
   - "cosa pensi di Z?", "tell me about X" → DIALOGO
@@ -167,6 +168,13 @@ ESEMPI SPECIFICI:
 - "chi è Boros?" → DIALOGO (domanda identità di qualcuno)
 - "mi parli di Meridia?" → DIALOGO (richiesta informazioni)
 - "hai sentito parlare di Erasmus?" → DIALOGO (conoscenza di qualcuno)
+- "vado da Boros" → DIALOGO (piani futuri, NON /talk!)
+- "andrò da Lyra" → DIALOGO (piani futuri, NON /talk!)
+- "parlo con Theron dopo" → DIALOGO (piani futuri, NON /talk!)
+- "saluto e vado da Syra" → DIALOGO (piani futuri, NON /talk!)
+- "chi sono gli altri?" → DIALOGO (chiedere all'NPC di altri personaggi, NON /who!)
+- "chi c'è qui?" → DIALOGO durante conversazione (NON /who!)
+- "chi altro conosci?" → DIALOGO (chiedere all'NPC, NON /npcs!)
 
 **COMANDI /give:**
 - "do la moneta a questo NPC" → COMANDO: /give Rare Coin
@@ -378,13 +386,22 @@ def _fallback_interpretation(user_input: str, game_state: Dict[str, Any]) -> Dic
   # Parole chiave per richiedere direttamente (COMANDO /receive)
   demand_keywords = ['dammi', 'voglio', 'passami', 'devo avere']
   
-  # Parole chiave per discussioni su NPCs (DIALOGO, non /talk)
-  discuss_npc_keywords = ['parlami di', 'cosa sai di', 'dimmi di', 'chi è', 'mi parli di', 'cosa mi dici di', 
+  # Parole chiave per discussioni su NPCs (DIALOGO, not /talk)
+  discuss_npc_keywords = ['parlami di', 'cosa sai di', 'dimmi di', 'chi è', 'mi parli di', 'cosa mi dici di',
                          'hai sentito parlare di', 'conosci', 'tell me about', 'what do you know about',
-                         'sai qualcosa di', 'cosa pensi di']
-  
-  # Parole chiave per movimento
-  movement_keywords = ['vai', 'andiamo', 'porta', 'spostarsi', 'andare', 'vado']
+                         'sai qualcosa di', 'cosa pensi di', 'chi sono gli altri', 'chi altro',
+                         'chi c\'è qui', 'chi altro conosci', 'who else', 'who are the others']
+
+  # Parole chiave per piani futuri (DIALOGO, non /talk o /go)
+  # Queste indicano che il giocatore sta PARLANDO di andare da qualcuno, non eseguendo il comando
+  future_plans_keywords = ['vado da', 'andrò da', 'andrò a parlare con', 'vado a vedere',
+                          'vado a trovare', 'saluto e vado', "i'm going to", "i'll go to", "i'll talk to"]
+
+  # Parole chiave per iniziare conversazione con NPC (COMANDO /talk)
+  talk_npc_keywords = ['parla con', 'parlare con', 'voglio parlare con', 'talk to', 'speak with', 'speak to']
+
+  # Parole chiave per movimento verso luoghi (non NPCs)
+  movement_keywords = ['vai in', 'andiamo in', 'andiamo a', 'spostarsi', 'andare']
   
   inventory_keywords = ['inventario', 'oggetti', 'borsa', 'cosa ho', 'tasca']
   who_keywords = ['chi c\'è', 'chi è qui', 'persone', 'abitanti']
@@ -392,6 +409,30 @@ def _fallback_interpretation(user_input: str, game_state: Dict[str, Any]) -> Dic
   exit_keywords = ['esci', 'esco', 'uscire', 'fine', 'basta']
   areas_keywords = ['aree', 'liste', 'elenca', 'lista aree']
   
+  # Controlla se vuole parlare con un NPC (COMANDO /talk) - Prima di controllare piani futuri!
+  for keyword in talk_npc_keywords:
+    if keyword in input_lower:
+      # Try to extract NPC name after the keyword
+      # This is a simple heuristic, the full NLP will handle complex cases
+      return {
+        'is_command': True,
+        'inferred_command': '/talk <npc>',  # Generic, will be refined by system
+        'confidence': 0.85,
+        'original_input': user_input,
+        'reasoning': f'Fallback: detected talk command "{keyword}"'
+      }
+
+  # Controlla se è una discussione di piani futuri (dovrebbe essere DIALOGO, non /talk)
+  for keyword in future_plans_keywords:
+    if keyword in input_lower:
+      return {
+        'is_command': False,
+        'inferred_command': None,
+        'confidence': 0.95,
+        'original_input': user_input,
+        'reasoning': f'Fallback: detected future plan mention "{keyword}" - should be dialogue, not /talk'
+      }
+
   # Controlla se è una discussione su NPCs (dovrebbe essere DIALOGO)
   for keyword in discuss_npc_keywords:
     if keyword in input_lower:
@@ -539,7 +580,7 @@ if __name__ == "__main__":
     'available_areas': ['Ancient Ruins', 'City', 'Forest', 'Mountain', 'Sanctum of Whispers', 'Tavern', 'Village']
   }
   
-  # Test casi specifici per give/receive
+  # Test casi specifici per give/receive e future plans
   test_cases = [
     "vado in taverna",                    # Dovrebbe essere COMANDO /go
     "raccolgo la piaga",                  # Dovrebbe essere DIALOGO
@@ -549,10 +590,14 @@ if __name__ == "__main__":
     "cosa mi puoi dare?",                 # Dovrebbe essere DIALOGO
     "voglio quel libro",                  # Dovrebbe essere COMANDO /receive
     "cosa ho nell'inventario",            # Dovrebbe essere COMANDO /inventory
-    "parlami di theron",                  # Dovrebbe essere DIALOGO (CASO PROBLEMATICO!)
+    "parlami di theron",                  # Dovrebbe essere DIALOGO (discussione su NPC)
     "cosa sai di cassian?",               # Dovrebbe essere DIALOGO
     "dimmi di lyra",                      # Dovrebbe essere DIALOGO
-    "chi è boros?"                        # Dovrebbe essere DIALOGO
+    "chi è boros?",                       # Dovrebbe essere DIALOGO
+    "vado da boros",                      # Dovrebbe essere DIALOGO (piani futuri) - BUG ORIGINALE!
+    "andrò da lyra",                      # Dovrebbe essere DIALOGO (piani futuri) - BUG ORIGINALE!
+    "saluto e vado da syra",              # Dovrebbe essere DIALOGO (piani futuri)
+    "parla con jorin"                     # Dovrebbe essere COMANDO /talk (esplicito)
   ]
   
   for test_input in test_cases:
