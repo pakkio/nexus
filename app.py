@@ -16,6 +16,21 @@ from llm_stats_tracker import get_global_stats_tracker
 import json
 from datetime import datetime
 
+# Eldoria Narrative Framework
+try:
+    from eldoria_narrative_framework import get_narrative_framework, validate_narrative_against_framework
+    from session_utils import build_narrative_prompt, analyze_narrative_quality
+    NARRATIVE_FRAMEWORK_AVAILABLE = True
+except ImportError as e:
+    logger_init = logging.getLogger(__name__)
+    logger_init.warning(f"Narrative framework not available: {e}")
+    NARRATIVE_FRAMEWORK_AVAILABLE = False
+
+    def get_narrative_framework(): return ""
+    def validate_narrative_against_framework(text): return {}
+    def build_narrative_prompt(*args, **kwargs): return ""
+    def analyze_narrative_quality(text): return {}
+
 # Initialize Flask app
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes

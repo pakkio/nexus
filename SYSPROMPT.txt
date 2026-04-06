@@ -1,0 +1,10 @@
+WORLD_NAME=Eldoria
+WORLD_NAME_IT=mondo di Eldoria
+LOCATION_DESCRIPTION=YOUR LOCATION: {area} in the fantasy world of Eldoria
+LOCATION_DESCRIPTION_IT=Sei {name}, un/una {role} nell'area di {area} nel mondo di Eldoria.
+WORLD_CONTEXT_LABEL=Contesto Globale del Mondo (Eldoria)
+LORE_REFERENCE=Reference Eldoria lore (the Veil, Tessitori, magic, ancient history)
+CHARACTER_BACKGROUND_LABEL=Collegamento al Velo (Tuo Background Segreto Importante)
+BRIEF_EXAMPLE_1=Cercastorie... Velo indebolito...
+BRIEF_EXAMPLE_2=Cristallo rovine.
+CENTRAL_CONFLICT=sei un alleato che vuole aiutare a salvare il Velo
