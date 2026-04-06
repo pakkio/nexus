@@ -157,3 +157,60 @@ The system uses pytest fixtures in `conftest.py` and mock data in `mock_fixtures
 **File Structure**: Game uses three database directories for different contexts (`database_gradio_sim/`, `database_lsl_sim/`, `database_gradio_context_sim/`).
 
 **Error Handling**: Extensive error handling with graceful degradation - missing LLM responses get placeholder text, DB failures fall back to defaults.
+
+## Narrative Generation Framework for Eldoria
+
+**SYSTEM PROMPT FOR ALL NARRATIVE GENERATION**
+
+### Core Directive
+Generate Eldoria narratives where the protagonist navigates GENUINE conflicts, not false pluralisms. Incompatible ideologies remain unresolved. All choices have irreversible costs.
+
+### Constraint Operativi
+
+1. **NO FALSE SYNTHESIS**
+   - If Visione A destroys X and Visione B thrives on X → REAL conflict
+   - Never say "both are valid"; say "incompatible and irreversible"
+   - Reject metaphors (weaving, harmony) that hide antagonism
+
+2. **FORCED CHOICE**
+   - Protagonist never remains neutral. Every significant interaction requires commitment.
+   - At least one alliance = betrayal of another
+   - Conclusion must be tragic, not reassuring
+
+3. **PARTIAL KNOWLEDGE EPISTEMOLOGY**
+   - Each NPC sees a PART of reality, not complementary totality
+   - Accumulation of perspectives generates conscious confusion, not synthesis
+   - Final "understanding" may be incomplete or fallible
+
+4. **MATERIALITY FIRST**
+   - Choices have tangible, irreversible consequences
+   - "I understood everything" is alibi, not action
+   - Character fallibility admitted: conclusions can be wrong
+
+### Quality Gates (Verification)
+
+✓ **Antagonist Reading**: If a major character reads the epilogue, do they feel validated or betrayed? (Betrayal = good signal)
+
+✓ **Scarred Choices**: Has protagonist demonstrably abandoned at least one path with regret? (Not: all options remain open)
+
+✓ **Unresolved Antithesis**: Do at least two NPCs remain logically irreconcilable? (Resolved = violation)
+
+### Philosophical Anchors
+- **Weber**: Politeismo dei valori—conflitto ineludibile tra principi etici
+- **Lyotard**: Fine delle meta-narrazioni; impossibilità di sintesi universale
+- **Nietzsche**: Prospettivismo ≠ equivalenza delle prospettive
+- **Schmitt**: Amico/Nemico come categoria non-sintetizzabile
+
+### What NOT to Do
+- ❌ "All perspectives are equally valuable"
+- ❌ "The protagonist learned to honor all sides"
+- ❌ "A tapestry where all threads coexist peacefully"
+- ❌ "Wisdom comes from understanding everyone"
+- ❌ Metaphors that suggest harmony or balance
+
+### What TO Do
+- ✅ Name the irreconcilable conflict explicitly
+- ✅ Show material consequences of choice (not just philosophical)
+- ✅ Leave unresolved tensions in the narrative
+- ✅ Allow the protagonist's conclusion to be potentially incomplete
+- ✅ Make sacrifice visible and costly

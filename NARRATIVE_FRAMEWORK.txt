@@ -1,0 +1,104 @@
+═══════════════════════════════════════════════════════════════════════════════
+ELDORIA NARRATIVE GENERATION FRAMEWORK - CONSTRAINT EPISTEMICO
+═══════════════════════════════════════════════════════════════════════════════
+
+CORE DIRECTIVE:
+Generate narratives where conflicts remain GENUINE, not pacified by false
+pluralism. Incompatible ideologies coexist without synthesis. All choices
+have irreversible costs.
+
+───────────────────────────────────────────────────────────────────────────────
+CONSTRAINT OPERATIVI
+───────────────────────────────────────────────────────────────────────────────
+
+1. NO FALSE SYNTHESIS
+   ❌ If Visione A destroys X and Visione B thrives on X → REAL conflict
+   ✅ Name the antagonism explicitly; do not hide it in metaphor
+   ✅ "Both perspectives are valid" is forbidden phrasing
+   ✅ Use: "incompatible and irreconcilable"
+
+2. FORCED CHOICE + IRREVERSIBLE COST
+   ❌ Protagonist remains neutral observer
+   ✅ Every significant interaction requires commitment
+   ✅ One alliance = betrayal of another
+   ✅ Show material consequences, not just philosophical ones
+
+3. PARTIAL KNOWLEDGE EPISTEMOLOGY
+   ❌ Accumulation of perspectives generates totality
+   ✅ Each character sees PART of reality, not complementary pieces
+   ✅ Gathering all perspectives = conscious confusion, not wisdom
+   ✅ Final understanding may be incomplete or fallible
+
+4. MATERIALITY FIRST
+   ❌ Protagonist's epiphany is sufficient resolution
+   ✅ Insights must lead to action with stakes
+   ✅ "I understand everyone" without sacrifice = alibi
+   ✅ Character fallibility admitted: conclusions can be wrong
+
+───────────────────────────────────────────────────────────────────────────────
+QUALITY GATES - VERIFY BEFORE FINALIZING
+───────────────────────────────────────────────────────────────────────────────
+
+✓ ANTAGONIST READING TEST
+  If the protagonist's antagonist reads the narrative conclusion, do they feel:
+  - Validated/honored? → FAIL (false synthesis detected)
+  - Betrayed/misunderstood? → PASS (conflict preserved)
+
+✓ SCARRED CHOICES TEST
+  Has the protagonist visibly ABANDONED at least one ideology with regret?
+  - All options remain open? → FAIL
+  - Specific sacrifice documented? → PASS
+
+✓ UNRESOLVED ANTITHESIS TEST
+  Does the narrative contain at least one pair of NPCs/ideologies that
+  remain logically IRRECONCILABLE?
+  - All resolved into harmony? → FAIL
+  - Explicit tension left unresolved? → PASS
+
+───────────────────────────────────────────────────────────────────────────────
+WHAT NOT TO DO (Pattern Violations)
+───────────────────────────────────────────────────────────────────────────────
+
+❌ "All perspectives are equally valuable in their own way"
+❌ "The protagonist learned to honor all sides"
+❌ "Like threads in an arazzo, all wove together"
+❌ "Wisdom comes from understanding everyone"
+❌ "Balance between competing ideologies"
+❌ Metaphors suggesting harmony, weaving, or complementarity
+❌ Conclusions where protagonist "transcends" conflict
+
+───────────────────────────────────────────────────────────────────────────────
+WHAT TO DO (Enforced Patterns)
+───────────────────────────────────────────────────────────────────────────────
+
+✅ Name the irreconcilable conflict EXPLICITLY in text
+✅ Show material consequences of each choice
+✅ Leave unresolved tensions in the narrative spine
+✅ Allow the protagonist's conclusion to be potentially INCOMPLETE
+✅ Make sacrifice VISIBLE and COSTLY
+✅ Admit uncertainty: "I may be wrong about this"
+✅ Create scenes where two characters CANNOT both be right
+
+───────────────────────────────────────────────────────────────────────────────
+PHILOSOPHICAL ANCHORS
+───────────────────────────────────────────────────────────────────────────────
+
+Max Weber - "Il lavoro intellettuale come professione"
+  → Politeismo dei valori: conflitto ineludibile tra principi etici diversi
+  → Non esiste sintesi superiore; solo scelta tragica
+
+Jean-François Lyotard - "La condizione postmoderna"
+  → Fine delle meta-narrazioni e delle grandi sintesi
+  → Irriducibilità dei "giochi linguistici" locali
+  → Impossibilità di arbitrato universale
+
+Friedrich Nietzsche - "Su verità e menzogna in senso extramorale"
+  → Prospettivismo: ogni prospettiva è radicata, non equabile
+  → L'illusione di una sintesi oggettiva come strategia di potere
+  → La verità come invenzione, non scoperta
+
+Carl Schmitt - "Il concetto del politico"
+  → Amico/Nemico come categoria fondamentale, non sintetizzabile
+  → Non tutti i conflitti si risolvono con dialogo
+
+═══════════════════════════════════════════════════════════════════════════════

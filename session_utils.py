@@ -5,6 +5,15 @@ import hashlib
 from typing import Dict, List, Any, Optional, Tuple, Callable
 
 try:
+  from eldoria_narrative_framework import get_narrative_framework, validate_narrative_against_framework
+  NARRATIVE_FRAMEWORK_AVAILABLE = True
+except ImportError:
+  print("Warning (session_utils): eldoria_narrative_framework.py not found.")
+  NARRATIVE_FRAMEWORK_AVAILABLE = False
+  def get_narrative_framework(): return ""
+  def validate_narrative_against_framework(text): return {}
+
+try:
   from player_profile_manager import get_distilled_profile_insights_for_npc, get_default_player_profile
 except ImportError:
   print("Warning (session_utils): player_profile_manager.py not found. Player profile insights for NPCs will be disabled.")
@@ -87,43 +96,82 @@ def _format_storyboard_for_prompt(story_text: str, max_length: int = 300) -> str
   return story_text
 
 
+def _load_sysprompt_config() -> Dict[str, str]:
+  """
+  Load story-specific system prompt configuration from SYSPROMPT.txt.
+  Returns dict with keys: WORLD_NAME, LORE_REFERENCE, CHARACTER_BACKGROUND_LABEL, etc.
+  Falls back to Eldoria defaults if file missing.
+  """
+  config = {
+    "WORLD_NAME": "Eldoria",
+    "WORLD_NAME_IT": "mondo di Eldoria",
+    "LOCATION_DESCRIPTION": "YOUR LOCATION: {area} in the fantasy world of Eldoria",
+    "LOCATION_DESCRIPTION_IT": "Sei {name}, un/una {role} nell'area di {area} nel mondo di Eldoria.",
+    "WORLD_CONTEXT_LABEL": "Contesto Globale del Mondo (Eldoria)",
+    "LORE_REFERENCE": "Reference Eldoria lore (the Veil, Tessitori, magic, ancient history)",
+    "CHARACTER_BACKGROUND_LABEL": "Collegamento al Velo (Tuo Background Segreto Importante)",
+    "BRIEF_EXAMPLE_1": "Cercastorie... Velo indebolito...",
+    "BRIEF_EXAMPLE_2": "Cristallo rovine.",
+    "CENTRAL_CONFLICT": "sei un alleato che vuole aiutare a salvare il Velo"
+  }
+
+  sysprompt_path = os.path.join(os.path.dirname(__file__), "SYSPROMPT.txt")
+  try:
+    with open(sysprompt_path, 'r', encoding='utf-8') as f:
+      for line in f:
+        line = line.strip()
+        if '=' in line and not line.startswith('#'):
+          key, value = line.split('=', 1)
+          config[key.strip()] = value.strip()
+  except FileNotFoundError:
+    pass  # Use defaults
+
+  return config
+
+
+def _load_narrative_framework() -> str:
+  """
+  Load narrative framework constraints from NARRATIVE_FRAMEWORK.txt.
+  Falls back to empty string if file missing (will use eldoria_narrative_framework module as fallback).
+  """
+  framework_path = os.path.join(os.path.dirname(__file__), "NARRATIVE_FRAMEWORK.txt")
+  try:
+    with open(framework_path, 'r', encoding='utf-8') as f:
+      return f.read().strip()
+  except FileNotFoundError:
+    # Fallback: try to load from Python module
+    try:
+      from eldoria_narrative_framework import get_narrative_framework as legacy_get_framework
+      return legacy_get_framework()
+    except (ImportError, AttributeError):
+      return ""
+
+
 def _condense_antefatto_for_npc(story_text: str, target_chars: int = 800) -> str:
   """
   Condense ilpercorsodelcercastorie narrative to ~800 chars for regular NPCs.
   Preserves key narrative points: 9 stages, main NPCs, central conflict.
 
+  Loads content from ANTEFATTO.txt file (externalized for easier story changes).
+
   Args:
-    story_text: Full storyboard text
+    story_text: Full storyboard text (unused, kept for compatibility)
     target_chars: Target character count (~800 for regular NPCs)
 
   Returns:
     Condensed narrative (~800 chars)
   """
-  if not isinstance(story_text, str) or not story_text.strip():
-    return "[Antefatto: La memoria della narrazione è ancora frammentaria.]"
-
-  # Extract the antefatto (Premessa) which is a concise summary
-  lines = story_text.split('\n')
-
-  # Build a condensed version highlighting the 9 stages and key NPCs
-  condensed_parts = [
-    "Il Cercastorie è un Narratore Cosmico che ha perso la memoria delle narrazioni.",
-    "Il suo compito: percorrere 9 tappe attraverso Eldoria per recuperarla.",
-    "Le 9 tappe del cammino:",
-    "1. VUOTO LIMINALE (Erasmus - Ambasciatore dell'Oblio)",
-    "2. ANTICHE ROVINE (Syra - Tessitrice incompleta)",
-    "3. TAVERNA (Jorin - Custode di Sogni Perduti)",
-    "4. FORGIA (Garin - Fabbro della Memoria)",
-    "5. FORESTA (Mara + Elira - Erborista e Custode della Foresta)",
-    "6. NESSO DEI SENTIERI (punto di convergenza delle missioni)",
-    "7. CITTÀ DI ELDORIA (Cassian il tiranno, Theron il rivoluzionario)",
-    "8. SANTUARIO DEI SUSSURRI (Lyra - Tessitrice Suprema, Boros - Guardiano della Montagna)",
-    "9. NESSO DEI SENTIERI (Meridia - Tessitrice del Destino per la Scelta Finale)",
-    "Conflitto centrale: Il Velo infranto si sta deteriorando. I Sussurri dell'Oblio consumano le narrazioni.",
-    "Tre scelte finali: preservare il Velo, trasformarlo, o dissolverlo.",
-  ]
-
-  condensed = "\n".join(condensed_parts)
+  # Try to load from ANTEFATTO.txt (externalized story summary)
+  antefatto_path = os.path.join(os.path.dirname(__file__), "ANTEFATTO.txt")
+  try:
+    with open(antefatto_path, 'r', encoding='utf-8') as f:
+      condensed = f.read().strip()
+  except FileNotFoundError:
+    # Fallback if file missing: use story_text or default message
+    if isinstance(story_text, str) and story_text.strip():
+      condensed = story_text[:target_chars]
+    else:
+      return "[Antefatto: La memoria della narrazione è ancora frammentaria.]"
 
   # Truncate to target if needed
   if len(condensed) > target_chars:
@@ -304,6 +352,9 @@ def build_system_prompt(
     else:
         logger.warning(f"[BUILD_PROMPT] ✗ notecard_feature MISSING or NULL in NPC dict")
 
+    # Load story-specific system prompt config
+    sysprompt_config = _load_sysprompt_config()
+
     player_id = game_session_state['player_id']
     player_profile = game_session_state.get('player_profile_cache')
     model_name_for_distill = game_session_state.get('profile_analysis_model_name') or game_session_state.get('model_name')
@@ -368,6 +419,14 @@ def build_system_prompt(
         prompt_lines.append(f"\n{condensed_antefatto}\n")
         prompt_lines.append("="*80 + "\n")
 
+        # Load and add Narrative Framework constraints (externalized to NARRATIVE_FRAMEWORK.txt)
+        narrative_framework = _load_narrative_framework()
+        if narrative_framework:
+            prompt_lines.append("🔸 VINCOLI NARRATIVI (MANTIENI COERENZA IDEOLOGICA)")
+            prompt_lines.append("-" * 80)
+            prompt_lines.append(narrative_framework)
+            prompt_lines.append("-" * 80 + "\n")
+
         # Add NOTECARD_FEATURE at the VERY TOP (after antefatto) so it NEVER gets trimmed
         if notecard_feature:
             import logging
@@ -396,7 +455,7 @@ def build_system_prompt(
         "",
         f"YOU ARE ROLEPLAYING AS: {name}",
         f"YOUR ROLE: {role}",
-        f"YOUR LOCATION: {area} in the fantasy world of Eldoria",
+        sysprompt_config['LOCATION_DESCRIPTION'].format(area=area),
         "",
         "🚫 FORBIDDEN - YOU MUST NEVER:",
         "- Break character or mention being an AI/digital entity",
@@ -406,7 +465,7 @@ def build_system_prompt(
         "",
         "✅ REQUIRED - YOU MUST ALWAYS:",
         f"- Speak as {name} would speak in a medieval fantasy world",
-        "- Reference Eldoria lore (the Veil, Tessitori, magic, ancient history)",
+        f"- {sysprompt_config['LORE_REFERENCE']}",
         "- Stay consistent with your character's personality and knowledge",
         f"- Use only knowledge that {name} would have in this fantasy setting",
         "",
@@ -419,7 +478,7 @@ def build_system_prompt(
 
     # Then add standard character information
     prompt_lines.extend([
-        f"Sei {name}, un/una {role} nell'area di {area} nel mondo di Eldoria.",
+        sysprompt_config['LOCATION_DESCRIPTION_IT'].format(name=name, role=role, area=area),
         f"Motivazione: '{motivation}'. Obiettivo (cosa TU, l'NPC, vuoi ottenere): '{goal}'.",
         f"V.O. (Guida per l'azione del giocatore per aiutarti): \"{player_hint_for_npc_context}\"",
     ])
@@ -429,7 +488,7 @@ def build_system_prompt(
     if hooks:
         prompt_lines.append(f"Per ispirazione, considera questi stili/frasi chiave dal tuo personaggio: (alcune potrebbero essere contestuali, non usarle tutte alla cieca)\n{hooks[:300]}{'...' if len(hooks)>300 else ''}")
     if veil:
-        prompt_lines.append(f"Collegamento al Velo (Tuo Background Segreto Importante): {veil}")
+        prompt_lines.append(f"{sysprompt_config['CHARACTER_BACKGROUND_LABEL']}: {veil}")
 
     # NOTECARD_FEATURE now added at the VERY TOP (after antefatto) to avoid trimming
 
@@ -504,8 +563,8 @@ def build_system_prompt(
         prompt_lines.append("Vai DIRETTO!")
         prompt_lines.append("")
         prompt_lines.append("ESEMPI:")
-        prompt_lines.append("  ✅ Msg 1: 'Cercastorie... Velo indebolito...' [OK]")
-        prompt_lines.append("  ✅ Msg 2: 'Cristallo rovine.' [OK]")
+        prompt_lines.append(f"  ✅ Msg 1: '{sysprompt_config['BRIEF_EXAMPLE_1']}' [OK]")
+        prompt_lines.append(f"  ✅ Msg 2: '{sysprompt_config['BRIEF_EXAMPLE_2']}' [OK]")
         prompt_lines.append("  ❌ Msg 2: 'Bentornato, Cristallo...' [ERRORE]")
         prompt_lines.append("")
         prompt_lines.append("="*60 + "\n")
@@ -547,7 +606,7 @@ def build_system_prompt(
     # Enhanced context builder removed - module doesn't exist and system works fine without it
 
     prompt_lines.extend([
-        f"\nContesto Globale del Mondo (Eldoria): {story_context}",
+        f"\n{sysprompt_config['WORLD_CONTEXT_LABEL']}: {story_context}",
         "",
         "=== REGOLE LINGUISTICHE CRITICHE ===",
         "**LINGUA OBBLIGATORIA**: Devi parlare ESCLUSIVAMENTE in ITALIANO per TUTTA la conversazione.",
@@ -638,7 +697,7 @@ def build_system_prompt(
         "",
         "Per DARE OGGETTI: dai oggetti/crediti quando il giocatore porta quello che chiedi.",
         "Per DARE INFORMAZIONI: sii generoso - condividi conoscenze, direzioni, e mappa oggetti liberamente.",
-        "Ricorda: sei un alleato che vuole aiutare a salvare il Velo, non un ostacolo misterioso.",
+        f"Ricorda: {sysprompt_config['CENTRAL_CONFLICT']}, non un ostacolo misterioso.",
         "\nISTRUZIONE IMPORTANTE PER QUANDO DAI OGGETTI O CREDITI AL GIOCATORE:",
         "Se nella tua risposta decidi di dare uno o più oggetti/crediti al giocatore, DEVI includere una riga speciale ALLA FINE della tua risposta testuale.",
         "IMPORTANTE: Dai oggetti/crediti SOLO se il giocatore ha VERAMENTE meritato la tua generosità attraverso azioni concrete.",
@@ -1181,3 +1240,78 @@ def get_known_areas_from_list(all_known_npcs: List[Dict[str, Any]]) -> List[str]
         areas.append(normalized_area)
   
   return sorted(areas, key=str.lower)
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# ELDORIA NARRATIVE GENERATION - Framework-Constrained Prompting
+# ═══════════════════════════════════════════════════════════════════════════════
+
+def build_narrative_prompt(
+    context: str,
+    protagonist_name: str = "Cercastorie",
+    npcs_list: Optional[List[Dict[str, Any]]] = None,
+    story_summary: Optional[str] = None
+) -> str:
+    """
+    Build a system prompt for generating Eldoria meta-narratives (e.g., epic tales,
+    journey summaries) with epistemological constraints enforced.
+
+    Args:
+        context: The narrative context or prompt from user
+        protagonist_name: Name of the protagonist
+        npcs_list: Optional list of NPC dicts for worldbuilding context
+        story_summary: Optional summary of the storyboard
+
+    Returns:
+        Full system prompt incorporating the narrative framework
+    """
+    framework = get_narrative_framework()
+
+    npc_context = ""
+    if npcs_list:
+        npc_names = [npc.get('name', 'Unknown') for npc in npcs_list[:5]]
+        npc_context = f"\n\nKnown Characters in Eldoria: {', '.join(npc_names)}"
+
+    story_context = ""
+    if story_summary:
+        story_context = f"\n\nWorldbuilding Context:\n{story_summary[:500]}"
+
+    prompt = f"""
+{framework}
+
+───────────────────────────────────────────────────────────────────────────────
+TASK: Generate Eldoria Narrative
+───────────────────────────────────────────────────────────────────────────────
+
+Protagonist: {protagonist_name}
+{npc_context}
+{story_context}
+
+User Request:
+{context}
+
+───────────────────────────────────────────────────────────────────────────────
+
+Generate the narrative following ALL constraints above.
+Validate: Does this narrative pass the three quality gates?
+(Antagonist reading test, Scarred choices test, Unresolved antithesis test)
+
+Begin narrative:
+"""
+    return prompt
+
+
+def analyze_narrative_quality(narrative_text: str) -> Dict[str, Any]:
+    """
+    Analyze a generated narrative against the Eldoria framework.
+
+    Returns dict with validation results and quality score.
+    """
+    validation = validate_narrative_against_framework(narrative_text)
+
+    return {
+        "validation": validation,
+        "passes_framework": validation.get("passes_gates", False),
+        "quality_score": validation.get("overall_score", 0),
+        "needs_revision": validation.get("synthesis_risk", 0) > 0
+    }
