@@ -908,7 +908,17 @@ def chat_with_npc():
                     }), 500
 
                 # Check if the switch was successful
-                if switch_response.get('current_npc_name', '').lower() != npc_name.lower():
+                switched_npc_name = switch_response.get('current_npc_name') or ''
+                npc_name_lower = (npc_name or '').lower()
+                # Accept match if the current NPC name starts with or contains the requested name
+                switched_lower = switched_npc_name.lower()
+                npc_match = (
+                    switched_lower == npc_name_lower or
+                    switched_lower.startswith(npc_name_lower) or
+                    npc_name_lower in switched_lower or
+                    any(word.startswith(npc_name_lower) for word in switched_lower.split())
+                )
+                if not npc_match and switched_npc_name == '':
                     return jsonify({
                         'error': f'Could not find or switch to NPC: {npc_name}',
                         'available_npcs': switch_response.get('system_messages', [])
@@ -1055,7 +1065,9 @@ def chat_with_npc():
     
     except Exception as e:
         player_name_for_log = locals().get('player_name', 'unknown_player')
+        import traceback
         logger.error(f"Error in chat for {player_name_for_log}: {str(e)}")
+        logger.error(f"Traceback: {traceback.format_exc()}")
         return jsonify({'error': str(e)}), 500
 
 @app.route('/api', methods=['GET'])
