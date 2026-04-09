@@ -409,8 +409,8 @@ def load_to_mysql(storyboard_filepath, db_config):
                     npc_data.get('conversation_state_tracking', ''), npc_data.get('failure_conditions', ''),
                     npc_data.get('personality_traits', ''), npc_data.get('prerequisites', ''),
                     npc_data.get('relationship_status', ''), npc_data.get('relationships', ''),
-                    npc_data.get('required_item', ''), npc_data.get('required_quantity', 0),
-                    npc_data.get('required_source', ''), npc_data.get('reward_credits', 0),
+                    npc_data.get('required_item', ''), int(npc_data.get('required_quantity') or 0),
+                    npc_data.get('required_source', ''), int(npc_data.get('reward_credits') or 0),
                     npc_data.get('sl_commands', ''), npc_data.get('success_conditions', ''),
                     npc_data.get('trading_rules', ''), npc_data.get('notecard_feature', ''), storyboard_id )
                 if npc_data.get('name') == 'Jorin':
@@ -421,7 +421,7 @@ def load_to_mysql(storyboard_filepath, db_config):
                 except Exception as e:
                     print(f"  ❌ Error inserting NPC {npc_code}: {e}")
                     print(f"  Values: {values[:5]}...")  # Print first few values
-                    conn.rollback()
+                    # Don't rollback — skip this NPC and continue with the rest
 
         # Commit NPCs before loading locations (in case locations fail)
         conn.commit()
