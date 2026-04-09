@@ -1,0 +1,21 @@
+# System Prompt Configuration for Eldoria
+# Story-specific world and system prompt settings
+# Format: TOML (RFC 5234) for robustness and standard parsing
+
+[world]
+name = "Eldoria"
+name_it = "mondo di Eldoria"
+context_label = "Contesto Globale del Mondo (Eldoria)"
+
+[lore]
+reference = "Reference Eldoria lore (the Veil, Tessitori, magic, ancient history)"
+character_background_label = "Collegamento al Velo (Tuo Background Segreto Importante)"
+central_conflict = "sei un alleato che vuole aiutare a salvare il Velo"
+
+[location]
+description_en = "YOUR LOCATION: {area} in the fantasy world of Eldoria"
+description_it = "Sei {name}, un/una {role} nell'area di {area} nel mondo di Eldoria."
+
+[brief_examples]
+example_1 = "Cercastorie... Velo indebolito..."
+example_2 = "Cristallo rovine."

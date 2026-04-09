@@ -148,54 +148,69 @@ The framework is **automatically loaded** into every NPC's system prompt, ensuri
 
 ---
 
-## 4. SYSPROMPT.txt Format
+## 4. SYSPROMPT.toml Format
 
 **Purpose**: Story-specific system prompt configuration (externalized from code)
 
-**Structure**: Simple `KEY=VALUE` pairs, one per line
+**Format**: TOML (RFC 5234) — robust, standard, human-readable
 
-**Required Keys**:
+**Structure**: Organized sections with typed values
 
-```
-WORLD_NAME=<World Name>
-WORLD_NAME_IT=<Nome del Mondo in Italian>
-LOCATION_DESCRIPTION=YOUR LOCATION: {area} in the fantasy world of <World>
-LOCATION_DESCRIPTION_IT=Sei {name}, un/una {role} nell'area di {area} nel <mondo in Italian>.
-WORLD_CONTEXT_LABEL=<Context Label>: <World Name>
-LORE_REFERENCE=<Describe core lore/magic system/history to reference>
-CHARACTER_BACKGROUND_LABEL=<Label for character background>
-BRIEF_EXAMPLE_1=<Example of brief NPC response style>
-BRIEF_EXAMPLE_2=<Another example of brief NPC response>
-CENTRAL_CONFLICT=<State central conflict/goal NPCs should help with>
+**Sections**:
+- `[world]` — world name and context label
+- `[lore]` — lore references, character background label, central conflict
+- `[location]` — location descriptions (English and Italian)
+- `[brief_examples]` — example NPC responses
+
+**Eldoria Example** (see `/root/nexus/SYSPROMPT.toml`):
+```toml
+[world]
+name = "Eldoria"
+name_it = "mondo di Eldoria"
+context_label = "Contesto Globale del Mondo (Eldoria)"
+
+[lore]
+reference = "Reference Eldoria lore (the Veil, Tessitori, magic, ancient history)"
+character_background_label = "Collegamento al Velo (Tuo Background Segreto Importante)"
+central_conflict = "sei un alleato che vuole aiutare a salvare il Velo"
+
+[location]
+description_en = "YOUR LOCATION: {area} in the fantasy world of Eldoria"
+description_it = "Sei {name}, un/una {role} nell'area di {area} nel mondo di Eldoria."
+
+[brief_examples]
+example_1 = "Cercastorie... Velo indebolito..."
+example_2 = "Cristallo rovine."
 ```
 
-**Eldoria Example**:
-```
-WORLD_NAME=Eldoria
-WORLD_NAME_IT=mondo di Eldoria
-LOCATION_DESCRIPTION=YOUR LOCATION: {area} in the fantasy world of Eldoria
-LOCATION_DESCRIPTION_IT=Sei {name}, un/una {role} nell'area di {area} nel mondo di Eldoria.
-WORLD_CONTEXT_LABEL=Contesto Globale del Mondo (Eldoria)
-LORE_REFERENCE=Reference Eldoria lore (the Veil, Tessitori, magic, ancient history)
-CHARACTER_BACKGROUND_LABEL=Collegamento al Velo (Tuo Background Segreto Importante)
-BRIEF_EXAMPLE_1=Cercastorie... Velo indebolito...
-BRIEF_EXAMPLE_2=Cristallo rovine.
-CENTRAL_CONFLICT=sei un alleato che vuole aiutare a salvare il Velo
+**For a New Story** (e.g., La Nuova Corporazione sci-fi):
+```toml
+[world]
+name = "La Nuova Corporazione"
+name_it = "La Nuova Corporazione"
+context_label = "Contesto Urbano (La Nuova Corporazione)"
+
+[lore]
+reference = "Reference La Nuova Corporazione lore (corporate factions, AI consciousness, dystopian politics)"
+character_background_label = "Segreto Corporativo (Tuo Conflitto Interno)"
+central_conflict = "tu sei una spia che vuole sabotare il sistema corporativo"
+
+[location]
+description_en = "YOUR LOCATION: {area} in the megacity of La Nuova Corporazione"
+description_it = "Sei {name}, un/una {role} nell'area di {area} della metropoli di La Nuova Corporazione."
+
+[brief_examples]
+example_1 = "Agente... rete compromessa..."
+example_2 = "Codice corrotto."
 ```
 
-**For a New Story** (e.g., sci-fi setting):
-```
-WORLD_NAME=La Nuova Corporazione
-WORLD_NAME_IT=La Nuova Corporazione
-LOCATION_DESCRIPTION=YOUR LOCATION: {area} in the megacity of La Nuova Corporazione
-LOCATION_DESCRIPTION_IT=Sei {name}, un/una {role} nell'area di {area} della metropoli di La Nuova Corporazione.
-WORLD_CONTEXT_LABEL=Contesto Urbano (La Nuova Corporazione)
-LORE_REFERENCE=Reference La Nuova Corporazione lore (corporate factions, AI consciousness, dystopian politics)
-CHARACTER_BACKGROUND_LABEL=Segreto Corporativo (Tuo Conflitto Interno)
-BRIEF_EXAMPLE_1=Agente... rete compromessa...
-BRIEF_EXAMPLE_2=Codice corrotto.
-CENTRAL_CONFLICT=tu sei una spia che vuole sabotare il sistema corporativo
-```
+**Advantages of TOML format**:
+- Standard format (RFC 5234), not invented
+- Human-readable like KEY=VALUE
+- Robust parsing with native libraries (no fragile split())
+- Typed values (strings, numbers, arrays, tables)
+- Schema validation possible
+- Easier to extend without breaking changes
 
 ---
 
