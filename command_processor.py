@@ -238,6 +238,9 @@ command_handlers_map: Dict[str, Callable] = {
   'endhint': handle_endhint,     # MODIFIED
   'brief': handle_brief,         # Toggle brief/concise mode
   'inventory': handle_inventory, 'inv': handle_inventory,
+  'inventario': handle_inventory, 'zaino': handle_inventory,  # Italian aliases
+  'vai': handle_go, 'parla': handle_talk,                     # Italian aliases
+  'aiuto': handle_help,
   'give': handle_give,
   'receive': handle_receive,
   'profile': handle_profile,
