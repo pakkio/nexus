@@ -53,7 +53,8 @@ def handle_talk(args: str, state: Dict[str, Any]) -> HandlerResult:
 
     else: # Specific NPC name
         prefix = args.lower()
-        matches = [n for n in npcs_here if n.get('name','').lower().startswith(prefix)]
+        matches = [n for n in npcs_here if n.get('name','').lower().startswith(prefix) or
+                   any(word.startswith(prefix) for word in n.get('name','').lower().split())]
         if len(matches) == 1:
             target_npc_info = matches[0]
             talk_initiated = True
