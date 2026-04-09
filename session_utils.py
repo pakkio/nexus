@@ -98,11 +98,14 @@ def _format_storyboard_for_prompt(story_text: str, max_length: int = 300) -> str
 
 def _load_sysprompt_config() -> Dict[str, str]:
   """
-  Load story-specific system prompt configuration from SYSPROMPT.txt.
-  Returns dict with keys: WORLD_NAME, LORE_REFERENCE, CHARACTER_BACKGROUND_LABEL, etc.
+  Load story-specific system prompt configuration from SYSPROMPT.toml.
+  Returns dict with flattened keys for backward compatibility.
   Falls back to Eldoria defaults if file missing.
   """
-  config = {
+  import tomllib
+
+  # Default Eldoria config
+  defaults = {
     "WORLD_NAME": "Eldoria",
     "WORLD_NAME_IT": "mondo di Eldoria",
     "LOCATION_DESCRIPTION": "YOUR LOCATION: {area} in the fantasy world of Eldoria",
@@ -115,18 +118,43 @@ def _load_sysprompt_config() -> Dict[str, str]:
     "CENTRAL_CONFLICT": "sei un alleato che vuole aiutare a salvare il Velo"
   }
 
-  sysprompt_path = os.path.join(os.path.dirname(__file__), "SYSPROMPT.txt")
+  # Try SYSPROMPT.toml first (new format)
+  toml_path = os.path.join(os.path.dirname(__file__), "SYSPROMPT.toml")
   try:
-    with open(sysprompt_path, 'r', encoding='utf-8') as f:
+    with open(toml_path, 'rb') as f:
+      toml_config = tomllib.load(f)
+      # Flatten TOML structure to flat keys for backward compatibility
+      config = {
+        "WORLD_NAME": toml_config.get("world", {}).get("name", defaults["WORLD_NAME"]),
+        "WORLD_NAME_IT": toml_config.get("world", {}).get("name_it", defaults["WORLD_NAME_IT"]),
+        "LOCATION_DESCRIPTION": toml_config.get("location", {}).get("description_en", defaults["LOCATION_DESCRIPTION"]),
+        "LOCATION_DESCRIPTION_IT": toml_config.get("location", {}).get("description_it", defaults["LOCATION_DESCRIPTION_IT"]),
+        "WORLD_CONTEXT_LABEL": toml_config.get("world", {}).get("context_label", defaults["WORLD_CONTEXT_LABEL"]),
+        "LORE_REFERENCE": toml_config.get("lore", {}).get("reference", defaults["LORE_REFERENCE"]),
+        "CHARACTER_BACKGROUND_LABEL": toml_config.get("lore", {}).get("character_background_label", defaults["CHARACTER_BACKGROUND_LABEL"]),
+        "BRIEF_EXAMPLE_1": toml_config.get("brief_examples", {}).get("example_1", defaults["BRIEF_EXAMPLE_1"]),
+        "BRIEF_EXAMPLE_2": toml_config.get("brief_examples", {}).get("example_2", defaults["BRIEF_EXAMPLE_2"]),
+        "CENTRAL_CONFLICT": toml_config.get("lore", {}).get("central_conflict", defaults["CENTRAL_CONFLICT"])
+      }
+      return config
+  except FileNotFoundError:
+    pass  # Fall back to legacy format or defaults
+  except Exception as e:
+    print(f"Warning: Error loading SYSPROMPT.toml: {e}. Using defaults.")
+    return defaults
+
+  # Fall back to legacy SYSPROMPT.txt if TOML doesn't exist
+  txt_path = os.path.join(os.path.dirname(__file__), "SYSPROMPT.txt")
+  try:
+    with open(txt_path, 'r', encoding='utf-8') as f:
       for line in f:
         line = line.strip()
         if '=' in line and not line.startswith('#'):
           key, value = line.split('=', 1)
-          config[key.strip()] = value.strip()
+          defaults[key.strip()] = value.strip()
+    return defaults
   except FileNotFoundError:
-    pass  # Use defaults
-
-  return config
+    return defaults
 
 
 def _load_narrative_framework() -> str:
