@@ -214,9 +214,10 @@ class _SinglePlayerGameSystem:
 
         if self.game_state['wise_guide_npc_name']:
             all_npcs = session_utils.refresh_known_npcs_list(self.game_state['db'], TerminalFormatter)
+            wise_guide_name = self.game_state.get('wise_guide_npc_name')
             guide_data = next(
                 ((npc.get('area'), npc.get('name')) for npc in all_npcs
-                 if npc.get('name', '').lower() == self.game_state['wise_guide_npc_name'].lower()),
+                 if npc.get('name', '').lower() == (wise_guide_name or "").lower()),
                 None
             )
             if guide_data:
@@ -556,10 +557,11 @@ class _SinglePlayerGameSystem:
                     else:
                         # Fallback: Auto-detect teleport intent from keywords
                         teleport_keywords = ["teletrasport", "ti porto", "partiamo", "andiamo al", "vuoi venire"]
-                        response_lower = final_npc_dialogue_for_return.lower()
-                        if any(keyword in response_lower for keyword in teleport_keywords):
-                            logger.info(f"[TELEPORT] Auto-detected teleport offer from keywords in response")
-                            teleport_offered = True
+                        if final_npc_dialogue_for_return:
+                            response_lower = final_npc_dialogue_for_return.lower()
+                            if any(keyword in response_lower for keyword in teleport_keywords):
+                                logger.info(f"[TELEPORT] Auto-detected teleport offer from keywords in response")
+                                teleport_offered = True
 
                 self.game_state['teleport_offered_this_turn'] = teleport_offered
                 self.game_state['teleport_target_npc'] = teleport_target_npc  # None = use current NPC's coords
