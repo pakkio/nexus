@@ -1034,6 +1034,12 @@ def chat_with_npc():
             'performance_note': 'Response time optimized with async profile analysis'
         }
         
+        # Defensive None checks before normalizing
+        if npc_response is None:
+            npc_response = "[No response generated]"
+        if sl_commands is None:
+            sl_commands = ""
+
         return jsonify({
             'player_id': player_id,
             'display_name': display_name,
