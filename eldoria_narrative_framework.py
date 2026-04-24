@@ -182,6 +182,7 @@ def validate_narrative_against_framework(narrative_text: str,
     import json as _json
     import os
     import re
+    from nexus_config import MODEL_EVAL
 
     # ── Neutral fallback ───────────────────────────────────────────────────
     _FALLBACK = {
@@ -197,10 +198,7 @@ def validate_narrative_against_framework(narrative_text: str,
     # Use a dedicated eval model (cheaper/smaller) to avoid rate-limiting
     # the main dialogue model. Falls back to the default model.
     if model_name is None:
-        model_name = os.environ.get(
-            "NEXUS_EVAL_MODEL",
-            os.environ.get("OPENROUTER_DEFAULT_MODEL", "google/gemma-4-26b-a4b-it"),
-        )
+        model_name = os.environ.get("NEXUS_EVAL_MODEL", MODEL_EVAL)
 
     prompt = _EVAL_PROMPT.format(text=narrative_text[:3000])  # cap input length
 

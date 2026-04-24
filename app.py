@@ -13,6 +13,7 @@ import unicodedata
 
 from game_system_api import GameSystem
 from llm_stats_tracker import get_global_stats_tracker
+from nexus_config import MODEL_DEFAULT, MODEL_PROFILE, MODEL_GUIDE
 import json
 from datetime import datetime
 
@@ -317,9 +318,9 @@ def initialize_game_system():
     # Configuration from environment variables
     use_mockup = os.getenv('NEXUS_USE_MOCKUP', 'true').lower() == 'true'
     mockup_dir = os.getenv('NEXUS_MOCKUP_DIR', 'database')
-    model_name = os.getenv('NEXUS_MODEL_NAME') or os.getenv('OPENROUTER_DEFAULT_MODEL', 'google/gemini-flash-2.5-preview-09-2025:free')
-    profile_analysis_model = os.getenv('NEXUS_PROFILE_MODEL_NAME')
-    wise_guide_model = os.getenv('NEXUS_WISE_GUIDE_MODEL_NAME')
+    model_name = os.getenv('NEXUS_MODEL_NAME') or os.getenv('OPENROUTER_DEFAULT_MODEL', MODEL_DEFAULT)
+    profile_analysis_model = os.getenv('NEXUS_PROFILE_MODEL_NAME') or MODEL_PROFILE
+    wise_guide_model = os.getenv('NEXUS_WISE_GUIDE_MODEL_NAME') or MODEL_GUIDE
     debug_mode = os.getenv('NEXUS_DEBUG_MODE', 'false').lower() == 'true'
 
     # MySQL configuration logging
@@ -787,7 +788,7 @@ Provide specific examples from the conversations to support your analysis. Keep 
         ]
         
         # Use a more capable model for analysis
-        analysis_model = os.environ.get("PROFILE_ANALYSIS_MODEL", "mistralai/mistral-7b-instruct:free")
+        analysis_model = os.environ.get("PROFILE_ANALYSIS_MODEL", MODEL_PROFILE)
         analysis_result, stats = llm_wrapper(
             messages=messages,
             model_name=analysis_model,
@@ -1337,6 +1338,7 @@ def sense_player():
             sl_commands = generate_sl_command_prefix(
                 current_npc,
                 npc_response=cleaned_response,
+                include_teleport=True,
                 include_notecard=has_notecard,
                 notecard_content=notecard_content,
                 notecard_name=notecard_name

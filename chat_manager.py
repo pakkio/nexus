@@ -2,6 +2,7 @@
 # Updated Version (Fix for get_history)
 # MODIFIED: Added current_npc_name_for_placeholder to ask method for better empty response placeholders
 from dotenv import load_dotenv
+from nexus_config import MODEL_LLSETTEXT
 
 load_dotenv()
 
@@ -148,7 +149,7 @@ def generate_summary_for_llsettext(npc_response: str, npc_name: str = "NPC", use
             import os
             
             # Use fast model for llSetText summaries (simple task, speed matters)
-            model = os.environ.get("NEXUS_LLSETTEXT_MODEL", os.environ.get("OPENROUTER_DEFAULT_MODEL", "google/gemini-2.5-flash"))
+            model = os.environ.get("NEXUS_LLSETTEXT_MODEL", MODEL_LLSETTEXT)
             
             messages = [
                 {"role": "system", "content": "You are a text condenser. Output ONLY the condensed text, nothing else. No quotes, no explanations."},
