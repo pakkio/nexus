@@ -3,6 +3,7 @@
 import time
 import os
 import requests # Dependency: pip install requests
+from nexus_config import MODEL_DEFAULT
 import json
 import logging
 from typing import List, Dict, Optional, Tuple, Any
@@ -392,7 +393,7 @@ def llm_wrapper(messages: List[Dict[str, str]],
         return "[Errore: Chiave API OpenRouter mancante]", {"error": "OPENROUTER_API_KEY not set"}
 
     if model_name is None:
-        model_name = os.environ.get("OPENROUTER_DEFAULT_MODEL", "google/gemini-2.0-flash-exp:free") # Default model
+        model_name = os.environ.get("OPENROUTER_DEFAULT_MODEL", MODEL_DEFAULT)
 
     if formatting_function is None: formatting_function = TerminalFormatter.format_terminal_text
     if width is None: width = TerminalFormatter.get_terminal_width()

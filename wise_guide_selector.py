@@ -1,5 +1,6 @@
 import os
 from typing import List, Dict, Any, Optional, Callable
+from nexus_config import MODEL_GUIDE
 
 try:
     # Attempt to import the project's llm_wrapper
@@ -59,7 +60,7 @@ def get_wise_guide_npc_name(story_description: str, db: Any, llm_model_name: Opt
     # Determine the model to use for this specific call
     # Use the provided llm_model_name, or a general purpose model if not specified
     # This could also come from an environment variable like 'GUIDE_SELECTOR_LLM_MODEL'
-    selector_model = llm_model_name or os.environ.get("OPENROUTER_DEFAULT_MODEL", "google/gemma-2-9b-it:free")
+    selector_model = llm_model_name or os.environ.get("OPENROUTER_DEFAULT_MODEL", MODEL_GUIDE)
 
 
     prompt_messages = [

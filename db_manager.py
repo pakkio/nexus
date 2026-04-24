@@ -147,7 +147,7 @@ class DbManager:
                 conn = self.connect(); cursor = conn.cursor(dictionary=True)
                 query = "SELECT * FROM NPCs WHERE LOWER(area) = LOWER(%s) AND LOWER(name) = LOWER(%s) LIMIT 1"
                 cursor.execute(query, (area.strip(), name.strip()))
-                return cursor.fetchone()
+                return self._parse_sl_commands_fields(cursor.fetchone())
             except Exception as e:
                 return None
             finally:
@@ -176,7 +176,7 @@ class DbManager:
                 conn = self.connect(); cursor = conn.cursor(dictionary=True)
                 query = "SELECT * FROM NPCs WHERE code = %s LIMIT 1"
                 cursor.execute(query, (code,))
-                return cursor.fetchone()
+                return self._parse_sl_commands_fields(cursor.fetchone())
             except Exception as e:
                 return None
             finally:
@@ -245,7 +245,7 @@ class DbManager:
                 cursor = conn.cursor(dictionary=True)
                 query = "SELECT * FROM NPCs WHERE LOWER(name) = LOWER(%s) LIMIT 1"
                 cursor.execute(query, (name.strip(),))
-                return cursor.fetchone()
+                return self._parse_sl_commands_fields(cursor.fetchone())
             except Exception as e:
                 logger.debug(f"DB error getting NPC by name '{name}': {e}")
                 return None
@@ -875,6 +875,36 @@ class DbManager:
                 if conn and conn.is_connected(): conn.close()
         
         return None
+
+    def _parse_sl_commands_fields(self, row: Dict[str, Any]) -> Dict[str, Any]:
+        """Populate animations/facial_expressions from sl_commands JSON if those columns are NULL."""
+        if not row:
+            return row
+        if row.get('facial_expressions') and row.get('animations'):
+            return row
+        sl_raw = row.get('sl_commands', '') or ''
+        if not sl_raw:
+            return row
+        try:
+            # sl_commands may have trailing non-JSON text after the closing brace
+            brace_count = 0
+            end = 0
+            for i, ch in enumerate(sl_raw):
+                if ch == '{':
+                    brace_count += 1
+                elif ch == '}':
+                    brace_count -= 1
+                    if brace_count == 0:
+                        end = i + 1
+                        break
+            sl = json.loads(sl_raw[:end]) if end else json.loads(sl_raw)
+            if not row.get('animations') and 'Animations' in sl:
+                row['animations'] = ', '.join(sl['Animations']) if isinstance(sl['Animations'], list) else sl['Animations']
+            if not row.get('facial_expressions') and 'FacialExpressions' in sl:
+                row['facial_expressions'] = ', '.join(sl['FacialExpressions']) if isinstance(sl['FacialExpressions'], list) else sl['FacialExpressions']
+        except Exception:
+            pass
+        return row
 
     # --- Inventory Management (Player Specific) ---
     def _clean_item_name(self, item_name: str) -> str:

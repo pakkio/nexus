@@ -421,6 +421,57 @@ class _SinglePlayerGameSystem:
                             else:
                                 logger.info(f"[AUTO_TREASURE] No auto-treasure applicable (treasure={npc_treasure}, required={npc_required_item})")
 
+                        # GIFT-GIVER SYSTEM: NPCs that give items/credits when player explicitly accepts
+                        # Fires when: NPC has treasure/reward_credits, no required_item, player says "accetto" etc.
+                        if '[GIVEN_ITEMS:' not in final_npc_dialogue_for_return:
+                            _gv_npc = self.game_state.get('current_npc', {})
+                            _gv_treasure = _gv_npc.get('treasure')
+                            _gv_req = _gv_npc.get('required_item')
+                            _gv_credits = int(_gv_npc.get('reward_credits') or 0)
+                            _gv_is_gift_npc = (_gv_treasure or _gv_credits > 0) and (not _gv_req or str(_gv_req).lower() in ('none', ''))
+                            if _gv_is_gift_npc:
+                                _ACCEPT_KW = ('accetto', 'li prendo', "d'accordo", 'sì', ' sì', 'ok', 'procedi', 'prendo', 'perfetto', 'yes')
+                                _pi_lower = player_input.lower()
+                                if any(kw in _pi_lower for kw in _ACCEPT_KW):
+                                    _inv = self.game_state.get('player_inventory', [])
+                                    _already_has = _gv_treasure and any(i.lower() == _gv_treasure.lower() for i in _inv)
+                                    if not _already_has:
+                                        _parts = []
+                                        if _gv_treasure:
+                                            _parts.append(_gv_treasure)
+                                        if _gv_credits > 0:
+                                            _parts.append(f"{_gv_credits} Credits")
+                                        _tag = ', '.join(_parts)
+                                        final_npc_dialogue_for_return += f" [GIVEN_ITEMS: {_tag}]"
+                                        logger.info(f"[GIFT-GIVER] Injected [GIVEN_ITEMS: {_tag}]")
+
+                        # REQUIRED_ITEM_TRADE: player used /give to deliver NPC's required item
+                        # Inject treasure (and notecard) server-side — don't rely on model compliance
+                        if '[GIVEN_ITEMS:' not in final_npc_dialogue_for_return:
+                            _trade = self.game_state.get('item_given_to_npc_this_turn', {})
+                            if _trade and _trade.get('type') == 'item':
+                                _ri_npc = self.game_state.get('current_npc', {})
+                                _req = (_ri_npc.get('required_item') or '').lower().replace('_', ' ').strip()
+                                _given = _trade.get('item_name', '').lower().replace('_', ' ').strip()
+                                _treasure = _ri_npc.get('treasure')
+                                _ri_code = _ri_npc.get('code', '')
+                                _reward_done = bool((self.game_state.get('plot_flags') or {}).get(f"_reward_given_{_ri_code}"))
+                                if _req and _given == _req and _treasure and not _reward_done:
+                                    final_npc_dialogue_for_return += f" [GIVEN_ITEMS: {_treasure}]"
+                                    logger.info(f"[REQUIRED_ITEM_TRADE] '{_given}' → [GIVEN_ITEMS: {_treasure}]")
+                                    # Inject notecard server-side if NPC has one defined
+                                    _nc_feat = _ri_npc.get('notecard_feature', '')
+                                    if _nc_feat and not self.game_state.get('notecard_extracted'):
+                                        _nc_name = f"Diario_{_ri_npc.get('name', 'NPC')}"
+                                        _nc_content = (
+                                            f"=== {_ri_npc.get('name','NPC')} - Diario dei Sogni ===\n"
+                                            f"{_nc_feat[:500]}"
+                                        )
+                                        self.game_state['notecard_extracted'] = {
+                                            'name': _nc_name, 'content': _nc_content
+                                        }
+                                        logger.info(f"[REQUIRED_ITEM_TRADE] Injected notecard: {_nc_name}")
+
                         if self.game_state['debug_mode']:
                             self.game_state['system_messages_buffer'].append(f"[Debug] NPC response length: {len(final_npc_dialogue_for_return)}")
                         if self.game_state.get('current_npc'):
@@ -435,6 +486,13 @@ class _SinglePlayerGameSystem:
                         if tag_end_idx != -1:
                             given_items_str = final_npc_dialogue_for_return[tag_start_idx + len(tag_marker_start):tag_end_idx].strip()
                             final_npc_dialogue_for_return = final_npc_dialogue_for_return[:tag_start_idx].strip()
+                            # Guard: skip if this NPC's reward was already given this session
+                            _npc_code_for_flag = (self.game_state.get('current_npc') or {}).get('code', '')
+                            _reward_flag_key = f"_reward_given_{_npc_code_for_flag}"
+                            _reward_already_given = bool((self.game_state.get('plot_flags') or {}).get(_reward_flag_key))
+                            if _reward_already_given:
+                                logger.info(f"[GIVEN_ITEMS] Skipped — reward already given for {_npc_code_for_flag}")
+                                given_items_str = ''  # prevent further processing
                             if given_items_str:
                                 self.game_state['system_messages_buffer'].append(f"You received: {given_items_str}")
                                 
@@ -529,6 +587,27 @@ class _SinglePlayerGameSystem:
                                                 self.game_state['player_info']['credits'] = current_credits + credits_given
                                         except Exception as e:
                                             logger.error(f"[ITEM-PROCESSING] Failed to update credits: {e}")
+
+                                # Mark reward as given for this NPC so [GIVEN_ITEMS:] doesn't fire again
+                                if _npc_code_for_flag:
+                                    if 'plot_flags' not in self.game_state or self.game_state['plot_flags'] is None:
+                                        self.game_state['plot_flags'] = {}
+                                    self.game_state['plot_flags'][_reward_flag_key] = True
+                                    logger.info(f"[GIVEN_ITEMS] Set reward flag: {_reward_flag_key}")
+
+                                # Inject notecard if NPC has one defined and none was generated by the model
+                                _nc_npc = self.game_state.get('current_npc', {})
+                                _nc_feat = _nc_npc.get('notecard_feature', '')
+                                if _nc_feat and not self.game_state.get('notecard_extracted'):
+                                    _nc_name = f"Diario_{_nc_npc.get('name', 'NPC')}"
+                                    _nc_content = (
+                                        f"=== {_nc_npc.get('name','NPC')} - Diario dei Sogni ===\n"
+                                        f"{_nc_feat[:500]}"
+                                    )
+                                    self.game_state['notecard_extracted'] = {
+                                        'name': _nc_name, 'content': _nc_content
+                                    }
+                                    logger.info(f"[NOTECARD] Injected server-side notecard: {_nc_name}")
 
                 # Check for [OFFER_TELEPORT] or [TELEPORT_TO:npc_name] tags
                 # Also auto-detect teleport offers based on keywords

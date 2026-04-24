@@ -1,6 +1,7 @@
 from dotenv import load_dotenv
 load_dotenv()
 import os
+from nexus_config import MODEL_DEFAULT, MODEL_PROFILE, MODEL_GUIDE
 import sys
 import argparse
 import traceback
@@ -48,17 +49,17 @@ def main():
   )
   parser.add_argument(
     "--model",
-    default=os.environ.get("OPENROUTER_DEFAULT_MODEL", "google/gemma-2-9b-it:free"),
-    help="LLM model identifier for NPC dialogue. Overrides OPENROUTER_DEFAULT_MODEL env var."
+    default=os.environ.get("OPENROUTER_DEFAULT_MODEL", MODEL_DEFAULT),
+    help="LLM model identifier for NPC dialogue. Overrides config.ini [models] default."
   )
   parser.add_argument(
     "--profile-analysis-model",
-    default=os.environ.get("PROFILE_ANALYSIS_MODEL"),
+    default=os.environ.get("PROFILE_ANALYSIS_MODEL", MODEL_PROFILE),
     help="LLM model for psychological profile analysis. If not set, uses --model."
   )
   parser.add_argument(
     "--guide-selection-model", # NEW: Model for wise guide selection
-    default=os.environ.get("GUIDE_SELECTION_MODEL", "openai/gpt-4.1-nano"), # Default to a smaller model for this task
+    default=os.environ.get("GUIDE_SELECTION_MODEL", MODEL_GUIDE),
     help="LLM model for selecting the wise guide. If not set, uses a default (e.g., gemma-2-2b-it:free)."
   )
   parser.add_argument(
