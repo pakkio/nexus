@@ -386,7 +386,9 @@ def llm_wrapper(messages: List[Dict[str, str]],
     api_key = os.environ.get("OPENROUTER_API_KEY")
     api_base = "https://openrouter.ai/api/v1"
     site_url = os.environ.get("OPENROUTER_APP_URL", "http://localhost")
-    app_title = os.environ.get("OPENROUTER_APP_TITLE", "MyNexusClient") # Or your app's name
+    app_title = os.environ.get("OPENROUTER_APP_TITLE", "MyNexusClient")
+    # DeepSeek direct: api_key = os.environ.get("DEEPSEEK_API_KEY")
+    # DeepSeek direct: api_base = "https://api.deepseek.com"
 
     if not api_key:
         logging.error("OPENROUTER_API_KEY environment variable not set.")

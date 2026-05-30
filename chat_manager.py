@@ -163,7 +163,7 @@ def generate_summary_for_llsettext(npc_response: str, npc_name: str = "NPC", use
                 collect_stats=False
             )
             
-            if summary and len(summary.strip()) > 0:
+            if summary and len(summary.strip()) > 0 and not summary.strip().startswith('['):
                 summary = summary.strip()
                 # Clean for LSL
                 summary = summary.replace(';', ',').replace(']', ')').replace('\n', ' ')
