@@ -1,0 +1,642 @@
+2026-04-09 12:08:01,876 - INFO - app.py:317 - ================================================================================
+2026-04-09 12:08:01,876 - INFO - app.py:318 - DATABASE CONFIGURATION VERIFICATION
+2026-04-09 12:08:01,876 - INFO - app.py:319 - ================================================================================
+2026-04-09 12:08:01,876 - INFO - app.py:320 - NEXUS_USE_MOCKUP: False
+2026-04-09 12:08:01,876 - INFO - app.py:322 - DATABASE MODE: MySQL
+2026-04-09 12:08:01,876 - INFO - app.py:323 -   Host: localhost
+2026-04-09 12:08:01,876 - INFO - app.py:324 -   Database: nexus_rpg
+2026-04-09 12:08:01,876 - INFO - app.py:325 -   User: root
+2026-04-09 12:08:01,876 - INFO - app.py:329 - MODEL: google/gemma-4-26b-a4b-it
+2026-04-09 12:08:01,876 - INFO - app.py:330 - ================================================================================
+2026-04-09 12:08:01,876 - INFO - app.py:332 - Initializing GameSystem with mockup=False, model=google/gemma-4-26b-a4b-it
+2026-04-09 12:08:04,397 - INFO - llm_wrapper.py:210 - ✓ Cache hit: 0 tokens cached (0.0% of input)
+2026-04-09 12:08:04,398 - INFO - app.py:345 - ✓ Initialized GameSystem with mockup=False, model=google/gemma-4-26b-a4b-it
+2026-04-09 12:08:04,398 - INFO - app.py:1644 - Starting Nexus Flask API on port 5000
+DEBUG (command_handler_utils): Successfully imported REAL hint_manager and player_profile_manager.
+[2m[WiseGuideSelector] Attempting to determine wise guide...[0m
+[2m[WiseGuideSelector] LLM selected 'Erasmus' as the wise guide.[0m
+[GameSystem Manager Init] Wise guide selected: Erasmus
+ * Serving Flask app 'app'
+ * Debug mode: off
+2026-04-09 12:08:04,418 - INFO - _internal.py:96 - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://212.227.64.143:5000
+2026-04-09 12:08:04,418 - INFO - _internal.py:96 - [33mPress CTRL+C to quit[0m
+2026-04-09 12:08:16,817 - INFO - db_manager.py:1167 - [PLAYER-STATE-DB] Saved state for Gemma4TestFixed: credits=220, area=None
+2026-04-09 12:08:16,827 - INFO - session_utils.py:376 - [BUILD_PROMPT] NPC dict keys: ['id', 'code', 'name', 'area', 'role', 'motivation', 'goal', 'needed_object', 'treasure', 'playerhint', 'dialogue_hooks', 'default_greeting', 'repeat_greeting', 'veil_connection', 'emotes', 'animations', 'lookup', 'llsettext', 'teleport', 'notecard_feature', 'ai_behavior_notes', 'conditional_responses', 'conversation_state_tracking', 'failure_conditions', 'personality_traits', 'prerequisites', 'relationship_status', 'relationships', 'required_item', 'required_quantity', 'required_source', 'reward_credits', 'sl_commands', 'success_conditions', 'trading_rules', 'storyboard_id', 'created_at']
+2026-04-09 12:08:16,827 - INFO - session_utils.py:378 - [BUILD_PROMPT] ✓ notecard_feature EXISTS, length=2687 chars
+2026-04-09 12:08:16,827 - INFO - session_utils.py:379 - [BUILD_PROMPT] notecard_feature preview: Erasmus is the first NPC encountered and should give tutorial/guide notecards on first meeting. Incl
+2026-04-09 12:08:16,830 - INFO - session_utils.py:410 - [EXTRACT] notecard_feature type=<class 'str'>, len=2687, bool=True
+2026-04-09 12:08:16,833 - INFO - app.py:870 - [DEBUG] About to call process_player_input with: /go Tavern
+2026-04-09 12:08:16,833 - INFO - app.py:871 - [DEBUG] player_system.game_state before /go: <class 'dict'>, is None: False
+2026-04-09 12:08:16,833 - INFO - game_system_api.py:271 - [DEBUG] Calling process_input_revised with player_input: /go Tavern...
+2026-04-09 12:08:16,837 - INFO - game_system_api.py:273 - [DEBUG] process_input_revised returned: <class 'dict'> - is None: False
+2026-04-09 12:08:16,837 - INFO - game_system_api.py:279 - [DEBUG] game_state updated, is None: False
+2026-04-09 12:08:16,837 - INFO - game_system_api.py:308 - [DEBUG] End of try block, game_state is None: False
+2026-04-09 12:08:16,837 - INFO - game_system_api.py:312 - [DEBUG] Start of finally block, game_state is None: False, type: <class 'dict'>
+2026-04-09 12:08:16,838 - INFO - db_manager.py:1167 - [PLAYER-STATE-DB] Saved state for Gemma4TestFixed: credits=220, area=Tavern
+2026-04-09 12:08:16,839 - INFO - app.py:873 - [DEBUG] player_system.game_state after /go: <class 'dict'>, is None: False
+2026-04-09 12:08:16,839 - INFO - app.py:887 - [DEBUG] Checking current NPC, game_state is None: False
+2026-04-09 12:08:16,839 - INFO - app.py:890 - [DEBUG] current_npc_name: , requested npc_name: Jorin
+2026-04-09 12:08:16,839 - INFO - app.py:894 - Switching from  to Jorin
+2026-04-09 12:08:16,839 - INFO - game_system_api.py:271 - [DEBUG] Calling process_input_revised with player_input: /talk Jorin...
+2026-04-09 12:08:16,841 - INFO - session_utils.py:376 - [BUILD_PROMPT] NPC dict keys: ['id', 'code', 'name', 'area', 'role', 'motivation', 'goal', 'needed_object', 'treasure', 'playerhint', 'dialogue_hooks', 'default_greeting', 'repeat_greeting', 'veil_connection', 'emotes', 'animations', 'lookup', 'llsettext', 'teleport', 'notecard_feature', 'ai_behavior_notes', 'conditional_responses', 'conversation_state_tracking', 'failure_conditions', 'personality_traits', 'prerequisites', 'relationship_status', 'relationships', 'required_item', 'required_quantity', 'required_source', 'reward_credits', 'sl_commands', 'success_conditions', 'trading_rules', 'storyboard_id', 'created_at']
+2026-04-09 12:08:16,841 - INFO - session_utils.py:378 - [BUILD_PROMPT] ✓ notecard_feature EXISTS, length=2624 chars
+2026-04-09 12:08:16,841 - INFO - session_utils.py:379 - [BUILD_PROMPT] notecard_feature preview: When the player brings the Trucioli di Ferro from Garin (completing community service), INCLUDE a no
+2026-04-09 12:08:16,842 - INFO - session_utils.py:410 - [EXTRACT] notecard_feature type=<class 'str'>, len=2624, bool=True
+2026-04-09 12:08:16,842 - INFO - session_utils.py:462 - [NOTECARD_TOP] Adding NOTECARD at TOP of prompt (len=2624)
+2026-04-09 12:08:19,436 - INFO - game_system_api.py:273 - [DEBUG] process_input_revised returned: <class 'dict'> - is None: False
+2026-04-09 12:08:19,436 - INFO - game_system_api.py:279 - [DEBUG] game_state updated, is None: False
+2026-04-09 12:08:19,436 - INFO - game_system_api.py:308 - [DEBUG] End of try block, game_state is None: False
+2026-04-09 12:08:19,436 - INFO - game_system_api.py:312 - [DEBUG] Start of finally block, game_state is None: False, type: <class 'dict'>
+2026-04-09 12:08:19,439 - INFO - db_manager.py:1167 - [PLAYER-STATE-DB] Saved state for Gemma4TestFixed: credits=220, area=Tavern
+2026-04-09 12:08:19,441 - INFO - game_system_api.py:158 - [CONTEXT-CACHE] Refreshing NPCs list for Gemma4TestFixed
+2026-04-09 12:08:19,443 - INFO - game_system_api.py:202 - [CONTEXT-CACHE] Context preloaded in 2ms for Gemma4TestFixed
+2026-04-09 12:08:19,444 - INFO - game_system_api.py:271 - [DEBUG] Calling process_input_revised with player_input: Ciao...
+2026-04-09 12:08:19,444 - INFO - command_processor.py:72 - [NLP-SPECULATIVE] Starting interpretation for: 'Ciao...'
+2026-04-09 12:08:20,645 - INFO - command_processor.py:153 - [DIALOGUE-SPECULATIVE] Starting dialogue generation for: 'Ciao...'
+2026-04-09 12:08:20,645 - INFO - command_processor.py:314 - [PARALLEL-PROCESSING] NLP timeout, started dialogue thread anyway
+2026-04-09 12:08:21,803 - INFO - llm_wrapper.py:210 - ✓ Cache hit: 0 tokens cached (0.0% of input)
+2026-04-09 12:08:21,803 - INFO - command_processor.py:103 - [NLP-SPECULATIVE] Completed in 2359ms: is_command=False, confidence=1.00
+2026-04-09 12:08:22,198 - INFO - llm_wrapper.py:210 - ✓ Cache hit: 0 tokens cached (0.0% of input)
+2026-04-09 12:08:22,198 - INFO - command_processor.py:186 - [DIALOGUE-SPECULATIVE] Completed in 1553ms for NPC: Jorin
+2026-04-09 12:08:22,198 - INFO - command_processor.py:385 - [PARALLEL-PROCESSING] Using speculative dialogue result
+2026-04-09 12:08:22,198 - INFO - game_system_api.py:273 - [DEBUG] process_input_revised returned: <class 'dict'> - is None: False
+2026-04-09 12:08:22,199 - INFO - game_system_api.py:279 - [DEBUG] game_state updated, is None: False
+2026-04-09 12:08:22,199 - INFO - game_system_api.py:123 - [PROFILE-ASYNC] Starting profile analysis for Gemma4TestFixed
+2026-04-09 12:08:22,199 - INFO - game_system_api.py:306 - [PROFILE-ASYNC] Started background thread for Gemma4TestFixed
+2026-04-09 12:08:22,200 - INFO - game_system_api.py:308 - [DEBUG] End of try block, game_state is None: False
+2026-04-09 12:08:22,200 - INFO - game_system_api.py:312 - [DEBUG] Start of finally block, game_state is None: False, type: <class 'dict'>
+2026-04-09 12:08:22,203 - INFO - db_manager.py:1167 - [PLAYER-STATE-DB] Saved state for Gemma4TestFixed: credits=220, area=Tavern
+2026-04-09 12:08:22,205 - INFO - game_system_api.py:358 - [NOTECARD_CHECK] Response has [notecard=: False, length=72
+2026-04-09 12:08:22,205 - INFO - app.py:1002 - Generated SL commands: '[lookup=diario_sogni;llSetText=Signore, benvenuto! Sono Jorin, il locandiere. Cosa posso servirvi oggi?;anim=TALK SIT 1]' (teleport_offered=False, has_notecard=False)
+2026-04-09 12:08:22,206 - INFO - _internal.py:96 - 127.0.0.1 - - [09/Apr/2026 12:08:22] "POST /api/chat HTTP/1.1" 200 -
+2026-04-09 12:08:22,209 - INFO - app.py:870 - [DEBUG] About to call process_player_input with: /go Tavern
+2026-04-09 12:08:22,209 - INFO - app.py:871 - [DEBUG] player_system.game_state before /go: <class 'dict'>, is None: False
+2026-04-09 12:08:22,209 - INFO - game_system_api.py:271 - [DEBUG] Calling process_input_revised with player_input: /go Tavern...
+2026-04-09 12:08:22,213 - INFO - game_system_api.py:273 - [DEBUG] process_input_revised returned: <class 'dict'> - is None: False
+2026-04-09 12:08:22,213 - INFO - game_system_api.py:279 - [DEBUG] game_state updated, is None: False
+2026-04-09 12:08:22,213 - INFO - game_system_api.py:308 - [DEBUG] End of try block, game_state is None: False
+2026-04-09 12:08:22,213 - INFO - game_system_api.py:312 - [DEBUG] Start of finally block, game_state is None: False, type: <class 'dict'>
+2026-04-09 12:08:22,214 - INFO - db_manager.py:1167 - [PLAYER-STATE-DB] Saved state for Gemma4TestFixed: credits=220, area=Tavern
+2026-04-09 12:08:22,214 - INFO - app.py:873 - [DEBUG] player_system.game_state after /go: <class 'dict'>, is None: False
+2026-04-09 12:08:22,214 - INFO - app.py:887 - [DEBUG] Checking current NPC, game_state is None: False
+2026-04-09 12:08:22,214 - INFO - app.py:890 - [DEBUG] current_npc_name: , requested npc_name: Jorin
+2026-04-09 12:08:22,214 - INFO - app.py:894 - Switching from  to Jorin
+2026-04-09 12:08:22,214 - INFO - game_system_api.py:271 - [DEBUG] Calling process_input_revised with player_input: /talk Jorin...
+2026-04-09 12:08:22,217 - INFO - session_utils.py:376 - [BUILD_PROMPT] NPC dict keys: ['id', 'code', 'name', 'area', 'role', 'motivation', 'goal', 'needed_object', 'treasure', 'playerhint', 'dialogue_hooks', 'default_greeting', 'repeat_greeting', 'veil_connection', 'emotes', 'animations', 'lookup', 'llsettext', 'teleport', 'notecard_feature', 'ai_behavior_notes', 'conditional_responses', 'conversation_state_tracking', 'failure_conditions', 'personality_traits', 'prerequisites', 'relationship_status', 'relationships', 'required_item', 'required_quantity', 'required_source', 'reward_credits', 'sl_commands', 'success_conditions', 'trading_rules', 'storyboard_id', 'created_at']
+2026-04-09 12:08:22,217 - INFO - session_utils.py:378 - [BUILD_PROMPT] ✓ notecard_feature EXISTS, length=2624 chars
+2026-04-09 12:08:22,217 - INFO - session_utils.py:379 - [BUILD_PROMPT] notecard_feature preview: When the player brings the Trucioli di Ferro from Garin (completing community service), INCLUDE a no
+2026-04-09 12:08:22,217 - INFO - session_utils.py:410 - [EXTRACT] notecard_feature type=<class 'str'>, len=2624, bool=True
+2026-04-09 12:08:22,217 - INFO - session_utils.py:462 - [NOTECARD_TOP] Adding NOTECARD at TOP of prompt (len=2624)
+2026-04-09 12:08:23,173 - ERROR - llm_wrapper.py:500 - Non-streaming API call failed with status 429. Response: {"error":{"message":"Provider returned error","code":429,"metadata":{"raw":"google/gemma-4-26b-a4b-it is temporarily rate-limited upstream. Please retry shortly, or add your own key to accumulate your rate limits: https://openrouter.ai/settings/integrations","provider_name":"Ionstream","is_byok":false,"retry_after_seconds":60}},"user_id":"user_2lvrCkCkHOWCDdJ4SDFP9SbM6ei"}
+2026-04-09 12:08:23,173 - ERROR - llm_wrapper.py:521 - API call to google/gemma-4-26b-a4b-it failed: 429 Client Error: Too Many Requests for url: https://openrouter.ai/api/v1/chat/completions
+Traceback (most recent call last):
+  File "/root/nexus/llm_wrapper.py", line 501, in llm_wrapper
+    response.raise_for_status()
+  File "/usr/lib/python3/dist-packages/requests/models.py", line 1021, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://openrouter.ai/api/v1/chat/completions
+2026-04-09 12:08:23,175 - WARNING - llm_wrapper.py:223 - Direct API response indicated an error: {"message": "Provider returned error", "code": 429, "metadata": {"raw": "google/gemma-4-26b-a4b-it is temporarily rate-limited upstream. Please retry shortly, or add your own key to accumulate your rate limits: https://openrouter.ai/settings/integrations", "provider_name": "Ionstream", "is_byok": false, "retry_after_seconds": 60}}
+2026-04-09 12:08:23,177 - INFO - game_system_api.py:142 - [PROFILE-ASYNC] Profile updated for Gemma4TestFixed in 976ms
+2026-04-09 12:08:24,056 - INFO - game_system_api.py:273 - [DEBUG] process_input_revised returned: <class 'dict'> - is None: False
+2026-04-09 12:08:24,056 - INFO - game_system_api.py:279 - [DEBUG] game_state updated, is None: False
+2026-04-09 12:08:24,056 - INFO - game_system_api.py:308 - [DEBUG] End of try block, game_state is None: False
+2026-04-09 12:08:24,056 - INFO - game_system_api.py:312 - [DEBUG] Start of finally block, game_state is None: False, type: <class 'dict'>
+2026-04-09 12:08:24,058 - INFO - db_manager.py:1167 - [PLAYER-STATE-DB] Saved state for Gemma4TestFixed: credits=220, area=Tavern
+2026-04-09 12:08:24,060 - INFO - game_system_api.py:202 - [CONTEXT-CACHE] Context preloaded in 0ms for Gemma4TestFixed
+2026-04-09 12:08:24,061 - INFO - game_system_api.py:271 - [DEBUG] Calling process_input_revised with player_input: Principi?...
+2026-04-09 12:08:24,061 - INFO - command_processor.py:72 - [NLP-SPECULATIVE] Starting interpretation for: 'Principi?...'
+2026-04-09 12:08:25,262 - INFO - command_processor.py:153 - [DIALOGUE-SPECULATIVE] Starting dialogue generation for: 'Principi?...'
+2026-04-09 12:08:25,264 - INFO - command_processor.py:314 - [PARALLEL-PROCESSING] NLP timeout, started dialogue thread anyway
+2026-04-09 12:08:29,720 - INFO - llm_wrapper.py:210 - ✓ Cache hit: 0 tokens cached (0.0% of input)
+2026-04-09 12:08:29,720 - INFO - command_processor.py:186 - [DIALOGUE-SPECULATIVE] Completed in 4457ms for NPC: Jorin
+2026-04-09 12:08:30,426 - INFO - llm_wrapper.py:210 - ✓ Cache hit: 0 tokens cached (0.0% of input)
+2026-04-09 12:08:30,427 - INFO - command_processor.py:103 - [NLP-SPECULATIVE] Completed in 6365ms: is_command=False, confidence=1.00
+2026-04-09 12:08:33,042 - INFO - llm_wrapper.py:210 - ✓ Cache hit: 0 tokens cached (0.0% of input)
+2026-04-09 12:08:33,042 - INFO - game_system_api.py:273 - [DEBUG] process_input_revised returned: <class 'dict'> - is None: False
+2026-04-09 12:08:33,042 - INFO - game_system_api.py:279 - [DEBUG] game_state updated, is None: False
+2026-04-09 12:08:33,043 - INFO - game_system_api.py:123 - [PROFILE-ASYNC] Starting profile analysis for Gemma4TestFixed
+2026-04-09 12:08:33,044 - INFO - game_system_api.py:306 - [PROFILE-ASYNC] Started background thread for Gemma4TestFixed
+2026-04-09 12:08:33,044 - INFO - game_system_api.py:308 - [DEBUG] End of try block, game_state is None: False
+2026-04-09 12:08:33,044 - INFO - game_system_api.py:312 - [DEBUG] Start of finally block, game_state is None: False, type: <class 'dict'>
+2026-04-09 12:08:33,046 - INFO - db_manager.py:1167 - [PLAYER-STATE-DB] Saved state for Gemma4TestFixed: credits=220, area=Tavern
+2026-04-09 12:08:33,048 - INFO - game_system_api.py:358 - [NOTECARD_CHECK] Response has [notecard=: False, length=296
+2026-04-09 12:08:33,576 - ERROR - llm_wrapper.py:500 - Non-streaming API call failed with status 429. Response: {"error":{"message":"Provider returned error","code":429,"metadata":{"raw":"google/gemma-4-26b-a4b-it is temporarily rate-limited upstream. Please retry shortly, or add your own key to accumulate your rate limits: https://openrouter.ai/settings/integrations","provider_name":"Parasail","is_byok":false}},"user_id":"user_2lvrCkCkHOWCDdJ4SDFP9SbM6ei"}
+2026-04-09 12:08:33,576 - ERROR - llm_wrapper.py:521 - API call to google/gemma-4-26b-a4b-it failed: 429 Client Error: Too Many Requests for url: https://openrouter.ai/api/v1/chat/completions
+Traceback (most recent call last):
+  File "/root/nexus/llm_wrapper.py", line 501, in llm_wrapper
+    response.raise_for_status()
+  File "/usr/lib/python3/dist-packages/requests/models.py", line 1021, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://openrouter.ai/api/v1/chat/completions
+2026-04-09 12:08:33,577 - WARNING - llm_wrapper.py:223 - Direct API response indicated an error: {"message": "Provider returned error", "code": 429, "metadata": {"raw": "google/gemma-4-26b-a4b-it is temporarily rate-limited upstream. Please retry shortly, or add your own key to accumulate your rate limits: https://openrouter.ai/settings/integrations", "provider_name": "Parasail", "is_byok": false}}
+2026-04-09 12:08:33,580 - INFO - game_system_api.py:142 - [PROFILE-ASYNC] Profile updated for Gemma4TestFixed in 534ms
+2026-04-09 12:08:34,745 - INFO - app.py:1002 - Generated SL commands: '[lookup=collezione_monete;llSetText=Quali principi? Qui accogliamo tutti, purché ci sia quiete.;anim=TALK SIT 1]' (teleport_offered=False, has_notecard=False)
+2026-04-09 12:08:34,745 - INFO - _internal.py:96 - 127.0.0.1 - - [09/Apr/2026 12:08:34] "POST /api/chat HTTP/1.1" 200 -
+2026-04-09 12:08:34,748 - INFO - app.py:870 - [DEBUG] About to call process_player_input with: /go Tavern
+2026-04-09 12:08:34,748 - INFO - app.py:871 - [DEBUG] player_system.game_state before /go: <class 'dict'>, is None: False
+2026-04-09 12:08:34,749 - INFO - game_system_api.py:271 - [DEBUG] Calling process_input_revised with player_input: /go Tavern...
+2026-04-09 12:08:34,754 - INFO - game_system_api.py:273 - [DEBUG] process_input_revised returned: <class 'dict'> - is None: False
+2026-04-09 12:08:34,754 - INFO - game_system_api.py:279 - [DEBUG] game_state updated, is None: False
+2026-04-09 12:08:34,755 - INFO - game_system_api.py:308 - [DEBUG] End of try block, game_state is None: False
+2026-04-09 12:08:34,755 - INFO - game_system_api.py:312 - [DEBUG] Start of finally block, game_state is None: False, type: <class 'dict'>
+2026-04-09 12:08:34,756 - INFO - db_manager.py:1167 - [PLAYER-STATE-DB] Saved state for Gemma4TestFixed: credits=220, area=Tavern
+2026-04-09 12:08:34,757 - INFO - app.py:873 - [DEBUG] player_system.game_state after /go: <class 'dict'>, is None: False
+2026-04-09 12:08:34,757 - INFO - app.py:887 - [DEBUG] Checking current NPC, game_state is None: False
+2026-04-09 12:08:34,757 - INFO - app.py:890 - [DEBUG] current_npc_name: , requested npc_name: Jorin
+2026-04-09 12:08:34,757 - INFO - app.py:894 - Switching from  to Jorin
+2026-04-09 12:08:34,757 - INFO - game_system_api.py:271 - [DEBUG] Calling process_input_revised with player_input: /talk Jorin...
+2026-04-09 12:08:34,761 - INFO - session_utils.py:376 - [BUILD_PROMPT] NPC dict keys: ['id', 'code', 'name', 'area', 'role', 'motivation', 'goal', 'needed_object', 'treasure', 'playerhint', 'dialogue_hooks', 'default_greeting', 'repeat_greeting', 'veil_connection', 'emotes', 'animations', 'lookup', 'llsettext', 'teleport', 'notecard_feature', 'ai_behavior_notes', 'conditional_responses', 'conversation_state_tracking', 'failure_conditions', 'personality_traits', 'prerequisites', 'relationship_status', 'relationships', 'required_item', 'required_quantity', 'required_source', 'reward_credits', 'sl_commands', 'success_conditions', 'trading_rules', 'storyboard_id', 'created_at']
+2026-04-09 12:08:34,761 - INFO - session_utils.py:378 - [BUILD_PROMPT] ✓ notecard_feature EXISTS, length=2624 chars
+2026-04-09 12:08:34,762 - INFO - session_utils.py:379 - [BUILD_PROMPT] notecard_feature preview: When the player brings the Trucioli di Ferro from Garin (completing community service), INCLUDE a no
+2026-04-09 12:08:34,762 - INFO - session_utils.py:410 - [EXTRACT] notecard_feature type=<class 'str'>, len=2624, bool=True
+2026-04-09 12:08:34,762 - INFO - session_utils.py:462 - [NOTECARD_TOP] Adding NOTECARD at TOP of prompt (len=2624)
+2026-04-09 12:08:35,284 - ERROR - llm_wrapper.py:500 - Non-streaming API call failed with status 429. Response: {"error":{"message":"Provider returned error","code":429,"metadata":{"raw":"google/gemma-4-26b-a4b-it is temporarily rate-limited upstream. Please retry shortly, or add your own key to accumulate your rate limits: https://openrouter.ai/settings/integrations","provider_name":"Parasail","is_byok":false}},"user_id":"user_2lvrCkCkHOWCDdJ4SDFP9SbM6ei"}
+2026-04-09 12:08:35,284 - ERROR - llm_wrapper.py:521 - API call to google/gemma-4-26b-a4b-it failed: 429 Client Error: Too Many Requests for url: https://openrouter.ai/api/v1/chat/completions
+Traceback (most recent call last):
+  File "/root/nexus/llm_wrapper.py", line 501, in llm_wrapper
+    response.raise_for_status()
+  File "/usr/lib/python3/dist-packages/requests/models.py", line 1021, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://openrouter.ai/api/v1/chat/completions
+2026-04-09 12:08:35,287 - INFO - game_system_api.py:273 - [DEBUG] process_input_revised returned: <class 'dict'> - is None: False
+2026-04-09 12:08:35,287 - INFO - game_system_api.py:279 - [DEBUG] game_state updated, is None: False
+2026-04-09 12:08:35,287 - INFO - game_system_api.py:308 - [DEBUG] End of try block, game_state is None: False
+2026-04-09 12:08:35,287 - INFO - game_system_api.py:312 - [DEBUG] Start of finally block, game_state is None: False, type: <class 'dict'>
+2026-04-09 12:08:35,288 - INFO - db_manager.py:1167 - [PLAYER-STATE-DB] Saved state for Gemma4TestFixed: credits=220, area=Tavern
+2026-04-09 12:08:35,290 - INFO - game_system_api.py:202 - [CONTEXT-CACHE] Context preloaded in 0ms for Gemma4TestFixed
+2026-04-09 12:08:35,290 - INFO - game_system_api.py:271 - [DEBUG] Calling process_input_revised with player_input: Conflitto?...
+2026-04-09 12:08:35,290 - INFO - command_processor.py:72 - [NLP-SPECULATIVE] Starting interpretation for: 'Conflitto?...'
+2026-04-09 12:08:36,492 - INFO - command_processor.py:153 - [DIALOGUE-SPECULATIVE] Starting dialogue generation for: 'Conflitto?...'
+2026-04-09 12:08:36,492 - INFO - command_processor.py:314 - [PARALLEL-PROCESSING] NLP timeout, started dialogue thread anyway
+2026-04-09 12:08:39,639 - INFO - llm_wrapper.py:210 - ✓ Cache hit: 0 tokens cached (0.0% of input)
+2026-04-09 12:08:39,639 - INFO - command_processor.py:186 - [DIALOGUE-SPECULATIVE] Completed in 3147ms for NPC: Jorin
+2026-04-09 12:08:43,130 - INFO - llm_wrapper.py:210 - ✓ Cache hit: 0 tokens cached (0.0% of input)
+2026-04-09 12:08:43,130 - INFO - game_system_api.py:273 - [DEBUG] process_input_revised returned: <class 'dict'> - is None: False
+2026-04-09 12:08:43,130 - INFO - game_system_api.py:279 - [DEBUG] game_state updated, is None: False
+2026-04-09 12:08:43,130 - INFO - game_system_api.py:123 - [PROFILE-ASYNC] Starting profile analysis for Gemma4TestFixed
+2026-04-09 12:08:43,132 - INFO - game_system_api.py:306 - [PROFILE-ASYNC] Started background thread for Gemma4TestFixed
+2026-04-09 12:08:43,132 - INFO - game_system_api.py:308 - [DEBUG] End of try block, game_state is None: False
+2026-04-09 12:08:43,132 - INFO - game_system_api.py:312 - [DEBUG] Start of finally block, game_state is None: False, type: <class 'dict'>
+2026-04-09 12:08:43,134 - INFO - db_manager.py:1167 - [PLAYER-STATE-DB] Saved state for Gemma4TestFixed: credits=220, area=Tavern
+2026-04-09 12:08:43,137 - INFO - game_system_api.py:358 - [NOTECARD_CHECK] Response has [notecard=: False, length=393
+2026-04-09 12:08:43,372 - INFO - llm_wrapper.py:210 - ✓ Cache hit: 0 tokens cached (0.0% of input)
+2026-04-09 12:08:43,373 - INFO - command_processor.py:103 - [NLP-SPECULATIVE] Completed in 8082ms: is_command=False, confidence=0.90
+2026-04-09 12:08:44,491 - INFO - app.py:1002 - Generated SL commands: '[lookup=tavoli_taverna;llSetText=Liti tra contadini o qualcosa di più profondo? Bevi un sidro.;anim=STAND TALK 1]' (teleport_offered=False, has_notecard=False)
+2026-04-09 12:08:44,492 - INFO - _internal.py:96 - 127.0.0.1 - - [09/Apr/2026 12:08:44] "POST /api/chat HTTP/1.1" 200 -
+2026-04-09 12:08:44,494 - INFO - app.py:870 - [DEBUG] About to call process_player_input with: /go City
+2026-04-09 12:08:44,495 - INFO - app.py:871 - [DEBUG] player_system.game_state before /go: <class 'dict'>, is None: False
+2026-04-09 12:08:44,495 - INFO - game_system_api.py:271 - [DEBUG] Calling process_input_revised with player_input: /go City...
+2026-04-09 12:08:44,500 - INFO - game_system_api.py:273 - [DEBUG] process_input_revised returned: <class 'dict'> - is None: False
+2026-04-09 12:08:44,500 - INFO - game_system_api.py:279 - [DEBUG] game_state updated, is None: False
+2026-04-09 12:08:44,500 - INFO - game_system_api.py:308 - [DEBUG] End of try block, game_state is None: False
+2026-04-09 12:08:44,500 - INFO - game_system_api.py:312 - [DEBUG] Start of finally block, game_state is None: False, type: <class 'dict'>
+2026-04-09 12:08:44,502 - INFO - db_manager.py:1167 - [PLAYER-STATE-DB] Saved state for Gemma4TestFixed: credits=220, area=City
+2026-04-09 12:08:44,502 - INFO - app.py:873 - [DEBUG] player_system.game_state after /go: <class 'dict'>, is None: False
+2026-04-09 12:08:44,502 - INFO - app.py:887 - [DEBUG] Checking current NPC, game_state is None: False
+2026-04-09 12:08:44,502 - INFO - app.py:890 - [DEBUG] current_npc_name: , requested npc_name: Cassian
+2026-04-09 12:08:44,502 - INFO - app.py:894 - Switching from  to Cassian
+2026-04-09 12:08:44,502 - INFO - game_system_api.py:271 - [DEBUG] Calling process_input_revised with player_input: /talk Cassian...
+2026-04-09 12:08:44,505 - INFO - session_utils.py:376 - [BUILD_PROMPT] NPC dict keys: ['id', 'code', 'name', 'area', 'role', 'motivation', 'goal', 'needed_object', 'treasure', 'playerhint', 'dialogue_hooks', 'default_greeting', 'repeat_greeting', 'veil_connection', 'emotes', 'animations', 'lookup', 'llsettext', 'teleport', 'notecard_feature', 'ai_behavior_notes', 'conditional_responses', 'conversation_state_tracking', 'failure_conditions', 'personality_traits', 'prerequisites', 'relationship_status', 'relationships', 'required_item', 'required_quantity', 'required_source', 'reward_credits', 'sl_commands', 'success_conditions', 'trading_rules', 'storyboard_id', 'created_at']
+2026-04-09 12:08:44,505 - INFO - session_utils.py:378 - [BUILD_PROMPT] ✓ notecard_feature EXISTS, length=0 chars
+2026-04-09 12:08:44,506 - INFO - session_utils.py:379 - [BUILD_PROMPT] notecard_feature preview: 
+2026-04-09 12:08:44,506 - INFO - session_utils.py:410 - [EXTRACT] notecard_feature type=<class 'str'>, len=0, bool=False
+2026-04-09 12:08:46,467 - INFO - game_system_api.py:273 - [DEBUG] process_input_revised returned: <class 'dict'> - is None: False
+2026-04-09 12:08:46,467 - INFO - game_system_api.py:279 - [DEBUG] game_state updated, is None: False
+2026-04-09 12:08:46,467 - INFO - game_system_api.py:308 - [DEBUG] End of try block, game_state is None: False
+2026-04-09 12:08:46,467 - INFO - game_system_api.py:312 - [DEBUG] Start of finally block, game_state is None: False, type: <class 'dict'>
+2026-04-09 12:08:46,469 - INFO - db_manager.py:1167 - [PLAYER-STATE-DB] Saved state for Gemma4TestFixed: credits=220, area=City
+2026-04-09 12:08:46,471 - INFO - game_system_api.py:202 - [CONTEXT-CACHE] Context preloaded in 0ms for Gemma4TestFixed
+2026-04-09 12:08:46,471 - INFO - game_system_api.py:271 - [DEBUG] Calling process_input_revised with player_input: Ciao...
+2026-04-09 12:08:46,472 - INFO - command_processor.py:72 - [NLP-SPECULATIVE] Starting interpretation for: 'Ciao...'
+2026-04-09 12:08:47,672 - INFO - command_processor.py:153 - [DIALOGUE-SPECULATIVE] Starting dialogue generation for: 'Ciao...'
+2026-04-09 12:08:47,672 - INFO - command_processor.py:314 - [PARALLEL-PROCESSING] NLP timeout, started dialogue thread anyway
+2026-04-09 12:08:50,324 - INFO - llm_wrapper.py:210 - ✓ Cache hit: 0 tokens cached (0.0% of input)
+2026-04-09 12:08:50,324 - INFO - command_processor.py:103 - [NLP-SPECULATIVE] Completed in 3852ms: is_command=False, confidence=1.00
+2026-04-09 12:08:57,503 - INFO - llm_wrapper.py:210 - ✓ Cache hit: 0 tokens cached (0.0% of input)
+2026-04-09 12:08:57,507 - INFO - game_system_api.py:142 - [PROFILE-ASYNC] Profile updated for Gemma4TestFixed in 14373ms
+2026-04-09 12:09:00,586 - INFO - llm_wrapper.py:210 - ✓ Cache hit: 0 tokens cached (0.0% of input)
+2026-04-09 12:09:00,587 - INFO - command_processor.py:186 - [DIALOGUE-SPECULATIVE] Completed in 12914ms for NPC: Cassian
+2026-04-09 12:09:05,449 - INFO - llm_wrapper.py:210 - ✓ Cache hit: 0 tokens cached (0.0% of input)
+2026-04-09 12:09:05,449 - INFO - game_system_api.py:273 - [DEBUG] process_input_revised returned: <class 'dict'> - is None: False
+2026-04-09 12:09:05,449 - INFO - game_system_api.py:279 - [DEBUG] game_state updated, is None: False
+2026-04-09 12:09:05,449 - INFO - game_system_api.py:123 - [PROFILE-ASYNC] Starting profile analysis for Gemma4TestFixed
+2026-04-09 12:09:05,450 - INFO - game_system_api.py:306 - [PROFILE-ASYNC] Started background thread for Gemma4TestFixed
+2026-04-09 12:09:05,450 - INFO - game_system_api.py:308 - [DEBUG] End of try block, game_state is None: False
+2026-04-09 12:09:05,451 - INFO - game_system_api.py:312 - [DEBUG] Start of finally block, game_state is None: False, type: <class 'dict'>
+2026-04-09 12:09:05,453 - INFO - db_manager.py:1167 - [PLAYER-STATE-DB] Saved state for Gemma4TestFixed: credits=220, area=City
+2026-04-09 12:09:05,456 - INFO - game_system_api.py:358 - [NOTECARD_CHECK] Response has [notecard=: False, length=834
+2026-04-09 12:09:05,456 - INFO - game_system_api.py:553 - [TELEPORT] Detected teleport offer via [OFFER_TELEPORT] tag
+2026-04-09 12:09:06,294 - INFO - app.py:1002 - Generated SL commands: '[lookup=archivio_documenti;llSetText=Linformazione è valore. Vuoi solo parlare o hai bisogno di qualcosa?;anim=TALK4;teleport=363,162,24]' (teleport_offered=True, has_notecard=False)
+2026-04-09 12:09:06,294 - INFO - _internal.py:96 - 127.0.0.1 - - [09/Apr/2026 12:09:06] "POST /api/chat HTTP/1.1" 200 -
+2026-04-09 12:09:06,297 - INFO - app.py:870 - [DEBUG] About to call process_player_input with: /go City
+2026-04-09 12:09:06,297 - INFO - app.py:871 - [DEBUG] player_system.game_state before /go: <class 'dict'>, is None: False
+2026-04-09 12:09:06,297 - INFO - game_system_api.py:271 - [DEBUG] Calling process_input_revised with player_input: /go City...
+2026-04-09 12:09:06,302 - INFO - game_system_api.py:273 - [DEBUG] process_input_revised returned: <class 'dict'> - is None: False
+2026-04-09 12:09:06,302 - INFO - game_system_api.py:279 - [DEBUG] game_state updated, is None: False
+2026-04-09 12:09:06,302 - INFO - game_system_api.py:308 - [DEBUG] End of try block, game_state is None: False
+2026-04-09 12:09:06,302 - INFO - game_system_api.py:312 - [DEBUG] Start of finally block, game_state is None: False, type: <class 'dict'>
+2026-04-09 12:09:06,304 - INFO - db_manager.py:1167 - [PLAYER-STATE-DB] Saved state for Gemma4TestFixed: credits=220, area=City
+2026-04-09 12:09:06,304 - INFO - app.py:873 - [DEBUG] player_system.game_state after /go: <class 'dict'>, is None: False
+2026-04-09 12:09:06,304 - INFO - app.py:887 - [DEBUG] Checking current NPC, game_state is None: False
+2026-04-09 12:09:06,304 - INFO - app.py:890 - [DEBUG] current_npc_name: , requested npc_name: Cassian
+2026-04-09 12:09:06,305 - INFO - app.py:894 - Switching from  to Cassian
+2026-04-09 12:09:06,305 - INFO - game_system_api.py:271 - [DEBUG] Calling process_input_revised with player_input: /talk Cassian...
+2026-04-09 12:09:06,308 - INFO - session_utils.py:376 - [BUILD_PROMPT] NPC dict keys: ['id', 'code', 'name', 'area', 'role', 'motivation', 'goal', 'needed_object', 'treasure', 'playerhint', 'dialogue_hooks', 'default_greeting', 'repeat_greeting', 'veil_connection', 'emotes', 'animations', 'lookup', 'llsettext', 'teleport', 'notecard_feature', 'ai_behavior_notes', 'conditional_responses', 'conversation_state_tracking', 'failure_conditions', 'personality_traits', 'prerequisites', 'relationship_status', 'relationships', 'required_item', 'required_quantity', 'required_source', 'reward_credits', 'sl_commands', 'success_conditions', 'trading_rules', 'storyboard_id', 'created_at']
+2026-04-09 12:09:06,308 - INFO - session_utils.py:378 - [BUILD_PROMPT] ✓ notecard_feature EXISTS, length=0 chars
+2026-04-09 12:09:06,308 - INFO - session_utils.py:379 - [BUILD_PROMPT] notecard_feature preview: 
+2026-04-09 12:09:06,308 - INFO - session_utils.py:410 - [EXTRACT] notecard_feature type=<class 'str'>, len=0, bool=False
+2026-04-09 12:09:10,063 - INFO - game_system_api.py:273 - [DEBUG] process_input_revised returned: <class 'dict'> - is None: False
+2026-04-09 12:09:10,063 - INFO - game_system_api.py:279 - [DEBUG] game_state updated, is None: False
+2026-04-09 12:09:10,063 - INFO - game_system_api.py:308 - [DEBUG] End of try block, game_state is None: False
+2026-04-09 12:09:10,063 - INFO - game_system_api.py:312 - [DEBUG] Start of finally block, game_state is None: False, type: <class 'dict'>
+2026-04-09 12:09:10,065 - INFO - db_manager.py:1167 - [PLAYER-STATE-DB] Saved state for Gemma4TestFixed: credits=220, area=City
+2026-04-09 12:09:10,067 - INFO - game_system_api.py:202 - [CONTEXT-CACHE] Context preloaded in 0ms for Gemma4TestFixed
+2026-04-09 12:09:10,067 - INFO - game_system_api.py:271 - [DEBUG] Calling process_input_revised with player_input: Principi?...
+2026-04-09 12:09:10,068 - INFO - command_processor.py:72 - [NLP-SPECULATIVE] Starting interpretation for: 'Principi?...'
+2026-04-09 12:09:10,139 - INFO - llm_wrapper.py:210 - ✓ Cache hit: 0 tokens cached (0.0% of input)
+2026-04-09 12:09:10,142 - INFO - game_system_api.py:142 - [PROFILE-ASYNC] Profile updated for Gemma4TestFixed in 4690ms
+2026-04-09 12:09:11,268 - INFO - command_processor.py:153 - [DIALOGUE-SPECULATIVE] Starting dialogue generation for: 'Principi?...'
+2026-04-09 12:09:11,270 - INFO - command_processor.py:314 - [PARALLEL-PROCESSING] NLP timeout, started dialogue thread anyway
+2026-04-09 12:09:12,338 - ERROR - llm_wrapper.py:500 - Non-streaming API call failed with status 429. Response: {"error":{"message":"Provider returned error","code":429,"metadata":{"raw":"google/gemma-4-26b-a4b-it is temporarily rate-limited upstream. Please retry shortly, or add your own key to accumulate your rate limits: https://openrouter.ai/settings/integrations","provider_name":"Parasail","is_byok":false}},"user_id":"user_2lvrCkCkHOWCDdJ4SDFP9SbM6ei"}
+2026-04-09 12:09:12,338 - ERROR - llm_wrapper.py:521 - API call to google/gemma-4-26b-a4b-it failed: 429 Client Error: Too Many Requests for url: https://openrouter.ai/api/v1/chat/completions
+Traceback (most recent call last):
+  File "/root/nexus/llm_wrapper.py", line 501, in llm_wrapper
+    response.raise_for_status()
+  File "/usr/lib/python3/dist-packages/requests/models.py", line 1021, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://openrouter.ai/api/v1/chat/completions
+2026-04-09 12:09:12,339 - WARNING - llm_wrapper.py:223 - Direct API response indicated an error: {"message": "Provider returned error", "code": 429, "metadata": {"raw": "google/gemma-4-26b-a4b-it is temporarily rate-limited upstream. Please retry shortly, or add your own key to accumulate your rate limits: https://openrouter.ai/settings/integrations", "provider_name": "Parasail", "is_byok": false}}
+2026-04-09 12:09:12,339 - INFO - command_processor.py:186 - [DIALOGUE-SPECULATIVE] Completed in 1071ms for NPC: Cassian
+2026-04-09 12:09:12,770 - INFO - command_processor.py:419 - [PARALLEL-PROCESSING] NLP timeout, using dialogue result
+2026-04-09 12:09:12,770 - INFO - game_system_api.py:273 - [DEBUG] process_input_revised returned: <class 'dict'> - is None: False
+2026-04-09 12:09:12,770 - INFO - game_system_api.py:279 - [DEBUG] game_state updated, is None: False
+2026-04-09 12:09:12,771 - INFO - game_system_api.py:123 - [PROFILE-ASYNC] Starting profile analysis for Gemma4TestFixed
+2026-04-09 12:09:12,771 - INFO - game_system_api.py:306 - [PROFILE-ASYNC] Started background thread for Gemma4TestFixed
+2026-04-09 12:09:12,772 - INFO - game_system_api.py:308 - [DEBUG] End of try block, game_state is None: False
+2026-04-09 12:09:12,773 - INFO - game_system_api.py:312 - [DEBUG] Start of finally block, game_state is None: False, type: <class 'dict'>
+2026-04-09 12:09:12,775 - INFO - db_manager.py:1167 - [PLAYER-STATE-DB] Saved state for Gemma4TestFixed: credits=220, area=City
+2026-04-09 12:09:12,779 - INFO - game_system_api.py:358 - [NOTECARD_CHECK] Response has [notecard=: False, length=834
+2026-04-09 12:09:12,779 - INFO - game_system_api.py:553 - [TELEPORT] Detected teleport offer via [OFFER_TELEPORT] tag
+2026-04-09 12:09:13,310 - ERROR - llm_wrapper.py:500 - Non-streaming API call failed with status 429. Response: {"error":{"message":"Provider returned error","code":429,"metadata":{"raw":"google/gemma-4-26b-a4b-it is temporarily rate-limited upstream. Please retry shortly, or add your own key to accumulate your rate limits: https://openrouter.ai/settings/integrations","provider_name":"Parasail","is_byok":false}},"user_id":"user_2lvrCkCkHOWCDdJ4SDFP9SbM6ei"}
+2026-04-09 12:09:13,310 - ERROR - llm_wrapper.py:521 - API call to google/gemma-4-26b-a4b-it failed: 429 Client Error: Too Many Requests for url: https://openrouter.ai/api/v1/chat/completions
+Traceback (most recent call last):
+  File "/root/nexus/llm_wrapper.py", line 501, in llm_wrapper
+    response.raise_for_status()
+  File "/usr/lib/python3/dist-packages/requests/models.py", line 1021, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://openrouter.ai/api/v1/chat/completions
+2026-04-09 12:09:13,311 - WARNING - llm_wrapper.py:223 - Direct API response indicated an error: {"message": "Provider returned error", "code": 429, "metadata": {"raw": "google/gemma-4-26b-a4b-it is temporarily rate-limited upstream. Please retry shortly, or add your own key to accumulate your rate limits: https://openrouter.ai/settings/integrations", "provider_name": "Parasail", "is_byok": false}}
+2026-04-09 12:09:13,314 - INFO - game_system_api.py:142 - [PROFILE-ASYNC] Profile updated for Gemma4TestFixed in 540ms
+2026-04-09 12:09:14,043 - ERROR - llm_wrapper.py:500 - Non-streaming API call failed with status 429. Response: {"error":{"message":"Provider returned error","code":429,"metadata":{"raw":"google/gemma-4-26b-a4b-it is temporarily rate-limited upstream. Please retry shortly, or add your own key to accumulate your rate limits: https://openrouter.ai/settings/integrations","provider_name":"Parasail","is_byok":false}},"user_id":"user_2lvrCkCkHOWCDdJ4SDFP9SbM6ei"}
+2026-04-09 12:09:14,043 - ERROR - llm_wrapper.py:521 - API call to google/gemma-4-26b-a4b-it failed: 429 Client Error: Too Many Requests for url: https://openrouter.ai/api/v1/chat/completions
+Traceback (most recent call last):
+  File "/root/nexus/llm_wrapper.py", line 501, in llm_wrapper
+    response.raise_for_status()
+  File "/usr/lib/python3/dist-packages/requests/models.py", line 1021, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://openrouter.ai/api/v1/chat/completions
+2026-04-09 12:09:14,044 - INFO - app.py:1002 - Generated SL commands: '[lookup=registro_mercante;llSetText=[Errore API: 429 Client Error: Too Many Requests for url:...;anim=TALK2;teleport=363,162,24]' (teleport_offered=True, has_notecard=False)
+2026-04-09 12:09:14,045 - INFO - _internal.py:96 - 127.0.0.1 - - [09/Apr/2026 12:09:14] "POST /api/chat HTTP/1.1" 200 -
+2026-04-09 12:09:14,048 - INFO - app.py:870 - [DEBUG] About to call process_player_input with: /go City
+2026-04-09 12:09:14,048 - INFO - app.py:871 - [DEBUG] player_system.game_state before /go: <class 'dict'>, is None: False
+2026-04-09 12:09:14,048 - INFO - game_system_api.py:271 - [DEBUG] Calling process_input_revised with player_input: /go City...
+2026-04-09 12:09:14,054 - INFO - game_system_api.py:273 - [DEBUG] process_input_revised returned: <class 'dict'> - is None: False
+2026-04-09 12:09:14,054 - INFO - game_system_api.py:279 - [DEBUG] game_state updated, is None: False
+2026-04-09 12:09:14,054 - INFO - game_system_api.py:308 - [DEBUG] End of try block, game_state is None: False
+2026-04-09 12:09:14,054 - INFO - game_system_api.py:312 - [DEBUG] Start of finally block, game_state is None: False, type: <class 'dict'>
+2026-04-09 12:09:14,055 - INFO - db_manager.py:1167 - [PLAYER-STATE-DB] Saved state for Gemma4TestFixed: credits=220, area=City
+2026-04-09 12:09:14,056 - INFO - app.py:873 - [DEBUG] player_system.game_state after /go: <class 'dict'>, is None: False
+2026-04-09 12:09:14,056 - INFO - app.py:887 - [DEBUG] Checking current NPC, game_state is None: False
+2026-04-09 12:09:14,056 - INFO - app.py:890 - [DEBUG] current_npc_name: , requested npc_name: Cassian
+2026-04-09 12:09:14,056 - INFO - app.py:894 - Switching from  to Cassian
+2026-04-09 12:09:14,056 - INFO - game_system_api.py:271 - [DEBUG] Calling process_input_revised with player_input: /talk Cassian...
+2026-04-09 12:09:14,059 - INFO - session_utils.py:376 - [BUILD_PROMPT] NPC dict keys: ['id', 'code', 'name', 'area', 'role', 'motivation', 'goal', 'needed_object', 'treasure', 'playerhint', 'dialogue_hooks', 'default_greeting', 'repeat_greeting', 'veil_connection', 'emotes', 'animations', 'lookup', 'llsettext', 'teleport', 'notecard_feature', 'ai_behavior_notes', 'conditional_responses', 'conversation_state_tracking', 'failure_conditions', 'personality_traits', 'prerequisites', 'relationship_status', 'relationships', 'required_item', 'required_quantity', 'required_source', 'reward_credits', 'sl_commands', 'success_conditions', 'trading_rules', 'storyboard_id', 'created_at']
+2026-04-09 12:09:14,059 - INFO - session_utils.py:378 - [BUILD_PROMPT] ✓ notecard_feature EXISTS, length=0 chars
+2026-04-09 12:09:14,059 - INFO - session_utils.py:379 - [BUILD_PROMPT] notecard_feature preview: 
+2026-04-09 12:09:14,060 - INFO - session_utils.py:410 - [EXTRACT] notecard_feature type=<class 'str'>, len=0, bool=False
+2026-04-09 12:09:15,059 - INFO - llm_wrapper.py:210 - ✓ Cache hit: 0 tokens cached (0.0% of input)
+2026-04-09 12:09:15,059 - INFO - command_processor.py:103 - [NLP-SPECULATIVE] Completed in 4991ms: is_command=False, confidence=0.90
+2026-04-09 12:09:16,787 - INFO - game_system_api.py:273 - [DEBUG] process_input_revised returned: <class 'dict'> - is None: False
+2026-04-09 12:09:16,787 - INFO - game_system_api.py:279 - [DEBUG] game_state updated, is None: False
+2026-04-09 12:09:16,787 - INFO - game_system_api.py:308 - [DEBUG] End of try block, game_state is None: False
+2026-04-09 12:09:16,787 - INFO - game_system_api.py:312 - [DEBUG] Start of finally block, game_state is None: False, type: <class 'dict'>
+2026-04-09 12:09:16,789 - INFO - db_manager.py:1167 - [PLAYER-STATE-DB] Saved state for Gemma4TestFixed: credits=220, area=City
+2026-04-09 12:09:16,790 - INFO - game_system_api.py:202 - [CONTEXT-CACHE] Context preloaded in 0ms for Gemma4TestFixed
+2026-04-09 12:09:16,791 - INFO - game_system_api.py:271 - [DEBUG] Calling process_input_revised with player_input: Conflitto?...
+2026-04-09 12:09:16,791 - INFO - command_processor.py:72 - [NLP-SPECULATIVE] Starting interpretation for: 'Conflitto?...'
+2026-04-09 12:09:17,992 - INFO - command_processor.py:153 - [DIALOGUE-SPECULATIVE] Starting dialogue generation for: 'Conflitto?...'
+2026-04-09 12:09:17,992 - INFO - command_processor.py:314 - [PARALLEL-PROCESSING] NLP timeout, started dialogue thread anyway
+2026-04-09 12:09:18,671 - ERROR - llm_wrapper.py:500 - Non-streaming API call failed with status 429. Response: {"error":{"message":"Provider returned error","code":429,"metadata":{"raw":"google/gemma-4-26b-a4b-it is temporarily rate-limited upstream. Please retry shortly, or add your own key to accumulate your rate limits: https://openrouter.ai/settings/integrations","provider_name":"Parasail","is_byok":false}},"user_id":"user_2lvrCkCkHOWCDdJ4SDFP9SbM6ei"}
+2026-04-09 12:09:18,671 - ERROR - llm_wrapper.py:521 - API call to google/gemma-4-26b-a4b-it failed: 429 Client Error: Too Many Requests for url: https://openrouter.ai/api/v1/chat/completions
+Traceback (most recent call last):
+  File "/root/nexus/llm_wrapper.py", line 501, in llm_wrapper
+    response.raise_for_status()
+  File "/usr/lib/python3/dist-packages/requests/models.py", line 1021, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://openrouter.ai/api/v1/chat/completions
+2026-04-09 12:09:18,672 - WARNING - llm_wrapper.py:223 - Direct API response indicated an error: {"message": "Provider returned error", "code": 429, "metadata": {"raw": "google/gemma-4-26b-a4b-it is temporarily rate-limited upstream. Please retry shortly, or add your own key to accumulate your rate limits: https://openrouter.ai/settings/integrations", "provider_name": "Parasail", "is_byok": false}}
+2026-04-09 12:09:18,672 - INFO - command_processor.py:186 - [DIALOGUE-SPECULATIVE] Completed in 680ms for NPC: Cassian
+2026-04-09 12:09:19,494 - INFO - command_processor.py:419 - [PARALLEL-PROCESSING] NLP timeout, using dialogue result
+2026-04-09 12:09:19,494 - INFO - game_system_api.py:273 - [DEBUG] process_input_revised returned: <class 'dict'> - is None: False
+2026-04-09 12:09:19,494 - INFO - game_system_api.py:279 - [DEBUG] game_state updated, is None: False
+2026-04-09 12:09:19,494 - INFO - game_system_api.py:123 - [PROFILE-ASYNC] Starting profile analysis for Gemma4TestFixed
+2026-04-09 12:09:19,496 - INFO - game_system_api.py:306 - [PROFILE-ASYNC] Started background thread for Gemma4TestFixed
+2026-04-09 12:09:19,496 - INFO - game_system_api.py:308 - [DEBUG] End of try block, game_state is None: False
+2026-04-09 12:09:19,496 - INFO - game_system_api.py:312 - [DEBUG] Start of finally block, game_state is None: False, type: <class 'dict'>
+2026-04-09 12:09:19,498 - INFO - db_manager.py:1167 - [PLAYER-STATE-DB] Saved state for Gemma4TestFixed: credits=220, area=City
+2026-04-09 12:09:19,499 - INFO - game_system_api.py:358 - [NOTECARD_CHECK] Response has [notecard=: False, length=834
+2026-04-09 12:09:19,499 - INFO - game_system_api.py:553 - [TELEPORT] Detected teleport offer via [OFFER_TELEPORT] tag
+2026-04-09 12:09:20,031 - ERROR - llm_wrapper.py:500 - Non-streaming API call failed with status 429. Response: {"error":{"message":"Provider returned error","code":429,"metadata":{"raw":"google/gemma-4-26b-a4b-it is temporarily rate-limited upstream. Please retry shortly, or add your own key to accumulate your rate limits: https://openrouter.ai/settings/integrations","provider_name":"Parasail","is_byok":false}},"user_id":"user_2lvrCkCkHOWCDdJ4SDFP9SbM6ei"}
+2026-04-09 12:09:20,031 - ERROR - llm_wrapper.py:521 - API call to google/gemma-4-26b-a4b-it failed: 429 Client Error: Too Many Requests for url: https://openrouter.ai/api/v1/chat/completions
+Traceback (most recent call last):
+  File "/root/nexus/llm_wrapper.py", line 501, in llm_wrapper
+    response.raise_for_status()
+  File "/usr/lib/python3/dist-packages/requests/models.py", line 1021, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://openrouter.ai/api/v1/chat/completions
+2026-04-09 12:09:20,032 - INFO - app.py:1002 - Generated SL commands: '[lookup=sigillo_ufficiale;llSetText=[Errore API: 429 Client Error: Too Many Requests for url:...;anim=TALK2;teleport=363,162,24]' (teleport_offered=True, has_notecard=False)
+2026-04-09 12:09:20,032 - INFO - _internal.py:96 - 127.0.0.1 - - [09/Apr/2026 12:09:20] "POST /api/chat HTTP/1.1" 200 -
+2026-04-09 12:09:20,035 - INFO - app.py:870 - [DEBUG] About to call process_player_input with: /go City
+2026-04-09 12:09:20,035 - INFO - app.py:871 - [DEBUG] player_system.game_state before /go: <class 'dict'>, is None: False
+2026-04-09 12:09:20,035 - INFO - game_system_api.py:271 - [DEBUG] Calling process_input_revised with player_input: /go City...
+2026-04-09 12:09:20,041 - INFO - game_system_api.py:273 - [DEBUG] process_input_revised returned: <class 'dict'> - is None: False
+2026-04-09 12:09:20,041 - INFO - game_system_api.py:279 - [DEBUG] game_state updated, is None: False
+2026-04-09 12:09:20,041 - INFO - game_system_api.py:308 - [DEBUG] End of try block, game_state is None: False
+2026-04-09 12:09:20,041 - INFO - game_system_api.py:312 - [DEBUG] Start of finally block, game_state is None: False, type: <class 'dict'>
+2026-04-09 12:09:20,042 - INFO - db_manager.py:1167 - [PLAYER-STATE-DB] Saved state for Gemma4TestFixed: credits=220, area=City
+2026-04-09 12:09:20,043 - INFO - app.py:873 - [DEBUG] player_system.game_state after /go: <class 'dict'>, is None: False
+2026-04-09 12:09:20,043 - INFO - app.py:887 - [DEBUG] Checking current NPC, game_state is None: False
+2026-04-09 12:09:20,043 - INFO - app.py:890 - [DEBUG] current_npc_name: , requested npc_name: Theron
+2026-04-09 12:09:20,043 - INFO - app.py:894 - Switching from  to Theron
+2026-04-09 12:09:20,043 - INFO - game_system_api.py:271 - [DEBUG] Calling process_input_revised with player_input: /talk Theron...
+2026-04-09 12:09:20,044 - INFO - game_system_api.py:273 - [DEBUG] process_input_revised returned: <class 'dict'> - is None: False
+2026-04-09 12:09:20,044 - INFO - game_system_api.py:279 - [DEBUG] game_state updated, is None: False
+2026-04-09 12:09:20,044 - INFO - game_system_api.py:308 - [DEBUG] End of try block, game_state is None: False
+2026-04-09 12:09:20,044 - INFO - game_system_api.py:312 - [DEBUG] Start of finally block, game_state is None: False, type: <class 'dict'>
+2026-04-09 12:09:20,045 - INFO - db_manager.py:1167 - [PLAYER-STATE-DB] Saved state for Gemma4TestFixed: credits=220, area=City
+2026-04-09 12:09:20,045 - ERROR - app.py:1058 - Error in chat for unknown_player: 'NoneType' object has no attribute 'lower'
+2026-04-09 12:09:20,046 - INFO - _internal.py:96 - 127.0.0.1 - - [09/Apr/2026 12:09:20] "[35m[1mPOST /api/chat HTTP/1.1[0m" 500 -
+2026-04-09 12:09:20,048 - INFO - app.py:870 - [DEBUG] About to call process_player_input with: /go City
+2026-04-09 12:09:20,048 - INFO - app.py:871 - [DEBUG] player_system.game_state before /go: <class 'dict'>, is None: False
+2026-04-09 12:09:20,048 - INFO - game_system_api.py:271 - [DEBUG] Calling process_input_revised with player_input: /go City...
+2026-04-09 12:09:20,050 - INFO - game_system_api.py:273 - [DEBUG] process_input_revised returned: <class 'dict'> - is None: False
+2026-04-09 12:09:20,050 - INFO - game_system_api.py:279 - [DEBUG] game_state updated, is None: False
+2026-04-09 12:09:20,050 - INFO - game_system_api.py:308 - [DEBUG] End of try block, game_state is None: False
+2026-04-09 12:09:20,050 - INFO - game_system_api.py:312 - [DEBUG] Start of finally block, game_state is None: False, type: <class 'dict'>
+2026-04-09 12:09:20,051 - INFO - db_manager.py:1167 - [PLAYER-STATE-DB] Saved state for Gemma4TestFixed: credits=220, area=City
+2026-04-09 12:09:20,051 - INFO - app.py:873 - [DEBUG] player_system.game_state after /go: <class 'dict'>, is None: False
+2026-04-09 12:09:20,051 - INFO - app.py:887 - [DEBUG] Checking current NPC, game_state is None: False
+2026-04-09 12:09:20,051 - INFO - app.py:890 - [DEBUG] current_npc_name: , requested npc_name: Theron
+2026-04-09 12:09:20,051 - INFO - app.py:894 - Switching from  to Theron
+2026-04-09 12:09:20,051 - INFO - game_system_api.py:271 - [DEBUG] Calling process_input_revised with player_input: /talk Theron...
+2026-04-09 12:09:20,052 - INFO - game_system_api.py:273 - [DEBUG] process_input_revised returned: <class 'dict'> - is None: False
+2026-04-09 12:09:20,052 - INFO - game_system_api.py:279 - [DEBUG] game_state updated, is None: False
+2026-04-09 12:09:20,052 - INFO - game_system_api.py:308 - [DEBUG] End of try block, game_state is None: False
+2026-04-09 12:09:20,052 - INFO - game_system_api.py:312 - [DEBUG] Start of finally block, game_state is None: False, type: <class 'dict'>
+2026-04-09 12:09:20,053 - INFO - db_manager.py:1167 - [PLAYER-STATE-DB] Saved state for Gemma4TestFixed: credits=220, area=City
+2026-04-09 12:09:20,053 - ERROR - app.py:1058 - Error in chat for unknown_player: 'NoneType' object has no attribute 'lower'
+2026-04-09 12:09:20,054 - INFO - _internal.py:96 - 127.0.0.1 - - [09/Apr/2026 12:09:20] "[35m[1mPOST /api/chat HTTP/1.1[0m" 500 -
+2026-04-09 12:09:20,056 - INFO - app.py:870 - [DEBUG] About to call process_player_input with: /go City
+2026-04-09 12:09:20,056 - INFO - app.py:871 - [DEBUG] player_system.game_state before /go: <class 'dict'>, is None: False
+2026-04-09 12:09:20,056 - INFO - game_system_api.py:271 - [DEBUG] Calling process_input_revised with player_input: /go City...
+2026-04-09 12:09:20,058 - INFO - game_system_api.py:273 - [DEBUG] process_input_revised returned: <class 'dict'> - is None: False
+2026-04-09 12:09:20,058 - INFO - game_system_api.py:279 - [DEBUG] game_state updated, is None: False
+2026-04-09 12:09:20,058 - INFO - game_system_api.py:308 - [DEBUG] End of try block, game_state is None: False
+2026-04-09 12:09:20,058 - INFO - game_system_api.py:312 - [DEBUG] Start of finally block, game_state is None: False, type: <class 'dict'>
+2026-04-09 12:09:20,059 - INFO - db_manager.py:1167 - [PLAYER-STATE-DB] Saved state for Gemma4TestFixed: credits=220, area=City
+2026-04-09 12:09:20,060 - INFO - app.py:873 - [DEBUG] player_system.game_state after /go: <class 'dict'>, is None: False
+2026-04-09 12:09:20,060 - INFO - app.py:887 - [DEBUG] Checking current NPC, game_state is None: False
+2026-04-09 12:09:20,060 - INFO - app.py:890 - [DEBUG] current_npc_name: , requested npc_name: Theron
+2026-04-09 12:09:20,060 - INFO - app.py:894 - Switching from  to Theron
+2026-04-09 12:09:20,060 - INFO - game_system_api.py:271 - [DEBUG] Calling process_input_revised with player_input: /talk Theron...
+2026-04-09 12:09:20,061 - INFO - game_system_api.py:273 - [DEBUG] process_input_revised returned: <class 'dict'> - is None: False
+2026-04-09 12:09:20,061 - INFO - game_system_api.py:279 - [DEBUG] game_state updated, is None: False
+2026-04-09 12:09:20,061 - INFO - game_system_api.py:308 - [DEBUG] End of try block, game_state is None: False
+2026-04-09 12:09:20,061 - INFO - game_system_api.py:312 - [DEBUG] Start of finally block, game_state is None: False, type: <class 'dict'>
+2026-04-09 12:09:20,062 - INFO - db_manager.py:1167 - [PLAYER-STATE-DB] Saved state for Gemma4TestFixed: credits=220, area=City
+2026-04-09 12:09:20,063 - ERROR - app.py:1058 - Error in chat for unknown_player: 'NoneType' object has no attribute 'lower'
+2026-04-09 12:09:20,063 - INFO - _internal.py:96 - 127.0.0.1 - - [09/Apr/2026 12:09:20] "[35m[1mPOST /api/chat HTTP/1.1[0m" 500 -
+2026-04-09 12:09:20,065 - INFO - app.py:870 - [DEBUG] About to call process_player_input with: /go Sanctum of Whispers
+2026-04-09 12:09:20,065 - INFO - app.py:871 - [DEBUG] player_system.game_state before /go: <class 'dict'>, is None: False
+2026-04-09 12:09:20,066 - INFO - game_system_api.py:271 - [DEBUG] Calling process_input_revised with player_input: /go Sanctum of Whispers...
+2026-04-09 12:09:20,069 - INFO - game_system_api.py:273 - [DEBUG] process_input_revised returned: <class 'dict'> - is None: False
+2026-04-09 12:09:20,069 - INFO - game_system_api.py:279 - [DEBUG] game_state updated, is None: False
+2026-04-09 12:09:20,069 - INFO - game_system_api.py:308 - [DEBUG] End of try block, game_state is None: False
+2026-04-09 12:09:20,069 - INFO - game_system_api.py:312 - [DEBUG] Start of finally block, game_state is None: False, type: <class 'dict'>
+2026-04-09 12:09:20,071 - INFO - db_manager.py:1167 - [PLAYER-STATE-DB] Saved state for Gemma4TestFixed: credits=220, area=Sanctum of Whispers
+2026-04-09 12:09:20,071 - INFO - app.py:873 - [DEBUG] player_system.game_state after /go: <class 'dict'>, is None: False
+2026-04-09 12:09:20,072 - INFO - app.py:887 - [DEBUG] Checking current NPC, game_state is None: False
+2026-04-09 12:09:20,072 - INFO - app.py:890 - [DEBUG] current_npc_name: , requested npc_name: Lyra
+2026-04-09 12:09:20,072 - INFO - app.py:894 - Switching from  to Lyra
+2026-04-09 12:09:20,072 - INFO - game_system_api.py:271 - [DEBUG] Calling process_input_revised with player_input: /talk Lyra...
+2026-04-09 12:09:20,075 - INFO - session_utils.py:376 - [BUILD_PROMPT] NPC dict keys: ['id', 'code', 'name', 'area', 'role', 'motivation', 'goal', 'needed_object', 'treasure', 'playerhint', 'dialogue_hooks', 'default_greeting', 'repeat_greeting', 'veil_connection', 'emotes', 'animations', 'lookup', 'llsettext', 'teleport', 'notecard_feature', 'ai_behavior_notes', 'conditional_responses', 'conversation_state_tracking', 'failure_conditions', 'personality_traits', 'prerequisites', 'relationship_status', 'relationships', 'required_item', 'required_quantity', 'required_source', 'reward_credits', 'sl_commands', 'success_conditions', 'trading_rules', 'storyboard_id', 'created_at']
+2026-04-09 12:09:20,075 - INFO - session_utils.py:378 - [BUILD_PROMPT] ✓ notecard_feature EXISTS, length=4534 chars
+2026-04-09 12:09:20,075 - INFO - session_utils.py:379 - [BUILD_PROMPT] notecard_feature preview: When the player brings the Cristallo di Memoria Antica or Seme della Foresta, INCLUDE a notecard com
+2026-04-09 12:09:20,075 - INFO - session_utils.py:410 - [EXTRACT] notecard_feature type=<class 'str'>, len=4534, bool=True
+2026-04-09 12:09:20,076 - INFO - session_utils.py:462 - [NOTECARD_TOP] Adding NOTECARD at TOP of prompt (len=4534)
+2026-04-09 12:09:20,080 - ERROR - llm_wrapper.py:500 - Non-streaming API call failed with status 429. Response: {"error":{"message":"Provider returned error","code":429,"metadata":{"raw":"google/gemma-4-26b-a4b-it is temporarily rate-limited upstream. Please retry shortly, or add your own key to accumulate your rate limits: https://openrouter.ai/settings/integrations","provider_name":"Parasail","is_byok":false}},"user_id":"user_2lvrCkCkHOWCDdJ4SDFP9SbM6ei"}
+2026-04-09 12:09:20,081 - ERROR - llm_wrapper.py:521 - API call to google/gemma-4-26b-a4b-it failed: 429 Client Error: Too Many Requests for url: https://openrouter.ai/api/v1/chat/completions
+Traceback (most recent call last):
+  File "/root/nexus/llm_wrapper.py", line 501, in llm_wrapper
+    response.raise_for_status()
+  File "/usr/lib/python3/dist-packages/requests/models.py", line 1021, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://openrouter.ai/api/v1/chat/completions
+2026-04-09 12:09:20,081 - WARNING - llm_wrapper.py:223 - Direct API response indicated an error: {"message": "Provider returned error", "code": 429, "metadata": {"raw": "google/gemma-4-26b-a4b-it is temporarily rate-limited upstream. Please retry shortly, or add your own key to accumulate your rate limits: https://openrouter.ai/settings/integrations", "provider_name": "Parasail", "is_byok": false}}
+2026-04-09 12:09:20,083 - INFO - game_system_api.py:142 - [PROFILE-ASYNC] Profile updated for Gemma4TestFixed in 586ms
+2026-04-09 12:09:20,642 - ERROR - llm_wrapper.py:500 - Non-streaming API call failed with status 429. Response: {"error":{"message":"Provider returned error","code":429,"metadata":{"raw":"google/gemma-4-26b-a4b-it is temporarily rate-limited upstream. Please retry shortly, or add your own key to accumulate your rate limits: https://openrouter.ai/settings/integrations","provider_name":"Venice","is_byok":false}},"user_id":"user_2lvrCkCkHOWCDdJ4SDFP9SbM6ei"}
+2026-04-09 12:09:20,643 - ERROR - llm_wrapper.py:521 - API call to google/gemma-4-26b-a4b-it failed: 429 Client Error: Too Many Requests for url: https://openrouter.ai/api/v1/chat/completions
+Traceback (most recent call last):
+  File "/root/nexus/llm_wrapper.py", line 501, in llm_wrapper
+    response.raise_for_status()
+  File "/usr/lib/python3/dist-packages/requests/models.py", line 1021, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://openrouter.ai/api/v1/chat/completions
+2026-04-09 12:09:20,646 - INFO - game_system_api.py:273 - [DEBUG] process_input_revised returned: <class 'dict'> - is None: False
+2026-04-09 12:09:20,646 - INFO - game_system_api.py:279 - [DEBUG] game_state updated, is None: False
+2026-04-09 12:09:20,646 - INFO - game_system_api.py:308 - [DEBUG] End of try block, game_state is None: False
+2026-04-09 12:09:20,646 - INFO - game_system_api.py:312 - [DEBUG] Start of finally block, game_state is None: False, type: <class 'dict'>
+2026-04-09 12:09:20,648 - INFO - db_manager.py:1167 - [PLAYER-STATE-DB] Saved state for Gemma4TestFixed: credits=220, area=Sanctum of Whispers
+2026-04-09 12:09:20,651 - INFO - game_system_api.py:202 - [CONTEXT-CACHE] Context preloaded in 1ms for Gemma4TestFixed
+2026-04-09 12:09:20,651 - INFO - game_system_api.py:271 - [DEBUG] Calling process_input_revised with player_input: Ciao...
+2026-04-09 12:09:20,651 - INFO - command_processor.py:72 - [NLP-SPECULATIVE] Starting interpretation for: 'Ciao...'
+2026-04-09 12:09:21,852 - INFO - command_processor.py:153 - [DIALOGUE-SPECULATIVE] Starting dialogue generation for: 'Ciao...'
+2026-04-09 12:09:21,854 - INFO - command_processor.py:314 - [PARALLEL-PROCESSING] NLP timeout, started dialogue thread anyway
+2026-04-09 12:09:22,871 - INFO - llm_wrapper.py:210 - ✓ Cache hit: 0 tokens cached (0.0% of input)
+2026-04-09 12:09:22,871 - INFO - command_processor.py:103 - [NLP-SPECULATIVE] Completed in 6080ms: is_command=False, confidence=1.00
+2026-04-09 12:09:24,229 - INFO - llm_wrapper.py:210 - ✓ Cache hit: 0 tokens cached (0.0% of input)
+2026-04-09 12:09:24,229 - INFO - command_processor.py:103 - [NLP-SPECULATIVE] Completed in 3577ms: is_command=False, confidence=1.00
+2026-04-09 12:09:25,724 - ERROR - llm_wrapper.py:500 - Non-streaming API call failed with status 429. Response: {"error":{"message":"Provider returned error","code":429,"metadata":{"raw":"google/gemma-4-26b-a4b-it is temporarily rate-limited upstream. Please retry shortly, or add your own key to accumulate your rate limits: https://openrouter.ai/settings/integrations","provider_name":"Parasail","is_byok":false}},"user_id":"user_2lvrCkCkHOWCDdJ4SDFP9SbM6ei"}
+2026-04-09 12:09:25,724 - ERROR - llm_wrapper.py:521 - API call to google/gemma-4-26b-a4b-it failed: 429 Client Error: Too Many Requests for url: https://openrouter.ai/api/v1/chat/completions
+Traceback (most recent call last):
+  File "/root/nexus/llm_wrapper.py", line 501, in llm_wrapper
+    response.raise_for_status()
+  File "/usr/lib/python3/dist-packages/requests/models.py", line 1021, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://openrouter.ai/api/v1/chat/completions
+2026-04-09 12:09:25,725 - WARNING - llm_wrapper.py:223 - Direct API response indicated an error: {"message": "Provider returned error", "code": 429, "metadata": {"raw": "google/gemma-4-26b-a4b-it is temporarily rate-limited upstream. Please retry shortly, or add your own key to accumulate your rate limits: https://openrouter.ai/settings/integrations", "provider_name": "Parasail", "is_byok": false}}
+2026-04-09 12:09:25,725 - INFO - game_system_api.py:273 - [DEBUG] process_input_revised returned: <class 'dict'> - is None: False
+2026-04-09 12:09:25,725 - INFO - game_system_api.py:279 - [DEBUG] game_state updated, is None: False
+2026-04-09 12:09:25,725 - INFO - game_system_api.py:123 - [PROFILE-ASYNC] Starting profile analysis for Gemma4TestFixed
+2026-04-09 12:09:25,728 - INFO - game_system_api.py:306 - [PROFILE-ASYNC] Started background thread for Gemma4TestFixed
+2026-04-09 12:09:25,728 - INFO - game_system_api.py:308 - [DEBUG] End of try block, game_state is None: False
+2026-04-09 12:09:25,728 - INFO - game_system_api.py:312 - [DEBUG] Start of finally block, game_state is None: False, type: <class 'dict'>
+2026-04-09 12:09:25,729 - INFO - db_manager.py:1167 - [PLAYER-STATE-DB] Saved state for Gemma4TestFixed: credits=220, area=Sanctum of Whispers
+2026-04-09 12:09:25,731 - INFO - game_system_api.py:358 - [NOTECARD_CHECK] Response has [notecard=: False, length=110
+2026-04-09 12:09:26,331 - ERROR - llm_wrapper.py:500 - Non-streaming API call failed with status 429. Response: {"error":{"message":"Provider returned error","code":429,"metadata":{"raw":"google/gemma-4-26b-a4b-it is temporarily rate-limited upstream. Please retry shortly, or add your own key to accumulate your rate limits: https://openrouter.ai/settings/integrations","provider_name":"Ionstream","is_byok":false,"retry_after_seconds":60}},"user_id":"user_2lvrCkCkHOWCDdJ4SDFP9SbM6ei"}
+2026-04-09 12:09:26,331 - ERROR - llm_wrapper.py:521 - API call to google/gemma-4-26b-a4b-it failed: 429 Client Error: Too Many Requests for url: https://openrouter.ai/api/v1/chat/completions
+Traceback (most recent call last):
+  File "/root/nexus/llm_wrapper.py", line 501, in llm_wrapper
+    response.raise_for_status()
+  File "/usr/lib/python3/dist-packages/requests/models.py", line 1021, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://openrouter.ai/api/v1/chat/completions
+2026-04-09 12:09:26,332 - INFO - app.py:1002 - Generated SL commands: '[lookup=arazzo_antico;llSetText=[Errore API: 429 Client Error: Too Many Requests for url:...;anim=TALK SIT 1]' (teleport_offered=False, has_notecard=False)
+2026-04-09 12:09:26,332 - INFO - _internal.py:96 - 127.0.0.1 - - [09/Apr/2026 12:09:26] "POST /api/chat HTTP/1.1" 200 -
+2026-04-09 12:09:26,334 - INFO - app.py:870 - [DEBUG] About to call process_player_input with: /go Sanctum of Whispers
+2026-04-09 12:09:26,334 - INFO - app.py:871 - [DEBUG] player_system.game_state before /go: <class 'dict'>, is None: False
+2026-04-09 12:09:26,334 - INFO - game_system_api.py:271 - [DEBUG] Calling process_input_revised with player_input: /go Sanctum of Whispers...
+2026-04-09 12:09:26,341 - INFO - game_system_api.py:273 - [DEBUG] process_input_revised returned: <class 'dict'> - is None: False
+2026-04-09 12:09:26,341 - INFO - game_system_api.py:279 - [DEBUG] game_state updated, is None: False
+2026-04-09 12:09:26,341 - INFO - game_system_api.py:308 - [DEBUG] End of try block, game_state is None: False
+2026-04-09 12:09:26,341 - INFO - game_system_api.py:312 - [DEBUG] Start of finally block, game_state is None: False, type: <class 'dict'>
+2026-04-09 12:09:26,343 - INFO - db_manager.py:1167 - [PLAYER-STATE-DB] Saved state for Gemma4TestFixed: credits=220, area=Sanctum of Whispers
+2026-04-09 12:09:26,343 - INFO - app.py:873 - [DEBUG] player_system.game_state after /go: <class 'dict'>, is None: False
+2026-04-09 12:09:26,344 - INFO - app.py:887 - [DEBUG] Checking current NPC, game_state is None: False
+2026-04-09 12:09:26,344 - INFO - app.py:890 - [DEBUG] current_npc_name: , requested npc_name: Lyra
+2026-04-09 12:09:26,344 - INFO - app.py:894 - Switching from  to Lyra
+2026-04-09 12:09:26,344 - INFO - game_system_api.py:271 - [DEBUG] Calling process_input_revised with player_input: /talk Lyra...
+2026-04-09 12:09:26,348 - INFO - session_utils.py:376 - [BUILD_PROMPT] NPC dict keys: ['id', 'code', 'name', 'area', 'role', 'motivation', 'goal', 'needed_object', 'treasure', 'playerhint', 'dialogue_hooks', 'default_greeting', 'repeat_greeting', 'veil_connection', 'emotes', 'animations', 'lookup', 'llsettext', 'teleport', 'notecard_feature', 'ai_behavior_notes', 'conditional_responses', 'conversation_state_tracking', 'failure_conditions', 'personality_traits', 'prerequisites', 'relationship_status', 'relationships', 'required_item', 'required_quantity', 'required_source', 'reward_credits', 'sl_commands', 'success_conditions', 'trading_rules', 'storyboard_id', 'created_at']
+2026-04-09 12:09:26,348 - INFO - session_utils.py:378 - [BUILD_PROMPT] ✓ notecard_feature EXISTS, length=4534 chars
+2026-04-09 12:09:26,348 - INFO - session_utils.py:379 - [BUILD_PROMPT] notecard_feature preview: When the player brings the Cristallo di Memoria Antica or Seme della Foresta, INCLUDE a notecard com
+2026-04-09 12:09:26,348 - INFO - session_utils.py:410 - [EXTRACT] notecard_feature type=<class 'str'>, len=4534, bool=True
+2026-04-09 12:09:26,348 - INFO - session_utils.py:462 - [NOTECARD_TOP] Adding NOTECARD at TOP of prompt (len=4534)
+2026-04-09 12:09:26,861 - ERROR - llm_wrapper.py:500 - Non-streaming API call failed with status 429. Response: {"error":{"message":"Provider returned error","code":429,"metadata":{"raw":"google/gemma-4-26b-a4b-it is temporarily rate-limited upstream. Please retry shortly, or add your own key to accumulate your rate limits: https://openrouter.ai/settings/integrations","provider_name":"Ionstream","is_byok":false,"retry_after_seconds":60}},"user_id":"user_2lvrCkCkHOWCDdJ4SDFP9SbM6ei"}
+2026-04-09 12:09:26,861 - ERROR - llm_wrapper.py:521 - API call to google/gemma-4-26b-a4b-it failed: 429 Client Error: Too Many Requests for url: https://openrouter.ai/api/v1/chat/completions
+Traceback (most recent call last):
+  File "/root/nexus/llm_wrapper.py", line 501, in llm_wrapper
+    response.raise_for_status()
+  File "/usr/lib/python3/dist-packages/requests/models.py", line 1021, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://openrouter.ai/api/v1/chat/completions
+2026-04-09 12:09:26,864 - INFO - game_system_api.py:273 - [DEBUG] process_input_revised returned: <class 'dict'> - is None: False
+2026-04-09 12:09:26,864 - INFO - game_system_api.py:279 - [DEBUG] game_state updated, is None: False
+2026-04-09 12:09:26,864 - INFO - game_system_api.py:308 - [DEBUG] End of try block, game_state is None: False
+2026-04-09 12:09:26,864 - INFO - game_system_api.py:312 - [DEBUG] Start of finally block, game_state is None: False, type: <class 'dict'>
+2026-04-09 12:09:26,866 - INFO - db_manager.py:1167 - [PLAYER-STATE-DB] Saved state for Gemma4TestFixed: credits=220, area=Sanctum of Whispers
+2026-04-09 12:09:26,868 - INFO - game_system_api.py:202 - [CONTEXT-CACHE] Context preloaded in 0ms for Gemma4TestFixed
+2026-04-09 12:09:26,868 - INFO - game_system_api.py:271 - [DEBUG] Calling process_input_revised with player_input: Principi?...
+2026-04-09 12:09:26,869 - INFO - command_processor.py:72 - [NLP-SPECULATIVE] Starting interpretation for: 'Principi?...'
+2026-04-09 12:09:28,069 - INFO - command_processor.py:153 - [DIALOGUE-SPECULATIVE] Starting dialogue generation for: 'Principi?...'
+2026-04-09 12:09:28,069 - INFO - command_processor.py:314 - [PARALLEL-PROCESSING] NLP timeout, started dialogue thread anyway
+2026-04-09 12:09:28,581 - INFO - llm_wrapper.py:210 - ✓ Cache hit: 0 tokens cached (0.0% of input)
+2026-04-09 12:09:28,581 - INFO - command_processor.py:186 - [DIALOGUE-SPECULATIVE] Completed in 6728ms for NPC: Lyra
+2026-04-09 12:09:30,667 - INFO - llm_wrapper.py:210 - ✓ Cache hit: 0 tokens cached (0.0% of input)
+2026-04-09 12:09:30,670 - INFO - game_system_api.py:142 - [PROFILE-ASYNC] Profile updated for Gemma4TestFixed in 4941ms
+2026-04-09 12:09:32,262 - INFO - llm_wrapper.py:210 - ✓ Cache hit: 0 tokens cached (0.0% of input)
+2026-04-09 12:09:32,262 - INFO - command_processor.py:103 - [NLP-SPECULATIVE] Completed in 5393ms: is_command=False, confidence=1.00
+2026-04-09 12:09:32,340 - ERROR - llm_wrapper.py:500 - Non-streaming API call failed with status 429. Response: {"error":{"message":"Provider returned error","code":429,"metadata":{"raw":"google/gemma-4-26b-a4b-it is temporarily rate-limited upstream. Please retry shortly, or add your own key to accumulate your rate limits: https://openrouter.ai/settings/integrations","provider_name":"Venice","is_byok":false}},"user_id":"user_2lvrCkCkHOWCDdJ4SDFP9SbM6ei"}
+2026-04-09 12:09:32,340 - ERROR - llm_wrapper.py:521 - API call to google/gemma-4-26b-a4b-it failed: 429 Client Error: Too Many Requests for url: https://openrouter.ai/api/v1/chat/completions
+Traceback (most recent call last):
+  File "/root/nexus/llm_wrapper.py", line 501, in llm_wrapper
+    response.raise_for_status()
+  File "/usr/lib/python3/dist-packages/requests/models.py", line 1021, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://openrouter.ai/api/v1/chat/completions
+2026-04-09 12:09:32,341 - WARNING - llm_wrapper.py:223 - Direct API response indicated an error: {"message": "Provider returned error", "code": 429, "metadata": {"raw": "google/gemma-4-26b-a4b-it is temporarily rate-limited upstream. Please retry shortly, or add your own key to accumulate your rate limits: https://openrouter.ai/settings/integrations", "provider_name": "Venice", "is_byok": false}}
+2026-04-09 12:09:32,342 - INFO - game_system_api.py:273 - [DEBUG] process_input_revised returned: <class 'dict'> - is None: False
+2026-04-09 12:09:32,342 - INFO - game_system_api.py:279 - [DEBUG] game_state updated, is None: False
+2026-04-09 12:09:32,342 - INFO - game_system_api.py:123 - [PROFILE-ASYNC] Starting profile analysis for Gemma4TestFixed
+2026-04-09 12:09:32,342 - INFO - game_system_api.py:306 - [PROFILE-ASYNC] Started background thread for Gemma4TestFixed
+2026-04-09 12:09:32,343 - INFO - game_system_api.py:308 - [DEBUG] End of try block, game_state is None: False
+2026-04-09 12:09:32,343 - INFO - game_system_api.py:312 - [DEBUG] Start of finally block, game_state is None: False, type: <class 'dict'>
+2026-04-09 12:09:32,346 - INFO - db_manager.py:1167 - [PLAYER-STATE-DB] Saved state for Gemma4TestFixed: credits=220, area=Sanctum of Whispers
+2026-04-09 12:09:32,347 - INFO - game_system_api.py:358 - [NOTECARD_CHECK] Response has [notecard=: False, length=110
+2026-04-09 12:09:32,863 - ERROR - llm_wrapper.py:500 - Non-streaming API call failed with status 429. Response: {"error":{"message":"Provider returned error","code":429,"metadata":{"raw":"google/gemma-4-26b-a4b-it is temporarily rate-limited upstream. Please retry shortly, or add your own key to accumulate your rate limits: https://openrouter.ai/settings/integrations","provider_name":"Parasail","is_byok":false}},"user_id":"user_2lvrCkCkHOWCDdJ4SDFP9SbM6ei"}
+2026-04-09 12:09:32,863 - ERROR - llm_wrapper.py:521 - API call to google/gemma-4-26b-a4b-it failed: 429 Client Error: Too Many Requests for url: https://openrouter.ai/api/v1/chat/completions
+Traceback (most recent call last):
+  File "/root/nexus/llm_wrapper.py", line 501, in llm_wrapper
+    response.raise_for_status()
+  File "/usr/lib/python3/dist-packages/requests/models.py", line 1021, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://openrouter.ai/api/v1/chat/completions
+2026-04-09 12:09:32,863 - INFO - app.py:1002 - Generated SL commands: '[lookup=cristallo_memoria;llSetText=[Errore API: 429 Client Error: Too Many Requests for url:...;anim=TALK 5]' (teleport_offered=False, has_notecard=False)
+2026-04-09 12:09:32,864 - INFO - _internal.py:96 - 127.0.0.1 - - [09/Apr/2026 12:09:32] "POST /api/chat HTTP/1.1" 200 -
+2026-04-09 12:09:32,866 - INFO - app.py:870 - [DEBUG] About to call process_player_input with: /go Sanctum of Whispers
+2026-04-09 12:09:32,866 - INFO - app.py:871 - [DEBUG] player_system.game_state before /go: <class 'dict'>, is None: False
+2026-04-09 12:09:32,866 - INFO - game_system_api.py:271 - [DEBUG] Calling process_input_revised with player_input: /go Sanctum of Whispers...
+2026-04-09 12:09:32,873 - INFO - game_system_api.py:273 - [DEBUG] process_input_revised returned: <class 'dict'> - is None: False
+2026-04-09 12:09:32,873 - INFO - game_system_api.py:279 - [DEBUG] game_state updated, is None: False
+2026-04-09 12:09:32,873 - INFO - game_system_api.py:308 - [DEBUG] End of try block, game_state is None: False
+2026-04-09 12:09:32,873 - INFO - game_system_api.py:312 - [DEBUG] Start of finally block, game_state is None: False, type: <class 'dict'>
+2026-04-09 12:09:32,875 - INFO - db_manager.py:1167 - [PLAYER-STATE-DB] Saved state for Gemma4TestFixed: credits=220, area=Sanctum of Whispers
+2026-04-09 12:09:32,875 - INFO - app.py:873 - [DEBUG] player_system.game_state after /go: <class 'dict'>, is None: False
+2026-04-09 12:09:32,875 - INFO - app.py:887 - [DEBUG] Checking current NPC, game_state is None: False
+2026-04-09 12:09:32,875 - INFO - app.py:890 - [DEBUG] current_npc_name: , requested npc_name: Lyra
+2026-04-09 12:09:32,875 - INFO - app.py:894 - Switching from  to Lyra
+2026-04-09 12:09:32,875 - INFO - game_system_api.py:271 - [DEBUG] Calling process_input_revised with player_input: /talk Lyra...
+2026-04-09 12:09:32,878 - INFO - session_utils.py:376 - [BUILD_PROMPT] NPC dict keys: ['id', 'code', 'name', 'area', 'role', 'motivation', 'goal', 'needed_object', 'treasure', 'playerhint', 'dialogue_hooks', 'default_greeting', 'repeat_greeting', 'veil_connection', 'emotes', 'animations', 'lookup', 'llsettext', 'teleport', 'notecard_feature', 'ai_behavior_notes', 'conditional_responses', 'conversation_state_tracking', 'failure_conditions', 'personality_traits', 'prerequisites', 'relationship_status', 'relationships', 'required_item', 'required_quantity', 'required_source', 'reward_credits', 'sl_commands', 'success_conditions', 'trading_rules', 'storyboard_id', 'created_at']
+2026-04-09 12:09:32,878 - INFO - session_utils.py:378 - [BUILD_PROMPT] ✓ notecard_feature EXISTS, length=4534 chars
+2026-04-09 12:09:32,878 - INFO - session_utils.py:379 - [BUILD_PROMPT] notecard_feature preview: When the player brings the Cristallo di Memoria Antica or Seme della Foresta, INCLUDE a notecard com
+2026-04-09 12:09:32,879 - INFO - session_utils.py:410 - [EXTRACT] notecard_feature type=<class 'str'>, len=4534, bool=True
+2026-04-09 12:09:32,879 - INFO - session_utils.py:462 - [NOTECARD_TOP] Adding NOTECARD at TOP of prompt (len=4534)
+2026-04-09 12:09:32,940 - ERROR - llm_wrapper.py:500 - Non-streaming API call failed with status 429. Response: {"error":{"message":"Provider returned error","code":429,"metadata":{"raw":"google/gemma-4-26b-a4b-it is temporarily rate-limited upstream. Please retry shortly, or add your own key to accumulate your rate limits: https://openrouter.ai/settings/integrations","provider_name":"Parasail","is_byok":false}},"user_id":"user_2lvrCkCkHOWCDdJ4SDFP9SbM6ei"}
+2026-04-09 12:09:32,941 - ERROR - llm_wrapper.py:521 - API call to google/gemma-4-26b-a4b-it failed: 429 Client Error: Too Many Requests for url: https://openrouter.ai/api/v1/chat/completions
+Traceback (most recent call last):
+  File "/root/nexus/llm_wrapper.py", line 501, in llm_wrapper
+    response.raise_for_status()
+  File "/usr/lib/python3/dist-packages/requests/models.py", line 1021, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://openrouter.ai/api/v1/chat/completions
+2026-04-09 12:09:32,941 - WARNING - llm_wrapper.py:223 - Direct API response indicated an error: {"message": "Provider returned error", "code": 429, "metadata": {"raw": "google/gemma-4-26b-a4b-it is temporarily rate-limited upstream. Please retry shortly, or add your own key to accumulate your rate limits: https://openrouter.ai/settings/integrations", "provider_name": "Parasail", "is_byok": false}}
+2026-04-09 12:09:32,944 - INFO - game_system_api.py:142 - [PROFILE-ASYNC] Profile updated for Gemma4TestFixed in 599ms
+2026-04-09 12:09:34,070 - INFO - game_system_api.py:273 - [DEBUG] process_input_revised returned: <class 'dict'> - is None: False
+2026-04-09 12:09:34,070 - INFO - game_system_api.py:279 - [DEBUG] game_state updated, is None: False
+2026-04-09 12:09:34,070 - INFO - game_system_api.py:308 - [DEBUG] End of try block, game_state is None: False
+2026-04-09 12:09:34,070 - INFO - game_system_api.py:312 - [DEBUG] Start of finally block, game_state is None: False, type: <class 'dict'>
+2026-04-09 12:09:34,072 - INFO - db_manager.py:1167 - [PLAYER-STATE-DB] Saved state for Gemma4TestFixed: credits=220, area=Sanctum of Whispers
+2026-04-09 12:09:34,075 - INFO - game_system_api.py:202 - [CONTEXT-CACHE] Context preloaded in 0ms for Gemma4TestFixed
+2026-04-09 12:09:34,075 - INFO - game_system_api.py:271 - [DEBUG] Calling process_input_revised with player_input: Conflitto?...
+2026-04-09 12:09:34,075 - INFO - command_processor.py:72 - [NLP-SPECULATIVE] Starting interpretation for: 'Conflitto?...'
+2026-04-09 12:09:34,615 - ERROR - llm_wrapper.py:500 - Non-streaming API call failed with status 429. Response: {"error":{"message":"Provider returned error","code":429,"metadata":{"raw":"google/gemma-4-26b-a4b-it is temporarily rate-limited upstream. Please retry shortly, or add your own key to accumulate your rate limits: https://openrouter.ai/settings/integrations","provider_name":"Parasail","is_byok":false}},"user_id":"user_2lvrCkCkHOWCDdJ4SDFP9SbM6ei"}
+2026-04-09 12:09:34,615 - ERROR - llm_wrapper.py:521 - API call to google/gemma-4-26b-a4b-it failed: 429 Client Error: Too Many Requests for url: https://openrouter.ai/api/v1/chat/completions
+Traceback (most recent call last):
+  File "/root/nexus/llm_wrapper.py", line 501, in llm_wrapper
+    response.raise_for_status()
+  File "/usr/lib/python3/dist-packages/requests/models.py", line 1021, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://openrouter.ai/api/v1/chat/completions
+2026-04-09 12:09:34,616 - WARNING - llm_wrapper.py:223 - Direct API response indicated an error: {"message": "Provider returned error", "code": 429, "metadata": {"raw": "google/gemma-4-26b-a4b-it is temporarily rate-limited upstream. Please retry shortly, or add your own key to accumulate your rate limits: https://openrouter.ai/settings/integrations", "provider_name": "Parasail", "is_byok": false}}
+2026-04-09 12:09:34,616 - INFO - command_processor.py:103 - [NLP-SPECULATIVE] Completed in 541ms: is_command=False, confidence=0.90
+2026-04-09 12:09:34,617 - INFO - command_processor.py:153 - [DIALOGUE-SPECULATIVE] Starting dialogue generation for: 'Conflitto?...'
+2026-04-09 12:09:34,617 - INFO - command_processor.py:304 - [PARALLEL-PROCESSING] Started dialogue thread after NLP check
+2026-04-09 12:09:36,117 - INFO - command_processor.py:395 - [PARALLEL-PROCESSING] Waiting for dialogue thread to complete...
+2026-04-09 12:09:39,118 - INFO - command_processor.py:410 - [PARALLEL-PROCESSING] Dialogue not ready, falling back to normal processing
+2026-04-09 12:09:39,545 - INFO - llm_wrapper.py:210 - ✓ Cache hit: 0 tokens cached (0.0% of input)
+2026-04-09 12:09:39,545 - INFO - command_processor.py:186 - [DIALOGUE-SPECULATIVE] Completed in 11475ms for NPC: Lyra
+2026-04-09 12:09:39,693 - ERROR - llm_wrapper.py:500 - Non-streaming API call failed with status 429. Response: {"error":{"message":"Provider returned error","code":429,"metadata":{"raw":"google/gemma-4-26b-a4b-it is temporarily rate-limited upstream. Please retry shortly, or add your own key to accumulate your rate limits: https://openrouter.ai/settings/integrations","provider_name":"Venice","is_byok":false}},"user_id":"user_2lvrCkCkHOWCDdJ4SDFP9SbM6ei"}
+2026-04-09 12:09:39,693 - ERROR - llm_wrapper.py:521 - API call to google/gemma-4-26b-a4b-it failed: 429 Client Error: Too Many Requests for url: https://openrouter.ai/api/v1/chat/completions
+Traceback (most recent call last):
+  File "/root/nexus/llm_wrapper.py", line 501, in llm_wrapper
+    response.raise_for_status()
+  File "/usr/lib/python3/dist-packages/requests/models.py", line 1021, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://openrouter.ai/api/v1/chat/completions
+2026-04-09 12:09:39,694 - WARNING - llm_wrapper.py:223 - Direct API response indicated an error: {"message": "Provider returned error", "code": 429, "metadata": {"raw": "google/gemma-4-26b-a4b-it is temporarily rate-limited upstream. Please retry shortly, or add your own key to accumulate your rate limits: https://openrouter.ai/settings/integrations", "provider_name": "Venice", "is_byok": false}}
+2026-04-09 12:09:39,694 - INFO - game_system_api.py:273 - [DEBUG] process_input_revised returned: <class 'dict'> - is None: False
+2026-04-09 12:09:39,694 - INFO - game_system_api.py:279 - [DEBUG] game_state updated, is None: False
+2026-04-09 12:09:39,694 - INFO - game_system_api.py:123 - [PROFILE-ASYNC] Starting profile analysis for Gemma4TestFixed
+2026-04-09 12:09:39,696 - INFO - game_system_api.py:306 - [PROFILE-ASYNC] Started background thread for Gemma4TestFixed
+2026-04-09 12:09:39,696 - INFO - game_system_api.py:308 - [DEBUG] End of try block, game_state is None: False
+2026-04-09 12:09:39,697 - INFO - game_system_api.py:312 - [DEBUG] Start of finally block, game_state is None: False, type: <class 'dict'>
+2026-04-09 12:09:39,699 - INFO - db_manager.py:1167 - [PLAYER-STATE-DB] Saved state for Gemma4TestFixed: credits=220, area=Sanctum of Whispers
+2026-04-09 12:09:39,701 - INFO - game_system_api.py:358 - [NOTECARD_CHECK] Response has [notecard=: False, length=110
+2026-04-09 12:09:40,443 - INFO - app.py:1002 - Generated SL commands: '[lookup=telaio_eco;llSetText=Lyra, Custode della Memoria, ti osserva. Cosa desideri?;anim=inchino]' (teleport_offered=False, has_notecard=False)
+2026-04-09 12:09:40,444 - INFO - _internal.py:96 - 127.0.0.1 - - [09/Apr/2026 12:09:40] "POST /api/chat HTTP/1.1" 200 -
+2026-04-09 12:09:48,692 - INFO - llm_wrapper.py:210 - ✓ Cache hit: 0 tokens cached (0.0% of input)
+2026-04-09 12:09:48,692 - INFO - command_processor.py:186 - [DIALOGUE-SPECULATIVE] Completed in 14075ms for NPC: Lyra
+2026-04-09 12:09:54,647 - INFO - llm_wrapper.py:210 - ✓ Cache hit: 0 tokens cached (0.0% of input)
+2026-04-09 12:09:54,650 - INFO - game_system_api.py:142 - [PROFILE-ASYNC] Profile updated for Gemma4TestFixed in 14952ms
