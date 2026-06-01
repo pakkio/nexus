@@ -4,7 +4,7 @@ Flask API for Nexus - AI-powered text-based RPG engine.
 Provides RESTful endpoints for game interaction and session management.
 """
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, Response
 from flask_cors import CORS
 import logging
 import os
@@ -697,6 +697,101 @@ def reset_conversation_history(player_id: str):
     except Exception as e:
         logger.error(f"Error clearing conversation history for {player_id}: {str(e)}")
         return jsonify({'error': str(e)}), 500
+
+@app.route('/api/player/<player_id>/conversation/<npc_code>/summary', methods=['POST'])
+def summarize_npc_conversation(player_id: str, npc_code: str):
+    """Generate a short LLM summary of a single NPC conversation."""
+    import time as _time
+    try:
+        if not game_system:
+            return jsonify({'error': GAME_SYSTEM_NOT_INITIALIZED}), 500
+
+        convs = game_system.db.get_conversation_history(player_id, npc_name=npc_code)
+        history = []
+        for c in convs:
+            if c.get('npc_code') == npc_code:
+                history = c.get('history', []); break
+        if not history:
+            return jsonify({'error': 'No conversation found', 'npc_code': npc_code}), 404
+
+        transcript = []
+        for m in history:
+            who = 'Player' if m.get('role') == 'user' else npc_code
+            transcript.append(f"{who}: {m.get('content','')}")
+        transcript_text = "\n".join(transcript)
+
+        prompt = (
+            "Riassumi in 3-4 frasi questa conversazione tra un giocatore e l'NPC "
+            f"'{npc_code}'. Evidenzia: temi principali, decisioni o richieste del giocatore, "
+            "stato della relazione, eventuali quest o oggetti menzionati. "
+            "Rispondi in italiano, in modo conciso e neutro.\n\n"
+            "=== CONVERSAZIONE ===\n" + transcript_text
+        )
+
+        from llm_wrapper import llm_wrapper
+        model = os.environ.get("PROFILE_ANALYSIS_MODEL", MODEL_PROFILE)
+        t0 = _time.time()
+        summary, _stats = llm_wrapper(
+            messages=[{"role": "user", "content": prompt}],
+            model_name=model,
+            stream=False,
+            collect_stats=True
+        )
+        elapsed_ms = int((_time.time() - t0) * 1000)
+
+        if not summary or summary.startswith("[Errore"):
+            return jsonify({'error': 'Summary generation failed', 'details': summary}), 500
+
+        return jsonify({
+            'player_id': player_id,
+            'npc_code': npc_code,
+            'summary': summary.strip(),
+            'model': model,
+            'time_ms': elapsed_ms,
+            'message_count': len(history)
+        })
+    except Exception as e:
+        logger.error(f"Error summarizing {player_id}/{npc_code}: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/player/<player_id>/conversation/<npc_code>', methods=['DELETE'])
+def reset_npc_conversation(player_id: str, npc_code: str):
+    """Reset/clear conversation history with a single NPC for a player."""
+    try:
+        if not game_system:
+            return jsonify({'error': GAME_SYSTEM_NOT_INITIALIZED}), 500
+
+        db = game_system.db
+        if db.use_mockup:
+            path = os.path.join(
+                db.conversation_dir_template.format(player_id=player_id),
+                f"{npc_code}.json"
+            )
+            if os.path.exists(path):
+                os.remove(path)
+        else:
+            conn = db.connect(); cursor = conn.cursor()
+            try:
+                cursor.execute(
+                    "DELETE FROM ConversationHistory WHERE player_id = %s AND npc_code = %s",
+                    (player_id, npc_code)
+                )
+                conn.commit()
+            finally:
+                cursor.close()
+                if conn and conn.is_connected(): conn.close()
+
+        return jsonify({
+            'success': True,
+            'player_id': player_id,
+            'npc_code': npc_code,
+            'message': f'Conversation with {npc_code} cleared'
+        })
+    except Exception as e:
+        logger.error(f"Error clearing conversation {player_id}/{npc_code}: {str(e)}")
+        return jsonify({'error': str(e), 'success': False}), 500
+
 
 @app.route('/api/player/<player_id>/storage-info', methods=['GET'])
 def get_player_storage_info(player_id: str):
@@ -1659,6 +1754,359 @@ def game_interface():
             'get_help': 'Use /help command'
         }
     })
+
+@app.route('/web', methods=['GET'])
+def web_chat_ui():
+    """Browser UI: shows previous dialog with each NPC and lets you chat."""
+    return Response(_WEB_CHAT_HTML, mimetype='text/html; charset=utf-8')
+
+
+_WEB_CHAT_HTML = r"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Nexus — Web Chat</title>
+<style>
+  :root {
+    --bg:#0f1115; --panel:#181b22; --panel2:#1f232c; --border:#2a2f3a;
+    --text:#e6e8ee; --muted:#8b94a7; --accent:#7aa2ff; --user:#3a6fe0; --npc:#2c3242;
+    --ok:#4ade80; --warn:#fbbf24; --err:#f87171;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin:0; height:100%; background:var(--bg); color:var(--text);
+    font-family: -apple-system, "Segoe UI", Roboto, Ubuntu, sans-serif; font-size:14px; }
+  header { display:flex; align-items:center; gap:12px; padding:10px 16px;
+    background:var(--panel); border-bottom:1px solid var(--border); }
+  header h1 { margin:0; font-size:16px; font-weight:600; letter-spacing:.3px; }
+  header .spacer { flex:1; }
+  header label { color:var(--muted); font-size:12px; margin-right:6px; }
+  header input { background:var(--panel2); color:var(--text); border:1px solid var(--border);
+    border-radius:6px; padding:6px 10px; font-size:13px; width:300px; }
+  header input:focus { outline:none; border-color:var(--accent); }
+  main { display:grid; grid-template-columns: 320px 1fr; height: calc(100vh - 52px); }
+  aside { border-right:1px solid var(--border); background:var(--panel); overflow-y:auto; }
+  aside h2 { font-size:11px; text-transform:uppercase; letter-spacing:1px; color:var(--muted);
+    margin:14px 14px 8px; display:flex; align-items:center; justify-content:space-between; }
+  .btn { background:transparent; border:1px solid var(--border); color:var(--muted);
+    font-size:11px; padding:3px 8px; border-radius:5px; cursor:pointer; text-transform:none;
+    letter-spacing:0; }
+  .btn:hover { color:var(--err); border-color:var(--err); }
+  .btn:disabled { opacity:.4; cursor:not-allowed; }
+  .chat-header { display:flex; align-items:center; justify-content:space-between; }
+  .chat-header .meta { flex:1; }
+  .npc { padding:10px 14px; cursor:pointer; border-left:3px solid transparent; }
+  .npc:hover { background:var(--panel2); }
+  .npc.active { background:var(--panel2); border-left-color:var(--accent); }
+  .npc .name { font-weight:600; }
+  .npc .meta { font-size:12px; color:var(--muted); margin-top:2px; }
+  .npc .badge { display:inline-block; font-size:10px; padding:2px 6px; border-radius:10px;
+    background:var(--npc); color:var(--muted); margin-left:6px; }
+  .npc .badge.spoken { background:#22372a; color:var(--ok); }
+  section.chat { display:flex; flex-direction:column; min-height:0; }
+  .chat-header { padding:14px 18px; border-bottom:1px solid var(--border); background:var(--panel); }
+  .chat-header h3 { margin:0; font-size:15px; }
+  .chat-header .sub { color:var(--muted); font-size:12px; margin-top:2px; }
+  #messages { flex:1; overflow-y:auto; padding:18px; display:flex; flex-direction:column; gap:10px; }
+  .msg { display:flex; gap:10px; max-width: 80%; }
+  .msg.user { align-self:flex-end; flex-direction:row-reverse; }
+  .avatar { width:32px; height:32px; border-radius:50%; flex:0 0 32px;
+    display:flex; align-items:center; justify-content:center; font-weight:700; font-size:13px; }
+  .msg.user .avatar { background:var(--user); }
+  .msg.npc .avatar { background:var(--npc); color:var(--accent); }
+  .bubble { padding:10px 14px; border-radius:14px; line-height:1.45; white-space:pre-wrap;
+    word-wrap:break-word; }
+  .msg.user .bubble { background:var(--user); color:#fff; border-bottom-right-radius:4px; }
+  .msg.npc .bubble { background:var(--npc); border-bottom-left-radius:4px; }
+  .meta-line { font-size:11px; color:var(--muted); margin-top:4px; padding-left:42px; }
+  .meta-line code { background:var(--panel2); padding:1px 5px; border-radius:3px; color:var(--accent); }
+  .summary-box { margin:0 18px 12px; padding:12px 14px; background:var(--panel2);
+    border-left:3px solid var(--accent); border-radius:6px; font-size:13px; line-height:1.5; display:none; }
+  .summary-box.show { display:block; }
+  .summary-box .head { font-size:11px; text-transform:uppercase; letter-spacing:1px;
+    color:var(--accent); margin-bottom:6px; display:flex; justify-content:space-between; }
+  .summary-box .head .close { cursor:pointer; color:var(--muted); }
+  .empty { color:var(--muted); text-align:center; margin-top:60px; font-style:italic; }
+  form#composer { display:flex; gap:8px; padding:12px; border-top:1px solid var(--border);
+    background:var(--panel); }
+  form#composer input { flex:1; background:var(--panel2); color:var(--text);
+    border:1px solid var(--border); border-radius:8px; padding:10px 14px; font-size:14px; }
+  form#composer input:focus { outline:none; border-color:var(--accent); }
+  form#composer button { background:var(--accent); border:none; color:#0b0d12; font-weight:600;
+    padding:0 18px; border-radius:8px; cursor:pointer; font-size:14px; }
+  form#composer button:disabled { opacity:.5; cursor:not-allowed; }
+  .status { font-size:12px; color:var(--muted); padding:6px 14px; }
+  .status.err { color:var(--err); }
+</style>
+</head>
+<body>
+<header>
+  <h1>Nexus · Web Chat</h1>
+  <span class="spacer"></span>
+  <label for="player">Player</label>
+  <input id="player" placeholder="player name or UUID"
+    value="00000000-0000-0000-0000-000000000001">
+</header>
+<main>
+  <aside>
+    <h2>NPCs <button class="btn" id="reset-all" title="Cancella tutte le conversazioni">Reset all</button></h2>
+    <div id="npc-list"><div class="status">Loading…</div></div>
+  </aside>
+  <section class="chat">
+    <div class="chat-header">
+      <div class="meta">
+        <h3 id="chat-title">Select an NPC</h3>
+        <div class="sub" id="chat-sub">Pick someone from the left panel to start.</div>
+      </div>
+      <button class="btn" id="summarize" disabled title="Riepilogo conversazione">Riepilogo</button>
+      <button class="btn" id="reset-one" disabled title="Cancella questa conversazione">Reset chat</button>
+    </div>
+    <div class="summary-box" id="summary-box">
+      <div class="head"><span id="summary-meta">Riepilogo</span><span class="close" id="summary-close">×</span></div>
+      <div id="summary-text"></div>
+    </div>
+    <div id="messages"><div class="empty">No conversation selected.</div></div>
+    <form id="composer">
+      <input id="msg" placeholder="Type a message…" autocomplete="off" disabled>
+      <button type="submit" disabled>Send</button>
+    </form>
+  </section>
+</main>
+<script>
+const $ = (s) => document.querySelector(s);
+const playerInput = $('#player');
+const npcListEl = $('#npc-list');
+const messagesEl = $('#messages');
+const composer = $('#composer');
+const msgInput = $('#msg');
+const sendBtn = composer.querySelector('button');
+const chatTitle = $('#chat-title');
+const chatSub = $('#chat-sub');
+const resetOneBtn = $('#reset-one');
+const resetAllBtn = $('#reset-all');
+const summarizeBtn = $('#summarize');
+const summaryBox = $('#summary-box');
+const summaryText = $('#summary-text');
+const summaryMeta = $('#summary-meta');
+const summaryClose = $('#summary-close');
+
+let npcs = [];           // [{code, name, area, role}]
+let history = {};        // code -> [{role, content}]
+let activeCode = null;
+let activeNpc = null;
+
+function escapeHtml(s) {
+  return (s||'').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+}
+
+function initials(name) {
+  return (name||'?').trim().split(/\s+/).map(w => w[0]).slice(0,2).join('').toUpperCase();
+}
+
+async function fetchNpcs() {
+  const r = await fetch('/api/game/npcs');
+  const j = await r.json();
+  return (j.npcs || []).map(n => ({
+    code: (n.code || (n.area + '.' + n.name)).toLowerCase().replace(/\s+/g,''),
+    name: n.name, area: n.area, role: n.role || ''
+  }));
+}
+
+async function fetchHistory(playerId) {
+  const r = await fetch('/api/player/' + encodeURIComponent(playerId) + '/conversation');
+  const j = await r.json();
+  const out = {};
+  (j.conversation_history || []).forEach(c => { out[c.npc_code] = c.history || []; });
+  return out;
+}
+
+function renderNpcList() {
+  if (!npcs.length) { npcListEl.innerHTML = '<div class="status">No NPCs found.</div>'; return; }
+  npcListEl.innerHTML = npcs.map(n => {
+    const spoken = history[n.code] && history[n.code].length;
+    const badge = spoken ? '<span class="badge spoken">' + spoken + ' msgs</span>' : '';
+    const cls = (n.code === activeCode) ? 'npc active' : 'npc';
+    return '<div class="' + cls + '" data-code="' + escapeHtml(n.code) + '">' +
+      '<div class="name">' + escapeHtml(n.name) + badge + '</div>' +
+      '<div class="meta">' + escapeHtml(n.area) + (n.role ? ' · ' + escapeHtml(n.role) : '') + '</div>' +
+      '</div>';
+  }).join('');
+  npcListEl.querySelectorAll('.npc').forEach(el => {
+    el.addEventListener('click', () => selectNpc(el.dataset.code));
+  });
+}
+
+function renderMessages() {
+  const msgs = history[activeCode] || [];
+  if (!msgs.length) {
+    messagesEl.innerHTML = '<div class="empty">No previous messages. Say hello.</div>';
+    return;
+  }
+  messagesEl.innerHTML = msgs.map(m => {
+    const isUser = m.role === 'user';
+    const av = isUser ? initials(playerInput.value) : initials(activeNpc ? activeNpc.name : '?');
+    let meta = '';
+    if (!isUser && m.meta) {
+      const parts = [];
+      if (m.meta.model) parts.push('<code>' + escapeHtml(m.meta.model) + '</code>');
+      if (m.meta.ms != null) parts.push((m.meta.ms/1000).toFixed(2) + 's');
+      if (m.meta.tin != null || m.meta.tout != null)
+        parts.push((m.meta.tin||0) + '↓ / ' + (m.meta.tout||0) + '↑ tok');
+      meta = '<div class="meta-line">' + parts.join(' · ') + '</div>';
+    }
+    return '<div class="msg ' + (isUser ? 'user' : 'npc') + '">' +
+      '<div class="avatar">' + escapeHtml(av) + '</div>' +
+      '<div class="bubble">' + escapeHtml(m.content) + '</div>' +
+      '</div>' + meta;
+  }).join('');
+  messagesEl.scrollTop = messagesEl.scrollHeight;
+}
+
+function selectNpc(code) {
+  activeCode = code;
+  activeNpc = npcs.find(n => n.code === code);
+  if (!activeNpc) return;
+  chatTitle.textContent = activeNpc.name;
+  chatSub.textContent = activeNpc.area + (activeNpc.role ? ' · ' + activeNpc.role : '');
+  msgInput.disabled = false; sendBtn.disabled = false;
+  resetOneBtn.disabled = false; summarizeBtn.disabled = false;
+  summaryBox.classList.remove('show');
+  msgInput.focus();
+  renderNpcList();
+  renderMessages();
+}
+
+async function summarize() {
+  if (!activeNpc) return;
+  const player = playerInput.value.trim();
+  summarizeBtn.disabled = true;
+  summaryBox.classList.add('show');
+  summaryMeta.textContent = 'Generazione riepilogo…';
+  summaryText.textContent = '…';
+  try {
+    const r = await fetch('/api/player/' + encodeURIComponent(player) +
+      '/conversation/' + encodeURIComponent(activeCode) + '/summary', { method:'POST' });
+    const j = await r.json();
+    if (!r.ok) throw new Error(j.error || ('HTTP ' + r.status));
+    summaryText.textContent = j.summary || '(vuoto)';
+    const bits = [];
+    if (j.model) bits.push(j.model);
+    if (j.time_ms != null) bits.push((j.time_ms/1000).toFixed(2) + 's');
+    if (j.message_count != null) bits.push(j.message_count + ' msgs');
+    summaryMeta.textContent = 'Riepilogo · ' + bits.join(' · ');
+  } catch (e) {
+    summaryText.textContent = '⚠ ' + e.message;
+    summaryMeta.textContent = 'Riepilogo (errore)';
+  } finally {
+    summarizeBtn.disabled = false;
+  }
+}
+
+async function resetOne() {
+  if (!activeNpc) return;
+  if (!confirm('Cancellare la conversazione con ' + activeNpc.name + '?')) return;
+  const player = playerInput.value.trim();
+  try {
+    const r = await fetch('/api/player/' + encodeURIComponent(player) +
+      '/conversation/' + encodeURIComponent(activeCode), { method:'DELETE' });
+    if (!r.ok) { const j = await r.json().catch(()=>({})); throw new Error(j.error || ('HTTP '+r.status)); }
+    history[activeCode] = [];
+    renderMessages();
+    renderNpcList();
+  } catch (e) { alert('Reset failed: ' + e.message); }
+}
+
+async function resetAll() {
+  if (!confirm('Cancellare TUTTE le conversazioni di questo player?')) return;
+  const player = playerInput.value.trim();
+  try {
+    const r = await fetch('/api/player/' + encodeURIComponent(player) +
+      '/conversation/reset', { method:'DELETE' });
+    if (!r.ok) { const j = await r.json().catch(()=>({})); throw new Error(j.error || ('HTTP '+r.status)); }
+    history = {};
+    renderMessages();
+    renderNpcList();
+  } catch (e) { alert('Reset failed: ' + e.message); }
+}
+
+async function load() {
+  npcListEl.innerHTML = '<div class="status">Loading…</div>';
+  try {
+    const [n, h] = await Promise.all([fetchNpcs(), fetchHistory(playerInput.value.trim())]);
+    npcs = n; history = h;
+    // Sort: spoken first, then by area/name
+    npcs.sort((a,b) => {
+      const sa = (history[a.code]||[]).length ? 0 : 1;
+      const sb = (history[b.code]||[]).length ? 0 : 1;
+      if (sa !== sb) return sa - sb;
+      return (a.area + a.name).localeCompare(b.area + b.name);
+    });
+    renderNpcList();
+    if (activeCode && !npcs.find(n => n.code === activeCode)) {
+      activeCode = null; activeNpc = null;
+      chatTitle.textContent = 'Select an NPC';
+      messagesEl.innerHTML = '<div class="empty">No conversation selected.</div>';
+      msgInput.disabled = true; sendBtn.disabled = true;
+      resetOneBtn.disabled = true; summarizeBtn.disabled = true;
+    } else if (activeCode) {
+      renderMessages();
+    }
+  } catch (e) {
+    npcListEl.innerHTML = '<div class="status err">Load failed: ' + escapeHtml(e.message) + '</div>';
+  }
+}
+
+composer.addEventListener('submit', async (ev) => {
+  ev.preventDefault();
+  const text = msgInput.value.trim();
+  if (!text || !activeNpc) return;
+  const player = playerInput.value.trim();
+  history[activeCode] = history[activeCode] || [];
+  history[activeCode].push({role:'user', content:text});
+  renderMessages();
+  msgInput.value = ''; sendBtn.disabled = true;
+  try {
+    const r = await fetch('/api/chat', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        message: text,
+        player_name: player,
+        npc_name: activeNpc.name,
+        area: activeNpc.area
+      })
+    });
+    const j = await r.json();
+    if (!r.ok) throw new Error(j.error || ('HTTP ' + r.status));
+    let reply = (j.npc_response || '').replace(/\[[^\]]+\]/g, '').trim();
+    const dlg = (j.llm_stats && j.llm_stats.dialogue) || {};
+    const meta = {
+      model: dlg.model || null,
+      ms: dlg.last_call_time_ms != null ? dlg.last_call_time_ms : null,
+      tin: dlg.last_tokens_in, tout: dlg.last_tokens_out
+    };
+    history[activeCode].push({role:'assistant', content: reply || '…', meta});
+    renderMessages();
+    renderNpcList();
+  } catch (e) {
+    history[activeCode].push({role:'assistant', content: '⚠ ' + e.message});
+    renderMessages();
+  } finally {
+    sendBtn.disabled = false;
+    msgInput.focus();
+  }
+});
+
+playerInput.addEventListener('change', load);
+resetOneBtn.addEventListener('click', resetOne);
+resetAllBtn.addEventListener('click', resetAll);
+summarizeBtn.addEventListener('click', summarize);
+summaryClose.addEventListener('click', () => summaryBox.classList.remove('show'));
+load();
+</script>
+</body>
+</html>
+"""
+
 
 if __name__ == '__main__':
     # Initialize game system

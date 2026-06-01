@@ -1,492 +1,233 @@
--- BRAIN.ROBLOX.LUA - AI-Driven NPC Brain for Roblox
--- Analogous to brain.lsl (Second Life). Place as a Script inside an NPC Model.
--- Model name format: "NPCName.AreaName"
--- Set a StringAttribute "ServerURL" on the Model to your Nexus server URL.
---
--- Required model structure:
---   Model (named "NPCName.AreaName", with StringAttribute ServerURL)
---     HumanoidRootPart (or any BasePart as primary)
---     Humanoid
---     ClickDetector (auto-created if missing)
---     Animation objects (optional, named to match anim= commands)
-
-local Players     = game:GetService("Players")
-local HttpService = game:GetService("HttpService")
-local Chat        = game:GetService("Chat")
-
--- ============================================
--- CONFIGURATION
--- ============================================
-
-local DEBUG = false
-
-local model    = script.Parent
+-- NPC Brain for Roblox. Model name "NPCName.AreaName", set attribute "ServerURL"
+local Players, HttpService, Chat = game:GetService("Players"), game:GetService("HttpService"), game:GetService("Chat")
+local model, DEBUG = script.Parent, false
 local rootPart = model:FindFirstChild("HumanoidRootPart")
-              or (model:IsA("Model") and model.PrimaryPart or nil)
-              or model:FindFirstChildWhichIsA("BasePart")
+	or (model:IsA("Model") and model.PrimaryPart or nil)
+	or model:FindFirstChildWhichIsA("BasePart")
 local humanoid = model:FindFirstChildOfClass("Humanoid")
+local SERVER_URL = model:GetAttribute("ServerURL") or ""
+local TIMEOUT = 300
+local R,W,G,Y,B = Color3.new(1,0,0), Color3.new(1,1,1), Color3.new(0,1,0), Color3.new(1,1,0), Color3.new(0.3,0.7,1)
+local isConversing, currentPlayer, convTimer, listenConn, billboardGui = false, nil, nil, nil, nil
+local NPC_NAME, CURRENT_AREA = "", ""
+local endConversation, resetTimeout
 
-local SERVER_URL  = model:GetAttribute("ServerURL") or ""
-local NPC_NAME    = ""
-local CURRENT_AREA = ""
-local TIMEOUT     = 300 -- seconds
-
--- ============================================
--- COLORS
--- ============================================
-
-local RED    = Color3.new(1, 0, 0)
-local WHITE  = Color3.new(1, 1, 1)
-local GREEN  = Color3.new(0, 1, 0)
-local YELLOW = Color3.new(1, 1, 0)
-local BLUE   = Color3.new(0.3, 0.7, 1)
-
--- ============================================
--- STATE (forward-declared so functions can cross-reference)
--- ============================================
-
-local isConversing       = false
-local currentPlayer: Player? = nil
-local conversationTimer: thread? = nil
-local listenConnection: RBXScriptConnection? = nil
-local billboardGui: BillboardGui? = nil
-
--- Forward declarations
-local endConversation: (boolean) -> ()
-local resetConversationTimeout: () -> ()
-
--- ============================================
--- BILLBOARD LABEL
--- ============================================
-
-local function setLabel(text: string, color: Color3)
+-- Billboard label
+local function setLabel(text, color)
 	if not billboardGui then
 		local gui = Instance.new("BillboardGui")
-		gui.Name = "StatusBillboard"
-		gui.Size = UDim2.new(0, 220, 0, 70)
-		gui.StudsOffset = Vector3.new(0, 3.5, 0)
-		gui.AlwaysOnTop = true
-		gui.Parent = rootPart
-		          or model:FindFirstChildWhichIsA("BasePart")
-		          or (model:IsA("BasePart") and model or nil)
-		          or model
-
-		local label = Instance.new("TextLabel")
-		label.Name = "Label"
-		label.Size = UDim2.fromScale(1, 1)
-		label.BackgroundTransparency = 1
-		label.TextColor3 = WHITE
-		label.TextScaled = true
-		label.TextWrapped = true
-		label.Font = Enum.Font.GothamBold
-		label.Parent = gui
-
+		gui.Name, gui.Size, gui.StudsOffset, gui.AlwaysOnTop = "StatusBillboard", UDim2.new(0,220,0,70), Vector3.new(0,3.5,0), true
+		gui.Parent = rootPart or model:FindFirstChildWhichIsA("BasePart") or (model:IsA("BasePart") and model or nil) or model
+		local l = Instance.new("TextLabel")
+		l.Name, l.Size, l.BackgroundTransparency, l.TextColor3, l.TextScaled, l.TextWrapped = "Label", UDim2.fromScale(1,1), 1, W, true, true
+		l.Font = Enum.Font.GothamBold; l.Parent = gui
 		billboardGui = gui
 	end
-
-	local label = billboardGui:FindFirstChild("Label") :: TextLabel?
-	if label then
-		label.Text = text
-		label.TextColor3 = color
-	end
+	local l = billboardGui:FindFirstChild("Label")
+	if l then l.Text, l.TextColor3 = text, color end
 end
 
--- ============================================
--- PART COLOR INDICATOR (like llSetColor in LSL)
--- ============================================
-
-local function setColor(color: Color3)
+local function setColor(color)
 	for _, part in model:GetDescendants() do
-		if part:IsA("BasePart") and part.Name ~= "HumanoidRootPart" then
-			part.Color = color
-		end
+		if part:IsA("BasePart") and part.Name ~= "HumanoidRootPart" then part.Color = color end
 	end
 end
 
--- ============================================
--- NPC SPEECH
--- ============================================
-
-local function npcSay(message: string)
-	local part = rootPart
-	          or model:FindFirstChildWhichIsA("BasePart")
-	          or (model:IsA("BasePart") and model or nil)
-	if part then
-		Chat:Chat(part, message, Enum.ChatColor.Blue)
-	end
-	if DEBUG then print("[" .. NPC_NAME .. "] " .. message) end
+-- Speech
+local function npcSay(msg)
+	local part = rootPart or model:FindFirstChildWhichIsA("BasePart") or (model:IsA("BasePart") and model or nil)
+	if part then Chat:Chat(part, msg, Enum.ChatColor.Blue) end
+	if DEBUG then print("[" .. NPC_NAME .. "] " .. msg) end
 end
 
-local function ownerSay(message: string)
-	print("[NPC:" .. NPC_NAME .. "] " .. message)
+local function ownerSay(msg) print("[NPC] " .. msg) end
+local function errSay(msg) warn("[NPC-ERROR] " .. msg) end
+
+-- Wrap callbacks to catch and log crashes
+local function try(f, ...)
+	local args = {...}
+	return xpcall(function() f(table.unpack(args)) end, function(e) errSay(tostring(e) .. "\n" .. debug.traceback()) end)
 end
 
--- ============================================
--- JSON HELPERS
--- ============================================
-
-local function escapeJSON(s: string): string
-	s = s:gsub("\\", "\\\\")
-	s = s:gsub('"',  '\\"')
-	s = s:gsub("\n", "\\n")
-	s = s:gsub("\r", "\\r")
-	s = s:gsub("\t", "\\t")
-	return s
+-- JSON helpers
+local function escapeJSON(s)
+	return s:gsub("\\","\\\\"):gsub('"','\\"'):gsub("\n","\\n"):gsub("\r","\\r"):gsub("\t","\\t")
 end
 
--- Minimal flat-JSON key extractor (handles string values only)
-local function extractJSON(body: string, key: string): string
-	-- Match "key": "value" allowing escaped quotes inside value
-	local val = body:match('"' .. key .. '":%s*"(.-[^\\])"')
-	          or body:match('"' .. key .. '":%s*"()"')  -- empty string
-	if val then
-		val = val:gsub('\\"', '"')
-		val = val:gsub("\\n", "\n")
-		val = val:gsub("\\\\", "\\")
-	end
-	-- Also handle boolean/number values (returned as-is without quotes)
-	if not val then
-		val = body:match('"' .. key .. '":%s*([%w%.%-]+)')
-	end
-	return val or ""
+local function extractJSON(body, key)
+	local val = body:match('"' .. key .. '":%s*"(.-[^\\])"') or body:match('"' .. key .. '":%s*"()"')
+	if val then return val:gsub('\\"','"'):gsub("\\n","\n"):gsub("\\\\","\\") end
+	return body:match('"' .. key .. '":%s*([%w%.%-]+)') or ""
 end
 
--- ============================================
--- ANIMATIONS
--- ============================================
+-- HTTP
+local function req(method, endpoint, data)
+	local opts = {Url = SERVER_URL .. endpoint, Method = method}
+	if data then opts.Headers = {["Content-Type"] = "application/json"}; opts.Body = data end
+	local ok, res = pcall(HttpService.RequestAsync, HttpService, opts)
+	if ok then return true, res.Body, res.StatusCode end
+	return false, tostring(res), 0
+end
 
-local animTracks: { [string]: AnimationTrack } = {}
+-- Animations
+local animTracks = {}
 
-local function playAnim(animName: string)
+local function playAnim(name)
 	if not humanoid then return end
-	animName = animName:match("^%s*(.-)%s*$") -- trim whitespace
-
-	local animObj = model:FindFirstChild(animName)
-	if not animObj or not animObj:IsA("Animation") then
-		if DEBUG then ownerSay("Animation not found: " .. animName) end
-		return
+	name = name:match("^%s*(.-)%s*$")
+	local obj = model:FindFirstChild(name)
+	if not obj or not obj:IsA("Animation") then
+		if DEBUG then ownerSay("Animation not found: " .. name) end; return
 	end
-
-	-- Stop previous track for this name if still playing
-	if animTracks[animName] then
-		animTracks[animName]:Stop()
-	end
-
-	local track = humanoid:LoadAnimation(animObj)
-	track:Play()
-	animTracks[animName] = track
+	if animTracks[name] then animTracks[name]:Stop() end
+	local track = humanoid:LoadAnimation(obj); track:Play(); animTracks[name] = track
 end
 
--- ============================================
--- SL COMMAND PROCESSING
--- ============================================
-
-local function processSLCommands(slCommands: string)
-	-- Parse [key=value;key=value] style blocks from sl_commands field
-	for key, value in slCommands:gmatch("([%w]+)=([^;%]]+)") do
+-- SL commands
+local function processSLCommands(sl)
+	for key, value in sl:gmatch("([%w]+)=([^;%]]+)") do
 		local k = key:lower()
-		if k == "anim" or k == "emote" then
-			playAnim(value)
-		elseif k == "llsettext" then
-			setLabel(value, WHITE)
-		elseif k == "face" then
-			if DEBUG then ownerSay("face command (no-op in Roblox): " .. value) end
-		elseif k == "teleport" then
-			if DEBUG then ownerSay("teleport command: " .. value) end
-		elseif k == "lookup" then
-			if DEBUG then ownerSay("lookup command: " .. value) end
-		end
+		if k == "anim" or k == "emote" then playAnim(value)
+		elseif k == "llsettext" then setLabel(value, W)
+		elseif DEBUG then ownerSay(k .. " command (no-op in Roblox): " .. value) end
 	end
 end
 
--- ============================================
--- RESPONSE PARSING
--- ============================================
-
-local function parseAnimations(text: string)
-	local animName = text:match("%[anim=([^%]]+)%]")
-	if animName then
-		playAnim(animName)
-	end
-end
-
-local function cleanText(text: string): string
-	text = text:gsub("%[%a+=[^%]]*%]", "") -- strip [tag=value] blocks
-	text = text:match("^%s*(.-)%s*$")       -- trim
-	return text
-end
-
-local function handleChatResponse(body: string)
-	setColor(WHITE)
-	resetConversationTimeout()
-
-	if DEBUG then
-		ownerSay("=== RESPONSE RECEIVED === len=" .. #body)
-	end
-
-	local npcResponse = extractJSON(body, "npc_response")
-	if npcResponse == "" then
-		if DEBUG then ownerSay("ERROR: npc_response empty") end
-		return
-	end
-
-	parseAnimations(npcResponse)
-
-	local slCommands = extractJSON(body, "sl_commands")
-	if slCommands ~= "" then
-		processSLCommands(slCommands)
-	end
-
-	npcResponse = cleanText(npcResponse)
-	if npcResponse ~= "" then
-		npcSay(npcResponse)
-	else
-		if DEBUG then ownerSay("ERROR: cleaned response empty") end
-	end
-end
-
--- ============================================
--- HTTP HELPERS
--- ============================================
-
-local function httpPost(endpoint: string, data: string): (boolean, string, number)
-	local ok, result = pcall(HttpService.RequestAsync, HttpService, {
-		Url     = SERVER_URL .. endpoint,
-		Method  = "POST",
-		Headers = { ["Content-Type"] = "application/json" },
-		Body    = data,
-	})
-	if ok then
-		return true, (result :: any).Body, (result :: any).StatusCode
-	end
-	return false, tostring(result), 0
-end
-
-local function httpGet(endpoint: string): (boolean, string, number)
-	local ok, result = pcall(HttpService.RequestAsync, HttpService, {
-		Url    = SERVER_URL .. endpoint,
-		Method = "GET",
-	})
-	if ok then
-		return true, (result :: any).Body, (result :: any).StatusCode
-	end
-	return false, tostring(result), 0
-end
-
--- ============================================
--- CONVERSATION TIMEOUT
--- ============================================
-
-resetConversationTimeout = function()
-	if conversationTimer then
-		task.cancel(conversationTimer)
-		conversationTimer = nil
-	end
-	if not isConversing then return end
-	conversationTimer = task.delay(TIMEOUT, function()
-		if isConversing then
-			ownerSay("Timeout: ending conversation with " .. (currentPlayer and currentPlayer.Name or "?"))
-			endConversation(true)
-		end
+-- Safe task spawn with error logging
+local function spawn(f)
+	task.spawn(function()
+		local ok, e = pcall(f)
+		if not ok then errSay(tostring(e)) end
 	end)
 end
 
--- ============================================
--- CONVERSATION MANAGEMENT
--- ============================================
+-- Response handling
+local function handleChatResponse(body)
+	setColor(W); resetTimeout()
+	local npcResp = extractJSON(body, "npc_response")
+	if npcResp == "" then errSay("npc_response empty"); return end
 
-endConversation = function(sayGoodbye: boolean)
-	if not isConversing then return end
+	local anim = npcResp:match("%[anim=([^%]]+)%]")
+	if anim then playAnim(anim) end
 
-	local playerName = currentPlayer and currentPlayer.Name or ""
+	local sl = extractJSON(body, "sl_commands")
+	if sl ~= "" then processSLCommands(sl) end
 
-	-- Notify server asynchronously
-	local leaveData = string.format(
-		'{"player_name":"%s","npc_name":"%s","area":"%s","action":"leaving","message":"Avatar leaving","status":"end"}',
-		escapeJSON(playerName), escapeJSON(NPC_NAME), escapeJSON(CURRENT_AREA)
-	)
-	task.spawn(function()
-		httpPost("/api/leave_npc", leaveData)
-	end)
-
-	if conversationTimer then
-		task.cancel(conversationTimer)
-		conversationTimer = nil
-	end
-	if listenConnection then
-		listenConnection:Disconnect()
-		listenConnection = nil
-	end
-
-	if sayGoodbye and playerName ~= "" then
-		npcSay("È stato un piacere parlare con te, " .. playerName .. "!")
-	end
-
-	setColor(WHITE)
-	currentPlayer = nil
-	isConversing  = false
-	setLabel("Touch to talk to\n" .. NPC_NAME, GREEN)
+	npcResp = npcResp:gsub("%[%a+=[^%]]*%]", ""):match("^%s*(.-)%s*$")
+	if npcResp ~= "" then npcSay(npcResp)
+	else errSay("cleaned response empty") end
 end
 
-local function sendMessage(msg: string, playerName: string)
-	if not isConversing then
-		if DEBUG then ownerSay("ERROR: Not conversing") end
-		return
-	end
+-- Conversation
+resetTimeout = function()
+	if convTimer then task.cancel(convTimer); convTimer = nil end
+	if not isConversing then return end
+	convTimer = task.delay(TIMEOUT, function()
+		if isConversing then ownerSay("Timeout ending conversation"); endConversation(true) end
+	end)
+end
 
-	setColor(RED)
-	resetConversationTimeout()
+endConversation = function(sayGoodbye)
+	if not isConversing then return end
+	local pn = currentPlayer and currentPlayer.Name or ""
+	local data = string.format('{"player_name":"%s","npc_name":"%s","area":"%s","action":"leaving","message":"Avatar leaving","status":"end"}',
+		escapeJSON(pn), escapeJSON(NPC_NAME), escapeJSON(CURRENT_AREA))
+	spawn(function() req("POST", "/api/leave_npc", data) end)
+	if convTimer then task.cancel(convTimer); convTimer = nil end
+	if listenConn then listenConn:Disconnect(); listenConn = nil end
+	if sayGoodbye and pn ~= "" then npcSay("È stato un piacere parlare con te, " .. pn .. "!") end
+	setColor(W); currentPlayer = nil; isConversing = false
+	setLabel("Touch to talk to\n" .. NPC_NAME, G)
+end
 
-	local chatData = string.format(
-		'{"message":"%s","player_name":"%s","npc_name":"%s","area":"%s"}',
-		escapeJSON(msg), escapeJSON(playerName), escapeJSON(NPC_NAME), escapeJSON(CURRENT_AREA)
-	)
-
-	if DEBUG then ownerSay("Sending /api/chat...") end
-
-	task.spawn(function()
-		local ok, body, status = httpPost("/api/chat", chatData)
-		if ok and status == 200 then
-			handleChatResponse(body)
-		else
-			setColor(WHITE)
-			if DEBUG then
-				ownerSay("HTTP error " .. tostring(status))
-				ownerSay("Body: " .. body:sub(1, 200))
-			end
+local function sendMessage(msg)
+	if not isConversing then errSay("sendMessage called while not conversing"); return end
+	setColor(R); resetTimeout()
+	local data = string.format('{"message":"%s","player_name":"%s","npc_name":"%s","area":"%s"}',
+		escapeJSON(msg), escapeJSON(currentPlayer.Name), escapeJSON(NPC_NAME), escapeJSON(CURRENT_AREA))
+	spawn(function()
+		local ok, body, status = req("POST", "/api/chat", data)
+		if ok and status == 200 then handleChatResponse(body)
+		else setColor(W)
+			errSay("HTTP error " .. tostring(status) .. ": " .. (body and body:sub(1,200) or "nil"))
 			npcSay("Scusa, non posso risponderti ora.")
 		end
 	end)
 end
 
-local function startConversation(player: Player)
+local function startConversation(player)
 	if isConversing then return end
-
-	currentPlayer = player
-	isConversing  = true
-	setLabel("Conversing with\n" .. player.Name, BLUE)
-
-	local senseData = string.format(
-		'{"name":"%s","npcname":"%s","area":"%s"}',
-		escapeJSON(player.Name), escapeJSON(NPC_NAME), escapeJSON(CURRENT_AREA)
-	)
-
-	if DEBUG then ownerSay("Sending /sense for " .. player.Name) end
-
-	task.spawn(function()
-		local ok, body, status = httpPost("/sense", senseData)
+	currentPlayer = player; isConversing = true
+	setLabel("Conversing with\n" .. player.Name, B)
+	local data = string.format('{"name":"%s","npcname":"%s","area":"%s"}',
+		escapeJSON(player.Name), escapeJSON(NPC_NAME), escapeJSON(CURRENT_AREA))
+	spawn(function()
+		local ok, body, status = req("POST", "/sense", data)
 		if ok and status == 200 then
-			handleChatResponse(body)
-			resetConversationTimeout()
-
-			-- Listen for player chat messages (server-side via Player.Chatted)
-			listenConnection = player.Chatted:Connect(function(message: string)
-				sendMessage(message, player.Name)
-			end)
+			handleChatResponse(body); resetTimeout()
+			listenConn = player.Chatted:Connect(function(m) try(sendMessage, m) end)
 		else
-			isConversing  = false
-			currentPlayer = nil
-			setLabel("Touch to talk to\n" .. NPC_NAME, GREEN)
-			if DEBUG then ownerSay("Sense failed: " .. tostring(status)) end
+			isConversing = false; currentPlayer = nil
+			setLabel("Touch to talk to\n" .. NPC_NAME, G)
+			errSay("/sense failed for " .. player.Name .. " (status " .. tostring(status) .. ")")
 		end
 	end)
 end
 
--- ============================================
--- INITIALIZATION
--- ============================================
+-- Parsing NPC name from model
+NPC_NAME, CURRENT_AREA = "", ""
+local dot = model.Name:find("%.")
+if dot and dot > 1 then
+	NPC_NAME = model.Name:sub(1, dot - 1)
+	CURRENT_AREA = model.Name:sub(dot + 1)
+end
 
+-- Init
 local function init()
 	if SERVER_URL == "" or not SERVER_URL:match("^https?://") then
-		setLabel("ERROR: ServerURL\nattribute not set", RED)
-		ownerSay("ERROR: Set StringAttribute 'ServerURL' on Model (e.g., http://212.227.64.143:5000)")
-		return
+		setLabel("ERROR: ServerURL\nattribute not set", R)
+		errSay("Set ServerURL attribute on Model"); return
 	end
-
-	-- Parse "NPCName.AreaName" from model name
-	local dotPos = model.Name:find("%.")
-	if dotPos and dotPos > 1 then
-		NPC_NAME     = model.Name:sub(1, dotPos - 1)
-		CURRENT_AREA = model.Name:sub(dotPos + 1)
-		ownerSay("NPC: " .. NPC_NAME .. " | Area: " .. CURRENT_AREA)
-		ownerSay("Server: " .. SERVER_URL)
-	else
-		ownerSay("ERROR: Model name must be 'NPCName.AreaName'")
-		setLabel("ERROR: Invalid\nmodel name", RED)
-		return
+	if NPC_NAME == "" or CURRENT_AREA == "" then
+		errSay("Model must be named 'NPCName.AreaName'")
+		setLabel("ERROR: Invalid\nmodel name", R); return
 	end
-
-	setLabel("Verifying\n" .. NPC_NAME .. "...", YELLOW)
-
-	-- Check server health, then verify NPC exists
-	task.spawn(function()
-		local ok, body, status = httpGet("/health")
+	ownerSay("NPC: " .. NPC_NAME .. " | Area: " .. CURRENT_AREA .. " | Server: " .. SERVER_URL)
+	setLabel("Verifying\n" .. NPC_NAME .. "...", Y)
+	spawn(function()
+		local ok, body, status = req("GET", "/health")
 		if not ok or status ~= 200 then
-			setLabel("Server offline\n" .. NPC_NAME, RED)
-			ownerSay("ERROR: Server not reachable (status " .. tostring(status) .. ")")
-			return
+			setLabel("Server offline\n" .. NPC_NAME, R)
+			errSay("Server not reachable (status " .. tostring(status) .. ")"); return
 		end
-
-		local version = extractJSON(body, "version")
-		ownerSay("Server online" .. (version ~= "" and (" v" .. version) or ""))
-
-		local verifyData = string.format(
-			'{"npc_name":"%s","area":"%s"}',
-			escapeJSON(NPC_NAME), escapeJSON(CURRENT_AREA)
-		)
-		local vok, vbody, vstatus = httpPost("/api/npc/verify", verifyData)
+		local vok, vbody, vstatus = req("POST", "/api/npc/verify",
+			string.format('{"npc_name":"%s","area":"%s"}', escapeJSON(NPC_NAME), escapeJSON(CURRENT_AREA)))
 		if vok and vstatus == 200 then
-			local found = extractJSON(vbody, "found")
-			if found == "true" then
+			if extractJSON(vbody, "found") == "true" then
 				local caps = ""
 				if extractJSON(vbody, "has_teleport") == "true" then caps = caps .. "TP|" end
 				if extractJSON(vbody, "has_llsettext") == "true" then caps = caps .. "TXT|" end
-				if extractJSON(vbody, "has_notecard") == "true" then caps = caps .. "NC"  end
-				setLabel("Touch to talk to\n" .. NPC_NAME .. "\n[" .. caps .. "]", GREEN)
+				if extractJSON(vbody, "has_notecard") == "true" then caps = caps .. "NC" end
+				setLabel("Touch to talk to\n" .. NPC_NAME .. "\n[" .. caps .. "]", G)
 				ownerSay("NPC verified! Click to talk.")
-			else
-				setLabel("NPC not found\n" .. NPC_NAME, RED)
-				ownerSay("ERROR: NPC '" .. NPC_NAME .. "' not found in database!")
-			end
-		else
-			setLabel("Verify failed\n" .. NPC_NAME, RED)
-			ownerSay("ERROR: Verify request failed (status " .. tostring(vstatus) .. ")")
-		end
+			else setLabel("NPC not found\n" .. NPC_NAME, R); errSay("NPC '" .. NPC_NAME .. "' not found!") end
+		else setLabel("Verify failed\n" .. NPC_NAME, R); errSay("Verify request failed (status " .. tostring(vstatus) .. ")") end
 	end)
 end
 
--- ============================================
--- CLICK DETECTION  (replaces touch_start)
--- ============================================
-
-local clickDetector = model:FindFirstChildOfClass("ClickDetector")
-if not clickDetector then
-	clickDetector = Instance.new("ClickDetector")
-	clickDetector.MaxActivationDistance = 10
-	clickDetector.Parent = rootPart or model
-end
-
-clickDetector.MouseClick:Connect(function(player: Player)
-	-- Second click by same player ends conversation
-	if isConversing and currentPlayer == player then
-		endConversation(true)
-		return
-	end
-	-- Ignore click if NPC is busy with someone else
-	if isConversing then return end
-
-	startConversation(player)
+-- ClickDetector
+local cd = model:FindFirstChildOfClass("ClickDetector")
+if not cd then cd = Instance.new("ClickDetector"); cd.MaxActivationDistance = 10; cd.Parent = rootPart or model end
+cd.MouseClick:Connect(function(player)
+	try(function()
+		if isConversing and currentPlayer == player then endConversation(true); return end
+		if isConversing then return end
+		startConversation(player)
+	end)
 end)
 
--- End conversation when player leaves the game
-Players.PlayerRemoving:Connect(function(player: Player)
-	if isConversing and currentPlayer == player then
-		endConversation(false)
-	end
+Players.PlayerRemoving:Connect(function(player)
+	if isConversing and currentPlayer == player then endConversation(false) end
 end)
-
--- ============================================
--- RUN
--- ============================================
 
 init()

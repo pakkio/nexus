@@ -1,6 +1,7 @@
 {
-  "current_area": "Sanctum of Whispers",
-  "current_npc_code": "sanctumofwhispers.lyra",
+  "current_area": "City",
+  "current_npc_code": "city.irenna",
   "plot_flags": {},
-  "credits": 220
+  "credits": 220,
+  "brief_mode": false
 }

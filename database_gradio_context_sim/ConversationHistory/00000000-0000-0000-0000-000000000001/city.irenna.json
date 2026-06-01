@@ -1,0 +1,22 @@
+[
+  {
+    "role": "assistant",
+    "content": "*Irenna dice,* \"Le mie marionette... a volte si muovono da sole durante le prove. Come se volessero raccontare storie che non conosco.,\""
+  },
+  {
+    "role": "user",
+    "content": "[CONVERSATION_BREAK: Player left the conversation]"
+  },
+  {
+    "role": "user",
+    "content": "ciao"
+  },
+  {
+    "role": "assistant",
+    "content": "[anim=STAND TALK 1;face=express_smile]I bambini capiscono sempre le mie storie, anche quando gli adulti le dimenticano. Forse perché i piccoli non sanno ancora che alcune cose 'non possono' essere vere.\n\n---\n\n💡 Suggerimento: Parlami delle storie che ti stanno a cuore, o di come l'arte può preservare la memoria."
+  },
+  {
+    "role": "user",
+    "content": "[CONVERSATION_BREAK: Player left the conversation]"
+  }
+]
