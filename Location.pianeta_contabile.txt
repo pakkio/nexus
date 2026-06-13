@@ -1,0 +1,24 @@
+Name: Pianeta del Contabile di Dati
+ID: location_pianeta_contabile
+Area: pianeta_contabile
+
+# SETTING_DESCRIPTION
+Un mondo grigio e silenzioso, ordinato in modo maniacale. Non ci sono colori né notifiche lampeggianti, solo colonne di numeri che scorrono come cascate verticali e un vento leggero fatto di bit freddi.
+
+# VEIL_CONNECTION
+Rappresenta l'ossessione per il profitto, la misurazione numerica del valore e l'illusione che solo ciò che si può quantificare esista davvero.
+
+# INTERACTIVE_OBJECTS
+cubo_dati: Blocchi di bit compressi che il contabile usa come sgabello.
+tastiera_invisibile: Una tastiera virtuale su cui il Contabile digita senza sosta.
+schermate_invisibili: Pannelli d'aria che riflettono calcoli finanziari e statistici.
+
+# SPECIAL_PROPERTIES
+Silenzio_Matematico: I suoni ambientali sono ridotti al minimo, sostituiti dal fruscio di numeri in scorrimento.
+
+# CONNECTED_LOCATIONS
+- pianeta_influencer: Il sentiero di bit.
+- pianeta_lampionaio: Una passerella azzurra sospesa nel vuoto.
+
+# QUEST_RELEVANCE
+Il giocatore deve far comprendere al Contabile che il valore personale non si può quantificare in dati.

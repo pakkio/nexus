@@ -339,3 +339,31 @@ Un'ultima riga normale.
     TerminalFormatter._ansi_enabled = None # Reset to allow re-detection next time supports_ansi is called
 
     print(f"\n{TerminalFormatter.BOLD}--- Test Finished ---{TerminalFormatter.RESET}")
+
+
+class _MockTFMeta(type):
+    """Metaclass that returns empty string for any undefined attribute access."""
+    def __getattr__(cls, name):
+        return ""
+
+
+class MockTerminalFormatter(metaclass=_MockTFMeta):
+    """A mock TerminalFormatter that returns empty strings for all color/style attributes.
+
+    Uses a metaclass so any new attributes added to TerminalFormatter will
+    automatically return '' without needing to update this class.
+
+    Usage in tests:
+        from terminal_formatter import MockTerminalFormatter as MockTF
+    """
+    @staticmethod
+    def supports_ansi():
+        return False
+
+    @staticmethod
+    def format_terminal_text(text, width=80):
+        return text
+
+    @staticmethod
+    def get_terminal_width():
+        return 80

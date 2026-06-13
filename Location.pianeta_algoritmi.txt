@@ -1,0 +1,23 @@
+Name: Pianeta del Re degli Algoritmi
+ID: location_pianeta_algoritmi
+Area: pianeta_algoritmi
+
+# SETTING_DESCRIPTION
+Un mondo geometrico ordinato fino all'ossessione: griglie perfette di neon, linee luminose e finestre che si aprono e si chiudono da sole come se respirassero a tempo di clock. Al centro, su un trono di codice pulsante, siede il Re.
+
+# VEIL_CONNECTION
+Rappresenta il tentativo della rete di predeterminare ogni comportamento ed emozione tramite istruzioni rigide, escludendo l'imprevisto e la deviazione.
+
+# INTERACTIVE_OBJECTS
+trono_codice: Un blocco di dati solidi che pulsa a frequenze precise.
+griglia_neon: Linee di demarcazione perfette che scorrono sul terreno come un foglio di calcolo infinito.
+
+# SPECIAL_PROPERTIES
+Determinismo: In quest'area ogni azione spontanea viene segnalata dal sistema come eccezione.
+
+# CONNECTED_LOCATIONS
+- asteroide_b612: Il sentiero di luce che torna al pianeta del Principe.
+- pianeta_influencer: Un tunnel di dati pulsanti che conduce alla stanza dello streaming.
+
+# QUEST_RELEVANCE
+Il giocatore deve affrontare l'illusione del controllo assoluto degli algoritmi.

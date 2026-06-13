@@ -1,0 +1,24 @@
+Name: Pianeta dei Ricordi Cancellati
+ID: location_pianeta_ricordi
+Area: pianeta_ricordi
+
+# SETTING_DESCRIPTION
+Un paesaggio inquietante fatto di memorie spezzate, finestre incomplete che si aprono su scene del passato e cartelle vuote che portano nomi come "vacanze", "amici", "sogni" e "promesse". Tutto ha un aspetto sfocato e corrotto.
+
+# VEIL_CONNECTION
+Rappresenta il cestino della spazzatura del cyberspazio, un luogo di accumulo per tutto ciò che gli adulti scelgono di dimenticare o cancellare per non soffrire.
+
+# INTERACTIVE_OBJECTS
+scena_infanzia: Un frammento video danneggiato che mostra un bambino felice davanti a un vecchio computer.
+cartelle_sogni: Cartelle fluttuanti semitrasparenti contrassegnate con parole nostalgiche.
+cumulo_file: Una pila di pixel corrotti che formano colline grigie.
+
+# SPECIAL_PROPERTIES
+Instabilita_Rendering: Gli oggetti e il Custode cambiano forma o si dissolvono temporaneamente a causa di errori di rendering costanti.
+
+# CONNECTED_LOCATIONS
+- pianeta_geografo: Il corridoio buio e frammentato.
+- pianeta_programmatore: Un sentiero irregolare di codice incompleto.
+
+# QUEST_RELEVANCE
+Il giocatore deve assistere al recupero di un ricordo d'infanzia dimenticato, capendo il valore di conservare la propria storia personale.

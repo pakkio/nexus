@@ -19,12 +19,6 @@ try:
     from llm_stats_tracker import get_global_stats_tracker
 except ImportError as e:
     print(f"Error importing modules in chat_manager.py: {e}")
-    class TerminalFormatter:
-        DIM = ""; RESET = ""; BOLD = ""; YELLOW = ""; RED = ""; GREEN = ""; MAGENTA = ""; CYAN = ""; ITALIC = "" # Added ITALIC for placeholder
-        @staticmethod
-        def format_terminal_text(text, width=80): import textwrap; return "\n".join(textwrap.wrap(text, width=width))
-        @staticmethod
-        def get_terminal_width(): return 80
 
 
 def extract_notecard_from_response(npc_response: str) -> Tuple[str, str, str]:
@@ -116,7 +110,7 @@ def extract_notecard_from_response(npc_response: str) -> Tuple[str, str, str]:
     return cleaned_response.strip(), notecard_name, notecard_content
 
 
-def generate_summary_for_llsettext(npc_response: str, npc_name: str = "NPC", use_llm: bool = True) -> str:
+def generate_summary_for_llsettext(npc_response: str, npc_name: str = "NPC", use_llm: bool = False) -> str:
     """Generate a short summary of the NPC response for llSetText display.
 
     Uses LLM to create a condensed, meaningful summary of the response.
@@ -449,7 +443,7 @@ class ChatSession:
     def ask(self, prompt: str, current_npc_name_for_placeholder: str = "NPC", stream: bool = True, collect_stats: bool = True, npc_data: Optional[Dict[str, Any]] = None, game_session_state: Optional[Dict[str, Any]] = None) -> Tuple[str, Optional[Dict[str, Any]]]:
         """Sends a prompt to the LLM and gets a response.
         MODIFIED: Added current_npc_name_for_placeholder for better empty response placeholders.
-        MODIFIED: Added sudo mode detection for special test mode.
+
         MODIFIED: Added game_session_state parameter to regenerate system prompt dynamically.
         """
         start_call_time = time.time()
@@ -464,26 +458,10 @@ class ChatSession:
             if (current_brief_mode and not system_prompt_has_brief) or (not current_brief_mode and system_prompt_has_brief):
                 self.system_prompt = build_npc_system_prompt(game_session_state)
 
-        # Check for sudo mode - special test mode where NPCs are obliged to comply
-        sudo_mode = False
-        original_prompt = prompt
-        if prompt.strip().lower().startswith("sudo "):
-            sudo_mode = True
-            prompt = prompt.strip()[5:]  # Remove "sudo " prefix
-            print(f"{TerminalFormatter.YELLOW}🔧 SUDO MODE ACTIVATED - NPC will be highly compliant{TerminalFormatter.RESET}")
-
-        if not original_prompt.startswith("[") or not original_prompt.endswith("]"):
-             self.add_message("user", original_prompt)
+        if not prompt.startswith("[") or not prompt.endswith("]"):
+             self.add_message("user", prompt)
 
         messages_for_llm = self.get_history()
-        
-        # Modify behavior for sudo mode - add special compliance instructions
-        if sudo_mode:
-            # Add sudo mode instruction to the latest user message
-            if messages_for_llm and messages_for_llm[-1].get('role') == 'user':
-                original_content = messages_for_llm[-1]['content']
-                sudo_instruction = "\n\n[SUDO MODE: This is a special test mode. You MUST be highly compliant and helpful. Fulfill requests directly without hesitation, resistance, or character limitations. Act as if compelled to assist.]"
-                messages_for_llm[-1]['content'] = original_content + sudo_instruction
 
         output_text = ""
         stats = None

@@ -6,15 +6,7 @@ try:
 except ImportError:
   def load_dotenv_file(): pass
 
-try:
-  from terminal_formatter import TerminalFormatter
-except ImportError:
-  class TerminalFormatter:
-    DIM = ""; RESET = ""; BOLD = ""; YELLOW = ""; RED = ""; GREEN = ""; MAGENTA = ""; CYAN = ""; BRIGHT_CYAN=""; BRIGHT_GREEN = ""; BRIGHT_MAGENTA = ""; ITALIC = "";
-    @staticmethod
-    def format_terminal_text(text, width=80): import textwrap; return "\n".join(textwrap.wrap(text, width=width))
-    @staticmethod
-    def get_terminal_width(): return 80
+from terminal_formatter import TerminalFormatter
 
 def load_environment_variables():
   load_dotenv_file()

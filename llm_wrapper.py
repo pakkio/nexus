@@ -2,8 +2,9 @@
 
 import time
 import os
+import threading
 import requests # Dependency: pip install requests
-from nexus_config import MODEL_DEFAULT
+from nexus_config import MODEL_DEFAULT, DEEPSEEK_THINKING
 import json
 import logging
 from typing import List, Dict, Optional, Tuple, Any
@@ -15,43 +16,31 @@ load_dotenv()
 
 # Create a session with connection pooling for better performance
 _request_session = None
+_session_lock = threading.Lock()
 
 def get_request_session():
     """Get a requests session with connection pooling."""
     global _request_session
     if _request_session is None:
-        _request_session = requests.Session()
-        # Configure connection pooling
-        adapter = requests.adapters.HTTPAdapter(
-            pool_connections=5,
-            pool_maxsize=10,
-            max_retries=1
-        )
-        _request_session.mount('http://', adapter)
-        _request_session.mount('https://', adapter)
+        with _session_lock:
+            if _request_session is None:
+                _request_session = requests.Session()
+                # Configure connection pooling
+                adapter = requests.adapters.HTTPAdapter(
+                    pool_connections=5,
+                    pool_maxsize=10,
+                    max_retries=1
+                )
+                _request_session.mount('http://', adapter)
+                _request_session.mount('https://', adapter)
     return _request_session
 
 # Configure basic logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s')
 
 # --- TerminalFormatter (Fallback included) ---
-try:
-    from terminal_formatter import TerminalFormatter
-except ImportError:
-    logging.warning("terminal_formatter not found. Using basic fallback.")
-    class TerminalFormatter: # Basic Fallback
-        RED = "\033[91m"; YELLOW = "\033[93m"; RESET = "\033[0m"; BOLD = ""; ITALIC = ""; DIM = ""; MAGENTA = ""; CYAN = "";
-        @staticmethod
-        def format_terminal_text(text, width=80):
-            import textwrap
-            return "\n".join(textwrap.wrap(text, width=width))
-        @staticmethod
-        def get_terminal_width():
-            try:
-                import shutil
-                return shutil.get_terminal_size((80, 24)).columns
-            except Exception: return 80
-TF = TerminalFormatter # Alias for convenience if needed within this file directly
+from terminal_formatter import TerminalFormatter
+TF = TerminalFormatter
 # --- End TerminalFormatter ---
 
 
@@ -382,17 +371,22 @@ def llm_wrapper(messages: List[Dict[str, str]],
         logging.warning(f"Anthropic API failed for {model_name}, falling back to OpenRouter with claude-3.5-haiku")
         model_name = "anthropic/claude-3.5-haiku"  # Fallback
 
-    # DEFAULT: Use OpenRouter
-    api_key = os.environ.get("OPENROUTER_API_KEY")
-    api_base = "https://openrouter.ai/api/v1"
+    # DEFAULT: Use OpenRouter, or DeepSeek direct if requested
+    if model_name and "deepseek" in model_name:
+        api_key = os.environ.get("DEEPSEEK_API_KEY")
+        api_base = "https://api.deepseek.com"
+        if not api_key:
+            logging.error("DEEPSEEK_API_KEY environment variable not set.")
+            return "[Errore: Chiave API DeepSeek mancante]", {"error": "DEEPSEEK_API_KEY not set"}
+    else:
+        api_key = os.environ.get("OPENROUTER_API_KEY")
+        api_base = "https://openrouter.ai/api/v1"
+        if not api_key:
+            logging.error("OPENROUTER_API_KEY environment variable not set.")
+            return "[Errore: Chiave API OpenRouter mancante]", {"error": "OPENROUTER_API_KEY not set"}
+
     site_url = os.environ.get("OPENROUTER_APP_URL", "http://localhost")
     app_title = os.environ.get("OPENROUTER_APP_TITLE", "MyNexusClient")
-    # DeepSeek direct: api_key = os.environ.get("DEEPSEEK_API_KEY")
-    # DeepSeek direct: api_base = "https://api.deepseek.com"
-
-    if not api_key:
-        logging.error("OPENROUTER_API_KEY environment variable not set.")
-        return "[Errore: Chiave API OpenRouter mancante]", {"error": "OPENROUTER_API_KEY not set"}
 
     if model_name is None:
         model_name = os.environ.get("OPENROUTER_DEFAULT_MODEL", MODEL_DEFAULT)
@@ -456,6 +450,9 @@ def llm_wrapper(messages: List[Dict[str, str]],
         payload["max_tokens"] = 2048  # Increased from 512 to allow notecard generation
         payload["temperature"] = 0.7
         payload["top_p"] = 0.9
+        if model_name and "deepseek" in model_name.lower():
+            payload["thinking"] = { "type": DEEPSEEK_THINKING }
+            logging.info(f"DeepSeek thinking configuration set to: {DEEPSEEK_THINKING}")
 
     start_time = time.time()
     first_token_time = None

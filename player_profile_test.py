@@ -2,6 +2,7 @@
 import pytest
 import json
 from unittest.mock import Mock, MagicMock, patch
+from terminal_formatter import MockTerminalFormatter as MockTF
 
 # Import the modules to test
 from player_profile_manager import (
@@ -14,15 +15,6 @@ from player_profile_manager import (
 
 @pytest.fixture
 def mock_terminal_formatter():
-    class MockTF:
-        RED = YELLOW = GREEN = RESET = BOLD = DIM = ""
-        MAGENTA = CYAN = BRIGHT_CYAN = BG_BLUE = ""
-        BRIGHT_WHITE = BG_GREEN = BLACK = ""
-        BRIGHT_MAGENTA = BRIGHT_GREEN = BRIGHT_YELLOW = ITALIC = ""
-
-        @staticmethod
-        def format_terminal_text(text, width=80):
-            return text
     return MockTF
 
 @pytest.fixture

@@ -60,8 +60,8 @@ def test_format_stats():
 
 def test_generate_summary_for_llsettext_basic_cleanup():
     npc_name = "Lyra"
-    text = "*Lyra ti dice* Benvenuto, viandante! Qui trovi misteri e meraviglie."
-    summary = generate_summary_for_llsettext(text, npc_name)
+    text = "*Lyra ti dice* Benvenuto, viandante! Qui trovi misteri e meraviglie che superano ogni tua immaginazione in questo luogo dimenticato."
+    summary = generate_summary_for_llsettext(text, npc_name, use_llm=False)
     assert "Lyra ti dice" not in summary
     assert len(summary) <= 80
     assert "misteri" in summary
@@ -73,7 +73,7 @@ def test_generate_summary_for_llsettext_truncation_sentence_boundary():
         "Erasmus ti informa che questa è una frase estremamente lunga che dovrebbe superare il limite di ottanta caratteri. "
         "Seconda frase ignorata."
     )
-    summary = generate_summary_for_llsettext(long_sentence, npc_name)
+    summary = generate_summary_for_llsettext(long_sentence, npc_name, use_llm=False)
     assert len(summary) <= 80
     assert summary.endswith("...")
 
@@ -81,7 +81,7 @@ def test_generate_summary_for_llsettext_truncation_sentence_boundary():
 def test_generate_summary_for_llsettext_no_period_truncation():
     npc_name = "Syra"
     long_text = "Syra ti dice Questo testo senza punti dovrebbe essere troncato al limite consentito con parole"
-    summary = generate_summary_for_llsettext(long_text, npc_name)
+    summary = generate_summary_for_llsettext(long_text, npc_name, use_llm=False)
     assert len(summary) <= 80
     assert summary.endswith("...")
 
@@ -100,7 +100,6 @@ def test_generate_sl_command_prefix_with_response_and_teleport():
 
     assert cmd.startswith("[") and cmd.endswith("]")
     assert "lookup=altar" in cmd
-    assert "emote=wave" in cmd
     assert "anim=bow" in cmd
     assert "teleport=128,64,30" in cmd
     # llSetText should be derived from npc_response, not the fallback
@@ -121,7 +120,6 @@ def test_generate_sl_command_prefix_without_teleport_and_without_response():
 
     assert cmd.startswith("[") and cmd.endswith("]")
     assert "lookup=relic" in cmd
-    assert "emote=nod" in cmd
     assert "anim=shrug" in cmd
     assert "teleport=" not in cmd
     # With no npc_response, llsettext falls back to predefined

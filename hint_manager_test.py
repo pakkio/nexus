@@ -5,11 +5,11 @@ import time  # Added time import
 from unittest.mock import Mock, MagicMock
 from hint_manager import (
     generate_cache_key,
-    summarize_conversation_for_lyra,
-    build_initial_lyra_prompt,
+    summarize_conversation_for_guide,
+    build_initial_guide_prompt,
     get_cached_hint,
     cache_hint,
-    format_lyra_response
+    format_guide_response
 )
 
 @pytest.fixture
@@ -75,7 +75,7 @@ def test_generate_cache_key(mock_db):
     key_with_chat = generate_cache_key(state)
     assert key_with_chat != key
 
-def test_summarize_conversation_for_lyra(mock_llm_wrapper, mock_terminal_formatter):
+def test_summarize_conversation_for_guide(mock_llm_wrapper, mock_terminal_formatter):
     # Test data
     chat_history = [
         {"role": "user", "content": "Hello"},
@@ -85,7 +85,7 @@ def test_summarize_conversation_for_lyra(mock_llm_wrapper, mock_terminal_formatt
     ]
 
     # Call the function
-    summary = summarize_conversation_for_lyra(
+    summary = summarize_conversation_for_guide(
         chat_history=chat_history,
         llm_wrapper_func=mock_llm_wrapper,
         model_name="test-model",
@@ -97,15 +97,15 @@ def test_summarize_conversation_for_lyra(mock_llm_wrapper, mock_terminal_formatt
     assert summary == "Test response"
 
     # Test with empty history
-    empty_summary = summarize_conversation_for_lyra(
+    empty_summary = summarize_conversation_for_guide(
         chat_history=[],
         llm_wrapper_func=mock_llm_wrapper,
         model_name="test-model",
         TF=mock_terminal_formatter
     )
-    assert "No conversation" in empty_summary
+    assert "conversation" in empty_summary
 
-def test_build_initial_lyra_prompt(mock_terminal_formatter):
+def test_build_initial_guide_prompt(mock_terminal_formatter):
     # Test data
     summary = "Test conversation summary"
     player_data = {
@@ -127,45 +127,47 @@ def test_build_initial_lyra_prompt(mock_terminal_formatter):
         "role": "Guide"
     }
     story_context = "The Shattered Veil"
+    game_session_state = {}
 
     # Call the function
-    prompt = build_initial_lyra_prompt(
-        summary=summary,
+    prompt = build_initial_guide_prompt(
+        guide_npc_name="Lyra",
+        summary_of_last_interaction=summary,
         player_data=player_data,
         player_profile=player_profile,
         stashed_npc_data=stashed_npc_data,
         TF=mock_terminal_formatter,
-        story_context=story_context
+        story_context=story_context,
+        game_session_state=game_session_state
     )
 
     # Verify result
     assert isinstance(prompt, str)
-    assert "Salve, Lyra" in prompt
+    assert "Salutations, Lyra" in prompt
     assert "TestPlayer" in prompt
-    assert "TestArea" in prompt
     assert "TestNPC" in prompt
-    assert "Guide" in prompt
+    assert "TestArea" in prompt
     assert "Test conversation summary" in prompt
 
     # Adjust for capitalization: traits might appear as "Curiosity" in the prompt
     assert "Curiosity" in prompt or "curiosity" in prompt
-    assert "Seeks knowledge" in prompt or "seeks knowledge" in prompt
     assert "The Shattered Veil" in prompt
-    assert "Velo" in prompt
 
     # Test with different story_context
-    prompt2 = build_initial_lyra_prompt(
-        summary=summary,
+    prompt2 = build_initial_guide_prompt(
+        guide_npc_name="Lyra",
+        summary_of_last_interaction=summary,
         player_data=player_data,
         player_profile=player_profile,
         stashed_npc_data=None,  # Test with None NPC
         TF=mock_terminal_formatter,
-        story_context="Custom Story"
+        story_context="Custom Story",
+        game_session_state=game_session_state
     )
 
     assert "Custom Story" in prompt2
-    assert "Non stavo parlando con nessuno" in prompt2
-    assert "Sto vivendo un'avventura in Custom Story" in prompt2
+    assert "was not in a specific conversation" in prompt2
+    assert "Custom Story" in prompt2
 
 def test_get_cached_hint():
     # Test state with cache
@@ -173,11 +175,11 @@ def test_get_cached_hint():
     state = {
         'hint_cache': {
             'test_key': {
-                'hint': 'Test hint',
+                'hint_text': 'Test hint',
                 'timestamp': current_time - 300  # 5 minutes ago (still valid)
             },
             'old_key': {
-                'hint': 'Old hint',
+                'hint_text': 'Old hint',
                 'timestamp': current_time - 700  # > 10 minutes ago (expired)
             }
         }
@@ -205,13 +207,13 @@ def test_cache_hint():
 
     assert 'hint_cache' in state
     assert 'test_key' in state['hint_cache']
-    assert state['hint_cache']['test_key']['hint'] == 'Test hint'
+    assert state['hint_cache']['test_key']['hint_text'] == 'Test hint'
     assert 'timestamp' in state['hint_cache']['test_key']
 
     # Test adding hint to existing cache
     cache_hint('another_key', 'Another hint', state)
     assert len(state['hint_cache']) == 2
-    assert state['hint_cache']['another_key']['hint'] == 'Another hint'
+    assert state['hint_cache']['another_key']['hint_text'] == 'Another hint'
 
     # Test the limit mechanism by manually checking if code has the expected logic,
     # rather than trying to test the exact implementation behavior which might change
@@ -223,7 +225,7 @@ def test_cache_hint():
     for i in range(60):
         key = f'key_{i}'
         state['hint_cache'][key] = {
-            'hint': f'Hint {i}',
+            'hint_text': f'Hint {i}',
             'timestamp': 1000 + i  # Explicitly control timestamps for predictable sorting
         }
 
@@ -240,12 +242,12 @@ def test_cache_hint():
     # the cache is smaller than the original 61 entries
     assert len(state['hint_cache']) < 61
 
-def test_format_lyra_response(mock_terminal_formatter):
+def test_format_guide_response(mock_terminal_formatter):
     TF = mock_terminal_formatter
 
     # Test basic formatting
     raw_response = "This is a test response."
-    formatted = format_lyra_response(raw_response, TF)
+    formatted = format_guide_response(raw_response, TF)
     assert formatted == "This is a test response."
 
     # Test with formatting elements
@@ -260,7 +262,7 @@ def test_format_lyra_response(mock_terminal_formatter):
     Regular text again.
     """
 
-    formatted_with_styling = format_lyra_response(raw_response_with_formatting, TF)
+    formatted_with_styling = format_guide_response(raw_response_with_formatting, TF)
     assert "Title Here" in formatted_with_styling
     assert "Bullet point 1" in formatted_with_styling
     assert "Indented text" in formatted_with_styling

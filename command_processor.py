@@ -38,16 +38,7 @@ from command_handlers.handle_brief import handle_brief
 
 import session_utils # Keep for other utilities like get_npc_color
 
-# Dummy TerminalFormatter fallback for color/style safety
-class DummyTF:
-    YELLOW = RED = DIM = BOLD = ITALIC = RESET = ''
-    BRIGHT_CYAN = BRIGHT_YELLOW = GREEN = BLUE = MAGENTA = CYAN = ''
-    BRIGHT_RED = BRIGHT_GREEN = BRIGHT_BLUE = BRIGHT_MAGENTA = BRIGHT_WHITE = ''
-    BG_GREEN = BLACK = BG_BLUE = BRIGHT_WHITE = ''
-    @staticmethod
-    def get_terminal_width(): return 80
-    @staticmethod
-    def format_terminal_text(text, width=80): return text
+from terminal_formatter import TerminalFormatter, MockTerminalFormatter
 
 from command_handler_utils import HandlerResult, _add_profile_action, hint_manager, get_distilled_profile_insights_for_npc
 from consequence_system import show_philosophical_consequences, track_relationship_changes
@@ -83,14 +74,14 @@ def _speculative_nlp_interpretation(user_input: str, state: Dict[str, Any], resu
                     # Fallback to original method
                     db = state.get('db')
                     if db:
-                        TF = state.get('TerminalFormatter') or DummyTF
+                        TF = state.get('TerminalFormatter') or MockTerminalFormatter
                         all_known_npcs = session_utils.refresh_known_npcs_list(db, TF)
                         available_areas = session_utils.get_known_areas_from_list(all_known_npcs)
                         state_copy['available_areas'] = available_areas
             else:
                 db = state.get('db')
                 if db:
-                    TF = state.get('TerminalFormatter') or DummyTF
+                    TF = state.get('TerminalFormatter') or MockTerminalFormatter
                     all_known_npcs = session_utils.refresh_known_npcs_list(db, TF)
                     available_areas = session_utils.get_known_areas_from_list(all_known_npcs)
                     state_copy['available_areas'] = available_areas
@@ -194,7 +185,7 @@ def _speculative_dialogue_generation(user_input: str, state: Dict[str, Any], res
     result_container['completed'] = True
 
   except Exception as e:
-    elapsed_ms = int((time.time() - time.time()) * 1000)  # Will be 0 but keeps format
+    elapsed_ms = int((time.time() - start_time) * 1000)
     logger.error(f"[DIALOGUE-SPECULATIVE] Error: {str(e)}")
     result_container['dialogue_result'] = None
     result_container['completed'] = True
@@ -208,7 +199,7 @@ def _build_dialogue_response(state: Dict[str, Any], dialogue_data: Dict[str, Any
   
   # Format and display the response
   if response_text:
-    TF = TF or DummyTF
+    TF = TF or MockTerminalFormatter
     npc_color = session_utils.get_npc_color(npc_name, TF)
     reset = getattr(TF, 'RESET', '') if TF else ''
     print(f"{npc_color}{npc_name} > {reset}{response_text}")
@@ -459,7 +450,7 @@ def process_input_revised(user_input: str, state: Dict[str, Any]) -> Dict[str, A
       player_area = normalize_area_name(state.get('current_area', ''))
       if npc_area != player_area:
         logger.warning(f"[DIALOGUE-SAFEGUARD] Area mismatch: NPC '{current_npc.get('name')}' is in '{npc_area}', but player is in '{player_area}'. Blocking response.")
-        TF = TF or DummyTF
+        TF = TF or MockTerminalFormatter
         yellow = getattr(TF, 'YELLOW', '')
         reset = getattr(TF, 'RESET', '')
         print(f"{yellow}Session mismatch detected: You are in '{player_area}', but trying to talk to '{current_npc.get('name')}' in '{npc_area}'. Please use /go and /talk to reset your conversation.{reset}")
@@ -468,13 +459,13 @@ def process_input_revised(user_input: str, state: Dict[str, Any]) -> Dict[str, A
         return state
 
       npc_name_for_prompt = current_npc.get('name', 'NPC')
-      TF = TF or DummyTF
+      TF = TF or MockTerminalFormatter
       npc_color = session_utils.get_npc_color(current_npc.get('name', 'NPC'), TF)
 
       if is_in_hint_mode: # MODIFIED: Adjust name and color for hint mode
         guide_name = state.get('wise_guide_npc_name', 'Guide')
         npc_name_for_prompt = f"{guide_name} (Consultation)"
-        TF = TF or DummyTF
+        TF = TF or MockTerminalFormatter
         npc_color = session_utils.get_npc_color(guide_name, TF)
 
       # Avoid printing NPC prompt if it was an NLP-interpreted command that then resulted in an NPC reaction

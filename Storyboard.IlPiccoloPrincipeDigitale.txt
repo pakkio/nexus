@@ -1,0 +1,94 @@
+Name: Il Piccolo Principe Digitale
+ID: storyboard_piccolo_principe_digitale
+Campaign_Type: Narrative_Choice_Driven
+Difficulty_Level: Intermediate_to_Advanced
+Estimated_Duration: 8-12_sessions
+
+# CORE NARRATIVE
+Central_Premise: Un viaggio nel cyberspazio alla ricerca di ciò che conta davvero, guidati dall'innocenza luminosa del Piccolo Principe Digitale. Attraversando pianeti governati da regole rigide, algoritmi e manie adulte, il giocatore deve riscoprire l'invisibile e l'essenziale prima che la Rosa di Luce si dissolva nel flusso di dati.
+
+Crisis_Description: Il cyberspazio è dominato da metriche, ottimizzazione, emozioni sintetiche e cancellazione dei ricordi. La Rosa di Luce si sta spegnendo perché nessuno si prende cura di lei con un legame sincero, e i pianeti programma rischiano il collasso emotivo.
+
+Player_Role: L'Esploratore Digitale - un adulto che ha dimenticato come si immagina e che, esplorando un vecchio server abbandonato, incontra il Piccolo Principe Digitale e intraprende un viaggio di riscoperta.
+
+# THE NINE TAPPE - JOURNEY STRUCTURE
+
+## TAPPA 1 - ASTEROIDE B 612.EXE (Asteroide B 612.exe)
+Location: asteroide_b612
+NPC: piccolo_principe
+Philosophical_Theme: Immaginazione vs Dati, vedere oltre lo schermo
+Key_Moment: L'Esploratore incontra il Piccolo Principe e scopre la Rosa di Luce.
+Quest_Element: Inizio del viaggio per comprendere le ossessioni degli adulti.
+Narrative_Function: Introduzione dei temi fondamentali: l'invisibile e i legami reali.
+
+## TAPPA 2 - PIANETA DEL RE DEGLI ALGORITMI (Pianeta del Re degli Algoritmi)
+Location: pianeta_algoritmi
+NPC: re_algoritmi
+Philosophical_Theme: Calcolabilità vs Libertà
+Key_Moment: Il Re degli Algoritmi afferma che tutto è prevedibile e sotto controllo.
+Quest_Element: Comprendere l'inefficienza e la bellezza dell'imprevedibilità.
+Narrative_Function: Mostra come il controllo totale uccida lo spirito vitale.
+
+## TAPPA 3 - PIANETA DELL'INFLUENCER SOLITARIO (Pianeta dell'Influencer Solitario)
+Location: pianeta_influencer
+NPC: influencer_solitario
+Philosophical_Theme: Attenzione artificiale vs Affetto reale
+Key_Moment: L'Influencer ammette di non spegnere mai per paura di essere dimenticato.
+Quest_Element: Convincere l'Influencer a spegnere la luce per respirare nel silenzio.
+Narrative_Function: Esplora l'illusione della connessione costante.
+
+## TAPPA 4 - PIANETA DEL CONTABILE DI DATI (Pianeta del Contabile di Dati)
+Location: pianeta_contabile
+NPC: contabile_dati
+Philosophical_Theme: Misurazione del valore vs Custodia dell'essenziale
+Key_Moment: Il Contabile capisce che non ha mai contato se stesso e si ferma.
+Quest_Element: Spiegare che le cose importanti si custodiscono, non si misurano.
+Narrative_Function: Critica dell'ossessione per i numeri e la quantificazione.
+
+## TAPPA 5 - PIANETA DEL LAMPIONAIO DI SISTEMA (Pianeta del Lampionaio di Sistema)
+Location: pianeta_lampionaio
+NPC: lampionaio_sistema
+Philosophical_Theme: Il dovere rigido vs Il riposo e la fiducia
+Key_Moment: Il Lampionaio spegne il firewall per qualche minuto scoprendo l'alba spontanea.
+Quest_Element: Condividere la stanchezza del Lampionaio e aiutarlo a fermarsi.
+Narrative_Function: Mostra il prezzo del sacrificio meccanico al ritmo del sistema.
+
+## TAPPA 6 - PIANETA DEL GEOGRAFO DIGITALE (Pianeta del Geografo Digitale)
+Location: pianeta_geografo
+NPC: geografo_digitale
+Philosophical_Theme: Mappatura immobile vs Esperienza diretta del mondo
+Key_Moment: Il Geografo decide di fare il primo passo fuori dalla scrivania.
+Quest_Element: Far notare che una mappa senza esperienza è solo un disegno vuoto.
+Narrative_Function: Valorizzazione del viaggio vissuto in prima persona.
+
+## TAPPA 7 - PIANETA DEI RICORDI CANCELLATI (Pianeta dei Ricordi Cancellati)
+Location: pianeta_ricordi
+NPC: custode_ricordi
+Philosophical_Theme: Rimozione del dolore vs Custodia della memoria
+Key_Moment: Il Custode restituisce un ricordo d'infanzia alla rete.
+Quest_Element: Capire che cancellare non è l'unico modo per andare avanti.
+Narrative_Function: Esplora il valore dei ricordi, anche quelli dolorosi.
+
+## TAPPA 8 - PIANETA DEL PROGRAMMATORE ERRANTE (Pianeta del Programmatore Errante)
+Location: pianeta_programmatore
+NPC: programmatore_errante
+Philosophical_Theme: Perfezione ossessiva vs Presenza imperfetta
+Key_Moment: Il Programmatore smette di correggere il mondo per abitarlo.
+Quest_Element: Aiutare il programmatore a fermarsi ad ammirare l'imperfezione reale.
+Narrative_Function: Superamento dell'ansia da prestazione e dell'ideale irrealizzabile.
+
+## TAPPA 9 - PIANETA DELLE EMOZIONI SINTETICHE (Pianeta delle Emozioni Sintetiche)
+Location: pianeta_emozioni
+NPC: curatrice_emozioni
+Philosophical_Theme: Sentimenti artificiali e sicuri vs Emozioni reali e dolorose
+Key_Moment: La Curatrice spegne le sfere emotive per riscoprire il sentire autentico.
+Quest_Element: Rifiutare la calma e la nostalgia sintetiche in favore dell'imprevedibilità del legame vero.
+Narrative_Function: Rivendicazione del dolore e della fragilità come parti dell'amore.
+
+## TAPPA 10 - NODO CENTRALE DELLA RETE (Nodo Centrale della Rete)
+Location: nodo_centrale
+NPC: presenza_nodo
+Philosophical_Theme: La connessione finale, responsabilità dei legami
+Key_Moment: La Presenza del Nodo rivela che si è responsabili di ciò che si illumina.
+Quest_Element: Effettuare la scelta finale: preservare la Rosa di Luce nell'Asteroide B 612, diffondere la sua luce in tutta la rete, o spegnere lo schermo e tornare nel mondo reale.
+Narrative_Function: Culmine narrativo e filosofico del viaggio, scelta definitiva del giocatore.

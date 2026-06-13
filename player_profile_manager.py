@@ -16,10 +16,6 @@ except ImportError:
     def llm_wrapper(messages, model_name, stream, collect_stats, formatting_function=None, width=None):
         print("Fallback llm_wrapper: LLM calls from player_profile_manager will not work.")
         return json.dumps({"analysis_notes": "LLM not available, no profile changes suggested."}), {"error": "llm_wrapper missing"}
-    class TerminalFormatter:
-        DIM = ""; RESET = ""; BOLD = ""; YELLOW = ""; RED = ""; GREEN = ""; MAGENTA = ""; CYAN = ""; ITALIC = ""; BRIGHT_YELLOW = ""; BRIGHT_CYAN = "";
-        @staticmethod
-        def format_terminal_text(text, width=80): import textwrap; return "\n".join(textwrap.wrap(text, width=width))
 
 DEFAULT_PROFILE = {
     "core_traits": {
@@ -202,10 +198,7 @@ Ensure there are no trailing commas.
             return {"analysis_notes": "No parsable JSON content identified in LLM response."}
 
         try:
-            print(f"{TF.DIM}[DEBUG] Attempting to parse: {repr(json_to_parse)}{TF.RESET}")
             suggestions = json.loads(json_to_parse)
-            print(f"{TF.GREEN}[DEBUG] Successfully parsed JSON from LLM.{TF.RESET}")
-            print(f"{TF.DIM}[DEBUG] Parsed suggestions type: {type(suggestions)}, keys: {list(suggestions.keys()) if isinstance(suggestions, dict) else 'NOT_DICT'}{TF.RESET}")
             return suggestions
         except json.JSONDecodeError as je:
             print(f"{TF.RED}Error decoding LLM JSON response: {je}{TF.RESET}")

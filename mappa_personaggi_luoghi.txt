@@ -1,46 +1,39 @@
-# Mappa dei Personaggi e dei Luoghi di Eldoria
+# Mappa dei Personaggi e dei Luoghi del Cyberspazio
 
-Questa mappa elenca i principali luoghi di Eldoria e i personaggi che vi si trovano, fornendo un riferimento statico per la collocazione dei personaggi nel mondo di gioco.
+Questa mappa elenca i principali luoghi e i personaggi che vi si trovano, fornendo un riferimento statico per il viaggio del Piccolo Principe Digitale.
 
-- Vuoto liminale al confine esterno di Eldoria
-  - Personaggio: Erasmus
+- Asteroide B 612.exe
+  - Personaggi: Piccolo Principe, Rosa di Luce
 
-- Il Velo Turrito che riveste Eldoria (infranto)
-  - Punto di passaggio, nessun personaggio fisso
+- Il Pianeta del Re degli Algoritmi
+  - Personaggio: Re degli Algoritmi
 
-- Antiche Rovine
-  - Personaggio: Syra
+- Il Pianeta dell'Influencer Solitario
+  - Personaggio: Influencer Solitario
 
-- 1° Villaggio - Taverna di Jorin
-  - Personaggio: Jorin
+- Il Pianeta del Contabile di Dati
+  - Personaggio: Contabile di Dati
 
-- 2° Villaggio - Bottega del fabbro Garin
-  - Personaggio: Garin
+- Il Pianeta del Lampionaio di Sistema
+  - Personaggio: Lampionaio di Sistema
 
-- Tra villaggio e foresta
-  - Personaggio: Mara
+- Il Pianeta del Geografo Digitale
+  - Personaggio: Geografo Digitale
 
-- Foresta diffusa
-  - Personaggio: Elira
+- Il Pianeta dei Ricordi Cancellati
+  - Personaggio: Custode dei Ricordi
 
-- Nesso dei Sentieri (Nexus)
-  - Personaggio: Meridia
-  - Tutti i personaggi si ritrovano qui nell’ultima tappa
+- Il Pianeta del Programmatore Errante
+  - Personaggio: Programmatore Errante
 
-- Città di Eldoria
-  - Personaggi: Cassian, Theron, Irenna
+- Il Pianeta delle Emozioni Sintetiche
+  - Personaggio: Curatrice Emozioni
 
-- Montagna
-  - Personaggio: Boros
-
-- Santuario dei Sussurri
-  - Personaggi: Lyra, Boros
-
-- Nesso dei Sentieri
-  - Tutti i personaggi si ritrovano qui nell’ultimo atto
+- Il Nodo Centrale della Rete
+  - Personaggio: Presenza del Nodo
 
 ---
 
 Nota:
-Alcuni personaggi si spostano o compaiono in più luoghi (es. Boros è sia in Montagna che al Santuario dei Sussurri).
-Il Nesso dei Sentieri è il punto di ritrovo finale per tutti.
+Il Piccolo Principe Digitale è il compagno di viaggio principale che accompagna l'Esploratore (il giocatore) attraverso tutti i mondi.
+La Rosa di Luce è il nucleo affettivo a cui fare ritorno per la scelta finale.

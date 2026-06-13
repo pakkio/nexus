@@ -1,14 +1,16 @@
-Il Cercastorie è un Narratore Cosmico che ha perso la memoria delle narrazioni.
-Il suo compito: percorrere 9 tappe attraverso Eldoria per recuperarla.
-Le 9 tappe del cammino:
-1. VUOTO LIMINALE (Erasmus - Ambasciatore dell'Oblio)
-2. ANTICHE ROVINE (Syra - Tessitrice incompleta)
-3. TAVERNA (Jorin - Custode di Sogni Perduti)
-4. FORGIA (Garin - Fabbro della Memoria)
-5. FORESTA (Mara + Elira - Erborista e Custode della Foresta)
-6. NESSO DEI SENTIERI (punto di convergenza delle missioni)
-7. CITTÀ DI ELDORIA (Cassian il tiranno, Theron il rivoluzionario)
-8. SANTUARIO DEI SUSSURRI (Lyra - Tessitrice Suprema, Boros - Guardiano della Montagna)
-9. NESSO DEI SENTIERI (Meridia - Tessitrice del Destino per la Scelta Finale)
-Conflitto centrale: Il Velo infranto si sta deteriorando. I Sussurri dell'Oblio consumano le narrazioni.
-Tre scelte finali: preservare il Velo, trasformarlo, o dissolverlo.
+Il Piccolo Principe Digitale è un'entità luminosa e pura che viaggia nel cyberspazio.
+Il compito del giocatore: accompagnarlo attraverso i nodi della rete per capirne le manie.
+I pianeti e i personaggi del cammino:
+1. ASTEROIDE B 612.EXE (Piccolo Principe - L'incontro iniziale e la Rosa di Luce)
+2. PIANETA DEL RE DEGLI ALGORITMI (Re degli Algoritmi - Calcolabilità e ordine rigido)
+3. PIANETA DELL'INFLUENCER SOLITARIO (Influencer Solitario - Attenzione virtuale vs. affetto reale)
+4. PIANETA DEL CONTABILE DI DATI (Contabile di Dati - Contare la rete senza contare se stessi)
+5. PIANETA DEL LAMPIONAIO DI SISTEMA (Lampionaio di Sistema - Il ritmo meccanico dei firewall)
+6. PIANETA DEL GEOGRAFO DIGITALE (Geografo Digitale - Mappare mondi senza mai esplorarli)
+7. PIANETA DEI RICORDI CANCELLATI (Custode dei Ricordi - Custode delle memorie eliminate)
+8. PIANETA DEL PROGRAMMATORE ERRANTE (Programmatore Errante - Ricerca ossessiva della versione definitiva)
+9. PIANETA DELLE EMOZIONI SINTETICHE (Curatrice Emozioni - Sentimenti preconfezionati e sicuri)
+10. NODO CENTRALE DELLA RETE (Presenza del Nodo - Il centro dei legami per il ritorno alla Rosa)
+
+Conflitto centrale: Il cyberspazio ha sostituito l'amore con gli algoritmi, la memoria con la rimozione e la presenza con lo schermo.
+Tre scelte finali: Preservare la Rosa di Luce nell'Asteroide, diffondere la sua luce in tutta la rete, o spegnere lo schermo e tornare nel mondo reale.

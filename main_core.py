@@ -2,6 +2,7 @@ import sys
 import traceback
 import re
 from typing import Dict, List, Any, Optional, Tuple, Callable
+from game_state import GameState
 import copy
 
 try:
@@ -101,33 +102,33 @@ def run_interaction_loop(
   # Load world context files for NPC narrative awareness
   mappa_personaggi_luoghi, percorso_narratore_full, percorso_narratore_condensed = load_world_context()
 
-  game_session_state: Dict[str, Any] = {
-    'db': db, 'story': story, 'current_area': None, 'current_npc': None,
-    'chat_session': None,
-    'model_name': model_name,
-    'profile_analysis_model_name': profile_analysis_model_name or model_name,
-    'use_stream': use_stream, 'auto_show_stats': auto_show_stats,
-    'debug_mode': debug_mode,
-    'player_id': player_id,
-    'player_inventory': db.load_inventory(player_id),
-    'player_credits_cache': initial_player_credits,
-    'player_profile_cache': player_profile_data,
-    'ChatSession': ChatSession, 'TerminalFormatter': TerminalFormatter,
-    'format_stats': format_stats,
-    'llm_wrapper_func': llm_wrapper,
-    'npc_made_new_response_this_turn': False,
-    'actions_this_turn_for_profile': [],
-    'in_hint_mode': False, # MODIFIED: Was 'in_lyra_hint_mode'
-    'stashed_chat_session': None, 'stashed_npc': None,
-    'hint_cache': {}, # MODIFIED: Was 'lyra_hint_cache', now generic
-    'wise_guide_npc_name': wise_guide_npc_name, # MODIFIED: Store the guide's name
-    'nlp_command_interpretation_enabled': nlp_config['enabled'],
-    'nlp_command_confidence_threshold': nlp_config['confidence_threshold'],
-    'nlp_command_debug': nlp_config['debug_mode'] or debug_mode,
-    'mappa_personaggi_luoghi': mappa_personaggi_luoghi, # Character/location map (~1KB)
-    'percorso_narratore_tappe': percorso_narratore_full, # Full journey (~70KB, wise guide only)
-    'percorso_narratore_condensed': percorso_narratore_condensed, # Condensed journey (~1.3KB, regular NPCs)
-  }
+  game_session_state = GameState(
+    db=db, story=story, current_area=None, current_npc=None,
+    chat_session=None,
+    model_name=model_name,
+    profile_analysis_model_name=profile_analysis_model_name or model_name,
+    use_stream=use_stream, auto_show_stats=auto_show_stats,
+    debug_mode=debug_mode,
+    player_id=player_id,
+    player_inventory=db.load_inventory(player_id),
+    player_credits_cache=initial_player_credits,
+    player_profile_cache=player_profile_data,
+    ChatSession=ChatSession, TerminalFormatter=TerminalFormatter,
+    format_stats=format_stats,
+    llm_wrapper_func=llm_wrapper,
+    npc_made_new_response_this_turn=False,
+    actions_this_turn_for_profile=[],
+    in_hint_mode=False,
+    stashed_chat_session=None, stashed_npc=None,
+    hint_cache={},
+    wise_guide_npc_name=wise_guide_npc_name,
+    nlp_command_interpretation_enabled=nlp_config['enabled'],
+    nlp_command_confidence_threshold=nlp_config['confidence_threshold'],
+    nlp_command_debug=nlp_config['debug_mode'] or debug_mode,
+    mappa_personaggi_luoghi=mappa_personaggi_luoghi,
+    percorso_narratore_tappe=percorso_narratore_full,
+    percorso_narratore_condensed=percorso_narratore_condensed,
+  )
 
   if debug_mode and nlp_config['enabled']:
     print(f"{TerminalFormatter.DIM}[NLP Commands] Enabled with confidence threshold: {nlp_config['confidence_threshold']}{TerminalFormatter.RESET}")
