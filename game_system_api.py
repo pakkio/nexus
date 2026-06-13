@@ -7,6 +7,7 @@ import time
 import logging
 import hashlib
 from typing import Dict, List, Any, Optional, Tuple, Callable
+from game_state import GameState
 import re
 
 # Assume all necessary modules are in PYTHONPATH or imported correctly
@@ -49,41 +50,42 @@ class _SinglePlayerGameSystem:
 
         # Try to load persistent player state (including current_npc_code)
         saved_state = db.load_player_state(player_id)
-        self.game_state: Dict[str, Any] = {
-            'db': db,
-            'story': story,
-            'current_area': None,
-            'current_npc': None,
-            'chat_session': None,
-            'model_name': model_name,
-            'profile_analysis_model_name': profile_analysis_model_name or model_name,
-            'use_stream': False,
-            'auto_show_stats': False,
-            'debug_mode': debug_mode,
-            'player_id': player_id,
-            'player_inventory': db.load_inventory(player_id),
-            'player_credits_cache': db.get_player_credits(player_id),
-            'player_profile_cache': db.load_player_profile(player_id),
-            'ChatSession': ChatSession,
-            'TerminalFormatter': TerminalFormatter,
-            'format_stats': format_stats,
-            'llm_wrapper_func': llm_wrapper,
-            'npc_made_new_response_this_turn': False,
-            'actions_this_turn_for_profile': [],
-            'in_hint_mode': False,
-            'stashed_chat_session': None,
-            'stashed_npc': None,
-            'hint_cache': {},
-            'wise_guide_npc_name': wise_guide_npc_name,
-            'nlp_command_interpretation_enabled': nlp_config['enabled'],
-            'nlp_command_confidence_threshold': nlp_config['confidence_threshold'],
-            'nlp_command_debug': nlp_config['debug_mode'] or debug_mode,
-            'system_messages_buffer': [],
-            'game_system_instance': self,  # Reference for accessing cached data
-        }
+        self.game_state = GameState(
+            db=db,
+            story=story,
+            current_area=None,
+            current_npc=None,
+            chat_session=None,
+            model_name=model_name,
+            profile_analysis_model_name=profile_analysis_model_name or model_name,
+            use_stream=False,
+            auto_show_stats=False,
+            debug_mode=debug_mode,
+            player_id=player_id,
+            player_inventory=db.load_inventory(player_id),
+            player_credits_cache=db.get_player_credits(player_id),
+            player_profile_cache=db.load_player_profile(player_id),
+            ChatSession=ChatSession,
+            TerminalFormatter=TerminalFormatter,
+            format_stats=format_stats,
+            llm_wrapper_func=llm_wrapper,
+            npc_made_new_response_this_turn=False,
+            actions_this_turn_for_profile=[],
+            in_hint_mode=False,
+            stashed_chat_session=None,
+            stashed_npc=None,
+            hint_cache={},
+            wise_guide_npc_name=wise_guide_npc_name,
+            nlp_command_interpretation_enabled=nlp_config['enabled'],
+            nlp_command_confidence_threshold=nlp_config['confidence_threshold'],
+            nlp_command_debug=nlp_config['debug_mode'] or debug_mode,
+            system_messages_buffer=[],
+            game_system_instance=self,
+        )
         # Async profile update tracking
         self._profile_update_thread = None
         self._pending_profile_update = False
+        self._game_state_lock = threading.Lock()
         self.output_buffer: List[str] = []
         
         # Context pre-loading cache for performance
@@ -120,32 +122,42 @@ class _SinglePlayerGameSystem:
         """Async profile update worker that runs in background thread."""
         start_time = time.time()
         try:
-            logger.info(f"[PROFILE-ASYNC] Starting profile analysis for {self.game_state['player_id']}")
-            
-            current_profile_cache = self.game_state.get('player_profile_cache', get_default_player_profile())
+            # Snapshot needed game state under lock
+            with self._game_state_lock:
+                player_id = self.game_state['player_id']
+                current_profile_cache = self.game_state.get('player_profile_cache', get_default_player_profile())
+                actions_summary = self.game_state['actions_this_turn_for_profile']
+                llm_func = self.game_state['llm_wrapper_func']
+                model_name = self.game_state['profile_analysis_model_name']
+                tf = self.game_state['TerminalFormatter']
+                db = self.game_state['db']
 
+            logger.info(f"[PROFILE-ASYNC] Starting profile analysis for {player_id}")
+
+            # LLM call outside the lock (expensive)
             updated_profile, profile_changes_detected = update_player_profile(
                 previous_profile=current_profile_cache,
                 interaction_log=interaction_log_for_profile,
-                player_actions_summary=self.game_state['actions_this_turn_for_profile'],
-                llm_wrapper_func=self.game_state['llm_wrapper_func'],
-                model_name=self.game_state['profile_analysis_model_name'],
+                player_actions_summary=actions_summary,
+                llm_wrapper_func=llm_func,
+                model_name=model_name,
                 current_npc_name=npc_name_for_profile_update,
-                TF=self.game_state['TerminalFormatter']
+                TF=tf
             )
 
-            # Thread-safe update of profile
+            # Write back under lock
             elapsed_ms = int((time.time() - start_time) * 1000)
-            if updated_profile != initial_profile_for_comparison:
-                self.game_state['player_profile_cache'] = updated_profile
-                self.game_state['db'].save_player_profile(self.game_state['player_id'], updated_profile)
-                logger.info(f"[PROFILE-ASYNC] Profile updated for {self.game_state['player_id']} in {elapsed_ms}ms")
-            else:
-                logger.info(f"[PROFILE-ASYNC] No changes for {self.game_state['player_id']} in {elapsed_ms}ms")
+            with self._game_state_lock:
+                if updated_profile != initial_profile_for_comparison:
+                    self.game_state['player_profile_cache'] = updated_profile
+                    db.save_player_profile(player_id, updated_profile)
+                    logger.info(f"[PROFILE-ASYNC] Profile updated for {player_id} in {elapsed_ms}ms")
+                else:
+                    logger.info(f"[PROFILE-ASYNC] No changes for {player_id} in {elapsed_ms}ms")
             
         except Exception as e:
             elapsed_ms = int((time.time() - start_time) * 1000)
-            logger.error(f"[PROFILE-ASYNC] Error for {self.game_state['player_id']} after {elapsed_ms}ms: {str(e)}")
+            logger.error(f"[PROFILE-ASYNC] Error after {elapsed_ms}ms: {str(e)}")
         finally:
             self._pending_profile_update = False
 

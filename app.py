@@ -8,12 +8,14 @@ from flask import Flask, request, jsonify, Response
 from flask_cors import CORS
 import logging
 import os
+import re
 from typing import Dict, Any, Optional
 import unicodedata
 
 from game_system_api import GameSystem
 from llm_stats_tracker import get_global_stats_tracker
 from nexus_config import MODEL_DEFAULT, MODEL_PROFILE, MODEL_GUIDE
+from npc_parser import parse_npc_file
 import json
 from datetime import datetime
 
@@ -62,6 +64,20 @@ VERSION_CHANGELOG = {
 
 # Constants
 GAME_SYSTEM_NOT_INITIALIZED = 'Game system not initialized'
+PLAYER_ID_RE = re.compile(r'^[a-zA-Z0-9_\-\.]+$')
+
+def sanitize_player_id(player_id: str) -> Optional[str]:
+    if not player_id or not isinstance(player_id, str):
+        return None
+    cleaned = player_id.strip()
+    if len(cleaned) == 0 or len(cleaned) > 128:
+        return None
+    # Remove path traversal: reject if contains parent directory patterns
+    if '..' in cleaned or '/' in cleaned or '\\' in cleaned:
+        return None
+    if not PLAYER_ID_RE.match(cleaned):
+        return None
+    return cleaned
 
 def normalize_text_for_lsl(text, strip_sl_tags=False):
     """
@@ -138,107 +154,6 @@ def get_teleport_npc_data(game_system, current_npc: dict, target_npc_name: str) 
     else:
         logger.warning(f"[TELEPORT] Target NPC '{target_npc_name}' not found or has no teleport coords, using current NPC")
         return current_npc
-
-def parse_npc_file(filepath):
-    """Parse NPC file and return NPC data dictionary."""
-    data = {
-        'name': '', 'area': '', 'role': '', 'motivation': '',
-        'goal': '', 'needed_object': '', 'treasure': '',
-        'playerhint': '', 'dialogue_hooks': '', 'veil_connection': '', 'code': '',
-        'emotes': '', 'animations': '', 'lookup': '', 'llsettext': '', 'teleport': '',
-        'notecard_feature': ''
-    }
-    known_keys_map = {
-        'Name:': 'name', 'Area:': 'area', 'Role:': 'role',
-        'Motivation:': 'motivation', 'Goal:': 'goal',
-        'Needed Object:': 'needed_object', 'Treasure:': 'treasure',
-        'PlayerHint:': 'playerhint',
-        'Veil Connection:': 'veil_connection',
-        'Dialogue Hooks:': 'dialogue_hooks_header',
-        'Emotes:': 'emotes', 'Animations:': 'animations',
-        'Lookup:': 'lookup', 'Llsettext:': 'llsettext', 'Teleport:': 'teleport',
-        'NOTECARD_FEATURE:': 'notecard_feature'
-    }
-    simple_multiline_fields = ['motivation', 'goal', 'playerhint', 'veil_connection', 'emotes', 'animations', 'lookup', 'llsettext', 'notecard_feature']
-    # Note: 'teleport' is NOT multiline - it should only capture coordinates on the same line
-
-    current_field_being_parsed = None
-    dialogue_hooks_lines = []
-    parsing_dialogue_hooks = False
-
-    try:
-        with open(filepath, 'r', encoding='utf-8') as file:
-            content = file.read()
-            lines = content.split('\n')
-
-        # Try to parse new structured format for SL_Commands
-        if 'SL_Commands:' in content:
-            import re
-            # Extract SL_Commands section
-            sl_commands_match = re.search(r'SL_Commands:\s*\{([^}]+)\}', content, re.DOTALL)
-            if sl_commands_match:
-                sl_section = sl_commands_match.group(1)
-
-                # Extract arrays using regex
-                emotes_match = re.search(r'"Emotes":\s*\[([^\]]+)\]', sl_section)
-                if emotes_match and not data['emotes']:
-                    emotes_list = [e.strip().strip('"') for e in emotes_match.group(1).split(',')]
-                    data['emotes'] = ', '.join(emotes_list)
-
-                animations_match = re.search(r'"Animations":\s*\[([^\]]+)\]', sl_section)
-                if animations_match and not data['animations']:
-                    anims_list = [a.strip().strip('"') for a in animations_match.group(1).split(',')]
-                    data['animations'] = ', '.join(anims_list)
-
-                lookup_match = re.search(r'"Lookup":\s*\[([^\]]+)\]', sl_section)
-                if lookup_match and not data['lookup']:
-                    lookup_list = [l.strip().strip('"') for l in lookup_match.group(1).split(',')]
-                    data['lookup'] = ', '.join(lookup_list)
-
-                text_display_match = re.search(r'"Text_Display":\s*\[([^\]]+)\]', sl_section)
-                if text_display_match and not data['llsettext']:
-                    text_list = [t.strip().strip('"') for t in text_display_match.group(1).split(',')]
-                    data['llsettext'] = ', '.join(text_list)
-
-        for line_raw in lines:
-            line_stripped = line_raw.strip()
-            original_line_content_for_hooks = line_raw.rstrip('\n\r')
-
-            matched_new_key = False
-            for key_prefix, field_name_target in known_keys_map.items():
-                if line_stripped.lower().startswith(key_prefix.lower()):
-                    parsing_dialogue_hooks = False
-                    content_after_key = line_stripped[len(key_prefix):].strip()
-
-                    if field_name_target == 'dialogue_hooks_header':
-                        parsing_dialogue_hooks = True
-                        current_field_being_parsed = None
-                    else:
-                        # Don't overwrite if already parsed from structured format
-                        if not data[field_name_target]:
-                            data[field_name_target] = content_after_key
-                        if field_name_target in simple_multiline_fields:
-                            current_field_being_parsed = field_name_target
-                        else:
-                            current_field_being_parsed = None
-                    matched_new_key = True
-                    break
-
-            if not matched_new_key:
-                if parsing_dialogue_hooks:
-                    dialogue_hooks_lines.append(original_line_content_for_hooks)
-                elif current_field_being_parsed:
-                    if data[current_field_being_parsed]:
-                        data[current_field_being_parsed] += "\n" + line_stripped
-                    else:
-                        data[current_field_being_parsed] = line_stripped
-
-        data['dialogue_hooks'] = "\n".join(dialogue_hooks_lines)
-        return data
-
-    except Exception as e:
-        logger.error(f"Error parsing NPC file {filepath}: {e}")
-        raise
 
 def preload_npcs():
     """Preload NPCs from .txt files into the database after reset."""
@@ -478,6 +393,11 @@ def create_player_session(player_id: str):
         if not game_system:
             return jsonify({'error': GAME_SYSTEM_NOT_INITIALIZED}), 500
         
+        safe_id = sanitize_player_id(player_id)
+        if not safe_id:
+            return jsonify({'error': 'Invalid player_id'}), 400
+        player_id = safe_id
+        
         # Get player system (creates if doesn't exist)
         player_system = game_system.get_player_system(player_id)
         
@@ -501,6 +421,11 @@ def close_player_session(player_id: str):
         if not game_system:
             return jsonify({'error': GAME_SYSTEM_NOT_INITIALIZED}), 500
         
+        safe_id = sanitize_player_id(player_id)
+        if not safe_id:
+            return jsonify({'error': 'Invalid player_id'}), 400
+        player_id = safe_id
+        
         game_system.close_player_session(player_id)
         
         return jsonify({
@@ -518,6 +443,11 @@ def process_player_input(player_id: str):
     try:
         if not game_system:
             return jsonify({'error': GAME_SYSTEM_NOT_INITIALIZED}), 500
+        
+        safe_id = sanitize_player_id(player_id)
+        if not safe_id:
+            return jsonify({'error': 'Invalid player_id'}), 400
+        player_id = safe_id
         
         data = request.get_json()
         if not data or 'input' not in data:
@@ -543,6 +473,11 @@ def get_player_state(player_id: str):
     try:
         if not game_system:
             return jsonify({'error': GAME_SYSTEM_NOT_INITIALIZED}), 500
+        
+        safe_id = sanitize_player_id(player_id)
+        if not safe_id:
+            return jsonify({'error': 'Invalid player_id'}), 400
+        player_id = safe_id
         
         player_system = game_system.get_player_system(player_id)
         
@@ -622,6 +557,11 @@ def get_player_profile(player_id: str):
         if not game_system:
             return jsonify({'error': GAME_SYSTEM_NOT_INITIALIZED}), 500
         
+        safe_id = sanitize_player_id(player_id)
+        if not safe_id:
+            return jsonify({'error': 'Invalid player_id'}), 400
+        player_id = safe_id
+        
         profile = game_system.db.load_player_profile(player_id)
         
         return jsonify({
@@ -639,6 +579,11 @@ def get_player_inventory(player_id: str):
     try:
         if not game_system:
             return jsonify({'error': GAME_SYSTEM_NOT_INITIALIZED}), 500
+        
+        safe_id = sanitize_player_id(player_id)
+        if not safe_id:
+            return jsonify({'error': 'Invalid player_id'}), 400
+        player_id = safe_id
         
         inventory = game_system.db.load_inventory(player_id)
         credits = game_system.db.get_player_credits(player_id)
@@ -660,6 +605,11 @@ def get_conversation_history(player_id: str):
         if not game_system:
             return jsonify({'error': GAME_SYSTEM_NOT_INITIALIZED}), 500
         
+        safe_id = sanitize_player_id(player_id)
+        if not safe_id:
+            return jsonify({'error': 'Invalid player_id'}), 400
+        player_id = safe_id
+        
         # Get conversation history from database
         history = game_system.db.get_conversation_history(player_id)
         
@@ -678,6 +628,11 @@ def reset_conversation_history(player_id: str):
     try:
         if not game_system:
             return jsonify({'error': GAME_SYSTEM_NOT_INITIALIZED}), 500
+        
+        safe_id = sanitize_player_id(player_id)
+        if not safe_id:
+            return jsonify({'error': 'Invalid player_id'}), 400
+        player_id = safe_id
         
         # Clear conversation history from database
         success = game_system.db.clear_conversations(player_id)
@@ -705,6 +660,11 @@ def summarize_npc_conversation(player_id: str, npc_code: str):
     try:
         if not game_system:
             return jsonify({'error': GAME_SYSTEM_NOT_INITIALIZED}), 500
+
+        safe_id = sanitize_player_id(player_id)
+        if not safe_id:
+            return jsonify({'error': 'Invalid player_id'}), 400
+        player_id = safe_id
 
         convs = game_system.db.get_conversation_history(player_id, npc_name=npc_code)
         history = []
@@ -762,6 +722,11 @@ def reset_npc_conversation(player_id: str, npc_code: str):
         if not game_system:
             return jsonify({'error': GAME_SYSTEM_NOT_INITIALIZED}), 500
 
+        safe_id = sanitize_player_id(player_id)
+        if not safe_id:
+            return jsonify({'error': 'Invalid player_id'}), 400
+        player_id = safe_id
+
         db = game_system.db
         if db.use_mockup:
             path = os.path.join(
@@ -800,6 +765,11 @@ def get_player_storage_info(player_id: str):
         if not game_system:
             return jsonify({'error': GAME_SYSTEM_NOT_INITIALIZED}), 500
         
+        safe_id = sanitize_player_id(player_id)
+        if not safe_id:
+            return jsonify({'error': 'Invalid player_id'}), 400
+        player_id = safe_id
+        
         # Get storage info from database
         storage_info = game_system.db.get_player_storage_info(player_id)
         
@@ -821,6 +791,11 @@ def analyze_conversations(player_id: str):
     try:
         if not game_system:
             return jsonify({'error': GAME_SYSTEM_NOT_INITIALIZED}), 500
+        
+        safe_id = sanitize_player_id(player_id)
+        if not safe_id:
+            return jsonify({'error': 'Invalid player_id'}), 400
+        player_id = safe_id
         
         # Get all conversations for analysis
         conversations = game_system.db.get_all_conversations_for_analysis(player_id)
@@ -925,6 +900,11 @@ def get_conversation_analysis(player_id: str):
         if not game_system:
             return jsonify({'error': GAME_SYSTEM_NOT_INITIALIZED}), 500
         
+        safe_id = sanitize_player_id(player_id)
+        if not safe_id:
+            return jsonify({'error': 'Invalid player_id'}), 400
+        player_id = safe_id
+        
         analysis = game_system.db.get_conversation_analysis(player_id)
         
         if not analysis:
@@ -952,16 +932,18 @@ def chat_with_npc():
             return jsonify({'error': 'Missing message field'}), 400
         
         # Accept both player_id (UUID) and display_name, fallback for legacy clients
-        player_id = data.get('player_id') or data.get('player_name') or data.get('name')
-        display_name = data.get('display_name', player_id)
+        raw_id = data.get('player_id') or data.get('player_name') or data.get('name')
+        display_name = data.get('display_name', raw_id)
         message = data['message']
         npc_name = data.get('npc_name')  # Optional NPC name parameter
         area = data.get('area')  # Optional area parameter
 
-        # Validate player_id
-        if not player_id or not isinstance(player_id, str) or len(player_id.strip()) == 0:
-            return jsonify({'error': 'Invalid player_id: must be a non-empty string'}), 400
-        player_id = player_id.strip()
+        # Validate and sanitize player_id
+        player_id = sanitize_player_id(raw_id)
+        if not player_id:
+            return jsonify({'error': 'Invalid player_id'}), 400
+        if not display_name:
+            display_name = player_id
         
         # Get player system
         player_system = game_system.get_player_system(player_id)
@@ -1290,11 +1272,13 @@ def sense_player():
         
         data = request.get_json()
         # Accept both player_id (UUID) and display_name, fallback for legacy clients
-        player_id = data.get('player_id') or data.get('player_name') or data.get('name')
-        display_name = data.get('display_name', player_id)
-        if not player_id or not isinstance(player_id, str) or len(player_id.strip()) == 0:
-            return jsonify({'error': 'Invalid player_id: must be a non-empty string'}), 400
-        player_id = player_id.strip()
+        raw_id = data.get('player_id') or data.get('player_name') or data.get('name')
+        display_name = data.get('display_name', raw_id)
+        player_id = sanitize_player_id(raw_id)
+        if not player_id:
+            return jsonify({'error': 'Invalid player_id'}), 400
+        if not display_name:
+            display_name = player_id
         
         npc_name = data.get('npcname', '').strip()
         area = data.get('area', '').strip()
@@ -1836,6 +1820,27 @@ _WEB_CHAT_HTML = r"""<!DOCTYPE html>
   form#composer button:disabled { opacity:.5; cursor:not-allowed; }
   .status { font-size:12px; color:var(--muted); padding:6px 14px; }
   .status.err { color:var(--err); }
+  .thinking-indicator {
+    align-self: flex-start;
+    margin-bottom: 10px;
+  }
+  .thinking-content {
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .hourglass-anim {
+    display: inline-block;
+    animation: rotate-hourglass 2s infinite linear;
+  }
+  @keyframes rotate-hourglass {
+    0% { transform: rotate(0deg); }
+    45% { transform: rotate(0deg); }
+    50% { transform: rotate(180deg); }
+    95% { transform: rotate(180deg); }
+    100% { transform: rotate(360deg); }
+  }
 </style>
 </head>
 <body>
@@ -1905,10 +1910,29 @@ function initials(name) {
 async function fetchNpcs() {
   const r = await fetch('/api/game/npcs');
   const j = await r.json();
-  return (j.npcs || []).map(n => ({
-    code: (n.code || (n.area + '.' + n.name)).toLowerCase().replace(/\s+/g,''),
-    name: n.name, area: n.area, role: n.role || ''
-  }));
+  const AREA_STAGES = {
+    'asteroide_b612': 1,
+    'pianeta_algoritmi': 2,
+    'pianeta_influencer': 3,
+    'pianeta_contabile': 4,
+    'pianeta_lampionaio': 5,
+    'pianeta_geografo': 6,
+    'pianeta_ricordi': 7,
+    'pianeta_programmatore': 8,
+    'pianeta_emozioni': 9,
+    'nodo_centrale': 10
+  };
+  return (j.npcs || []).map(n => {
+    const stage = AREA_STAGES[n.area.toLowerCase()] || 0;
+    return {
+      code: (n.code || (n.area + '.' + n.name)).toLowerCase().replace(/\s+/g,''),
+      name: n.name,
+      area: n.area,
+      role: n.role || '',
+      displayName: stage ? (stage + '. ' + n.name) : n.name,
+      stageOrder: stage || 99
+    };
+  });
 }
 
 async function fetchHistory(playerId) {
@@ -1926,7 +1950,7 @@ function renderNpcList() {
     const badge = spoken ? '<span class="badge spoken">' + spoken + ' msgs</span>' : '';
     const cls = (n.code === activeCode) ? 'npc active' : 'npc';
     return '<div class="' + cls + '" data-code="' + escapeHtml(n.code) + '">' +
-      '<div class="name">' + escapeHtml(n.name) + badge + '</div>' +
+      '<div class="name">' + escapeHtml(n.displayName || n.name) + badge + '</div>' +
       '<div class="meta">' + escapeHtml(n.area) + (n.role ? ' · ' + escapeHtml(n.role) : '') + '</div>' +
       '</div>';
   }).join('');
@@ -1948,7 +1972,12 @@ function renderMessages() {
     if (!isUser && m.meta) {
       const parts = [];
       if (m.meta.model) parts.push('<code>' + escapeHtml(m.meta.model) + '</code>');
-      if (m.meta.ms != null) parts.push((m.meta.ms/1000).toFixed(2) + 's');
+      if (m.meta.wall_time != null) {
+        parts.push('Wall Time: ' + m.meta.wall_time.toFixed(2) + 's');
+      }
+      if (m.meta.ms != null) {
+        parts.push('LLM Latency: ' + (m.meta.ms/1000).toFixed(2) + 's');
+      }
       if (m.meta.tin != null || m.meta.tout != null)
         parts.push((m.meta.tin||0) + '↓ / ' + (m.meta.tout||0) + '↑ tok');
       meta = '<div class="meta-line">' + parts.join(' · ') + '</div>';
@@ -1965,7 +1994,7 @@ function selectNpc(code) {
   activeCode = code;
   activeNpc = npcs.find(n => n.code === code);
   if (!activeNpc) return;
-  chatTitle.textContent = activeNpc.name;
+  chatTitle.textContent = activeNpc.displayName || activeNpc.name;
   chatSub.textContent = activeNpc.area + (activeNpc.role ? ' · ' + activeNpc.role : '');
   msgInput.disabled = false; sendBtn.disabled = false;
   resetOneBtn.disabled = false; summarizeBtn.disabled = false;
@@ -2033,12 +2062,10 @@ async function load() {
   try {
     const [n, h] = await Promise.all([fetchNpcs(), fetchHistory(playerInput.value.trim())]);
     npcs = n; history = h;
-    // Sort: spoken first, then by area/name
+    // Sort strictly by stage order (chronological lore progression)
     npcs.sort((a,b) => {
-      const sa = (history[a.code]||[]).length ? 0 : 1;
-      const sb = (history[b.code]||[]).length ? 0 : 1;
-      if (sa !== sb) return sa - sb;
-      return (a.area + a.name).localeCompare(b.area + b.name);
+      if (a.stageOrder !== b.stageOrder) return a.stageOrder - b.stageOrder;
+      return a.name.localeCompare(b.name);
     });
     renderNpcList();
     if (activeCode && !npcs.find(n => n.code === activeCode)) {
@@ -2064,7 +2091,33 @@ composer.addEventListener('submit', async (ev) => {
   history[activeCode].push({role:'user', content:text});
   renderMessages();
   msgInput.value = ''; sendBtn.disabled = true;
+
+  let timer;
+  let loaderDiv;
+  const startTime = Date.now();
+
   try {
+    // Dynamically append the thinking indicator
+    loaderDiv = document.createElement('div');
+    loaderDiv.className = 'msg npc thinking-indicator';
+    const av = initials(activeNpc ? activeNpc.name : '?');
+    loaderDiv.innerHTML = `
+      <div class="avatar">${escapeHtml(av)}</div>
+      <div class="bubble">
+        <div class="thinking-content">
+          <span class="hourglass-anim">⏳</span> Thinking... <span class="thinking-seconds">0.0</span>s <span class="thinking-expected">(expected: 10s)</span>
+        </div>
+      </div>
+    `;
+    messagesEl.appendChild(loaderDiv);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+
+    timer = setInterval(() => {
+      const elapsed = (Date.now() - startTime) / 1000;
+      const secEl = loaderDiv.querySelector('.thinking-seconds');
+      if (secEl) secEl.textContent = elapsed.toFixed(1);
+    }, 100);
+
     const r = await fetch('/api/chat', {
       method:'POST',
       headers:{'Content-Type':'application/json'},
@@ -2077,20 +2130,33 @@ composer.addEventListener('submit', async (ev) => {
     });
     const j = await r.json();
     if (!r.ok) throw new Error(j.error || ('HTTP ' + r.status));
+
+    // Clear and remove thinking indicator once response is received
+    clearInterval(timer);
+    timer = null;
+    loaderDiv.remove();
+    loaderDiv = null;
+
+    const wallTimeSec = (Date.now() - startTime) / 1000;
     let reply = (j.npc_response || '').replace(/\[[^\]]+\]/g, '').trim();
     const dlg = (j.llm_stats && j.llm_stats.dialogue) || {};
     const meta = {
       model: dlg.model || null,
       ms: dlg.last_call_time_ms != null ? dlg.last_call_time_ms : null,
-      tin: dlg.last_tokens_in, tout: dlg.last_tokens_out
+      tin: dlg.last_tokens_in, tout: dlg.last_tokens_out,
+      wall_time: wallTimeSec
     };
     history[activeCode].push({role:'assistant', content: reply || '…', meta});
     renderMessages();
     renderNpcList();
   } catch (e) {
+    if (timer) { clearInterval(timer); timer = null; }
+    if (loaderDiv) { loaderDiv.remove(); loaderDiv = null; }
     history[activeCode].push({role:'assistant', content: '⚠ ' + e.message});
     renderMessages();
   } finally {
+    if (timer) clearInterval(timer);
+    if (loaderDiv) loaderDiv.remove();
     sendBtn.disabled = false;
     msgInput.focus();
   }

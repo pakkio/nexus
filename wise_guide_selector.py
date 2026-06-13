@@ -17,11 +17,7 @@ except ImportError:
              return "Lyra", {"model": "dummy", "total_tokens": 10, "error": None}
         return "NONE", {"model": "dummy", "total_tokens": 5, "error": "No specific guide identifiable by dummy."}
 
-try:
-    from terminal_formatter import TerminalFormatter
-except ImportError:
-    class TerminalFormatter:
-        YELLOW = ""; RESET = ""; DIM = ""
+from terminal_formatter import TerminalFormatter
 
 TF = TerminalFormatter
 

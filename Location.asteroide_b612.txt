@@ -1,0 +1,23 @@
+Name: Asteroide B 612.exe
+ID: location_asteroide_b612
+Area: asteroide_b612
+
+# SETTING_DESCRIPTION
+Un pianeta minuscolo sospeso nel vuoto silenzioso del cyberspazio. La superficie è fatta di pixel morbidi che oscillano leggermente, e l'aria è intrisa di particelle luminose che fluttuano come polline digitale. Al centro sorge una cupola di vetro che protegge la Rosa di Luce.
+
+# VEIL_CONNECTION
+Rappresenta il nodo iniziale e finale, un luogo dove l'immaginazione resiste al freddo calcolo degli algoritmi e dove risiede la sorgente dell'affetto reale.
+
+# INTERACTIVE_OBJECTS
+rosa_di_luce: Un fiore pulsante di luce pura e bit dorati.
+campana_vetro: Una cupola trasparente usata per proteggere la rosa dai flussi di dati freddi.
+vulcano_pixel: Due piccoli vulcani di codice spenti e uno attivo che emettono vapore di dati caldi.
+
+# SPECIAL_PROPERTIES
+Risonanza_Affettiva: La luminosità del pianeta aumenta quando il giocatore parla con sincerità.
+
+# CONNECTED_LOCATIONS
+- pianeta_algoritmi: Un corridoio di luce geometrica che porta al dominio del Re.
+
+# QUEST_RELEVANCE
+Il punto di partenza e il punto di ritorno finale. Qui il giocatore fa la scelta di responsabilità verso la Rosa.

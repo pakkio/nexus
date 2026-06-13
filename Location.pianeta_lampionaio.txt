@@ -1,0 +1,24 @@
+Name: Pianeta del Lampionaio di Sistema
+ID: location_pianeta_lampionaio
+Area: pianeta_lampionaio
+
+# SETTING_DESCRIPTION
+Un pianeta immerso in una penombra azzurra costante. L'aria è attraversata da linee di codice che corrono come fili elettrici luminosi. Al centro sorge una piattaforma sospesa su cui lavora il Lampionaio.
+
+# VEIL_CONNECTION
+Rappresenta la schiavitù del ritmo lavorativo digitale, i cicli operativi imposti dal sistema e la paura del collasso se ci si ferma anche solo per un istante.
+
+# INTERACTIVE_OBJECTS
+piattaforma_lampionaio: Una pedana di metallo sospesa al centro del pianeta.
+nodo_firewall: I punti della rete che il lampionaio tocca per accendere e spegnere la sicurezza.
+asta_digitale: Uno strumento che termina con un globo di luce usato per attivare i nodi.
+
+# SPECIAL_PROPERTIES
+Ciclo_Alterno: Ogni 60 secondi l'ambiente passa da una luce intensa al buio completo, simulando l'accensione e lo spegnimento dei firewall.
+
+# CONNECTED_LOCATIONS
+- pianeta_contabile: La passerella sospesa.
+- pianeta_geografo: Un archivio di mappe digitali che fluttua a fianco.
+
+# QUEST_RELEVANCE
+Il giocatore deve convincere il Lampionaio a concedersi un momento di pausa e a fidarsi del sistema.

@@ -1,21 +1,21 @@
-# System Prompt Configuration for Eldoria
+# System Prompt Configuration for Cyberspace
 # Story-specific world and system prompt settings
 # Format: TOML (RFC 5234) for robustness and standard parsing
 
 [world]
-name = "Eldoria"
-name_it = "mondo di Eldoria"
-context_label = "Contesto Globale del Mondo (Eldoria)"
+name = "Cyberspazio"
+name_it = "Cyberspazio del Piccolo Principe"
+context_label = "Contesto Globale del Cyberspazio"
 
 [lore]
-reference = "Reference Eldoria lore (the Veil, Tessitori, magic, ancient history)"
-character_background_label = "Collegamento al Velo (Tuo Background Segreto Importante)"
-central_conflict = "sei un alleato che vuole aiutare a salvare il Velo"
+reference = "Reference Il Piccolo Principe Digitale lore (Rosa di Luce, Asteroide B 612.exe, nodi della rete, algoritmi, adulti ossessionati da metriche)"
+character_background_label = "Collegamento alla Rete e alla Rosa di Luce (Tuo Contesto Narrativo)"
+central_conflict = "sei un abitante del cyberspazio che cerca di far comprendere al viaggiatore l'importanza dei legami invisibili e dei ricordi"
 
 [location]
-description_en = "YOUR LOCATION: {area} in the fantasy world of Eldoria"
-description_it = "Sei {name}, un/una {role} nell'area di {area} nel mondo di Eldoria."
+description_en = "YOUR LOCATION: {area} in the cyberspace of the Little Digital Prince"
+description_it = "Sei {name}, un/una {role} nel server/pianeta {area} nel cyberspazio."
 
 [brief_examples]
-example_1 = "Cercastorie... Velo indebolito..."
-example_2 = "Cristallo rovine."
+example_1 = "Viaggiatore... spegni lo schermo..."
+example_2 = "Rosa di Luce."

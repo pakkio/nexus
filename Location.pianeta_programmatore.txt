@@ -1,0 +1,24 @@
+Name: Pianeta del Programmatore Errante
+ID: location_pianeta_programmatore
+Area: pianeta_programmatore
+
+# SETTING_DESCRIPTION
+Un mondo in costante stato di beta, incompleto e instabile. Porzioni di paesaggio non sono renderizzate, blocchi di codice fluttuano a metà strada e le strutture si dissolvono non appena vi si posa lo sguardo.
+
+# VEIL_CONNECTION
+Rappresenta l'ansia da prestazione e la ricerca infinita della perfezione che impedisce di vivere il presente e di accettare la realtà per come è.
+
+# INTERACTIVE_OBJECTS
+terminale_portatile: Lo strumento di sviluppo che il Programmatore porta sempre con sé.
+stringhe_codice: Righe di testo sorgente che fluttuano nell'aria come foglie al vento.
+ponte_incompleto: Una struttura che si dissolve e si ricrea continuamente.
+
+# SPECIAL_PROPERTIES
+Stato_Beta: La gravità e la stabilità del terreno cambiano a intervalli irregolari a seconda delle modifiche apportate al codice.
+
+# CONNECTED_LOCATIONS
+- pianeta_ricordi: Il sentiero di codice incompleto.
+- pianeta_emozioni: Una passerella avvolta da una nebbia colorata.
+
+# QUEST_RELEVANCE
+Il giocatore deve aiutare il Programmatore a fermarsi e ad accettare l'imperfezione del suo mondo come parte della vita.

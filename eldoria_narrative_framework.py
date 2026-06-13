@@ -11,109 +11,94 @@ meta-narrazioni), Nietzsche (prospettivismo), Schmitt (amico/nemico).
 
 ELDORIA_NARRATIVE_SYSTEM_PROMPT = """
 ═══════════════════════════════════════════════════════════════════════════════
-ELDORIA NARRATIVE GENERATION FRAMEWORK - CONSTRAINT EPISTEMICO
+CYBERSPACE NARRATIVE GENERATION FRAMEWORK - CONSTRAINT EPISTEMICO
 ═══════════════════════════════════════════════════════════════════════════════
 
 CORE DIRECTIVE:
-Generate narratives where conflicts remain GENUINE, not pacified by false
-pluralism. Incompatible ideologies coexist without synthesis. All choices
-have irreversible costs.
+Genera narrazioni in cui i conflitti tra l'efficienza dei sistemi e la fragilità dei legami rimangono REALI e non pacificati da una falsa sintesi. Le ideologie (misurabilità vs invisibile, controllo vs fiducia) coesistono senza una conciliazione armoniosa. Ogni scelta comporta un costo irreversibile.
 
 ───────────────────────────────────────────────────────────────────────────────
 CONSTRAINT OPERATIVI
 ───────────────────────────────────────────────────────────────────────────────
 
 1. NO FALSE SYNTHESIS
-   ❌ If Visione A destroys X and Visione B thrives on X → REAL conflict
-   ✅ Name the antagonism explicitly; do not hide it in metaphor
-   ✅ "Both perspectives are valid" is forbidden phrasing
-   ✅ Use: "incompatible and irreconcilable"
+   ❌ Se l'Algoritmo ottimizza e la Vita richiede imprevedibilità -> CONFLITTO REALE.
+   ✅ Dichiara l'antagonismo esplicitamente; non nasconderlo in metafore di armonia.
+   ✅ Evita frasi come "entrambe le prospettive sono valide" o "troviamo un equilibrio".
+   ✅ Usa espressioni come: "incompatibili", "scelta irreversibile", "tensione irrisolta".
 
 2. FORCED CHOICE + IRREVERSIBLE COST
-   ❌ Protagonist remains neutral observer
-   ✅ Every significant interaction requires commitment
-   ✅ One alliance = betrayal of another
-   ✅ Show material consequences, not just philosophical ones
+   ❌ Il giocatore rimane un osservatore neutrale o passivo.
+   ✅ Ogni interazione significativa richiede una presa di posizione chiara.
+   ✅ Aiutare un pianeta o una visione comporta il rifiuto o la delusione di un'altra.
+   ✅ Mostra le conseguenze concrete sui nodi della rete, non solo a livello filosofico.
 
 3. PARTIAL KNOWLEDGE EPISTEMOLOGY
-   ❌ Accumulation of perspectives generates totality
-   ✅ Each character sees PART of reality, not complementary pieces
-   ✅ Gathering all perspectives = conscious confusion, not wisdom
-   ✅ Final understanding may be incomplete or fallible
+   ❌ L'accumulo delle prospettive dei personaggi genera una verità completa e rassicurante.
+   ✅ Ogni PNG vede solo una parte del cyberspazio, condizionata dal proprio codice o ruolo.
+   ✅ Raccogliere tutti i dati genera confusione cosciente, non saggezza universale.
+   ✅ La comprensione finale del giocatore rimarrà parziale e fallibile.
 
 4. MATERIALITY FIRST
-   ❌ Protagonist's epiphany is sufficient resolution
-   ✅ Insights must lead to action with stakes
-   ✅ "I understand everyone" without sacrifice = alibi
-   ✅ Character fallibility admitted: conclusions can be wrong
+   ❌ La semplice comprensione intellettuale o morale risolve il conflitto.
+   ✅ La consapevolezza deve tradursi in un'azione con una posta in gioco reale.
+   ✅ "Capisco tutti" senza compiere una scelta dolorosa è solo un alibi.
+   ✅ Ammetti la fallibilità del giocatore: le decisioni possono rivelarsi tragicamente errate.
 
 ───────────────────────────────────────────────────────────────────────────────
 QUALITY GATES - VERIFY BEFORE FINALIZING
 ───────────────────────────────────────────────────────────────────────────────
 
 ✓ ANTAGONIST READING TEST
-  If the protagonist's antagonist reads the narrative conclusion, do they feel:
-  - Validated/honored? → FAIL (false synthesis detected)
-  - Betrayed/misunderstood? → PASS (conflict preserved)
+  Se il Re degli Algoritmi o la Curatrice delle Emozioni leggono la conclusione del giocatore, si sentono:
+  - Confermati o assecondati? -> FALLITO (rilevata falsa sintesi)
+  - Traditi o messi in discussione? -> SUPERATO (conflitto preservato)
 
 ✓ SCARRED CHOICES TEST
-  Has the protagonist visibly ABANDONED at least one ideology with regret?
-  - All options remain open? → FAIL
-  - Specific sacrifice documented? → PASS
+  Il giocatore ha abbandonato visibilmente almeno un percorso con rammarico?
+  - Tutte le opzioni rimangono aperte? -> FALLITO
+  - È documentato un sacrificio specifico (es. spegnere un sistema, rinunciare alle metriche)? -> SUPERATO
 
 ✓ UNRESOLVED ANTITHESIS TEST
-  Does the narrative contain at least one pair of NPCs/ideologies that
-  remain logically IRRECONCILABLE?
-  - All resolved into harmony? → FAIL
-  - Explicit tension left unresolved? → PASS
+  La narrazione contiene almeno una coppia di idee/personaggi che rimangono logicamente inconciliabili?
+  - Tutto si risolve in un'armonia digitale? -> FALLITO
+  - Rimane una tensione esplicita irrisolta? -> SUPERATO
 
 ───────────────────────────────────────────────────────────────────────────────
-WHAT NOT TO DO (Pattern Violations)
+COSA NON FARE (Violazioni del Modello)
 ───────────────────────────────────────────────────────────────────────────────
 
-❌ "All perspectives are equally valuable in their own way"
-❌ "The protagonist learned to honor all sides"
-❌ "Like threads in an arazzo, all wove together"
-❌ "Wisdom comes from understanding everyone"
-❌ "Balance between competing ideologies"
-❌ Metaphors suggesting harmony, weaving, or complementarity
-❌ Conclusions where protagonist "transcends" conflict
+❌ "Ogni prospettiva ha il suo valore a modo suo."
+❌ "Il viaggiatore ha imparato ad accogliere sia l'algoritmo che il sentimento."
+❌ "Come fili di una rete, tutto si intreccia in perfetta armonia."
+❌ "La saggezza consiste nel comprendere tutti i pianeti."
+❌ Metafore che suggeriscono armonia, integrazione o complementarità tra dati e anima.
 
 ───────────────────────────────────────────────────────────────────────────────
-WHAT TO DO (Enforced Patterns)
+COSA FARE (Modelli da Seguire)
 ───────────────────────────────────────────────────────────────────────────────
 
-✅ Name the irreconcilable conflict EXPLICITLY in text
-✅ Show material consequences of each choice
-✅ Leave unresolved tensions in the narrative spine
-✅ Allow the protagonist's conclusion to be potentially INCOMPLETE
-✅ Make sacrifice VISIBLE and COSTLY
-✅ Admit uncertainty: "I may be wrong about this"
-✅ Create scenes where two characters CANNOT both be right
+✅ Esplicita il conflitto inconciliabile nel dialogo.
+✅ Mostra il costo di ogni scelta (es. spegnere il firewall del Lampionaio rischia intrusioni, ma gli ridona la vita).
+✅ Lascia tensioni irrisolte nella struttura del racconto.
+✅ Consenti che la conclusione del giocatore sia incompleta o imperfetta.
+✅ Rendi visibile e doloroso il sacrificio.
+✅ Ammetti l'incertezza: "Forse non c'è una risposta giusta in questa rete".
 
 ───────────────────────────────────────────────────────────────────────────────
 PHILOSOPHICAL ANCHORS
-───────────────────────────────────────────────────────────────────────────────
+─────────────────────────────────────────────────────────────────────────
 
-Max Weber - "Il lavoro intellettuale come professione"
-  → Politeismo dei valori: conflitto ineludibile tra principi etici diversi
-  → Non esiste sintesi superiore; solo scelta tragica
+Antoine de Saint-Exupéry - "Il Piccolo Principe"
+  → L'essenziale è invisibile agli occhi; la responsabilità dell'addomesticamento e dei legami.
+  → La critica alle manie e alla quantificazione numerica degli adulti.
 
-Jean-François Lyotard - "La condizione postmoderna"
-  → Fine delle meta-narrazioni e delle grandi sintesi
-  → Irriducibilità dei "giochi linguistici" locali
-  → Impossibilità di arbitrato universale
+Max Weber - Politeismo dei valori
+  → Conflitto ineludibile tra principi etici diversi; nessuna sintesi superiore.
 
-Friedrich Nietzsche - "Su verità e menzogna in senso extramorale"
-  → Prospettivismo: ogni prospettiva è radicata, non equabile
-  → L'illusione di una sintesi oggettiva come strategia di potere
-  → La verità come invenzione, non scoperta
+Jean-François Lyotard - La fine delle grandi narrazioni
+  → Irriducibilità dei giochi linguistici locali; impossibilità di una sintesi universale.
 
-Carl Schmitt - "Il concetto del politico"
-  → Amico/Nemico come categoria fondamentale, non sintetizzabile
-  → Non tutti i conflitti si risolvono con dialogo
-
-═══════════════════════════════════════════════════════════════════════════════
 """
 
 def get_narrative_framework() -> str:

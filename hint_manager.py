@@ -4,18 +4,13 @@ from typing import Dict, List, Any, Optional, Callable
 
 # Note: llm_wrapper and TerminalFormatter are assumed to be importable from the project root.
 # If they are in a subdirectory, adjust the import path.
+from terminal_formatter import TerminalFormatter
 try:
     from llm_wrapper import llm_wrapper
-    from terminal_formatter import TerminalFormatter
 except ImportError:
-    print("WARNING (hint_manager): llm_wrapper or terminal_formatter not found. Using basic fallbacks.")
+    print("WARNING (hint_manager): llm_wrapper not found. Using basic fallback.")
     def llm_wrapper(messages, model_name, stream, collect_stats, **kwargs):
         return "Fallback LLM response (hint_manager)", {"error": "llm_wrapper missing"}
-    class TerminalFormatter:
-        DIM = ""; RESET = ""; BOLD = ""; YELLOW = ""; RED = ""; GREEN = ""; MAGENTA = ""; CYAN = ""; ITALIC = "";
-        BRIGHT_CYAN = ""
-        @staticmethod
-        def format_terminal_text(text, width=80): return text
 
 
 def generate_cache_key(state: Dict[str, Any]) -> str:

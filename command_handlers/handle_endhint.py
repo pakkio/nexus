@@ -1,20 +1,13 @@
 # command_handlers/handle_endhint.py
 from typing import Dict, Any
 
+from terminal_formatter import TerminalFormatter
 try:
-    # Assuming session_utils is in the Python path or structured correctly
     from session_utils import save_current_conversation, print_conversation_start_banner, get_npc_color
-    from terminal_formatter import TerminalFormatter # Ensure TF is available
 except ImportError:
-    print("WARNING (handle_endhint): Failed to import from session_utils or terminal_formatter. Using fallbacks.")
-    class TerminalFormatter: # Basic fallback for TF
-        GREEN = DIM = YELLOW = RESET = BOLD = ""
-        @staticmethod
-        def get_terminal_width(): return 80
-        @staticmethod
-        def format_terminal_text(text, width=80): return text
+    print("WARNING (handle_endhint): Failed to import from session_utils. Using fallbacks.")
     def save_current_conversation(db, player_id, npc, session, TF, game_state): pass
-    def print_conversation_start_banner(npc_data, area_name, TF, game_state): pass # Added game_state to fallback
+    def print_conversation_start_banner(npc_data, area_name, TF, game_state): pass
     def get_npc_color(npc_name, TF): return ""
 
 

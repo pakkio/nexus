@@ -14,14 +14,7 @@ import copy # For deepcopy
 
 logger = logging.getLogger(__name__)
 
-try:
-    from terminal_formatter import TerminalFormatter
-except ImportError:
-    print("Warning (db_manager): terminal_formatter not found.")
-    class TerminalFormatter:
-        DIM = ""; RESET = ""; BOLD = ""; YELLOW = ""; RED = ""; GREEN = ""; MAGENTA = ""; CYAN = ""; BRIGHT_YELLOW=""; BRIGHT_GREEN = ""; BRIGHT_CYAN = ""; ITALIC = "";
-        @staticmethod
-        def format_terminal_text(text, width=80): import textwrap; return "\n".join(textwrap.wrap(text, width=width))
+from terminal_formatter import TerminalFormatter
 
 try:
     # Attempt to import the default profile structure

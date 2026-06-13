@@ -173,7 +173,7 @@ def test_collect_direct_api_statistics():
     assert approx_stats["input_tokens"] > 0
     assert approx_stats["output_tokens"] > 0
 
-@patch('llm_wrapper.requests.post')
+@patch('requests.Session.post')
 def test_llm_wrapper_streaming(mock_post, mock_streaming_response):
     """Test the main llm_wrapper function with streaming"""
     # Setup mock response
@@ -216,7 +216,7 @@ def test_llm_wrapper_streaming(mock_post, mock_streaming_response):
         assert output == "Hello world!"
         assert stats is not None
 
-@patch('llm_wrapper.requests.post')
+@patch('requests.Session.post')
 def test_llm_wrapper_non_streaming(mock_post, mock_non_streaming_response):
     """Test the main llm_wrapper function without streaming"""
     # Setup mock response
@@ -265,7 +265,7 @@ def test_llm_wrapper_non_streaming(mock_post, mock_non_streaming_response):
         assert stats["output_tokens"] == 20
         assert stats["total_tokens"] == 30
 
-@patch('llm_wrapper.requests.post')
+@patch('requests.Session.post')
 def test_llm_wrapper_error_handling(mock_post):
     """Test error handling in llm_wrapper"""
     # Setup mock to raise exception
@@ -287,7 +287,7 @@ def test_llm_wrapper_error_handling(mock_post):
         assert "Error" in output or "Errore" in output
         assert "Test connection error" in str(stats["error"])
 
-@patch('llm_wrapper.requests.post')
+@patch('requests.Session.post')
 def test_llm_wrapper_skips_non_user_last_message(mock_post):
     """Test that llm_wrapper handles non-user last message appropriately"""
     # Set environment variable for testing
@@ -312,7 +312,7 @@ def test_llm_wrapper_skips_non_user_last_message(mock_post):
         # Most importantly, verify no API call was made
         mock_post.assert_not_called()
 
-@patch('llm_wrapper.requests.post')
+@patch('requests.Session.post')
 def test_llm_wrapper_allows_utility_call_with_system_only(mock_post):
     """Test that llm_wrapper allows utility calls with only a system message"""
     # Setup for a profile analysis utility call

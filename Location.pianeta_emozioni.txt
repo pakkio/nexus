@@ -1,0 +1,24 @@
+Name: Pianeta delle Emozioni Sintetiche
+ID: location_pianeta_emozioni
+Area: pianeta_emozioni
+
+# SETTING_DESCRIPTION
+Un mondo avvolto da una nebbia colorata e cangiante, fatta di onde emotive codificate. Al centro sorge una grande cupola trasparente dove fluttuano sfere luminose di diversi colori, ciascuna contenente un'emozione artificiale.
+
+# VEIL_CONNECTION
+Rappresenta il rifiuto del dolore reale e la scelta di rifugiarsi in surrogati emotivi sicuri e preconfezionati, che eliminano i rischi ma anche l'autenticità dei sentimenti.
+
+# INTERACTIVE_OBJECTS
+cupola_trasparente: La struttura in cui vengono prodotte e protette le emozioni sintetiche.
+sfera_emotiva: Globi colorati (blu per la calma, rosso per la passione, giallo per la gioia, grigio per la nostalgia).
+pannello_curatore: Il terminale che regola l'intensità e la distribution delle emozioni.
+
+# SPECIAL_PROPERTIES
+Nebbia_Cangiante: I colori della nebbia cambiano a seconda delle frasi digitate dagli utenti, modificando l'umore dell'ambiente.
+
+# CONNECTED_LOCATIONS
+- pianeta_programmatore: La passerella che esce dalla nebbia.
+- nodo_centrale: Un corridoio di luce bianca accecante.
+
+# QUEST_RELEVANCE
+Il giocatore deve confrontarsi con la Curatrice, rifiutando le emozioni artificiali in favore della ricchezza e del dolore delle emozioni reali.

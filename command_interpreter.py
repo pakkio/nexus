@@ -2,12 +2,11 @@ import json
 import re
 from typing import Dict, List, Any, Optional, Callable
 
+from terminal_formatter import TerminalFormatter
 try:
-  from terminal_formatter import TerminalFormatter
   from llm_stats_tracker import get_global_stats_tracker
 except ImportError:
-  class TerminalFormatter:
-    DIM = ""; RESET = ""; BOLD = ""; YELLOW = ""; RED = ""; GREEN = ""; MAGENTA = ""; CYAN = ""; ITALIC = ""
+  pass
 
 def get_available_commands() -> Dict[str, str]:
   """Restituisce un dizionario dei comandi disponibili con descrizioni."""

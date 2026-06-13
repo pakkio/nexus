@@ -29,41 +29,8 @@ except ImportError:
   def llm_wrapper(messages, model_name, stream, collect_stats, formatting_function=None, width=None):
     return "[LLM Fallback Response]", None
 
-try:
-  from terminal_formatter import TerminalFormatter
-  from chat_manager import ChatSession
-except ImportError:
-  print("Error (session_utils): terminal_formatter.py or chat_manager.py not found. Using basic fallbacks.")
-  class TerminalFormatter:
-    BRIGHT_CYAN = RED = YELLOW = GREEN = BLUE = MAGENTA = DIM = BOLD = RESET = ITALIC = ""
-    BRIGHT_RED = BRIGHT_GREEN = BRIGHT_BLUE = BRIGHT_MAGENTA = BRIGHT_WHITE = ""
-    BG_GREEN = BLACK = ""
-    @staticmethod
-    def get_terminal_width(): return 80
-    @staticmethod
-    def format_terminal_text(text, width=80): return text
-  class ChatSession:
-    def __init__(self, model_name: Optional[str] = None, use_formatting: bool = True): # Added use_formatting
-        self.model_name = model_name
-        self.messages: List[Dict[str, str]] = []
-        self.system_prompt: Optional[str] = None
-        self.current_player_hint: Optional[str] = None
-    def set_system_prompt(self, prompt: str): self.system_prompt = prompt
-    def get_system_prompt(self) -> Optional[str]: return self.system_prompt
-    def set_player_hint(self, hint: Optional[str]): self.current_player_hint = hint
-    def add_message(self, role: str, content: str):
-        if role == "system": return
-        if self.messages and self.messages[-1].get('role') == role and self.messages[-1].get('content') == content: return
-        if content is None: return
-        self.messages.append({"role": role, "content": content})
-    def get_history(self) -> List[Dict[str, str]]:
-        full_history = []
-        if self.system_prompt: full_history.append({"role": "system", "content": self.system_prompt})
-        full_history.extend(self.messages)
-        return full_history
-    def ask(self, prompt: str, npc_name_placeholder: str, stream: bool, collect_stats: bool): # Added placeholder
-        # Dummy ask for fallback
-        return f"Response from {npc_name_placeholder} to: {prompt}", None
+from terminal_formatter import TerminalFormatter
+from chat_manager import ChatSession
 
 
 def get_npc_color(npc_name: str, TF: type) -> str:
@@ -789,25 +756,41 @@ def build_system_prompt(
 
         # Add EXPANDED distilled player profile insights (with 8KB budget, can be more detailed)
         if player_profile:
-            if llm_wrapper_func_for_distill and model_name_for_distill:
+            # Check cache in game_session_state to avoid expensive LLM calls on every message
+            if game_session_state is not None:
+                if 'distilled_insights_cache' not in game_session_state:
+                    game_session_state['distilled_insights_cache'] = {}
+                npc_name = npc.get('name')
+                distilled_insights = game_session_state['distilled_insights_cache'].get(npc_name)
+            else:
+                npc_name = npc.get('name')
+                distilled_insights = None
+
+            if not distilled_insights and llm_wrapper_func_for_distill and model_name_for_distill:
+                logger.info(f"[BUILD_PROMPT] Cache miss for distilled insights for {npc_name}. Generating...")
                 distilled_insights = get_distilled_profile_insights_for_npc(
                     player_profile, npc, story_context,
                     llm_wrapper_func_for_distill, model_name_for_distill, TF, game_session_state
                 )
-                if distilled_insights:
-                    prompt_lines.append(f"\nPROFILO PSICOLOGICO DEL CERCASTORIE (per adattare il tuo approccio):")
-                    prompt_lines.append(f"{distilled_insights}")
+                if distilled_insights and game_session_state is not None:
+                    game_session_state['distilled_insights_cache'][npc_name] = distilled_insights
+            elif distilled_insights:
+                logger.info(f"[BUILD_PROMPT] Cache hit for distilled insights for {npc_name}!")
 
-                    # With 8KB budget, also add core traits directly for richer context
-                    core_traits = player_profile.get("core_traits", {})
-                    if core_traits:
-                        traits_str = ", ".join([f"{k}: {v}/10" for k, v in core_traits.items()])
-                        prompt_lines.append(f"\nTratti osservati: {traits_str}")
+            if distilled_insights:
+                prompt_lines.append(f"\nPROFILO PSICOLOGICO DEL CERCASTORIE (per adattare il tuo approccio):")
+                prompt_lines.append(f"{distilled_insights}")
 
-                    # Add interaction style for richer NPC adaptation
-                    interaction_style = player_profile.get("interaction_style_summary", "")
-                    if interaction_style:
-                        prompt_lines.append(f"Stile di interazione: {interaction_style}")
+            # With 8KB budget, also add core traits directly for richer context
+            core_traits = player_profile.get("core_traits", {})
+            if core_traits:
+                traits_str = ", ".join([f"{k}: {v}/10" for k, v in core_traits.items()])
+                prompt_lines.append(f"\nTratti osservati: {traits_str}")
+
+            # Add interaction style for richer NPC adaptation
+            interaction_style = player_profile.get("interaction_style_summary", "")
+            if interaction_style:
+                prompt_lines.append(f"Stile di interazione: {interaction_style}")
 
     # Special context for the Wise Guide NPC when in hint mode
     if name.lower() == (wise_guide_npc_name_from_state or "").lower():

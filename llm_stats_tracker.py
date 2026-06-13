@@ -83,6 +83,12 @@ class LLMStatsTracker:
             self.type_stats[model_type] = LLMTypeStats(model_type=model_type)
         
         self.type_stats[model_type].add_call_stats(call_stats)
+
+        # Propagate to global tracker if this is a copy/thread instance
+        global _global_stats_tracker
+        if _global_stats_tracker is not None and _global_stats_tracker is not self:
+            _global_stats_tracker.record_call(model_name, model_type, stats_dict)
+
         return call_stats
     
     def get_last_stats_by_type(self, model_type: str) -> Optional[LLMCallStats]:

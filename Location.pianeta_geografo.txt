@@ -1,0 +1,24 @@
+Name: Pianeta del Geografo Digitale
+ID: location_pianeta_geografo
+Area: pianeta_geografo
+
+# SETTING_DESCRIPTION
+Un pianeta costituito interamente da schermi sospesi che mostrano mappe, coordinate e statistiche di mondi sconosciuti. Al centro c'è una scrivania di metallo scuro che ricorda un antico server di database.
+
+# VEIL_CONNECTION
+Rappresenta l'accademismo astratto, l'accumulo di informazioni non verificate dall'esperienza diretta e la preferenza per la rappresentazione registrata rispetto alla realtà vissuta.
+
+# INTERACTIVE_OBJECTS
+tablet_luminoso: Lo strumento su cui il Geografo annota i dati inviati dagli esploratori.
+scrivania_server: Un mobile massiccio fatto di vecchi server dismessi.
+schermi_mappe: Monitor fluttuanti che mostrano territori in 3D mai visitati dal Geografo.
+
+# SPECIAL_PROPERTIES
+Statismo: Gli oggetti qui sono perfettamente immobili e non reagiscono a stimoli esterni, riflettendo la natura teorica del pianeta.
+
+# CONNECTED_LOCATIONS
+- pianeta_lampionaio: L'archivio di mappe.
+- pianeta_ricordi: Un corridoio buio e frammentato che scende nei settori cancellati.
+
+# QUEST_RELEVANCE
+Il giocatore deve incoraggiare il Geografo a compiere il suo primo passo al di fuori della scrivania per fare esperienza del mondo.

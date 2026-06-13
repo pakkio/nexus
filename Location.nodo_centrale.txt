@@ -1,0 +1,24 @@
+Name: Nodo Centrale della Rete
+ID: location_nodo_centrale
+Area: nodo_centrale
+
+# SETTING_DESCRIPTION
+Un intreccio immenso di linee di luce, percorsi e nodi pulsanti che si sviluppano in tutte le direzioni come un albero cosmico. Sotto scorre un fiume ininterrotto di miliardi di dati. Un ponte di luce sospeso conduce al centro del Nodo.
+
+# VEIL_CONNECTION
+Rappresenta il punto di convergenza di tutte le connessioni e scelte della rete. Qui si manifesta la Presenza del Nodo che unisce ogni singola traccia lasciata dagli incontri.
+
+# INTERACTIVE_OBJECTS
+ponte_luce: La passerella sospesa che conduce al nucleo del Nodo.
+nucleo_pulsante: Il punto centrale da cui si irradiano tutti i collegamenti della rete.
+albero_cosmico: Un reticolo tridimensionale di collegamenti che rappresenta le relazioni create.
+
+# SPECIAL_PROPERTIES
+Rete_Legami: Da questo punto è possibile vedere le tracce luminose che collegano tutti i pianeti visitati.
+
+# CONNECTED_LOCATIONS
+- pianeta_emozioni: Il corridoio di luce bianca.
+- asteroide_b612: Un filo sottile e caldo di luce familiare che riconduce alla Rosa.
+
+# QUEST_RELEVANCE
+Qui la Presenza del Nodo mette il giocatore di fronte alle sue responsabilità di scelta.

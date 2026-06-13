@@ -12,9 +12,9 @@ else
 fi
 
 # Start the server with nohup
-echo "Starting server with poetry..."
-cd /root/nexus
-nohup poetry run python app.py > server.log 2>&1 &
+echo "Starting server with virtualenv python..."
+export PYTHONPATH=.
+nohup poetry run python app.py > app_server.log 2>&1 &
 
 echo "Server started! PID: $!"
-echo "Logs: tail -f /root/nexus/server.log"
+echo "Logs: tail -f app_server.log"

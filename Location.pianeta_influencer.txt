@@ -1,0 +1,24 @@
+Name: Pianeta dell'Influencer Solitario
+ID: location_pianeta_influencer
+Area: pianeta_influencer
+
+# SETTING_DESCRIPTION
+Una gigantesca stanza da streaming fluttuante nel vuoto. Luci artificiali e pannelli LED cambiano colore continuamente, sotto un cielo fatto di notifiche che lampeggiano come stelle nervose.
+
+# VEIL_CONNECTION
+Rappresenta l'illusione della visibilità digitale e della socialità superficiale, dove la connessione costante nasconde una profonda solitudine.
+
+# INTERACTIVE_OBJECTS
+sedia_ergonomica: La sedia da cui l'Influencer non si alza mai.
+telecamera_fluttuante: Un piccolo drone satellite che segue ogni movimento dell'Influencer.
+pannello_led: Pannelli che mostrano il contatore dei like in tempo reale.
+
+# SPECIAL_PROPERTIES
+Sovraccarico_Notifiche: Il rumore continuo delle notifiche rende difficile concentrarsi, simboleggiando la distrazione digitale.
+
+# CONNECTED_LOCATIONS
+- pianeta_algoritmi: Il tunnel di dati ordinati.
+- pianeta_contabile: Un sentiero di bit grigi che scende verso il basso.
+
+# QUEST_RELEVANCE
+Il giocatore deve aiutare l'Influencer a trovare il coraggio di spegnere lo schermo e vivere nel silenzio reale.
