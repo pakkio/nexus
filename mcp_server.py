@@ -20,6 +20,7 @@ from typing import Any
 
 import httpx
 from mcp.server.mcpserver import MCPServer
+from mcp.server.transport_security import TransportSecuritySettings
 from starlette.applications import Starlette
 from starlette.requests import Request
 from starlette.responses import JSONResponse, RedirectResponse
@@ -296,8 +297,26 @@ def build_asgi_app(flask_app) -> Starlette:
 
     # streamable_http_path="/" because the whole sub-app is itself mounted at
     # "/mcp" below - its one internal route ends up serving exactly that path,
-    # not "/mcp/mcp".
-    mcp_app = mcp.streamable_http_app(streamable_http_path="/")
+    # not "/mcp/mcp". stateless_http + json_response: no mcp-session-id
+    # continuity and a plain application/json response per call instead of the
+    # full protocol's SSE stream - matches mcp-craftsim's own HttpSingleRequestTransport
+    # ("Stateless HTTP transport: processes a single JSON-RPC request and returns
+    # the response"), so the same stdio<->HTTP bridge script that already talks
+    # to mcp-craftsim works here unmodified.
+    # The SDK's DNS-rebinding protection checks the Host header against an
+    # allowlist that defaults to empty (i.e. rejects everything, per the 421
+    # "Invalid Host header" this produced against edu3d.it:5000 before this was
+    # added) - list every hostname:port this server is actually reached as.
+    # Bearer auth (BearerAuthMiddleware below) is the real access control here;
+    # this is defense-in-depth, not a substitute for it.
+    transport_security = TransportSecuritySettings(
+        allowed_hosts=[f"127.0.0.1:{_NEXUS_PORT}", f"localhost:{_NEXUS_PORT}",
+                       f"edu3d.it:{_NEXUS_PORT}", f"212.227.64.143:{_NEXUS_PORT}"],
+    )
+    mcp_app = mcp.streamable_http_app(
+        streamable_http_path="/", stateless_http=True, json_response=True,
+        transport_security=transport_security,
+    )
     protected_mcp_app = BearerAuthMiddleware(mcp_app, NEXUS_AUTH_TOKEN)
     flask_asgi = WsgiToAsgi(flask_app)
 
