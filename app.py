@@ -2197,10 +2197,16 @@ load();
 if __name__ == '__main__':
     # Initialize game system
     initialize_game_system()
-    
-    # Run Flask app
+
     port = int(os.getenv('NEXUS_PORT', 5000))
     debug = os.getenv('FLASK_DEBUG', 'false').lower() == 'true'
-    
-    logger.info(f"Starting Nexus Flask API on port {port}")
-    app.run(host='0.0.0.0', port=port, debug=debug)
+
+    # Served from one ASGI app (via uvicorn) rather than Flask's own dev server,
+    # so the MCP endpoint (see mcp_server.py) can be mounted at /mcp on this same
+    # port instead of opening a second one. The Flask app itself is unchanged -
+    # every existing route still runs exactly as it did under app.run().
+    import uvicorn
+    from mcp_server import build_asgi_app
+
+    logger.info(f"Starting Nexus API (Flask REST + MCP at /mcp) on port {port}")
+    uvicorn.run(build_asgi_app(app), host='0.0.0.0', port=port, log_level='info' if not debug else 'debug')
