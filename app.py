@@ -64,7 +64,10 @@ VERSION_CHANGELOG = {
 
 # Constants
 GAME_SYSTEM_NOT_INITIALIZED = 'Game system not initialized'
-PLAYER_ID_RE = re.compile(r'^[a-zA-Z0-9_\-\.]+$')
+# Allows internal single spaces (SL/OpenSim avatar display names are almost
+# always "Firstname Lastname") but not leading/trailing ones - those are
+# stripped by sanitize_player_id below before this ever runs.
+PLAYER_ID_RE = re.compile(r'^[a-zA-Z0-9_\-\.]+( [a-zA-Z0-9_\-\.]+)*$')
 
 def sanitize_player_id(player_id: str) -> Optional[str]:
     if not player_id or not isinstance(player_id, str):
@@ -274,6 +277,23 @@ def initialize_game_system():
     logger.info(f"✓ Initialized GameSystem with mockup={use_mockup}, model={model_name}")
 
     return game_system
+
+# Machine-facing endpoints (everything the LSL bridge scripts call) require
+# 'Authorization: Bearer <NEXUS_AUTH_TOKEN>'. The purely browser-facing pages
+# (root info, /game info, /web chat UI, /version) stay open - a plain browser
+# visit has no way to attach a custom header. Configurable via env var so the
+# token isn't a second thing to change in code if it's ever rotated.
+NEXUS_AUTH_TOKEN = os.environ.get('NEXUS_AUTH_TOKEN', 'pakkio 62')
+_AUTH_EXEMPT_PATHS = {'/', '/web', '/game', '/version'}
+
+@app.before_request
+def require_bearer_auth():
+    """Reject any non-exempt request without the expected bearer token."""
+    if request.path in _AUTH_EXEMPT_PATHS:
+        return None
+    if request.headers.get('Authorization') != f'Bearer {NEXUS_AUTH_TOKEN}':
+        return jsonify({'error': 'Unauthorized'}), 401
+    return None
 
 @app.before_request
 def setup_game_system():
