@@ -6,6 +6,7 @@ import mysql.connector
 import os
 import sys
 import json
+import re
 import logging
 from typing import List, Dict, Optional, Any, Set, Tuple # Tuple added
 from datetime import datetime
@@ -15,6 +16,29 @@ import copy # For deepcopy
 logger = logging.getLogger(__name__)
 
 from terminal_formatter import TerminalFormatter
+
+# Canonical item names: variant spellings the LLM may emit map to one entry,
+# so the same lore item never duplicates under two names.
+ITEM_ALIASES = {
+    "seme di elira": "seme della foresta",
+    "pozione di mara": "pozione di guarigione",
+    "pozione": "pozione di guarigione",
+}
+
+# Placeholder tokens the LLM sometimes emits instead of a real grant.
+# These canonicalize to '' and are dropped everywhere (add/remove/check/load).
+ITEM_JUNK_NAMES = frozenset({
+    "", "none", "null", "nothing", "n/a", "na", "-",
+    "nessuno", "nessuna", "nessun oggetto", "no item", "no items", "niente",
+})
+
+def canonicalize_item_name(item_name) -> str:
+    """Normalize an item name: collapse spaces, lowercase, resolve aliases.
+    Returns '' for junk/placeholder tokens (caller must skip those)."""
+    cleaned = re.sub(r'\s+', ' ', str(item_name or '')).strip().lower()
+    if cleaned in ITEM_JUNK_NAMES:
+        return ""
+    return ITEM_ALIASES.get(cleaned, cleaned)
 
 try:
     # Attempt to import the default profile structure
@@ -901,7 +925,7 @@ class DbManager:
 
     # --- Inventory Management (Player Specific) ---
     def _clean_item_name(self, item_name: str) -> str:
-        return str(item_name).strip().lower()
+        return canonicalize_item_name(item_name)
 
     def load_inventory(self, player_id: str) -> List[str]:
         if not player_id: return []
@@ -915,7 +939,9 @@ class DbManager:
                 with open(inv_file, 'r', encoding='utf-8') as f:
                     loaded_data = json.load(f)
                     if isinstance(loaded_data, list):
-                        inventory_list_cleaned = sorted(list(set(self._clean_item_name(item) for item in loaded_data if item and str(item).strip())))
+                        inventory_list_cleaned = sorted({
+                            c for c in (self._clean_item_name(item) for item in loaded_data
+                                        if item and str(item).strip()) if c})
             except Exception as e:
                 # print(f"{TerminalFormatter.YELLOW}Warning: Error loading mockup inventory {inv_file}: {e}. Returning empty list.{TerminalFormatter.RESET}")
                 inventory_list_cleaned = []
@@ -964,7 +990,9 @@ class DbManager:
         if not player_id: 
             logging.warning("[INVENTORY-DB] save_inventory called with empty player_id")
             return False
-        cleaned_inventory = sorted(list(set(self._clean_item_name(item) for item in inventory_list if item and str(item).strip())))
+        cleaned_inventory = sorted({
+            c for c in (self._clean_item_name(item) for item in inventory_list
+                        if item and str(item).strip()) if c})
 
         if self.use_mockup:
             inv_file = self.inventory_file_path_template.format(player_id=player_id)

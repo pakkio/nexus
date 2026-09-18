@@ -281,8 +281,10 @@ def generate_sl_command_prefix(npc_data: Optional[Dict[str, Any]], include_telep
         # Efficient quoting: escape only necessary characters for LSL string
         # IMPORTANT: Do NOT escape backslashes first - this breaks Unicode escape sequences
         # Only escape quotes and newlines - Unicode chars (emojis) will pass through intact
-        # Truncate BEFORE escaping to avoid heap overflow in LSL scripts
-        truncated_content = notecard_content[:600]  # Reduced from 1000 to 600 for safety with escaping overhead
+        # Truncate BEFORE escaping to avoid heap overflow in LSL scripts.
+        # Budget covers full lore handouts (auto-injected Diarios run ~500 chars,
+        # quest notecards longer); the llSetText summary stays short separately.
+        truncated_content = notecard_content[:1500]
         # Order matters! Escape quotes and newlines, but NOT backslashes (keeps Unicode intact)
         escaped_content = truncated_content.replace('"', '\\"').replace("\n", "\\n")
         notecard_command = f"notecard={notecard_name_str}|{escaped_content}"

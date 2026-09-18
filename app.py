@@ -51,10 +51,11 @@ game_system: Optional[GameSystem] = None
 # - MAJOR: Breaking changes
 # - MINOR: New features/fixes (increment for each significant fix)
 # - PATCH: Small bugfixes
-VERSION = "1.0.1"
+VERSION = "1.0.3"
 
 # Version changelog
 VERSION_CHANGELOG = {
+    "1.0.3": "Item canonicalization/aliases + junk-grant drop, notecard lore content, larger notecard budgets",
     "1.0.1": "Fix NPC name personalization, strip internal tags, /go exact-area, Boros pin, 10-slot greetings",
     "2.0.0": "Major update: version bump, see release notes.",
     "1.4.0": "Fix NLP interpretation of dialogue vs /hint commands",
@@ -126,8 +127,12 @@ def normalize_text_for_lsl(text, strip_sl_tags=False, player_name=None):
         text = _re.sub(r'\b[Cc]ercastorie\b', player_name, text)
 
     # CRITICAL: Limit length to prevent LSL heap overflow
-    # LSL has 1MB heap limit, responses must be kept small
+    # LSL has 1MB heap limit, responses must be kept small.
+    # Payloads carrying a notecard= data block get a larger budget so lore
+    # handouts are not cut mid-sentence (the llSetText summary stays short).
     MAX_RESPONSE_LENGTH = 2000
+    if 'notecard=' in text:
+        MAX_RESPONSE_LENGTH = 8000
     if len(text) > MAX_RESPONSE_LENGTH:
         text = text[:MAX_RESPONSE_LENGTH - 3] + "..."
 

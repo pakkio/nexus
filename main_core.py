@@ -8,7 +8,7 @@ import copy
 try:
   from terminal_formatter import TerminalFormatter
   from chat_manager import ChatSession, format_stats
-  from db_manager import DbManager
+  from db_manager import DbManager, canonicalize_item_name
   from llm_wrapper import llm_wrapper
 except ImportError as e:
   class TerminalFormatter: RED = ""; RESET = ""; BOLD = ""; YELLOW = ""; DIM = ""; MAGENTA = ""; CYAN = ""; BRIGHT_CYAN = ""; BG_GREEN = ""; BLACK = ""; BRIGHT_MAGENTA = ""; BRIGHT_GREEN = ""; BRIGHT_YELLOW = ""; ITALIC = "";
@@ -249,7 +249,9 @@ def run_interaction_loop(
                         chat_session.messages[-1]["content"] = dialogue_to_persist
 
                     if item_list_str: # Process items only if string is not empty
-                        potential_items = [item.strip() for item in item_list_str.split(',') if item.strip()]
+                        potential_items = [c for c in (canonicalize_item_name(item)
+                                                      for item in item_list_str.split(','))
+                                           if c]
                         for item_str in potential_items:
                             credit_match = re.match(r"(-?\d+)\s+credits?", item_str, re.IGNORECASE)
                             if credit_match:
