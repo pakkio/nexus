@@ -64,6 +64,11 @@ class GameState:
     def get(self, key: str, default: Any = None) -> Any:
         return getattr(self, key, default)
 
+    def update(self, other: Dict[str, Any]) -> "GameState":
+        for key, value in dict(other).items():
+            self[key] = value
+        return self
+
     def pop(self, key: str, default: Any = None) -> Any:
         if not hasattr(self, key):
             return default

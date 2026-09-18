@@ -8,6 +8,7 @@ from flask import Flask, request, jsonify, Response
 from flask_cors import CORS
 import logging
 import os
+import random
 import re
 from typing import Dict, Any, Optional
 import unicodedata
@@ -50,7 +51,7 @@ game_system: Optional[GameSystem] = None
 # - MAJOR: Breaking changes
 # - MINOR: New features/fixes (increment for each significant fix)
 # - PATCH: Small bugfixes
-VERSION = "2.0.0"
+VERSION = "1.0.0"
 
 # Version changelog
 VERSION_CHANGELOG = {
@@ -1283,6 +1284,20 @@ def get_available_commands():
         logger.error(f"Error getting commands: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
+# Fallback return-greetings for /sense when an NPC card has no Repeat_Greeting.
+# '{player}' is replaced with the player's display name. Card-level
+# Repeat_Greeting variants (separated by "|||") take precedence over these.
+RETURN_GREETING_FALLBACKS = [
+    "Di nuovo qui, {player}. Dimmi pure.",
+    "{player}, bentornato. Cosa ti porta da me stavolta?",
+    "Ti aspettavo, {player}. Parla.",
+    "Bentornato, {player}. Da dove cominciamo?",
+    "Ah, {player}! Siedi. Cosa vuoi sapere?",
+    "Eccoti di nuovo. Spero con buone notizie, {player}.",
+    "{player}. Ascolto.",
+    "Bentornato tra noi, {player}. Il tempo passa anche per noi, sai? Dimmi.",
+]
+
 @app.route('/sense', methods=['POST'])
 def sense_player():
     """Handle player arrival - NPC notices and greets the player."""
@@ -1410,9 +1425,17 @@ def sense_player():
 
         # Choose response based on whether there's conversation history
         if has_conversation_history:
-            # Player is returning to an ongoing conversation
-            logger.info(f"Player {player_id} returning to conversation with {current_npc_name}")
-            npc_response = f"Bentornato, {display_name}. Di cosa volevi parlare?"
+            # Player is returning: prefer the NPC's own Repeat_Greeting card
+            # (several variants may be separated by "|||" - one is picked at
+            # random), else a varied generic fallback so greetings don't repeat.
+            repeat_greeting = (current_npc.get('repeat_greeting', '') or '').strip()
+            if len(repeat_greeting) >= 2 and repeat_greeting.startswith('"') and repeat_greeting.endswith('"'):
+                repeat_greeting = repeat_greeting[1:-1]
+            variants = [v.strip() for v in repeat_greeting.split('|||') if v.strip()]
+            if variants:
+                npc_response = random.choice(variants).replace('{player}', display_name)
+            else:
+                npc_response = random.choice(RETURN_GREETING_FALLBACKS).replace('{player}', display_name)
         elif default_greeting:
             # Use the NPC's unique greeting from their card for first contact
             npc_response = default_greeting
