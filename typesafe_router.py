@@ -256,6 +256,53 @@ def choose_wise_guide_typesafe(story_description: str, npc_names: List[str]) -> 
 
 
 # ---------------------------------------------------------------------------
+# Item duplicate arbiter (fallback only).
+# Deterministic rules (aliases, token-set match) run first and decide every
+# observed case. Jev is consulted ONLY when a granted name shares tokens with
+# an owned item without matching it (e.g. future paraphrases like
+# "Seme del Bosco" vs "seme della foresta"). Merges require high confidence;
+# quest completion logic never consults Jev (deterministic by design).
+# ---------------------------------------------------------------------------
+
+ITEM_MERGE_CONF_THRESHOLD = 0.8
+
+
+def resolve_item_duplicate(new_name: str, inventory_names: List[str],
+                           threshold: float = ITEM_MERGE_CONF_THRESHOLD
+                           ) -> Tuple[Optional[str], float]:
+    """Decide whether a granted item duplicates something owned.
+
+    Returns (existing_name, confidence) to merge, or (None, confidence)
+    to keep it as a new entry. Never raises; None means 'add as new'.
+    """
+    if not is_typesafe_enabled() or not new_name or not inventory_names:
+        return None, 0.0
+    try:
+        options = {n: f"Already owned item: {n}" for n in list(dict.fromkeys(inventory_names))[:60]}
+        options["__NEW__"] = ("A genuinely distinct item. Choose this whenever "
+                              "in doubt: merging different objects is worse than a duplicate.")
+        answers, meta = system_one(
+            {"granted_item": new_name,
+             "note": "The game just granted this item. Same object under different wording merges; otherwise it stays new."},
+            {"match": {"type": "choice",
+                       "instructions": "Is the granted item the same object as one already owned, only worded differently?",
+                       "criteria": options}},
+        )
+        if not answers or "match" not in answers:
+            return None, 0.0
+        m = answers["match"]
+        conf = float(m.get("confidence", 0.0) or 0.0)
+        if m.get("choice") in (None, "__NEW__") or conf < threshold:
+            return None, conf
+        if m["choice"] in options:
+            return m["choice"], conf
+        return None, conf
+    except Exception as e:
+        logger.warning(f"[TypeSafe] item arbiter failed: {e}")
+        return None, 0.0
+
+
+# ---------------------------------------------------------------------------
 # Player profiling: traits + leaning + veil perception.
 # 8 core traits -> 8 parallel Scores (absolute 0-4 level, mapped to 1-10 in
 # code, delta vs current value). Leaning + veil -> closed-set Choices, which
