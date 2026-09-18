@@ -250,7 +250,17 @@ def interpret_user_intent(
     'in_lyra_hint_mode': game_state.get('in_lyra_hint_mode', False),
     'available_areas': game_state.get('available_areas', [])
   }
-  
+
+  # Fast path: TypeSafe System One (Jev) calibrated routing. No strings,
+  # ~0.6s, type-safe. Falls through to LLM/rules when unavailable.
+  try:
+    from typesafe_router import interpret_intent_typesafe
+    ts_result = interpret_intent_typesafe(user_input, game_state, confidence_threshold)
+    if ts_result is not None:
+      return ts_result
+  except Exception as e:
+    print(f"{TF.YELLOW}Warning: TypeSafe fast-path failed ({e}), using LLM fallback{TF.RESET}")
+
   messages = build_command_interpretation_prompt(user_input, context)
   
   try:

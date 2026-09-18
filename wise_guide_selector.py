@@ -77,6 +77,17 @@ Reply ONLY with the exact NPC name from the list. If Erasmus is not available, r
         }
     ]
 
+    # Fast path: TypeSafe System One Choice (calibrated, no string parsing).
+    try:
+        from typesafe_router import choose_wise_guide_typesafe
+        ts_pick = choose_wise_guide_typesafe(story_description, npc_names)
+        if ts_pick is not None:
+            guide_name, ts_conf = ts_pick
+            print(f"{TF.DIM}[WiseGuideSelector] TypeSafe selected '{guide_name}' (conf {ts_conf:.2f}).{TF.RESET}")
+            return guide_name
+    except Exception as e:
+        print(f"{TF.YELLOW}[WiseGuideSelector] TypeSafe fast-path failed ({e}), using LLM fallback.{TF.RESET}")
+
     try:
         answer, stats = llm_wrapper(
             messages=prompt_messages,
