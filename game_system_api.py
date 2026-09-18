@@ -11,7 +11,7 @@ from game_state import GameState
 import re
 
 # Assume all necessary modules are in PYTHONPATH or imported correctly
-from db_manager import DbManager
+from db_manager import DbManager, canonicalize_item_name
 from chat_manager import ChatSession, format_stats
 from llm_wrapper import llm_wrapper
 import session_utils
@@ -508,6 +508,11 @@ class _SinglePlayerGameSystem:
                             if _reward_already_given:
                                 logger.info(f"[GIVEN_ITEMS] Skipped — reward already given for {_npc_code_for_flag}")
                                 given_items_str = ''  # prevent further processing
+                            if given_items_str:
+                                # Canonicalize first: aliases merge variant names,
+                                # junk placeholders (none/null/...) are dropped.
+                                _canon = [canonicalize_item_name(i) for i in given_items_str.split(',')]
+                                given_items_str = ", ".join(i for i in _canon if i)
                             if given_items_str:
                                 self.game_state['system_messages_buffer'].append(f"You received: {given_items_str}")
                                 
