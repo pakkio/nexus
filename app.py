@@ -51,10 +51,11 @@ game_system: Optional[GameSystem] = None
 # - MAJOR: Breaking changes
 # - MINOR: New features/fixes (increment for each significant fix)
 # - PATCH: Small bugfixes
-VERSION = "1.0.3"
+VERSION = "1.0.4"
 
 # Version changelog
 VERSION_CHANGELOG = {
+    "1.0.4": "Quest trades revived (token-set matching, OR requirements), item ID aliases, Jev duplicate arbiter",
     "1.0.3": "Item canonicalization/aliases + junk-grant drop, notecard lore content, larger notecard budgets",
     "1.0.1": "Fix NPC name personalization, strip internal tags, /go exact-area, Boros pin, 10-slot greetings",
     "2.0.0": "Major update: version bump, see release notes.",

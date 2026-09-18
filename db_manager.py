@@ -17,12 +17,24 @@ logger = logging.getLogger(__name__)
 
 from terminal_formatter import TerminalFormatter
 
-# Canonical item names: variant spellings the LLM may emit map to one entry,
-# so the same lore item never duplicates under two names.
+# Canonical item names: variant spellings the LLM or quest IDs may use map to
+# one natural-Italian entry, so the same lore item never duplicates.
 ITEM_ALIASES = {
     "seme di elira": "seme della foresta",
+    "seme foresta": "seme della foresta",
     "pozione di mara": "pozione di guarigione",
+    "pozione guarigione": "pozione di guarigione",
     "pozione": "pozione di guarigione",
+    "cristallo memoria antica": "cristallo di memoria antica",
+    "pergamena saggezza": "pergamena della saggezza",
+    "codice tabula rasa": "codice della tabula rasa",
+    "visione vuoto fertile": "visione del vuoto fertile",
+    "minerale ferro antico": "minerale di ferro antico",
+    "telaio eco": "telaio dell'eco",
+    "filo memoria": "filo della memoria",
+    "telaio nuovo inizio": "telaio del nuovo inizio",
+    "ciotola offerta sacra": "ciotola dell'offerta sacra",
+    "trucioli ferro": "trucioli di ferro",
 }
 
 # Placeholder tokens the LLM sometimes emits instead of a real grant.
@@ -33,12 +45,39 @@ ITEM_JUNK_NAMES = frozenset({
 })
 
 def canonicalize_item_name(item_name) -> str:
-    """Normalize an item name: collapse spaces, lowercase, resolve aliases.
-    Returns '' for junk/placeholder tokens (caller must skip those)."""
-    cleaned = re.sub(r'\s+', ' ', str(item_name or '')).strip().lower()
+    """Normalize an item name: underscores to spaces, collapse spaces,
+    lowercase, resolve aliases. Returns '' for junk/placeholder tokens
+    (caller must skip those)."""
+    cleaned = re.sub(r'\s+', ' ', str(item_name or '').replace('_', ' ')).strip().lower()
     if cleaned in ITEM_JUNK_NAMES:
         return ""
     return ITEM_ALIASES.get(cleaned, cleaned)
+
+# Articles/prepositions ignored when comparing item identity, so quest IDs
+# (minerale_ferro_antico) match natural names (Minerale di Ferro Antico).
+_ITEM_STOPWORDS = frozenset({
+    "di", "a", "da", "in", "con", "su", "per", "tra", "fra",
+    "il", "lo", "la", "i", "gli", "le", "un", "uno", "una",
+    "del", "dello", "della", "dei", "degli", "delle",
+    "al", "allo", "alla", "ai", "alle",
+    "dal", "dallo", "dalla", "dai", "dalle",
+    "sul", "sullo", "sulla", "sui", "sulle",
+    "nel", "nello", "nella", "nei", "negli", "nelle",
+    "col", "coi", "d", "l",
+})
+
+def item_tokens(item_name) -> tuple:
+    """Significant tokens of an item name (articles/prepositions dropped)."""
+    canon = canonicalize_item_name(item_name)
+    if not canon:
+        return ()
+    toks = re.sub(r"'", " ", canon).split()
+    return tuple(sorted(t for t in toks if t not in _ITEM_STOPWORDS))
+
+def items_match(a, b) -> bool:
+    """True when two names denote the same item (aliases + token equality)."""
+    ta, tb = item_tokens(a), item_tokens(b)
+    return bool(ta) and ta == tb
 
 try:
     # Attempt to import the default profile structure

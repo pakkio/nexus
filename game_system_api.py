@@ -11,7 +11,7 @@ from game_state import GameState
 import re
 
 # Assume all necessary modules are in PYTHONPATH or imported correctly
-from db_manager import DbManager, canonicalize_item_name
+from db_manager import DbManager, canonicalize_item_name, items_match
 from chat_manager import ChatSession, format_stats
 from llm_wrapper import llm_wrapper
 import session_utils
@@ -443,13 +443,13 @@ class _SinglePlayerGameSystem:
                             _gv_treasure = _gv_npc.get('treasure')
                             _gv_req = _gv_npc.get('required_item')
                             _gv_credits = int(_gv_npc.get('reward_credits') or 0)
-                            _gv_is_gift_npc = (_gv_treasure or _gv_credits > 0) and (not _gv_req or str(_gv_req).lower() in ('none', ''))
+                            _gv_is_gift_npc = (_gv_treasure or _gv_credits > 0) and (not _gv_req or str(_gv_req).strip().lower() in ('none', '', 'nessuno'))
                             if _gv_is_gift_npc:
                                 _ACCEPT_KW = ('accetto', 'li prendo', "d'accordo", 'sì', ' sì', 'ok', 'procedi', 'prendo', 'perfetto', 'yes')
                                 _pi_lower = player_input.lower()
                                 if any(kw in _pi_lower for kw in _ACCEPT_KW):
                                     _inv = self.game_state.get('player_inventory', [])
-                                    _already_has = _gv_treasure and any(i.lower() == _gv_treasure.lower() for i in _inv)
+                                    _already_has = _gv_treasure and any(items_match(i, _gv_treasure) for i in _inv)
                                     if not _already_has:
                                         _parts = []
                                         if _gv_treasure:
@@ -461,17 +461,23 @@ class _SinglePlayerGameSystem:
                                         logger.info(f"[GIFT-GIVER] Injected [GIVEN_ITEMS: {_tag}]")
 
                         # REQUIRED_ITEM_TRADE: player used /give to deliver NPC's required item
-                        # Inject treasure (and notecard) server-side — don't rely on model compliance
+                        # Inject treasure (and notecard) server-side — don't rely on model compliance.
+                        # Requirement may list alternatives ("A OR B"); matching is token-based
+                        # so quest IDs (minerale_ferro_antico) match natural names
+                        # (Minerale di Ferro Antico). Deterministic by design.
                         if '[GIVEN_ITEMS:' not in final_npc_dialogue_for_return:
                             _trade = self.game_state.get('item_given_to_npc_this_turn', {})
                             if _trade and _trade.get('type') == 'item':
                                 _ri_npc = self.game_state.get('current_npc', {})
-                                _req = (_ri_npc.get('required_item') or '').lower().replace('_', ' ').strip()
-                                _given = _trade.get('item_name', '').lower().replace('_', ' ').strip()
+                                _req_alts = [a for a in re.split(
+                                    r'\s+(?:OR|oppure)\s+', str(_ri_npc.get('required_item') or ''),
+                                    flags=re.IGNORECASE) if a.strip()]
+                                _given = _trade.get('item_name', '')
                                 _treasure = _ri_npc.get('treasure')
                                 _ri_code = _ri_npc.get('code', '')
                                 _reward_done = bool((self.game_state.get('plot_flags') or {}).get(f"_reward_given_{_ri_code}"))
-                                if _req and _given == _req and _treasure and not _reward_done:
+                                _matched = any(items_match(_given, alt) for alt in _req_alts)
+                                if _req_alts and _matched and _treasure and not _reward_done:
                                     final_npc_dialogue_for_return += f" [GIVEN_ITEMS: {_treasure}]"
                                     logger.info(f"[REQUIRED_ITEM_TRADE] '{_given}' → [GIVEN_ITEMS: {_treasure}]")
                                     # Inject notecard server-side if NPC has one defined
@@ -544,8 +550,29 @@ class _SinglePlayerGameSystem:
                                 player_id = self.game_state.get('player_id')
                                 db = self.game_state.get('db')
                                 current_npc = self.game_state.get('current_npc', {})
-                                
+
                                 if items_given_names and player_id and db:
+                                    # Jev duplicate arbiter (fallback only): when a granted
+                                    # name overlaps an owned item without matching it,
+                                    # ask Jev whether it is the same object reworded.
+                                    # Deterministic matches need no arbitration.
+                                    try:
+                                        from typesafe_router import resolve_item_duplicate
+                                        from db_manager import item_tokens
+                                        _owned_now = [str(i) for i in db.load_inventory(player_id)]
+                                        _final_names = []
+                                        for item_name in items_given_names:
+                                            _merged = None
+                                            if _owned_now and not any(items_match(item_name, o) for o in _owned_now):
+                                                _nt = {t for t in item_tokens(item_name) if len(t) > 3}
+                                                if _nt and any(_nt & {t for t in item_tokens(o) if len(t) > 3} for o in _owned_now):
+                                                    _merged, _mconf = resolve_item_duplicate(item_name, _owned_now)
+                                                    if _merged:
+                                                        logger.info(f"[ITEM-ARBITER] Jev merged '{item_name}' -> '{_merged}' ({_mconf:.2f})")
+                                            _final_names.append(_merged or item_name)
+                                        items_given_names = _final_names
+                                    except Exception as _arb_e:
+                                        logger.warning(f"[ITEM-ARBITER] skipped: {_arb_e}")
                                     for item_name in items_given_names:
                                         logger.info(f"[ITEM-PROCESSING] Adding '{item_name}' to inventory for {player_id}")
                                         if db.add_item_to_inventory(player_id, item_name, self.game_state):
