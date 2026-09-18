@@ -374,6 +374,9 @@ class _SinglePlayerGameSystem:
                             logger.info("[NOTECARD_EXTRACTION] Found notecard in response, extracting...")
                             from chat_manager import extract_notecard_from_response
                             cleaned_response, notecard_name, notecard_content = extract_notecard_from_response(final_npc_dialogue_for_return)
+                            if notecard_content:
+                                notecard_content = session_utils.personalize_npc_text(
+                                    notecard_content, self.game_state.get('player_id'))
                             logger.info(f"[NOTECARD_EXTRACTION] Extracted: name='{notecard_name}', content_len={len(notecard_content)}")
                             if notecard_name and notecard_content:
                                 # Store notecard info in game state for SL commands generation

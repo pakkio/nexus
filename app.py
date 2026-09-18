@@ -51,10 +51,11 @@ game_system: Optional[GameSystem] = None
 # - MAJOR: Breaking changes
 # - MINOR: New features/fixes (increment for each significant fix)
 # - PATCH: Small bugfixes
-VERSION = "1.0.0"
+VERSION = "1.0.1"
 
 # Version changelog
 VERSION_CHANGELOG = {
+    "1.0.1": "Fix NPC name personalization, strip internal tags, /go exact-area, Boros pin, 10-slot greetings",
     "2.0.0": "Major update: version bump, see release notes.",
     "1.4.0": "Fix NLP interpretation of dialogue vs /hint commands",
     "1.3.0": "Fix system prompt greeting repetition",
@@ -83,7 +84,7 @@ def sanitize_player_id(player_id: str) -> Optional[str]:
         return None
     return cleaned
 
-def normalize_text_for_lsl(text, strip_sl_tags=False):
+def normalize_text_for_lsl(text, strip_sl_tags=False, player_name=None):
     """
     Normalizza il testo per LSL convertendo caratteri accentati in equivalenti ASCII.
     à => a', è => e', ì => i', ò => o', ù => u', ç => c'
@@ -92,6 +93,10 @@ def normalize_text_for_lsl(text, strip_sl_tags=False):
     strip_sl_tags=True: also strips inline SL command blocks [emote=...; anim=...; ...]
       Use for npc_response (display text) — LLM may embed these, they must not show in chat.
       Do NOT use for sl_commands — those ARE the legitimate commands for the LSL script.
+      Also strips internal system markers ([CONVERSATION_RESUMED: ...], condition-key
+      echoes like [first_meeting]/[dismisses_art], empty [GIVEN_ITEMS: ]) that must
+      never reach the player.
+    player_name: when given, replaces {player} slots and legacy 'Cercastorie'.
     """
     if not text:
         return text
@@ -101,9 +106,24 @@ def normalize_text_for_lsl(text, strip_sl_tags=False):
         # Strip inline SL command blocks embedded by the LLM in display text
         text = _re.sub(r'\[(?:emote|anim|face|facial_expression|lookup|llSetText|teleport|notecard)[^\]]*\]',
                        '', text, flags=_re.IGNORECASE)
+        # Strip internal conversation markers echoed by the LLM
+        text = _re.sub(r'\[(?:CONVERSATION_[A-Z_]+(?:\s*:[^\]]*)?)\]',
+                       '', text, flags=_re.IGNORECASE)
+        # Strip condition-key echoes (internal labels, e.g. [first_meeting])
+        text = _re.sub(r'\[(?:first_meeting|firstmeeting|repeated_visits|repeat_visit|dismisses_art|appreciates_stories)\]',
+                       '', text, flags=_re.IGNORECASE)
+        # Strip empty item tags (non-empty ones are consumed by item logic first)
+        text = _re.sub(r'\[GIVEN_ITEMS:\s*\]', '', text, flags=_re.IGNORECASE)
         import re as _re
         text = _re.sub(r'\n{3,}', '\n\n', text)
+        text = _re.sub(r'[ \t]{2,}', ' ', text)
         text = text.strip()
+
+    if player_name:
+        import re as _re
+        text = text.replace('{player}', player_name)
+        text = _re.sub(r'\b([Ii]l|[Dd]el|[Aa]l|[Dd]al)\s+[Cc]ercastorie\b', player_name, text)
+        text = _re.sub(r'\b[Cc]ercastorie\b', player_name, text)
 
     # CRITICAL: Limit length to prevent LSL heap overflow
     # LSL has 1MB heap limit, responses must be kept small
@@ -1167,7 +1187,7 @@ def chat_with_npc():
             'display_name': display_name,
             'player_message': message,
             'npc_name': npc_name,
-            'npc_response': normalize_text_for_lsl(npc_response, strip_sl_tags=True),
+            'npc_response': normalize_text_for_lsl(npc_response, strip_sl_tags=True, player_name=display_name),
             'sl_commands': normalize_text_for_lsl(sl_commands),
             'system_messages': response.get('system_messages', []),
             'current_npc': response.get('current_npc_name'),
@@ -1438,7 +1458,8 @@ def sense_player():
                 npc_response = random.choice(RETURN_GREETING_FALLBACKS).replace('{player}', display_name)
         elif default_greeting:
             # Use the NPC's unique greeting from their card for first contact
-            npc_response = default_greeting
+            from session_utils import personalize_npc_text
+            npc_response = personalize_npc_text(default_greeting, player_id, display_name)
         else:
             # Fallback to generic greeting if not found
             logger.warning(f"No Default_Greeting found for NPC {current_npc_name}, using fallback")
@@ -1462,7 +1483,7 @@ def sense_player():
                 npc_response=cleaned_response,
                 include_teleport=True,
                 include_notecard=has_notecard,
-                notecard_content=notecard_content,
+                notecard_content=notecard_content.replace('{player}', display_name) if notecard_content else notecard_content,
                 notecard_name=notecard_name
             )
 
@@ -1477,7 +1498,7 @@ def sense_player():
             sl_commands = ""
         
         return jsonify({
-            'npc_response': normalize_text_for_lsl(npc_response),
+            'npc_response': normalize_text_for_lsl(npc_response, strip_sl_tags=True, player_name=display_name),
             'npc_name': current_npc_name,
             'player_id': player_id,
             'display_name': display_name,

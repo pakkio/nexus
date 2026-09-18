@@ -326,8 +326,28 @@ def _load_npc_narrative_prefix(npc_area: str, npc_name: str) -> str:
     print(f"[DEBUG PREFIX] ✗ No PREFIX found for {npc_name}")
   return ""
 
-def build_system_prompt(
-    npc: Dict[str, Any],
+import re as _re_personalize
+
+_UUID_LIKE_RE = _re_personalize.compile(r'^[0-9a-fA-F\-]{8,}$')
+
+def resolve_player_name(player_id=None) -> str:
+    """Best-effort display name for a player_id (UUIDs become 'viandante')."""
+    pid = (player_id or '').strip()
+    if pid and len(pid) <= 40 and not _UUID_LIKE_RE.match(pid.replace(' ', '')):
+        return pid
+    return 'viandante'
+
+def personalize_npc_text(text: str, player_id=None, display_name=None) -> str:
+    """Replace {player} slots and legacy hardcoded 'Cercastorie' with the name."""
+    if not text:
+        return text
+    name = (display_name or '').strip() or resolve_player_name(player_id)
+    out = text.replace('{player}', name)
+    out = _re_personalize.sub(r'\b([Ii]l|[Dd]el|[Aa]l|[Dd]al)\s+[Cc]ercastorie\b', name, out)
+    out = _re_personalize.sub(r'\b[Cc]ercastorie\b', name, out)
+    return out
+
+def build_system_prompt(    npc: Dict[str, Any],
     story: str,
     TF: type,
     game_session_state: Dict[str, Any], # MODIFIED: Pass full game state
@@ -497,12 +517,18 @@ def build_system_prompt(
 
         if default_greeting:
             prompt_lines.append(f"🔹 SALUTO INIZIALE (usa solo al primo messaggio, poi mai più):")
-            prompt_lines.append(f'   "{default_greeting}"')
+            prompt_lines.append(f'   "{personalize_npc_text(default_greeting, player_id)}"')
             prompt_lines.append("")
         # NOTE: Repeat_Greeting removed to prevent LLM from repeating it every message
         if conditional_responses:
             prompt_lines.append(f"🔹 RISPOSTE CONDIZIONALI (usa quando la situazione corrisponde):")
-            prompt_lines.append(f"   {conditional_responses[:2000]}")
+            prompt_lines.append(f"   {personalize_npc_text(conditional_responses[:2000], player_id)}")
+            prompt_lines.append("")
+            prompt_lines.append("🔹 NOMI E TAG: il giocatore si chiama "
+                                f"'{resolve_player_name(player_id)}'. Usa SEMPRE questo nome, "
+                                "mai 'Cercastorie'. NON includere MAI nomi di chiavi tra parentesi "
+                                "quadre ([first_meeting], [dismisses_art], [appreciates_stories], ecc.) "
+                                "nelle risposte: sono solo etichette interne, invisibili al giocatore.")
             prompt_lines.append("")
 
         if ai_behavior_notes:
