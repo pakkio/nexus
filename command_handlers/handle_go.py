@@ -30,12 +30,20 @@ def handle_go(args_str: str, state: Dict[str, Any]) -> Dict[str, Any]:
         print(f"{TF.RED}Error: No areas available in the game world.{TF.RESET}")
         return state # No change
 
-    # Find matching area (supports both spaced and no-space formats)
-    # Normalize by removing spaces for comparison
-    area_arg_normalized = area_arg_fragment.replace(" ", "").lower()
-    area_matches = [area for area in available_areas 
-                    if area_arg_fragment in area.lower() or 
-                    area_arg_normalized == area.lower().replace(" ", "")]
+    # If the full argument is exactly an area name, it can't also name an NPC:
+    # avoids spurious "NPC 'void' not found in 'Liminal Void'" noise.
+    full_arg = args_str.strip()
+    exact_area_match = [area for area in available_areas if area.lower() == full_arg.lower()]
+    if len(exact_area_match) == 1:
+        area_matches = exact_area_match
+        npc_arg_fragment = None
+    else:
+        # Find matching area (supports both spaced and no-space formats)
+        # Normalize by removing spaces for comparison
+        area_arg_normalized = area_arg_fragment.replace(" ", "").lower()
+        area_matches = [area for area in available_areas
+                        if area_arg_fragment in area.lower() or
+                        area_arg_normalized == area.lower().replace(" ", "")]
 
     new_area_name = None
     if len(area_matches) == 1:
