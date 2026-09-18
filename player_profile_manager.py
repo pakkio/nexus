@@ -381,6 +381,30 @@ def update_player_profile(
         model_name,
         TF
     )
+    if not isinstance(llm_suggestions, dict):
+        llm_suggestions = {"analysis_notes": "LLM suggestions were not a dict."}
+
+    # Fast path: TypeSafe System One numerics (traits/leaning/veil).
+    # Calibrated + closed-set, so they override the LLM on these fields;
+    # narrative fields (patterns/tags/notes/style) stay on the LLM.
+    # If the LLM call failed, Jev numerics still land instead of nothing.
+    try:
+        from typesafe_router import profile_scores_typesafe
+        jev = profile_scores_typesafe(previous_profile, interaction_log,
+                                      player_actions_summary, current_npc_name)
+    except Exception as e:
+        print(f"{TF.DIM}Warning: TypeSafe profile fast-path failed ({e}), using LLM values{TF.RESET}")
+        jev = None
+    if jev:
+        if jev.get("trait_adjustments"):
+            llm_suggestions["trait_adjustments"] = jev["trait_adjustments"]
+        if jev.get("updated_philosophical_leaning"):
+            llm_suggestions["updated_philosophical_leaning"] = jev["updated_philosophical_leaning"]
+        if jev.get("updated_veil_perception"):
+            llm_suggestions["updated_veil_perception"] = jev["updated_veil_perception"]
+        note = jev.get("analysis_notes", "")
+        prev_notes = llm_suggestions.get("analysis_notes", "") or ""
+        llm_suggestions["analysis_notes"] = f"{prev_notes}\n{note}".strip()
 
     updated_profile, changes_descriptions = apply_llm_suggestions_to_profile(
         previous_profile,

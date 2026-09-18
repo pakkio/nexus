@@ -255,6 +255,143 @@ def choose_wise_guide_typesafe(story_description: str, npc_names: List[str]) -> 
     return None
 
 
+# ---------------------------------------------------------------------------
+# Player profiling: traits + leaning + veil perception.
+# 8 core traits -> 8 parallel Scores (absolute 0-4 level, mapped to 1-10 in
+# code, delta vs current value). Leaning + veil -> closed-set Choices, which
+# also fixes free-string drift that downstream mechanics can't match.
+# Open-ended narrative fields (patterns/tags/notes) stay on the LLM.
+# ---------------------------------------------------------------------------
+
+PROFILE_TRAITS = ("curiosity", "caution", "empathy", "skepticism",
+                  "pragmatism", "aggression", "deception", "honor")
+
+TRAIT_INSTRUCTIONS = {
+    "curiosity": "How curious and inquisitive the player is: asks questions, explores, seeks lore",
+    "caution": "How cautious and careful the player is: hesitates, weighs risks, avoids rash moves",
+    "empathy": "How empathetic and compassionate the player is toward NPCs and their feelings",
+    "skepticism": "How skeptical the player is: doubts claims, challenges authority, questions motives",
+    "pragmatism": "How pragmatic and deal-oriented the player is: negotiates, seeks practical outcomes",
+    "aggression": "How aggressive or confrontational the player is: threats, anger, demands",
+    "deception": "How deceptive or manipulative the player is: lies, tricks, hidden agendas",
+    "honor": "How honorable the player is: keeps promises, fairness, respect for others",
+}
+
+TRAIT_LEVELS = ["trait absent or minimal", "trait slightly present",
+                "trait moderately present", "trait strongly present",
+                "trait dominant in this interaction"]
+
+# Closed veil set = exactly the values game mechanics understand
+# (handle_sussurri.calculate_sussurri_resistance + consequence_system).
+VEIL_CHOICES = {
+    "protective_trust": "Trusts the Veil as protection, defends memory against the Oblivion",
+    "neutral_curiosity": "Neutral, curious about the Veil without commitment",
+    "growing_doubt": "Doubts about the Veil are growing, tempted by Oblivion ideas",
+    "active_skepticism": "Actively skeptical of the Veil, leans toward doubting memory itself",
+}
+
+LEANING_CHOICES = {
+    "progressist": "Pro-Oblivion: favors forgetting, tabula rasa, liberation from the past",
+    "conservator": "Pro-Veil: favors preserving memory, protection, continuity",
+    "neutral": "No clear alignment either way",
+}
+
+# Deltas smaller than this are treated as noise (no trait change).
+TRAIT_NOISE_GATE = 0.5
+# Categorical switches below this confidence are ignored (avoids flip-flop).
+CATEGORICAL_CONF_THRESHOLD = 0.6
+
+
+def _score_to_trait_value(score: float) -> float:
+    """Map Jev Score level 0-4 onto the 1-10 trait scale."""
+    return max(1.0, min(10.0, round(1.0 + float(score) * 2.25, 1)))
+
+
+def profile_scores_typesafe(previous_profile: Dict[str, Any],
+                            interaction_log: List[Dict[str, str]],
+                            player_actions_summary: List[str],
+                            current_npc_name: Optional[str] = None) -> Optional[Dict[str, Any]]:
+    """Fast-path profile numerics. Returns suggestion-dict fragment or None.
+
+    Fragment keys match get_profile_update_suggestions_from_llm() output:
+    trait_adjustments (deltas vs current values, as the applier expects),
+    updated_veil_perception, updated_philosophical_leaning.
+    Caller merges with LLM narrative fields.
+    """
+    if not is_typesafe_enabled():
+        return None
+    try:
+        current_traits = (previous_profile or {}).get("core_traits", {}) or {}
+        recent = interaction_log[-6:] if interaction_log else []
+        convo = "\n".join(f"{m.get('role', '?')}: {m.get('content', '')}" for m in recent)
+        actions = "\n".join(f"- {a}" for a in (player_actions_summary or []))
+        traits_txt = ", ".join(f"{t}={current_traits.get(t, 5)}" for t in PROFILE_TRAITS)
+        state = {
+            "recent_conversation": convo[:3000] or "(no conversation yet)",
+            "player_actions": actions[:1500] or "(no recorded actions)",
+            "current_traits_1_to_10": traits_txt,
+            "current_npc": current_npc_name or "unknown",
+            "current_leaning": (previous_profile or {}).get("philosophical_leaning", "neutral"),
+            "current_veil": (previous_profile or {}).get("veil_perception", "neutral_curiosity"),
+        }
+        questions: Dict[str, Any] = {
+            f"trait_{t}": {"type": "score", "instructions": f"{TRAIT_INSTRUCTIONS[t]}. Judge ONLY what the player showed in THIS interaction.",
+                           "criteria": TRAIT_LEVELS}
+            for t in PROFILE_TRAITS
+        }
+        questions["leaning"] = {
+            "type": "choice",
+            "instructions": "The player's philosophical alignment shown in THIS interaction (pro-Oblivion vs pro-Veil vs neither)",
+            "criteria": LEANING_CHOICES,
+        }
+        questions["veil"] = {
+            "type": "choice",
+            "instructions": "The player's attitude toward the Veil shown in THIS interaction",
+            "criteria": VEIL_CHOICES,
+        }
+        answers, meta = system_one(state, questions)
+        if not answers:
+            return None
+
+        out: Dict[str, Any] = {"provider": "typesafe", "elapsed_ms": meta.get("elapsed_ms")}
+        adjustments: Dict[str, float] = {}
+        for t in PROFILE_TRAITS:
+            ans = answers.get(f"trait_{t}") or {}
+            if "score" not in ans:
+                continue
+            target = _score_to_trait_value(ans["score"])
+            try:
+                current = float(current_traits.get(t, 5))
+            except (TypeError, ValueError):
+                current = 5.0
+            delta = round(target - current, 1)
+            if abs(delta) >= TRAIT_NOISE_GATE:
+                # applier adds the adjustment to the current value
+                adjustments[t] = delta
+        if adjustments:
+            out["trait_adjustments"] = adjustments
+
+        leaning = answers.get("leaning") or {}
+        if (leaning.get("choice") in LEANING_CHOICES
+                and float(leaning.get("confidence", 0) or 0) >= CATEGORICAL_CONF_THRESHOLD):
+            out["updated_philosophical_leaning"] = leaning["choice"]
+
+        veil = answers.get("veil") or {}
+        if (veil.get("choice") in VEIL_CHOICES
+                and float(veil.get("confidence", 0) or 0) >= CATEGORICAL_CONF_THRESHOLD):
+            out["updated_veil_perception"] = veil["choice"]
+
+        out["analysis_notes"] = (
+            f"[TypeSafe] scored {len(adjustments)} trait(s), "
+            f"leaning={out.get('updated_philosophical_leaning', 'unchanged')}, "
+            f"veil={out.get('updated_veil_perception', 'unchanged')}"
+        )
+        return out
+    except Exception as e:
+        logger.warning(f"[TypeSafe] profile scoring failed: {e}")
+        return None
+
+
 if __name__ == "__main__":
     from dotenv import load_dotenv
     load_dotenv()
