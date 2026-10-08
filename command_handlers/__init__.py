@@ -15,6 +15,7 @@ from .handle_hint import handle_hint # MODIFIED: Ensure these are present
 from .handle_endhint import handle_endhint # MODIFIED: Ensure these are present
 from .handle_inventory import handle_inventory
 from .handle_give import handle_give
+from .handle_choose import handle_choose
 from .handle_receive import handle_receive
 from .handle_profile import handle_profile
 from .heandle_profile_for_npc import handle_profile_for_npc # Typo in original, kept for consistency if it exists
@@ -24,6 +25,6 @@ __all__ = [
     "handle_exit", "handle_help", "handle_go", "handle_talk", "handle_who",
     "handle_whereami", "handle_npcs", "handle_areas", "handle_listareas",
     "handle_stats", "handle_session_stats", "handle_clear", "handle_hint", "handle_endhint",
-    "handle_inventory", "handle_give", "handle_receive", "handle_profile",
+    "handle_inventory", "handle_give", "handle_choose", "handle_receive", "handle_profile",
     "handle_profile_for_npc", "handle_history"
 ]

@@ -13,6 +13,7 @@ import re
 # Assume all necessary modules are in PYTHONPATH or imported correctly
 from db_manager import DbManager, canonicalize_item_name, items_match
 import quest_trades
+import veil_finale
 from chat_manager import ChatSession, format_stats
 from llm_wrapper import llm_wrapper
 import session_utils
@@ -65,6 +66,7 @@ class _SinglePlayerGameSystem:
             player_id=player_id,
             player_inventory=db.load_inventory(player_id),
             player_credits_cache=db.get_player_credits(player_id),
+            plot_flags=dict(saved_state.get('plot_flags') or {}),   # reward flags, faction progress, Veil fate
             player_profile_cache=db.load_player_profile(player_id),
             ChatSession=ChatSession,
             TerminalFormatter=TerminalFormatter,
@@ -250,6 +252,32 @@ class _SinglePlayerGameSystem:
             f"Welcome, {self.game_state['player_id']}! Type '/go <area>' to explore. '/help' for commands."
         )
 
+    def finale_gate_message(self, area=None, npc_name=None, player_input=None):
+        """Why Meridia / the Nexus of Paths is closed to this player right now, or None if it is open."""
+        gs = self.game_state
+        flags = (gs.get('plot_flags') if gs else None) or {}
+        if veil_finale.chosen_fate(flags):
+            return None
+        open_, missing = veil_finale.gate_status(flags)
+        if open_:
+            return None
+        def hits(text):
+            t = (text or '').lower()
+            return 'meridia' in t or 'nexus' in t or 'nesso' in t
+        cur = (gs.get('current_npc') if gs else None) or {}
+        talking_meridia = cur.get('code') == veil_finale.MERIDIA_CODE
+        target = hits(area) or hits(npc_name)
+        if player_input is not None:
+            low = player_input.strip().lower()
+            cmd = low.split()[0] if low.startswith('/') and low.split() else ''
+            if cmd in ('/go', '/vai', '/talk', '/parla'):
+                target = target or hits(low)
+            elif talking_meridia and (not low.startswith('/') or cmd in ('/give', '/receive')):
+                target = True
+        if target:
+            return veil_finale.locked_message(missing, flags)
+        return None
+
     def process_player_input(self, player_input: str, skip_profile_update: bool = False) -> Dict[str, Any]:
         if self.game_state is None:
             self.game_state = {}
@@ -257,6 +285,13 @@ class _SinglePlayerGameSystem:
         self.output_buffer = []
         self.game_state['npc_made_new_response_this_turn'] = False
         self.game_state['actions_this_turn_for_profile'] = []
+
+        # Finale gate: Meridia stays hidden until the player has really talked to all three faction leaders.
+        _locked = self.finale_gate_message(player_input=player_input)
+        if _locked:
+            logger.info(f"[FINALE-GATE] blocked for {self.game_state.get('player_id')}: {player_input[:40]!r}")
+            self.game_state['system_messages_buffer'].append(_locked)
+            player_input = '/whereami'
 
         # Pre-load context for better performance
         current_npc = self.game_state.get('current_npc', {})
@@ -291,6 +326,19 @@ class _SinglePlayerGameSystem:
                 return None
             self.game_state = result
             logger.info(f"[DEBUG] game_state updated, is None: {self.game_state is None}")
+
+            # Faction progress: only real conversation with a faction leader counts (not trades or commands).
+            try:
+                if not player_input.startswith('/') and self.game_state.get('npc_made_new_response_this_turn'):
+                    if self.game_state.get('plot_flags') is None:
+                        self.game_state['plot_flags'] = {}
+                    _fid = veil_finale.record_dialogue_turn(
+                        self.game_state['plot_flags'], (self.game_state.get('current_npc') or {}).get('code'))
+                    if _fid:
+                        logger.info(f"[FACTION] {self.game_state.get('player_id')}: turn with {_fid} -> "
+                                    f"{self.game_state['plot_flags'][veil_finale.TURNS_KEY]}")
+            except Exception as _fe:
+                logger.warning(f"[FACTION] could not record dialogue turn: {_fe}")
 
             if 'system_message_for_ui' in self.game_state:
                 self.game_state['system_messages_buffer'].append(self.game_state.pop('system_message_for_ui'))

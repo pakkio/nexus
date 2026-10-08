@@ -1,4 +1,5 @@
 import os
+import veil_finale
 import random
 import traceback
 import hashlib
@@ -878,6 +879,11 @@ def build_system_prompt(    npc: Dict[str, Any],
     #   Tokens: ~4000 tokens system prompt + room for player messages
     # For wise guides: allow more (no strict limit during /hint mode)
     max_prompt_size = 16000 if is_regular_npc else 20000
+
+    # Finale: Meridia's authoritative rules go FIRST -- the size limiter trims from the end and
+    # would otherwise cut them (canonical factions, the player's right to choose, /choose).
+    if (npc or {}).get('code') == veil_finale.MERIDIA_CODE:
+        prompt_lines = veil_finale.meridia_prompt_lines(game_session_state.get('plot_flags')) + list(prompt_lines)
 
     final_prompt = _enforce_system_prompt_size_limit(
         prompt_lines,

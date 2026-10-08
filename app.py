@@ -209,10 +209,7 @@ def preload_npcs():
                     
                     # Save NPC to database
                     if game_system.db.use_mockup:
-                        npc_dir_path = os.path.join(game_system.db.mockup_dir, "NPCs")
-                        os.makedirs(npc_dir_path, exist_ok=True)
-                        with open(os.path.join(npc_dir_path, f"{npc_code}.json"), 'w', encoding='utf-8') as f:
-                            json.dump(npc_data, f, indent=2)
+                        game_system.db.store.put("NPCs", npc_code, npc_data)
                     else:
                         # Insert NPC into MySQL database
                         import mysql.connector
@@ -776,12 +773,7 @@ def reset_npc_conversation(player_id: str, npc_code: str):
 
         db = game_system.db
         if db.use_mockup:
-            path = os.path.join(
-                db.conversation_dir_template.format(player_id=player_id),
-                f"{npc_code}.json"
-            )
-            if os.path.exists(path):
-                os.remove(path)
+            db.store.delete("ConversationHistory", f"{player_id}/{npc_code}")
         else:
             conn = db.connect(); cursor = conn.cursor()
             try:
@@ -1001,6 +993,11 @@ def chat_with_npc():
                 'error': f'Could not create or retrieve player system for: {player_id}'
             }), 500
         
+        # Finale gate: refuse before /go and /talk, so the message never lands on some other NPC
+        _locked = player_system.finale_gate_message(area=area, npc_name=npc_name)
+        if _locked:
+            return jsonify({'error': _locked, 'locked': True, 'system_messages': [_locked]}), 403
+
         # If area is specified, go to that area first
         if area:
             go_command = f"/go {area}"

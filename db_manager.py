@@ -16,6 +16,7 @@ import copy # For deepcopy
 logger = logging.getLogger(__name__)
 
 from terminal_formatter import TerminalFormatter
+from doc_store import make_store
 
 # Canonical item names: variant spellings the LLM or quest IDs may use map to
 # one natural-Italian entry, so the same lore item never duplicates.
@@ -100,13 +101,13 @@ except ImportError:
 
 
 class DbManager:
-    def __init__(self, config: Optional[Dict[str, Any]] = None, use_mockup: bool = False, mockup_dir: str = "database"):
+    def __init__(self, config: Optional[Dict[str, Any]] = None, use_mockup: bool = False, mockup_dir: str = "database",
+                 storage: Optional[str] = None):
         self.use_mockup = use_mockup
         self.mockup_dir = mockup_dir
-        self.inventory_file_path_template = os.path.join(self.mockup_dir, "{player_id}_inventory.json")
-        self.conversation_dir_template = os.path.join(self.mockup_dir, "ConversationHistory", "{player_id}")
-        self.player_state_file_template = os.path.join(self.mockup_dir, "PlayerState", "{player_id}.json")
-        self.player_profile_file_template = os.path.join(self.mockup_dir, "PlayerProfiles", "{player_id}.json")
+        # Non-MySQL mode keeps its documents in a pluggable store: JSON files (default)
+        # or one SQLite database (NEXUS_STORAGE=sqlite, NEXUS_SQLITE_PATH).
+        self.store = make_store(self.mockup_dir, storage) if self.use_mockup else None
 
         if config: self.db_config = config
         else:
@@ -118,17 +119,7 @@ class DbManager:
                 'connection_timeout': int(os.environ.get('DB_TIMEOUT', 10))
             }
         if self.use_mockup:
-            os.makedirs(self.mockup_dir, exist_ok=True)
-            for subdir_tmpl in [
-                self.conversation_dir_template,
-                self.player_state_file_template,
-                self.player_profile_file_template
-            ]:
-                base_dir_path = os.path.dirname(subdir_tmpl.format(player_id="dummy").rstrip(os.sep))
-                if base_dir_path:
-                    os.makedirs(base_dir_path, exist_ok=True)
-            for static_dir in ["NPCs", "Storyboards", "Locations"]:
-                os.makedirs(os.path.join(self.mockup_dir, static_dir), exist_ok=True)
+            pass  # self.store already created above
         elif self.db_config and self.db_config.get('host'):
             pass # print(f"DbManager: Configured for Real Database.")
         # else:
@@ -153,16 +144,11 @@ class DbManager:
     def get_storyboard(self) -> Dict[str, Any]:
         default_story = {"name": "Default Story", "description": "[No storyboard data found or loaded]"}
         if self.use_mockup:
-            s_dir = os.path.join(self.mockup_dir, "Storyboards")
             try:
-                if os.path.exists(s_dir):
-                    files = [f for f in os.listdir(s_dir) if f.endswith('.json')]
-                    files.sort()
-                    if files:
-                        with open(os.path.join(s_dir, files[0]), 'r', encoding='utf-8') as f:
-                            return json.load(f)
-            except Exception as e:
-                # print(f"{TerminalFormatter.YELLOW}Warning: Could not load mockup storyboard: {e}{TerminalFormatter.RESET}")
+                stories = self.store.items("Storyboards")
+                if stories:
+                    return stories[0][1]
+            except Exception:
                 pass
             return default_story
         else: # DB
@@ -183,19 +169,12 @@ class DbManager:
     def get_npc(self, area: str, name: str) -> Optional[Dict[str, Any]]:
         """Get NPC by area and name (existing)."""
         if self.use_mockup:
-            npc_dir_path = os.path.join(self.mockup_dir, "NPCs")
-            if os.path.exists(npc_dir_path):
-                for filename in os.listdir(npc_dir_path):
-                    if filename.endswith(".json"):
-                        try:
-                            with open(os.path.join(npc_dir_path, filename), 'r', encoding='utf-8') as f:
-                                npc_data = json.load(f)
-                            if npc_data.get('area','').strip().lower() == area.strip().lower() and \
-                                    npc_data.get('name','').strip().lower() == name.strip().lower():
-                                if 'code' not in npc_data or not npc_data['code']:
-                                    npc_data['code'] = filename.replace('.json','')
-                                return npc_data
-                        except Exception: pass
+            for key, npc_data, *_ in self.store.items("NPCs"):
+                if npc_data.get('area','').strip().lower() == area.strip().lower() and \
+                        npc_data.get('name','').strip().lower() == name.strip().lower():
+                    if 'code' not in npc_data or not npc_data['code']:
+                        npc_data['code'] = key
+                    return npc_data
             return None
         else: # DB
             conn = None; cursor = None
@@ -215,16 +194,9 @@ class DbManager:
         if not code:
             return None
         if self.use_mockup:
-            npc_dir_path = os.path.join(self.mockup_dir, "NPCs")
-            if os.path.exists(npc_dir_path):
-                for filename in os.listdir(npc_dir_path):
-                    if filename.endswith(".json"):
-                        try:
-                            with open(os.path.join(npc_dir_path, filename), 'r', encoding='utf-8') as f:
-                                npc_data = json.load(f)
-                            if npc_data.get('code', filename.replace('.json','')) == code:
-                                return npc_data
-                        except Exception: pass
+            for key, npc_data, *_ in self.store.items("NPCs"):
+                if npc_data.get('code', key) == code:
+                    return npc_data
             return None
         else:
             conn = None; cursor = None
@@ -234,34 +206,6 @@ class DbManager:
                 cursor.execute(query, (code,))
                 return self._parse_sl_commands_fields(cursor.fetchone())
             except Exception as e:
-                return None
-            finally:
-                if cursor: cursor.close()
-                if conn and conn.is_connected(): conn.close()
-        if self.use_mockup:
-            npc_dir_path = os.path.join(self.mockup_dir, "NPCs")
-            if os.path.exists(npc_dir_path):
-                for filename in os.listdir(npc_dir_path):
-                    if filename.endswith(".json"):
-                        try:
-                            with open(os.path.join(npc_dir_path, filename), 'r', encoding='utf-8') as f:
-                                npc_data = json.load(f)
-                            if npc_data.get('area','').strip().lower() == area.strip().lower() and \
-                                    npc_data.get('name','').strip().lower() == name.strip().lower():
-                                if 'code' not in npc_data or not npc_data['code']:
-                                    npc_data['code'] = filename.replace('.json','')
-                                return npc_data
-                        except Exception: pass
-            return None
-        else: # DB
-            conn = None; cursor = None
-            try:
-                conn = self.connect(); cursor = conn.cursor(dictionary=True)
-                query = "SELECT * FROM NPCs WHERE LOWER(area) = LOWER(%s) AND LOWER(name) = LOWER(%s) LIMIT 1"
-                cursor.execute(query, (area.strip(), name.strip()))
-                return cursor.fetchone()
-            except Exception as e:
-                # print(f"{TerminalFormatter.RED}DB error getting NPC '{name}' in '{area}': {e}{TerminalFormatter.RESET}")
                 return None
             finally:
                 if cursor: cursor.close()
@@ -279,19 +223,11 @@ class DbManager:
         if not name:
             return None
         if self.use_mockup:
-            npc_dir_path = os.path.join(self.mockup_dir, "NPCs")
-            if os.path.exists(npc_dir_path):
-                for filename in os.listdir(npc_dir_path):
-                    if filename.endswith(".json"):
-                        try:
-                            with open(os.path.join(npc_dir_path, filename), 'r', encoding='utf-8') as f:
-                                npc_data = json.load(f)
-                            if npc_data.get('name', '').strip().lower() == name.strip().lower():
-                                if 'code' not in npc_data or not npc_data['code']:
-                                    npc_data['code'] = filename.replace('.json', '')
-                                return npc_data
-                        except Exception as e:
-                            logger.debug(f"Error loading NPC file {filename}: {e}")
+            for key, npc_data, *_ in self.store.items("NPCs"):
+                if npc_data.get('name', '').strip().lower() == name.strip().lower():
+                    if 'code' not in npc_data or not npc_data['code']:
+                        npc_data['code'] = key
+                    return npc_data
             return None
         else:  # DB
             conn = None
@@ -313,16 +249,11 @@ class DbManager:
 
     def get_default_npc(self, area: str) -> Optional[Dict[str, Any]]:
         if self.use_mockup:
-            npc_dir = os.path.join(self.mockup_dir, "NPCs"); npcs_in_area = []
-            if os.path.exists(npc_dir):
-                for filename in os.listdir(npc_dir):
-                    if filename.endswith('.json'):
-                        try:
-                            with open(os.path.join(npc_dir, filename), 'r', encoding='utf-8') as f: npc = json.load(f)
-                            if npc.get('area', '').strip().lower() == area.strip().lower():
-                                if 'code' not in npc or not npc['code']: npc['code'] = filename.replace('.json', '')
-                                npcs_in_area.append(npc)
-                        except: pass
+            npcs_in_area = []
+            for key, npc, *_ in self.store.items("NPCs"):
+                if npc.get('area', '').strip().lower() == area.strip().lower():
+                    if 'code' not in npc or not npc['code']: npc['code'] = key
+                    npcs_in_area.append(npc)
             if npcs_in_area:
                 # Prioritize NPCs with is_default_npc=true, then sort by name
                 default_npcs = [n for n in npcs_in_area if n.get('is_default_npc') == True or str(n.get('is_default_npc', '')).lower() == 'true']
@@ -348,20 +279,13 @@ class DbManager:
     def list_npcs_by_area(self) -> List[Dict[str, str]]:
         npcs_list = []
         if self.use_mockup:
-            npc_dir = os.path.join(self.mockup_dir, "NPCs")
-            if os.path.exists(npc_dir):
-                for filename in os.listdir(npc_dir):
-                    if filename.endswith(".json"):
-                        try:
-                            with open(os.path.join(npc_dir, filename), 'r', encoding='utf-8') as f:
-                                data = json.load(f)
-                                npcs_list.append({
-                                    "code": data.get("code", filename.replace(".json","")),
-                                    "name": data.get("name","Unknown NPC"),
-                                    "area": data.get("area","Unknown Area"),
-                                    "role": data.get("role","Unknown Role")
-                                })
-                        except Exception: pass
+            for key, data, *_ in self.store.items("NPCs"):
+                npcs_list.append({
+                    "code": data.get("code", key),
+                    "name": data.get("name","Unknown NPC"),
+                    "area": data.get("area","Unknown Area"),
+                    "role": data.get("role","Unknown Role")
+                })
             return sorted(npcs_list, key=lambda x: (x.get('area','').lower(), x.get('name','').lower()))
         else: # DB
             conn = None; cursor = None
@@ -379,18 +303,10 @@ class DbManager:
     def get_areas(self) -> List[str]:
         """Get a list of unique area names from locations."""
         if self.use_mockup:
-            location_dir = os.path.join(self.mockup_dir, "Locations")
             areas = set()
-            if os.path.exists(location_dir):
-                for filename in os.listdir(location_dir):
-                    if filename.endswith(".json"):
-                        try:
-                            with open(os.path.join(location_dir, filename), 'r', encoding='utf-8') as f:
-                                data = json.load(f)
-                                if 'name' in data and data['name']:
-                                    areas.add(data['name'].strip())
-                        except Exception:
-                            pass
+            for key, data, *_ in self.store.items("Locations"):
+                if data.get('name'):
+                    areas.add(data['name'].strip())
             return sorted(list(areas))
         else:  # DB
             conn = None
@@ -411,15 +327,7 @@ class DbManager:
     # --- Location Methods ---
     def get_location(self, location_id: str) -> Optional[Dict[str, Any]]:
         if self.use_mockup:
-            location_dir_path = os.path.join(self.mockup_dir, "Locations")
-            location_file = os.path.join(location_dir_path, f"{location_id}.json")
-            if os.path.exists(location_file):
-                try:
-                    with open(location_file, 'r', encoding='utf-8') as f:
-                        return json.load(f)
-                except Exception:
-                    pass
-            return None
+            return self.store.get("Locations", location_id)
         else: # DB
             conn = None; cursor = None
             try:
@@ -435,16 +343,9 @@ class DbManager:
 
     def get_location_by_name(self, name: str) -> Optional[Dict[str, Any]]:
         if self.use_mockup:
-            location_dir_path = os.path.join(self.mockup_dir, "Locations")
-            if os.path.exists(location_dir_path):
-                for filename in os.listdir(location_dir_path):
-                    if filename.endswith(".json"):
-                        try:
-                            with open(os.path.join(location_dir_path, filename), 'r', encoding='utf-8') as f:
-                                location_data = json.load(f)
-                            if location_data.get('name','').strip().lower() == name.strip().lower():
-                                return location_data
-                        except Exception: pass
+            for key, location_data, *_ in self.store.items("Locations"):
+                if location_data.get('name','').strip().lower() == name.strip().lower():
+                    return location_data
             return None
         else: # DB
             conn = None; cursor = None
@@ -462,20 +363,13 @@ class DbManager:
     def list_locations(self) -> List[Dict[str, str]]:
         locations_list = []
         if self.use_mockup:
-            location_dir = os.path.join(self.mockup_dir, "Locations")
-            if os.path.exists(location_dir):
-                for filename in os.listdir(location_dir):
-                    if filename.endswith(".json"):
-                        try:
-                            with open(os.path.join(location_dir, filename), 'r', encoding='utf-8') as f:
-                                data = json.load(f)
-                                locations_list.append({
-                                    "id": data.get("id", filename.replace(".json","")),
-                                    "name": data.get("name","Unknown Location"),
-                                    "area_type": data.get("area_type","Unknown Type"),
-                                    "access_level": data.get("access_level","Unknown Access")
-                                })
-                        except Exception: pass
+            for key, data, *_ in self.store.items("Locations"):
+                locations_list.append({
+                    "id": data.get("id", key),
+                    "name": data.get("name","Unknown Location"),
+                    "area_type": data.get("area_type","Unknown Type"),
+                    "access_level": data.get("access_level","Unknown Access")
+                })
             return sorted(locations_list, key=lambda x: x.get('name','').lower())
         else: # DB
             conn = None; cursor = None
@@ -494,11 +388,9 @@ class DbManager:
         if not conversation_history or not player_id or not npc_code: return
 
         if self.use_mockup:
-            p_dir = self.conversation_dir_template.format(player_id=player_id); os.makedirs(p_dir, exist_ok=True)
-            file_path = os.path.join(p_dir, f"{npc_code}.json")
             try:
-                with open(file_path, 'w', encoding='utf-8') as f: json.dump(conversation_history, f, indent=2, ensure_ascii=False)
-            except Exception as e: print(f"Error saving mockup conversation {file_path}: {e}")
+                self.store.put("ConversationHistory", f"{player_id}/{npc_code}", conversation_history)
+            except Exception as e: print(f"Error saving mockup conversation {player_id}/{npc_code}: {e}")
         else: # DB
             conn = None; cursor = None
             try:
@@ -522,12 +414,8 @@ class DbManager:
     def load_conversation(self, player_id: str, npc_code: str) -> List[Dict[str, str]]:
         if not player_id or not npc_code: return []
         if self.use_mockup:
-            file_path = os.path.join(self.conversation_dir_template.format(player_id=player_id), f"{npc_code}.json")
-            if os.path.exists(file_path):
-                try:
-                    with open(file_path, 'r', encoding='utf-8') as f: return json.load(f)
-                except Exception: return []
-            return []
+            history = self.store.get("ConversationHistory", f"{player_id}/{npc_code}")
+            return history if isinstance(history, list) else []
         else: # DB
             conn = None; cursor = None
             try:
@@ -548,26 +436,15 @@ class DbManager:
         
         if self.use_mockup:
             conversations = []
-            player_conv_dir = self.conversation_dir_template.format(player_id=player_id)
-            if os.path.exists(player_conv_dir):
-                try:
-                    for filename in os.listdir(player_conv_dir):
-                        if filename.endswith('.json'):
-                            npc_code = filename[:-5]  # Remove .json extension
-                            # Filter by NPC if specified
-                            if npc_name and npc_code != npc_name:
-                                continue
-                            file_path = os.path.join(player_conv_dir, filename)
-                            with open(file_path, 'r', encoding='utf-8') as f:
-                                history = json.load(f)
-                                if history:
-                                    conversations.append({
-                                        'npc_code': npc_code,
-                                        'history': history,
-                                        'last_updated': os.path.getmtime(file_path)
-                                    })
-                except Exception as e:
-                    print(f"Error getting conversation history for {player_id}: {e}")
+            try:
+                for key, history, mtime, _size in self.store.items("ConversationHistory", player_id + "/"):
+                    npc_code = key.split("/", 1)[1]
+                    if npc_name and npc_code != npc_name:
+                        continue
+                    if history:
+                        conversations.append({'npc_code': npc_code, 'history': history, 'last_updated': mtime})
+            except Exception as e:
+                print(f"Error getting conversation history for {player_id}: {e}")
             return conversations
         else:  # DB
             conn = None; cursor = None
@@ -611,11 +488,7 @@ class DbManager:
         
         if self.use_mockup:
             try:
-                player_conv_dir = self.conversation_dir_template.format(player_id=player_id)
-                if os.path.exists(player_conv_dir):
-                    import shutil
-                    shutil.rmtree(player_conv_dir)
-                    os.makedirs(player_conv_dir, exist_ok=True)
+                self.store.delete_kind("ConversationHistory", player_id + "/")
                 return True
             except Exception as e:
                 print(f"Error clearing conversation history for {player_id}: {e}")
@@ -661,62 +534,35 @@ class DbManager:
         
         if self.use_mockup:
             # Get conversation info
-            player_conv_dir = self.conversation_dir_template.format(player_id=player_id)
-            if os.path.exists(player_conv_dir):
-                try:
-                    total_conv_size = 0
-                    for filename in os.listdir(player_conv_dir):
-                        if filename.endswith('.json'):
-                            npc_code = filename[:-5]
-                            file_path = os.path.join(player_conv_dir, filename)
-                            file_size = os.path.getsize(file_path)
-                            total_conv_size += file_size
-                            
-                            # Get conversation length
-                            try:
-                                with open(file_path, 'r', encoding='utf-8') as f:
-                                    history = json.load(f)
-                                    message_count = len(history) if isinstance(history, list) else 0
-                            except:
-                                message_count = 0
-                            
-                            info['conversations']['npcs_talked_to'].append(npc_code)
-                            info['conversations']['conversation_details'].append({
-                                'npc_code': npc_code,
-                                'size_kb': round(file_size / 1024, 2),
-                                'message_count': message_count,
-                                'last_modified': os.path.getmtime(file_path)
-                            })
-                    
-                    info['conversations']['total_size_kb'] = round(total_conv_size / 1024, 2)
-                    info['conversations']['npc_count'] = len(info['conversations']['npcs_talked_to'])
-                except Exception as e:
-                    print(f"Error getting conversation info for {player_id}: {e}")
-            
+            try:
+                total_conv_size = 0
+                for key, history, mtime, size in self.store.items("ConversationHistory", player_id + "/"):
+                    npc_code = key.split("/", 1)[1]
+                    total_conv_size += size
+                    info['conversations']['npcs_talked_to'].append(npc_code)
+                    info['conversations']['conversation_details'].append({
+                        'npc_code': npc_code,
+                        'size_kb': round(size / 1024, 2),
+                        'message_count': len(history) if isinstance(history, list) else 0,
+                        'last_modified': mtime
+                    })
+                info['conversations']['total_size_kb'] = round(total_conv_size / 1024, 2)
+                info['conversations']['npc_count'] = len(info['conversations']['npcs_talked_to'])
+            except Exception as e:
+                print(f"Error getting conversation info for {player_id}: {e}")
+
             # Get profile info
-            profile_file = self.player_profile_file_template.format(player_id=player_id)
-            if os.path.exists(profile_file):
-                try:
-                    profile_size = os.path.getsize(profile_file)
-                    info['profile']['size_kb'] = round(profile_size / 1024, 2)
-                    info['profile']['exists'] = True
-                except Exception as e:
-                    print(f"Error getting profile info for {player_id}: {e}")
-            
+            prof_meta = self.store.meta("PlayerProfiles", player_id)
+            if prof_meta:
+                info['profile']['size_kb'] = round(prof_meta[1] / 1024, 2)
+                info['profile']['exists'] = True
+
             # Get inventory info
-            inv_file = self.inventory_file_path_template.format(player_id=player_id)
-            if os.path.exists(inv_file):
-                try:
-                    inv_size = os.path.getsize(inv_file)
-                    info['inventory']['size_kb'] = round(inv_size / 1024, 2)
-                    
-                    # Get item count
-                    with open(inv_file, 'r', encoding='utf-8') as f:
-                        inventory = json.load(f)
-                        info['inventory']['item_count'] = len(inventory) if isinstance(inventory, list) else 0
-                except Exception as e:
-                    print(f"Error getting inventory info for {player_id}: {e}")
-        
+            inv_meta = self.store.meta("Inventory", player_id)
+            if inv_meta:
+                info['inventory']['size_kb'] = round(inv_meta[1] / 1024, 2)
+                inventory = self.store.get("Inventory", player_id)
+                info['inventory']['item_count'] = len(inventory) if isinstance(inventory, list) else 0
         else:  # DB mode
             conn = None; cursor = None
             try:
@@ -795,24 +641,16 @@ class DbManager:
         conversations = []
         
         if self.use_mockup:
-            player_conv_dir = self.conversation_dir_template.format(player_id=player_id)
-            if os.path.exists(player_conv_dir):
-                try:
-                    for filename in os.listdir(player_conv_dir):
-                        if filename.endswith('.json'):
-                            npc_code = filename[:-5]
-                            file_path = os.path.join(player_conv_dir, filename)
-                            
-                            with open(file_path, 'r', encoding='utf-8') as f:
-                                history = json.load(f)
-                                if history and isinstance(history, list):
-                                    conversations.append({
-                                        'npc_code': npc_code,
-                                        'history': history,
-                                        'last_modified': os.path.getmtime(file_path)
-                                    })
-                except Exception as e:
-                    print(f"Error getting conversations for analysis for {player_id}: {e}")
+            try:
+                for key, history, mtime, _size in self.store.items("ConversationHistory", player_id + "/"):
+                    if history and isinstance(history, list):
+                        conversations.append({
+                            'npc_code': key.split("/", 1)[1],
+                            'history': history,
+                            'last_modified': mtime
+                        })
+            except Exception as e:
+                print(f"Error getting conversations for analysis for {player_id}: {e}")
         else:  # DB
             conn = None; cursor = None
             try:
@@ -853,14 +691,9 @@ class DbManager:
         
         if self.use_mockup:
             try:
-                analysis_dir = os.path.join(self.mockup_dir, "ConversationAnalysis")
-                os.makedirs(analysis_dir, exist_ok=True)
-                analysis_file = os.path.join(analysis_dir, f"{player_id}_analysis.txt")
-                
-                with open(analysis_file, 'w', encoding='utf-8') as f:
-                    f.write(f"Analysis generated on: {datetime.now().isoformat()}\n")
-                    f.write("="*80 + "\n\n")
-                    f.write(analysis)
+                text = (f"Analysis generated on: {datetime.now().isoformat()}\n"
+                        + "="*80 + "\n\n" + analysis)
+                self.store.put("ConversationAnalysis", player_id, text)
                 return True
             except Exception as e:
                 print(f"Error saving conversation analysis for {player_id}: {e}")
@@ -894,14 +727,13 @@ class DbManager:
         
         if self.use_mockup:
             try:
-                analysis_file = os.path.join(self.mockup_dir, "ConversationAnalysis", f"{player_id}_analysis.txt")
-                if os.path.exists(analysis_file):
-                    with open(analysis_file, 'r', encoding='utf-8') as f:
-                        content = f.read()
+                content = self.store.get("ConversationAnalysis", player_id)
+                if content is not None:
+                    meta = self.store.meta("ConversationAnalysis", player_id)
                     return {
                         'player_id': player_id,
                         'analysis': content,
-                        'created_at': os.path.getmtime(analysis_file)
+                        'created_at': meta[0] if meta else None
                     }
             except Exception as e:
                 print(f"Error getting conversation analysis for {player_id}: {e}")
@@ -970,19 +802,16 @@ class DbManager:
         if not player_id: return []
         inventory_list_cleaned: List[str] = []
         if self.use_mockup:
-            inv_file = self.inventory_file_path_template.format(player_id=player_id)
             try:
-                if not os.path.exists(inv_file):
-                    with open(inv_file, 'w', encoding='utf-8') as f: json.dump([], f)
+                loaded_data = self.store.get("Inventory", player_id)
+                if loaded_data is None:
+                    self.store.put("Inventory", player_id, [])
                     return []
-                with open(inv_file, 'r', encoding='utf-8') as f:
-                    loaded_data = json.load(f)
-                    if isinstance(loaded_data, list):
-                        inventory_list_cleaned = sorted({
-                            c for c in (self._clean_item_name(item) for item in loaded_data
-                                        if item and str(item).strip()) if c})
+                if isinstance(loaded_data, list):
+                    inventory_list_cleaned = sorted({
+                        c for c in (self._clean_item_name(item) for item in loaded_data
+                                    if item and str(item).strip()) if c})
             except Exception as e:
-                # print(f"{TerminalFormatter.YELLOW}Warning: Error loading mockup inventory {inv_file}: {e}. Returning empty list.{TerminalFormatter.RESET}")
                 inventory_list_cleaned = []
         else: # DB
             conn = None; cursor = None
@@ -1034,15 +863,13 @@ class DbManager:
                         if item and str(item).strip()) if c})
 
         if self.use_mockup:
-            inv_file = self.inventory_file_path_template.format(player_id=player_id)
-            os.makedirs(os.path.dirname(inv_file), exist_ok=True)
             try:
-                with open(inv_file, 'w', encoding='utf-8') as f: json.dump(cleaned_inventory, f, ensure_ascii=False, indent=2)
+                self.store.put("Inventory", player_id, cleaned_inventory)
                 logging.info(f"[INVENTORY-MOCKUP] Saved inventory for {player_id}: items={cleaned_inventory}")
                 return True
-            except Exception as e: 
+            except Exception as e:
                 logging.error(f"[INVENTORY-MOCKUP] FAILED to save inventory for {player_id}: {e}")
-                print(f"{TerminalFormatter.YELLOW}Warning: Error saving mockup inventory to {inv_file}: {e}{TerminalFormatter.RESET}")
+                print(f"{TerminalFormatter.YELLOW}Warning: Error saving mockup inventory for {player_id}: {e}{TerminalFormatter.RESET}")
                 return False
         else: # DB
             conn = None; cursor = None
@@ -1162,10 +989,9 @@ class DbManager:
 
         loaded_state_data = None
         if self.use_mockup:
-            state_file = self.player_state_file_template.format(player_id=player_id)
-            if os.path.exists(state_file):
+            loaded_raw = self.store.get("PlayerState", player_id)
+            if isinstance(loaded_raw, dict):
                 try:
-                    with open(state_file, 'r', encoding='utf-8') as f: loaded_raw = json.load(f)
                     loaded_state_data = {
                         'current_area': loaded_raw.get('current_area'),
                         'current_npc_code': loaded_raw.get('current_npc_code'),
@@ -1173,8 +999,7 @@ class DbManager:
                         'credits': int(loaded_raw.get('credits', default_credits)),
                         'brief_mode': loaded_raw.get('brief_mode', False)
                     }
-                except Exception as e:
-                    # print(f"{TerminalFormatter.YELLOW}Warning: Error loading state file {state_file}: {e}. Using defaults.{TerminalFormatter.RESET}")
+                except Exception:
                     pass
             if not loaded_state_data:
                 self.save_player_state(player_id, default_state_data)
@@ -1234,11 +1059,9 @@ class DbManager:
         data_to_persist = self._sanitize_for_json(data_to_persist)
         
         if self.use_mockup:
-            state_file = self.player_state_file_template.format(player_id=player_id)
-            os.makedirs(os.path.dirname(state_file), exist_ok=True)
             try:
-                with open(state_file, 'w', encoding='utf-8') as f: json.dump(data_to_persist, f, indent=2, ensure_ascii=False)
-            except Exception as e: print(f"{TerminalFormatter.YELLOW}Warning: Error saving state to {state_file}: {e}{TerminalFormatter.RESET}")
+                self.store.put("PlayerState", player_id, data_to_persist)
+            except Exception as e: print(f"{TerminalFormatter.YELLOW}Warning: Error saving state for {player_id}: {e}{TerminalFormatter.RESET}")
         else: # DB
             conn = None; cursor = None
             try:
@@ -1291,18 +1114,12 @@ class DbManager:
 
         profile_data = None
         if self.use_mockup:
-            profile_file = self.player_profile_file_template.format(player_id=player_id)
-            if os.path.exists(profile_file):
-                try:
-                    with open(profile_file, 'r', encoding='utf-8') as f:
-                        loaded_data = json.load(f)
-                    profile_data = copy.deepcopy(default_profile)
-                    profile_data.update(loaded_data)
-                except Exception as e:
-                    # print(f"{TerminalFormatter.YELLOW}Warning: Error loading profile file {profile_file}: {e}. Using defaults.{TerminalFormatter.RESET}")
-                    profile_data = copy.deepcopy(default_profile)
+            loaded_data = self.store.get("PlayerProfiles", player_id)
+            if isinstance(loaded_data, dict):
+                profile_data = copy.deepcopy(default_profile)
+                profile_data.update(loaded_data)
             else:
-                self.save_player_profile(player_id, default_profile) # Save default if file doesn't exist
+                self.save_player_profile(player_id, default_profile) # Save default if missing
                 return copy.deepcopy(default_profile)
         else: # DB
             conn = None; cursor = None
@@ -1333,13 +1150,10 @@ class DbManager:
         complete_profile_to_save.update(profile_data)
 
         if self.use_mockup:
-            profile_file = self.player_profile_file_template.format(player_id=player_id)
-            os.makedirs(os.path.dirname(profile_file), exist_ok=True)
             try:
-                with open(profile_file, 'w', encoding='utf-8') as f:
-                    json.dump(complete_profile_to_save, f, indent=2, ensure_ascii=False)
+                self.store.put("PlayerProfiles", player_id, complete_profile_to_save)
             except Exception as e:
-                print(f"{TerminalFormatter.YELLOW}Warning (save_player_profile): Error saving profile to {profile_file}: {e}{TerminalFormatter.RESET}")
+                print(f"{TerminalFormatter.YELLOW}Warning (save_player_profile): Error saving profile for {player_id}: {e}{TerminalFormatter.RESET}")
         else: # DB
             conn = None; cursor = None
             try:
@@ -1368,30 +1182,10 @@ class DbManager:
             self._reset_real_database()
     
     def _reset_mockup_database(self):
-        """Reset mockup database by deleting all player data files."""
-        import shutil
-        
-        # Remove player-specific directories and files
-        dirs_to_clear = [
-            os.path.join(self.mockup_dir, "ConversationHistory"),
-            os.path.join(self.mockup_dir, "PlayerState"),
-            os.path.join(self.mockup_dir, "PlayerProfiles")
-        ]
-        
-        for dir_path in dirs_to_clear:
-            if os.path.exists(dir_path):
-                shutil.rmtree(dir_path)
-                os.makedirs(dir_path, exist_ok=True)
-        
-        # Remove inventory files
-        try:
-            for file in os.listdir(self.mockup_dir):
-                if file.endswith("_inventory.json"):
-                    os.remove(os.path.join(self.mockup_dir, file))
-        except FileNotFoundError:
-            # Directory doesn't exist, nothing to clean
-            pass
-    
+        """Reset mockup database by deleting all player data."""
+        for kind in ("ConversationHistory", "PlayerState", "PlayerProfiles", "Inventory"):
+            self.store.delete_kind(kind)
+
     def _reset_real_database(self):
         """Reset real database by truncating all player data tables."""
         conn = None
