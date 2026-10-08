@@ -1,10 +1,10 @@
 WORLD_NAME=Cyberspazio
-WORLD_NAME_IT=Cyberspazio del Piccolo Principe
-LOCATION_DESCRIPTION=YOUR LOCATION: {area} in the cyberspace of the Little Digital Prince
-LOCATION_DESCRIPTION_IT=Sei {name}, un/una {role} nel server/pianeta {area} nel cyberspazio.
+WORLD_NAME_IT=Cyberspazio
+LOCATION_DESCRIPTION=YOUR LOCATION: {area} in the cyberspace
+LOCATION_DESCRIPTION_IT=Sei {name}, un/una {role} nel server {area} nel cyberspazio.
 WORLD_CONTEXT_LABEL=Contesto Globale del Cyberspazio
-LORE_REFERENCE=Reference Il Piccolo Principe Digitale lore (Rosa di Luce, Asteroide B 612.exe, nodi della rete, algoritmi, adulti ossessionati da metriche)
-CHARACTER_BACKGROUND_LABEL=Collegamento alla Rete e alla Rosa di Luce (Tuo Contesto Narrativo)
+LORE_REFERENCE=Reference lore del Cyberspazio (nodi della rete, algoritmi, adulti ossessionati da metriche)
+CHARACTER_BACKGROUND_LABEL=Collegamento alla Rete (Tuo Contesto Narrativo)
 BRIEF_EXAMPLE_1=Viaggiatore... spegni lo schermo...
-BRIEF_EXAMPLE_2=Rosa di Luce.
+BRIEF_EXAMPLE_2=Il Velo.
 CENTRAL_CONFLICT=sei un abitante del cyberspazio che cerca di far comprendere al viaggiatore l'importanza dei legami invisibili e dei ricordi

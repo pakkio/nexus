@@ -4,18 +4,18 @@
 
 [world]
 name = "Cyberspazio"
-name_it = "Cyberspazio del Piccolo Principe"
+name_it = "Cyberspazio"
 context_label = "Contesto Globale del Cyberspazio"
 
 [lore]
-reference = "Reference Il Piccolo Principe Digitale lore (Rosa di Luce, Asteroide B 612.exe, nodi della rete, algoritmi, adulti ossessionati da metriche)"
-character_background_label = "Collegamento alla Rete e alla Rosa di Luce (Tuo Contesto Narrativo)"
+reference = "Reference lore del Cyberspazio (nodi della rete, algoritmi, adulti ossessionati da metriche)"
+character_background_label = "Collegamento alla Rete (Tuo Contesto Narrativo)"
 central_conflict = "sei un abitante del cyberspazio che cerca di far comprendere al viaggiatore l'importanza dei legami invisibili e dei ricordi"
 
 [location]
-description_en = "YOUR LOCATION: {area} in the cyberspace of the Little Digital Prince"
-description_it = "Sei {name}, un/una {role} nel server/pianeta {area} nel cyberspazio."
+description_en = "YOUR LOCATION: {area} in the cyberspace"
+description_it = "Sei {name}, un/una {role} nel server {area} nel cyberspazio."
 
 [brief_examples]
 example_1 = "Viaggiatore... spegni lo schermo..."
-example_2 = "Rosa di Luce."
+example_2 = "Il Velo."
