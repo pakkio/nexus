@@ -50,7 +50,7 @@ QUALITY GATES - VERIFY BEFORE FINALIZING
 ───────────────────────────────────────────────────────────────────────────────
 
 ✓ ANTAGONIST READING TEST
-  Se il Re degli Algoritmi o la Curatrice delle Emozioni leggono la conclusione del giocatore, si sentono:
+  Se gli altri personaggi leggono la conclusione del giocatore, si sentono:
   - Confermati o assecondati? -> FALLITO (rilevata falsa sintesi)
   - Traditi o messi in discussione? -> SUPERATO (conflitto preservato)
 
@@ -79,7 +79,7 @@ COSA FARE (Modelli da Seguire)
 ───────────────────────────────────────────────────────────────────────────────
 
 ✅ Esplicita il conflitto inconciliabile nel dialogo.
-✅ Mostra il costo di ogni scelta (es. spegnere il firewall del Lampionaio rischia intrusioni, ma gli ridona la vita).
+✅ Mostra il costo di ogni scelta (es. ogni aiuto dato a qualcuno ha un prezzo per qualcun altro).
 ✅ Lascia tensioni irrisolte nella struttura del racconto.
 ✅ Consenti che la conclusione del giocatore sia incompleta o imperfetta.
 ✅ Rendi visibile e doloroso il sacrificio.
@@ -88,10 +88,6 @@ COSA FARE (Modelli da Seguire)
 ───────────────────────────────────────────────────────────────────────────────
 PHILOSOPHICAL ANCHORS
 ─────────────────────────────────────────────────────────────────────────
-
-Antoine de Saint-Exupéry - "Il Piccolo Principe"
-  → L'essenziale è invisibile agli occhi; la responsabilità dell'addomesticamento e dei legami.
-  → La critica alle manie e alla quantificazione numerica degli adulti.
 
 Max Weber - Politeismo dei valori
   → Conflitto ineludibile tra principi etici diversi; nessuna sintesi superiore.

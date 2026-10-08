@@ -1980,18 +1980,7 @@ function initials(name) {
 async function fetchNpcs() {
   const r = await fetch('/api/game/npcs');
   const j = await r.json();
-  const AREA_STAGES = {
-    'asteroide_b612': 1,
-    'pianeta_algoritmi': 2,
-    'pianeta_influencer': 3,
-    'pianeta_contabile': 4,
-    'pianeta_lampionaio': 5,
-    'pianeta_geografo': 6,
-    'pianeta_ricordi': 7,
-    'pianeta_programmatore': 8,
-    'pianeta_emozioni': 9,
-    'nodo_centrale': 10
-  };
+  const AREA_STAGES = {};
   return (j.npcs || []).map(n => {
     const stage = AREA_STAGES[n.area.toLowerCase()] || 0;
     return {
