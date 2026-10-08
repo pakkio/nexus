@@ -1,4 +1,5 @@
 from dataclasses import dataclass, field, fields
+import copy
 import dataclasses
 from typing import Any, Callable, Dict, List, Optional
 
@@ -63,6 +64,10 @@ class GameState:
 
     def get(self, key: str, default: Any = None) -> Any:
         return getattr(self, key, default)
+
+    def copy(self) -> "GameState":
+        """Shallow copy, mirroring dict.copy() for callers that used the old dict state."""
+        return copy.copy(self)
 
     def update(self, other: Dict[str, Any]) -> "GameState":
         for key, value in dict(other).items():

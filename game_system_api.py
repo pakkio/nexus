@@ -12,6 +12,7 @@ import re
 
 # Assume all necessary modules are in PYTHONPATH or imported correctly
 from db_manager import DbManager, canonicalize_item_name, items_match
+import quest_trades
 from chat_manager import ChatSession, format_stats
 from llm_wrapper import llm_wrapper
 import session_utils
@@ -465,7 +466,11 @@ class _SinglePlayerGameSystem:
                         # Requirement may list alternatives ("A OR B"); matching is token-based
                         # so quest IDs (minerale_ferro_antico) match natural names
                         # (Minerale di Ferro Antico). Deterministic by design.
-                        if '[GIVEN_ITEMS:' not in final_npc_dialogue_for_return:
+                        _ri_code_pre = (self.game_state.get('current_npc') or {}).get('code', '')
+                        _quest_npc = quest_trades.QUEST_TRADES.get(_ri_code_pre)
+                        # Quest NPCs: the server is authoritative, so a delivery overrides whatever
+                        # tag the model emitted (it may be a stray/copied one).
+                        if '[GIVEN_ITEMS:' not in final_npc_dialogue_for_return or _quest_npc:
                             _trade = self.game_state.get('item_given_to_npc_this_turn', {})
                             if _trade and _trade.get('type') == 'item':
                                 _ri_npc = self.game_state.get('current_npc', {})
@@ -475,9 +480,20 @@ class _SinglePlayerGameSystem:
                                 _given = _trade.get('item_name', '')
                                 _treasure = _ri_npc.get('treasure')
                                 _ri_code = _ri_npc.get('code', '')
+                                if _quest_npc and _quest_npc.get('requires'):
+                                    _req_alts = [str(_quest_npc['requires'])]
+                                    _treasure = str(_quest_npc['gives'])
                                 _reward_done = bool((self.game_state.get('plot_flags') or {}).get(f"_reward_given_{_ri_code}"))
                                 _matched = any(items_match(_given, alt) for alt in _req_alts)
+                                if _quest_npc and _matched:
+                                    # Remember the delivery so a grant on a later turn is still honoured.
+                                    if self.game_state.get('plot_flags') is None:
+                                        self.game_state['plot_flags'] = {}
+                                    self.game_state['plot_flags'][quest_trades.delivered_flag_key(_ri_code)] = True
                                 if _req_alts and _matched and _treasure and not _reward_done:
+                                    if _quest_npc:
+                                        final_npc_dialogue_for_return = re.sub(
+                                            r'\[GIVEN_ITEMS:[^\]]*\]', '', final_npc_dialogue_for_return).rstrip()
                                     final_npc_dialogue_for_return += f" [GIVEN_ITEMS: {_treasure}]"
                                     logger.info(f"[REQUIRED_ITEM_TRADE] '{_given}' → [GIVEN_ITEMS: {_treasure}]")
                                     # Inject notecard server-side if NPC has one defined
@@ -519,6 +535,23 @@ class _SinglePlayerGameSystem:
                                 # junk placeholders (none/null/...) are dropped.
                                 _canon = [canonicalize_item_name(i) for i in given_items_str.split(',')]
                                 given_items_str = ", ".join(i for i in _canon if i)
+                            _own_item_granted = False
+                            if given_items_str and _npc_code_for_flag in quest_trades.QUEST_TRADES:
+                                # Reject grants the NPC is not entitled to make (wrong giver,
+                                # requirement not handed over, unaffordable, stray credits).
+                                try:
+                                    _credits_now = int(self.game_state['db'].get_player_credits(self.game_state.get('player_id')))
+                                except Exception:
+                                    _credits_now = int(self.game_state.get('player_credits_cache', 0) or 0)
+                                _ok, _rej, _own_item_granted = quest_trades.validate_grant(
+                                    _npc_code_for_flag,
+                                    [t.strip() for t in given_items_str.split(',') if t.strip()],
+                                    self.game_state.get('item_given_to_npc_this_turn'),
+                                    self.game_state.get('plot_flags'),
+                                    _credits_now)
+                                for _r in _rej:
+                                    logger.warning(f"[GIVEN_ITEMS] REJECTED from {_npc_code_for_flag}: {_r}")
+                                given_items_str = ", ".join(_ok)
                             if given_items_str:
                                 self.game_state['system_messages_buffer'].append(f"You received: {given_items_str}")
                                 
@@ -636,7 +669,8 @@ class _SinglePlayerGameSystem:
                                             logger.error(f"[ITEM-PROCESSING] Failed to update credits: {e}")
 
                                 # Mark reward as given for this NPC so [GIVEN_ITEMS:] doesn't fire again
-                                if _npc_code_for_flag:
+                                # (quest NPCs: only when their own item was really granted)
+                                if _npc_code_for_flag and (_npc_code_for_flag not in quest_trades.QUEST_TRADES or _own_item_granted):
                                     if 'plot_flags' not in self.game_state or self.game_state['plot_flags'] is None:
                                         self.game_state['plot_flags'] = {}
                                     self.game_state['plot_flags'][_reward_flag_key] = True

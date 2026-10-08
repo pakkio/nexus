@@ -22,6 +22,30 @@ MODEL_DEFAULT = "jev-latest"
 _intent_cache: Dict[str, Dict[str, Any]] = {}
 _CACHE_TTL = 120
 
+# Decision providers, tried in order (env TYPESAFE_PROVIDER_ORDER, default "jev,mercury": Mercury is the safety net when Jev fails).
+#   mercury -> Inception Mercury on OpenRouter (cheap LLM, JSON-schema constrained output)
+#   jev     -> TypeSafe System One (calibrated probabilities)
+# Both honour the same contract: questions in, {name: {choice|noul|score, confidence}} out.
+MERCURY_MODEL_DEFAULT = "inception/mercury-2.5"
+OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
+
+# Per-provider circuit breaker: when a provider is overloaded/unreachable, skip it for a
+# while so chat turns do not stall on repeated slow failures (callers all fall back).
+_BREAKER_THRESHOLD = 3      # consecutive failures that open the breaker
+_BREAKER_COOLDOWN = 60.0    # seconds to skip a provider once open
+_breaker: Dict[str, Dict[str, float]] = {}
+
+
+def _provider_order() -> List[str]:
+    raw = os.environ.get("TYPESAFE_PROVIDER_ORDER", "jev,mercury")
+    return [p.strip().lower() for p in raw.split(",") if p.strip().lower() in ("mercury", "jev")]
+
+
+def _provider_available(name: str) -> bool:
+    if name == "jev":
+        return bool(os.environ.get("TYPESAFE_API_KEY"))
+    return bool(os.environ.get("OPENROUTER_API_KEY"))
+
 
 def is_typesafe_enabled() -> bool:
     try:
@@ -31,24 +55,34 @@ def is_typesafe_enabled() -> bool:
         pass
     if os.environ.get("TYPESAFE_ENABLED", "1").strip().lower() in ("0", "false", "no", "off"):
         return False
-    return bool(os.environ.get("TYPESAFE_API_KEY"))
+    return any(_provider_available(p) for p in _provider_order())
 
 
 def get_model() -> str:
     return os.environ.get("TYPESAFE_MODEL", MODEL_DEFAULT)
 
 
-def system_one(state: Any, questions: Dict[str, Any],
-               model: Optional[str] = None,
-               timeout: float = 15.0) -> Tuple[Optional[Dict[str, Any]], Dict[str, Any]]:
-    """Raw System One call. Returns (answers|None, meta). Never raises."""
-    import requests
-    from dotenv import load_dotenv
-    load_dotenv()
+def _breaker_open(name: str) -> bool:
+    return time.time() < _breaker.get(name, {}).get("open_until", 0.0)
 
+
+def _breaker_note_failure(name: str) -> None:
+    b = _breaker.setdefault(name, {"failures": 0, "open_until": 0.0})
+    b["failures"] += 1
+    if b["failures"] >= _BREAKER_THRESHOLD:
+        b["open_until"] = time.time() + _BREAKER_COOLDOWN
+        b["failures"] = 0
+        logger.warning(f"[Decision:{name}] circuit open for {_BREAKER_COOLDOWN:.0f}s after repeated failures")
+
+
+def _breaker_note_success(name: str) -> None:
+    _breaker.setdefault(name, {"failures": 0, "open_until": 0.0})["failures"] = 0
+
+
+def _jev_call(state: Any, questions: Dict[str, Any], model: Optional[str],
+              timeout: float) -> Tuple[Optional[Dict[str, Any]], Dict[str, Any]]:
+    import requests
     api_key = os.environ.get("TYPESAFE_API_KEY")
-    if not api_key:
-        return None, {"error": "TYPESAFE_API_KEY not set", "provider": "typesafe"}
     start = time.time()
     try:
         resp = requests.post(
@@ -62,12 +96,133 @@ def system_one(state: Any, questions: Dict[str, Any],
             logger.warning(f"[TypeSafe] HTTP {resp.status_code}: {resp.text[:200]}")
             return None, {"error": f"HTTP {resp.status_code}", "elapsed_ms": elapsed_ms, "provider": "typesafe"}
         data = resp.json()
-        meta = {"elapsed_ms": elapsed_ms, "provider": "typesafe",
-                "model": data.get("model"), "usage": data.get("usage")}
-        return data.get("answers"), meta
+        return data.get("answers"), {"elapsed_ms": elapsed_ms, "provider": "typesafe",
+                                     "model": data.get("model"), "usage": data.get("usage")}
     except Exception as e:
         logger.warning(f"[TypeSafe] call failed: {e}")
         return None, {"error": str(e), "elapsed_ms": int((time.time() - start) * 1000), "provider": "typesafe"}
+
+
+def _mercury_schema(questions: Dict[str, Any]) -> Dict[str, Any]:
+    props: Dict[str, Any] = {}
+    for name, q in questions.items():
+        qtype, crit = q.get("type"), q.get("criteria")
+        if qtype == "choice":
+            props[name] = {"type": "object", "additionalProperties": False,
+                           "required": ["choice", "confidence"],
+                           "properties": {"choice": {"type": "string", "enum": list(crit)},
+                                          "confidence": {"type": "number"}}}
+        elif qtype == "score":
+            props[name] = {"type": "object", "additionalProperties": False,
+                           "required": ["score"],
+                           "properties": {"score": {"type": "number"}}}
+        else:  # noul = probability the statement is true
+            props[name] = {"type": "object", "additionalProperties": False,
+                           "required": ["noul"],
+                           "properties": {"noul": {"type": "number"}}}
+    return {"type": "object", "additionalProperties": False,
+            "required": list(props), "properties": props}
+
+
+def _mercury_prompt(state: Any, questions: Dict[str, Any]) -> str:
+    import json
+    lines = ["STATE:", json.dumps(state, ensure_ascii=False, default=str)[:6000], "", "QUESTIONS:"]
+    for name, q in questions.items():
+        qtype, crit = q.get("type"), q.get("criteria")
+        lines.append(f"- {name} [{qtype}]: {q.get('instructions', '')}")
+        if qtype == "choice":
+            for k, v in crit.items():
+                lines.append(f"    * {k}: {v}")
+            lines.append("    answer: choice = exactly one option key; confidence = your probability 0-1 that it is right")
+        elif qtype == "score":
+            for i, v in enumerate(crit):
+                lines.append(f"    * {i}: {v}")
+            lines.append(f"    answer: score = the level number 0-{len(crit) - 1} (may be fractional)")
+        else:
+            lines.append("    answer: noul = probability 0-1 that the statement is true")
+    return "\n".join(lines)
+
+
+def _mercury_call(state: Any, questions: Dict[str, Any], model: Optional[str],
+                  timeout: float) -> Tuple[Optional[Dict[str, Any]], Dict[str, Any]]:
+    import json
+    import requests
+    start = time.time()
+    try:
+        resp = requests.post(
+            OPENROUTER_URL,
+            headers={"Authorization": f"Bearer {os.environ.get('OPENROUTER_API_KEY')}",
+                     "Content-Type": "application/json",
+                     "HTTP-Referer": os.environ.get("OPENROUTER_APP_URL", "http://localhost"),
+                     "X-Title": os.environ.get("OPENROUTER_APP_TITLE", "MyNexusClient")},
+            json={"model": os.environ.get("MERCURY_MODEL", MERCURY_MODEL_DEFAULT),
+                  "temperature": 0,
+                  "max_tokens": 800,
+                  "reasoning": {"effort": "none"},   # else hidden reasoning eats the budget -> empty content
+                  "messages": [
+                      {"role": "system", "content": "You are a precise classifier for a text RPG engine. "
+                                                    "Answer every question about the STATE. Output JSON only."},
+                      {"role": "user", "content": _mercury_prompt(state, questions)}],
+                  "response_format": {"type": "json_schema",
+                                      "json_schema": {"name": "answers", "strict": True,
+                                                      "schema": _mercury_schema(questions)}}},
+            timeout=timeout,
+        )
+        elapsed_ms = int((time.time() - start) * 1000)
+        if resp.status_code != 200:
+            logger.warning(f"[Mercury] HTTP {resp.status_code}: {resp.text[:200]}")
+            return None, {"error": f"HTTP {resp.status_code}", "elapsed_ms": elapsed_ms, "provider": "mercury"}
+        data = resp.json()
+        content = data["choices"][0]["message"].get("content")
+        if not content:
+            return None, {"error": "empty content", "elapsed_ms": elapsed_ms, "provider": "mercury"}
+        answers = json.loads(content)
+        for name, q in questions.items():       # clamp / validate against the declared contract
+            a = answers.get(name)
+            if not isinstance(a, dict):
+                return None, {"error": f"missing answer {name}", "elapsed_ms": elapsed_ms, "provider": "mercury"}
+            if q.get("type") == "choice":
+                a["confidence"] = max(0.0, min(1.0, float(a.get("confidence", 0.0))))
+                if a.get("choice") not in q["criteria"]:
+                    return None, {"error": f"bad choice for {name}", "elapsed_ms": elapsed_ms, "provider": "mercury"}
+            elif q.get("type") == "score":
+                a["score"] = max(0.0, min(float(len(q["criteria"]) - 1), float(a.get("score", 0.0))))
+            else:
+                a["noul"] = max(0.0, min(1.0, float(a.get("noul", 0.0))))
+        return answers, {"elapsed_ms": elapsed_ms, "provider": "mercury",
+                         "model": data.get("model"), "usage": data.get("usage")}
+    except Exception as e:
+        logger.warning(f"[Mercury] call failed: {e}")
+        return None, {"error": str(e), "elapsed_ms": int((time.time() - start) * 1000), "provider": "mercury"}
+
+
+def system_one(state: Any, questions: Dict[str, Any],
+               model: Optional[str] = None,
+               timeout: float = 4.0) -> Tuple[Optional[Dict[str, Any]], Dict[str, Any]]:
+    """Structured decision call. Returns (answers|None, meta). Never raises.
+
+    Tries each provider in TYPESAFE_PROVIDER_ORDER, skipping any whose circuit
+    breaker is open, and returns the first usable answer set.
+    """
+    try:
+        from dotenv import load_dotenv
+        load_dotenv()
+    except Exception:
+        pass
+    last_meta: Dict[str, Any] = {"error": "no decision provider configured", "provider": "none"}
+    for name in _provider_order():
+        if not _provider_available(name):
+            continue
+        if _breaker_open(name):
+            last_meta = {"error": "circuit open", "elapsed_ms": 0, "provider": name}
+            continue
+        answers, meta = (_mercury_call if name == "mercury" else _jev_call)(state, questions, model, timeout)
+        if answers:
+            _breaker_note_success(name)
+            return answers, meta
+        _breaker_note_failure(name)
+        last_meta = meta
+    return None, last_meta
 
 
 INTENT_QUESTIONS: Dict[str, Any] = {
