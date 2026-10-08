@@ -29,6 +29,7 @@ from command_handlers.handle_hint import handle_hint # MODIFIED
 from command_handlers.handle_endhint import handle_endhint # MODIFIED
 from command_handlers.handle_inventory import handle_inventory
 from command_handlers.handle_give import handle_give
+from command_handlers.handle_choose import handle_choose
 from command_handlers.handle_receive import handle_receive
 from command_handlers.handle_profile import handle_profile
 from command_handlers.heandle_profile_for_npc import handle_profile_for_npc
@@ -233,6 +234,7 @@ command_handlers_map: Dict[str, Callable] = {
   'vai': handle_go, 'parla': handle_talk,                     # Italian aliases
   'aiuto': handle_help,
   'give': handle_give,
+  'choose': handle_choose,
   'receive': handle_receive,
   'profile': handle_profile,
   'profile_for_npc': handle_profile_for_npc,
@@ -315,7 +317,7 @@ def process_input_revised(user_input: str, state: Dict[str, Any]) -> Dict[str, A
       if command in command_handlers_map:
         handler_func = command_handlers_map[command]
         # Pass args_str only to handlers that expect it
-        if command in ['go', 'talk', 'give', 'receive', 'describe', 'profile', 'sussurri']:
+        if command in ['go', 'talk', 'give', 'choose', 'receive', 'describe', 'profile', 'sussurri']:
           state = handler_func(args_str, state)
         else:
           state = handler_func(state)
