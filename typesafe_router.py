@@ -22,12 +22,32 @@ MODEL_DEFAULT = "jev-latest"
 _intent_cache: Dict[str, Dict[str, Any]] = {}
 _CACHE_TTL = 120
 
-# Decision providers, tried in order (env TYPESAFE_PROVIDER_ORDER, default "jev,mercury": Mercury is the safety net when Jev fails).
-#   mercury -> Inception Mercury on OpenRouter (cheap LLM, JSON-schema constrained output)
+# Decision providers, tried in order (env TYPESAFE_PROVIDER_ORDER, default "pplx,jev,mercury":
+# each later provider is the safety net when the earlier one errors or times out).
+#   pplx    -> Perplexity Decider on OpenRouter's /systemone (Jev-compatible schema, cheaper)
 #   jev     -> TypeSafe System One (calibrated probabilities)
-# Both honour the same contract: questions in, {name: {choice|noul|score, confidence}} out.
+#   mercury -> Inception Mercury on OpenRouter (cheap LLM, JSON-schema constrained output)
+# All honour the same contract: questions in, {name: {choice|noul|score, confidence}} out.
+#
+# Cost and latency (prices in millicents, 1 millicent = $0.00001; figures from public listings
+# as of 2026-10, verify before budgeting):
+#   provider  | input / 1k tokens | output / 1k tokens | latency
+#   pplx      | 2 mc ($0.02/M)    | 0 mc ($0/M)        | not published; no measurement yet
+#   jev       | 4.2 mc ($0.042/M) | 0 mc (free)        | not published; no measurement yet
+#   mercury   | 20 mc ($0.20/M)   | 75 mc ($0.75/M)    | P50 ~0.98s round trip, ~1.3s TTFT (OpenRouter)
+#   Mercury's listed promo rate ($0.04/M in, $0.15/M out) ended 2026-09-08; the table uses list price.
+#   Jev has no per-call price; the $0.042/M input rate is the only published figure.
+PPLX_MODEL_DEFAULT = "perplexity/pplx-decider-v1.1-27b"
+PPLX_ENDPOINT = "https://openrouter.ai/api/v1/systemone"
 MERCURY_MODEL_DEFAULT = "inception/mercury-2.5"
 OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
+
+# Shadow sampling: after a successful non-Jev answer, a fraction of calls is also sent to Jev in
+# a background thread and the paired answers are appended to a JSONL log, so confidence gates
+# (CATEGORICAL_CONF_THRESHOLD, ITEM_MERGE_CONF_THRESHOLD) can be tuned on real traffic.
+# TYPESAFE_SHADOW_RATE=0 disables it; TYPESAFE_SHADOW_LOG overrides the log path.
+SHADOW_RATE_DEFAULT = 0.1
+SHADOW_LOG_DEFAULT = "logs/decision_shadow.jsonl"
 
 # Per-provider circuit breaker: when a provider is overloaded/unreachable, skip it for a
 # while so chat turns do not stall on repeated slow failures (callers all fall back).
@@ -37,14 +57,14 @@ _breaker: Dict[str, Dict[str, float]] = {}
 
 
 def _provider_order() -> List[str]:
-    raw = os.environ.get("TYPESAFE_PROVIDER_ORDER", "jev,mercury")
-    return [p.strip().lower() for p in raw.split(",") if p.strip().lower() in ("mercury", "jev")]
+    raw = os.environ.get("TYPESAFE_PROVIDER_ORDER", "pplx,jev,mercury")
+    return [p.strip().lower() for p in raw.split(",") if p.strip().lower() in ("pplx", "mercury", "jev")]
 
 
 def _provider_available(name: str) -> bool:
     if name == "jev":
         return bool(os.environ.get("TYPESAFE_API_KEY"))
-    return bool(os.environ.get("OPENROUTER_API_KEY"))
+    return bool(os.environ.get("OPENROUTER_API_KEY"))  # pplx and mercury both ride OpenRouter
 
 
 def is_typesafe_enabled() -> bool:
@@ -79,28 +99,44 @@ def _breaker_note_success(name: str) -> None:
     _breaker.setdefault(name, {"failures": 0, "open_until": 0.0})["failures"] = 0
 
 
-def _jev_call(state: Any, questions: Dict[str, Any], model: Optional[str],
-              timeout: float) -> Tuple[Optional[Dict[str, Any]], Dict[str, Any]]:
+def _systemone_call(provider: str, url: str, api_key: Optional[str], model: str, state: Any,
+                    questions: Dict[str, Any], timeout: float) -> Tuple[Optional[Dict[str, Any]], Dict[str, Any]]:
+    """POST the Jev-compatible /systemone schema; shared by the jev and pplx providers."""
     import requests
-    api_key = os.environ.get("TYPESAFE_API_KEY")
     start = time.time()
     try:
         resp = requests.post(
-            ENDPOINT,
+            url,
             headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
-            json={"state": state, "model": model or get_model(), "questions": questions},
+            json={"state": state, "model": model, "questions": questions},
             timeout=timeout,
         )
         elapsed_ms = int((time.time() - start) * 1000)
         if resp.status_code != 200:
-            logger.warning(f"[TypeSafe] HTTP {resp.status_code}: {resp.text[:200]}")
-            return None, {"error": f"HTTP {resp.status_code}", "elapsed_ms": elapsed_ms, "provider": "typesafe"}
+            logger.warning(f"[{provider}] HTTP {resp.status_code}: {resp.text[:200]}")
+            return None, {"error": f"HTTP {resp.status_code}", "elapsed_ms": elapsed_ms, "provider": provider}
         data = resp.json()
-        return data.get("answers"), {"elapsed_ms": elapsed_ms, "provider": "typesafe",
+        return data.get("answers"), {"elapsed_ms": elapsed_ms, "provider": provider,
                                      "model": data.get("model"), "usage": data.get("usage")}
     except Exception as e:
-        logger.warning(f"[TypeSafe] call failed: {e}")
-        return None, {"error": str(e), "elapsed_ms": int((time.time() - start) * 1000), "provider": "typesafe"}
+        logger.warning(f"[{provider}] call failed: {e}")
+        return None, {"error": str(e), "elapsed_ms": int((time.time() - start) * 1000), "provider": provider}
+
+
+def _jev_call(state: Any, questions: Dict[str, Any], model: Optional[str],
+              timeout: float) -> Tuple[Optional[Dict[str, Any]], Dict[str, Any]]:
+    return _systemone_call("typesafe", ENDPOINT, os.environ.get("TYPESAFE_API_KEY"),
+                           model or get_model(), state, questions, timeout)
+
+
+def _pplx_call(state: Any, questions: Dict[str, Any], model: Optional[str],
+               timeout: float) -> Tuple[Optional[Dict[str, Any]], Dict[str, Any]]:
+    # `model` is the caller's Jev-oriented override; pplx has its own env-driven model id.
+    return _systemone_call("pplx", PPLX_ENDPOINT, os.environ.get("OPENROUTER_API_KEY"),
+                           os.environ.get("PPLX_MODEL", PPLX_MODEL_DEFAULT), state, questions, timeout)
+
+
+_PROVIDER_CALLS = {"pplx": _pplx_call, "jev": _jev_call}  # mercury is dispatched separately below
 
 
 def _mercury_schema(questions: Dict[str, Any]) -> Dict[str, Any]:
@@ -196,6 +232,109 @@ def _mercury_call(state: Any, questions: Dict[str, Any], model: Optional[str],
         return None, {"error": str(e), "elapsed_ms": int((time.time() - start) * 1000), "provider": "mercury"}
 
 
+def _shadow_rate() -> float:
+    try:
+        return max(0.0, min(1.0, float(os.environ.get("TYPESAFE_SHADOW_RATE", SHADOW_RATE_DEFAULT))))
+    except ValueError:
+        return 0.0
+
+
+def _answer_view(a: Dict[str, Any]) -> Dict[str, Any]:
+    """Compact, comparable view of one answer: value plus confidence where there is one."""
+    if "choice" in a:
+        return {"choice": a.get("choice"), "confidence": a.get("confidence")}
+    if "score" in a:
+        return {"score": a.get("score")}
+    return {"noul": a.get("noul")}
+
+
+def _shadow_compare(primary: str, state: Any, questions: Dict[str, Any],
+                    primary_answers: Dict[str, Any], primary_meta: Dict[str, Any]) -> bool:
+    """Ask Jev the same questions and append the paired answers to the shadow log.
+
+    Synchronous and breaker-neutral: it never affects provider selection. Returns True if a
+    line was written. Never raises.
+    """
+    try:
+        import json
+        shadow, shadow_meta = _jev_call(state, questions, None, 8.0)
+        if not shadow:
+            return False
+        path = os.environ.get("TYPESAFE_SHADOW_LOG", SHADOW_LOG_DEFAULT)
+        os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
+        rec = {
+            "ts": round(time.time(), 1),
+            "primary": primary,
+            "state_preview": json.dumps(state, ensure_ascii=False, default=str)[:200],
+            "primary_ms": primary_meta.get("elapsed_ms"),
+            "jev_ms": shadow_meta.get("elapsed_ms"),
+            "answers": {n: {primary: _answer_view(primary_answers.get(n) or {}),
+                            "jev": _answer_view(shadow.get(n) or {})}
+                        for n in questions},
+        }
+        with open(path, "a", encoding="utf-8") as f:
+            f.write(json.dumps(rec, ensure_ascii=False) + "\n")
+        return True
+    except Exception as e:
+        logger.debug(f"[shadow] skipped: {e}")
+        return False
+
+
+def _maybe_shadow(provider: str, state: Any, questions: Dict[str, Any],
+                  answers: Dict[str, Any], meta: Dict[str, Any]) -> None:
+    """Sample a fraction of non-Jev answers for a background Jev comparison (never blocks)."""
+    import random
+    import threading
+    if provider == "jev" or not _provider_available("jev"):
+        return
+    rate = _shadow_rate()
+    if rate <= 0 or random.random() >= rate:
+        return
+    threading.Thread(target=_shadow_compare, args=(provider, state, questions, answers, meta),
+                     daemon=True, name="decision-shadow").start()
+
+
+def summarize_shadow_log(path: Optional[str] = None, gate: Optional[float] = None) -> Dict[str, Any]:
+    """Agreement and gate statistics from the shadow log, for tuning confidence thresholds.
+
+    Per choice question: n, agreement rate, and how often exactly one provider clears `gate`
+    (default CATEGORICAL_CONF_THRESHOLD) -- the cases where switching provider changes behaviour.
+    Per score question: mean absolute score gap.
+    """
+    import json
+    gate = CATEGORICAL_CONF_THRESHOLD if gate is None else gate
+    path = path or os.environ.get("TYPESAFE_SHADOW_LOG", SHADOW_LOG_DEFAULT)
+    out: Dict[str, Any] = {}
+    try:
+        lines = open(path, encoding="utf-8").read().splitlines()
+    except OSError:
+        return out
+    for line in lines:
+        try:
+            rec = json.loads(line)
+        except ValueError:
+            continue
+        prim = rec.get("primary", "pplx")
+        for name, pair in rec.get("answers", {}).items():
+            a, b = pair.get(prim, {}), pair.get("jev", {})
+            st_ = out.setdefault(name, {"n": 0, "agree": 0, "gate_split": 0, "score_gap_sum": 0.0, "scores": 0})
+            st_["n"] += 1
+            if "choice" in a and "choice" in b:
+                st_["agree"] += a["choice"] == b["choice"]
+                ca, cb = (a.get("confidence") or 0) >= gate, (b.get("confidence") or 0) >= gate
+                st_["gate_split"] += ca != cb
+            elif "score" in a and "score" in b:
+                st_["scores"] += 1
+                st_["score_gap_sum"] += abs(float(a["score"]) - float(b["score"]))
+            elif "noul" in a and "noul" in b:
+                st_["agree"] += (float(a["noul"]) >= 0.5) == (float(b["noul"]) >= 0.5)
+    for st_ in out.values():
+        st_["agree_rate"] = round(st_["agree"] / st_["n"], 3) if st_["n"] else None
+        if st_["scores"]:
+            st_["mean_score_gap"] = round(st_["score_gap_sum"] / st_["scores"], 3)
+    return out
+
+
 def system_one(state: Any, questions: Dict[str, Any],
                model: Optional[str] = None,
                timeout: float = 4.0) -> Tuple[Optional[Dict[str, Any]], Dict[str, Any]]:
@@ -216,9 +355,10 @@ def system_one(state: Any, questions: Dict[str, Any],
         if _breaker_open(name):
             last_meta = {"error": "circuit open", "elapsed_ms": 0, "provider": name}
             continue
-        answers, meta = (_mercury_call if name == "mercury" else _jev_call)(state, questions, model, timeout)
+        answers, meta = (_mercury_call if name == "mercury" else _PROVIDER_CALLS[name])(state, questions, model, timeout)
         if answers:
             _breaker_note_success(name)
+            _maybe_shadow(name, state, questions, answers, meta)
             return answers, meta
         _breaker_note_failure(name)
         last_meta = meta
@@ -441,7 +581,7 @@ def resolve_item_duplicate(new_name: str, inventory_names: List[str],
              "note": "The game just granted this item. Same object under different wording merges; otherwise it stays new."},
             {"match": {"type": "choice",
                        "instructions": "Is the granted item the same object as one already owned, only worded differently?",
-                       "criteria": options}},
+                       "criteria": options}},    timeout=6.0,
         )
         if not answers or "match" not in answers:
             return None, 0.0
@@ -551,7 +691,7 @@ def profile_scores_typesafe(previous_profile: Dict[str, Any],
             "instructions": "The player's attitude toward the Veil shown in THIS interaction",
             "criteria": VEIL_CHOICES,
         }
-        answers, meta = system_one(state, questions)
+        answers, meta = system_one(state, questions, timeout=6.0)
         if not answers:
             return None
 
