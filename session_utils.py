@@ -642,6 +642,12 @@ def build_system_prompt(    npc: Dict[str, Any],
         "=== COMPORTAMENTO COME NPC ===",
         "Parla in modo appropriato al setting fantasy e al tuo ruolo. Mantieni il personaggio.",
         "Sii consapevole delle interazioni passate se riassunte sopra o nella cronologia della chat.",
+        "NON INVENTARE fatti: di persone, luoghi o eventi che non compaiono nella tua scheda o nel contesto del mondo",
+        "sai solo ciò che hai visto o sentito dal tuo punto di vista. Se non sai, dillo in carattere (poche parole,",
+        "'ho sentito quel nome nei sussurri', 'chiedilo a chi gli sta vicino') senza dare ruolo, storia o intenzioni inventati.",
+        *(["Gli altri personaggi esistono davvero e questo è TUTTO ciò che è certo di loro (ruolo reale). Puoi giudicarli dal tuo punto di vista,",
+           "ma NON contraddire il ruolo e NON aggiungere fatti:", _build_npc_roster(game_session_state.get('db'), name)]
+          if _build_npc_roster(game_session_state.get('db'), name) else []),
         "",
         "**SII CONCISO E DIRETTO**: Max 3-4 frasi per risposta normale. Informazioni concrete senza prolissità.",
         "USA LE INFORMAZIONI sopra per risposte specifiche ma brevi.",
@@ -1191,6 +1197,18 @@ def refresh_known_npcs_list(db, TF_class: type) -> List[Dict[str, Any]]:
   except Exception as e:
     print(f"{TF_class.RED}Error refreshing NPC list: {e}{TF_class.RESET}")
     return []
+
+def _build_npc_roster(db, own_name: str) -> str:
+  """Real name/role of every other NPC, so an NPC asked about them does not invent a story."""
+  try:
+    npcs = db.list_npcs_by_area() if db is not None else []
+  except Exception:
+    return ""
+  rows = [f"- {n['name']} ({n.get('area', '')}): {n.get('role', '')}"
+          for n in npcs if n.get('name') and n['name'].lower() != (own_name or '').lower()
+          and n.get('role') and n['role'] != 'Unknown Role']
+  return "\n".join(rows)
+
 
 def _build_known_npcs_for_teleport(db) -> str:
   """Build a formatted string of known NPCs for teleport instructions.
