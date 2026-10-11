@@ -1397,15 +1397,29 @@ def sense_player():
                     logger.info(f"Successfully set NPC {npc_name} for player {player_id}")
                     logger.info(f"NPC data has default_greeting: {'default_greeting' in npc_data}")
 
-                    # Initialize a chat session for the NPC ONLY if there isn't one already
-                    # This prevents losing conversation history when player re-touches the same NPC
-                    if not (player_system.game_state.get('chat_session') if player_system.game_state else None):
-                        from chat_manager import ChatSession
-                        chat_session = ChatSession()
-                        player_system.game_state['chat_session'] = chat_session
-                        logger.info(f"Created new chat session for {npc_name}")
-                    else:
+                    # Reuse the session only if it was built for THIS NPC (re-touching keeps history).
+                    # Otherwise build it like /talk does: NPC system prompt + saved history. A bare
+                    # ChatSession() has no system prompt, and a session left over from another NPC
+                    # carries that NPC's prompt and history -> the answers never follow the question.
+                    gs = player_system.game_state
+                    existing = gs.get('chat_session')
+                    if existing and existing.system_prompt and gs.get('chat_session_npc_code') == npc_data.get('code'):
                         logger.info(f"Reusing existing chat session for {npc_name}")
+                    else:
+                        import session_utils
+                        from chat_manager import ChatSession
+                        from terminal_formatter import TerminalFormatter
+                        _, new_session = session_utils.load_and_prepare_conversation(
+                            game_system.db, player_id, npc_data.get('area', current_area), npc_data.get('name', npc_name),
+                            gs.get('model_name'), gs.get('story', ''), ChatSession, TerminalFormatter, gs,
+                            llm_wrapper_for_profile_distillation_func=gs.get('llm_wrapper_func')
+                        )
+                        if new_session:
+                            gs['chat_session'] = new_session
+                            gs['chat_session_npc_code'] = npc_data.get('code')
+                            logger.info(f"Built chat session for {npc_name} ({len(new_session.messages)} saved messages)")
+                        else:
+                            logger.error(f"Could not build chat session for {npc_name}")
 
                     logger.info(f"Directly set NPC {npc_name} for player {player_id} in area {current_area}")
                 else:
@@ -1435,7 +1449,11 @@ def sense_player():
 
         # Check if there's an existing conversation with this NPC
         chat_session = player_system.game_state.get('chat_session') if player_system.game_state else None
-        has_conversation_history = chat_session and len(chat_session.messages) > 0
+        # Only real exchanges count: /go auto-opens a conversation (generic opening line + BREAK
+        # marker) that must not turn a first meeting into a "welcome back".
+        has_conversation_history = bool(chat_session) and any(
+            m.get('role') == 'user' and not str(m.get('content', '')).startswith('[')
+            for m in chat_session.messages)
 
         # Try to get the Default_Greeting from NPC data, fallback to generic greeting
         default_greeting = current_npc.get('default_greeting', '')
@@ -1731,6 +1749,85 @@ def leave_npc_conversation():
             'conversation_saved': False,
             'error': str(e)
         }), 500
+
+def _admin_key_ok(provided) -> bool:
+    """Admin key check shared by every destructive/admin endpoint.
+
+    Set NEXUS_ADMIN_KEY to override; the historical default '1234' is kept so existing
+    operators are not locked out -- change it."""
+    expected = os.environ.get('NEXUS_ADMIN_KEY') or '1234'
+    return isinstance(provided, str) and hmac.compare_digest(provided.encode(), expected.encode())
+
+
+@app.route('/api/player/<player_id>/finale', methods=['GET'])
+def get_finale_status(player_id: str):
+    """Faction progress, Meridia's gate and the recorded fate of the Veil for a player."""
+    try:
+        if not game_system:
+            return jsonify({'error': GAME_SYSTEM_NOT_INITIALIZED}), 500
+        safe_id = sanitize_player_id(player_id)
+        if not safe_id:
+            return jsonify({'error': 'Invalid player_id'}), 400
+        live = game_system._player_systems.get(safe_id)
+        if live is not None and live.game_state is not None:
+            flags = live.game_state.get('plot_flags') or {}      # in-memory state is never behind the saved one
+        elif game_system.db.player_exists(safe_id):
+            flags = game_system.db.load_player_state(safe_id).get('plot_flags') or {}
+        else:
+            return jsonify({'error': 'Unknown player'}), 404
+        return jsonify({'player_id': safe_id, **veil_finale.status(flags)})
+    except Exception as e:
+        logger.error(f"Error getting finale status for {player_id}: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/game/quests', methods=['GET'])
+def get_quest_map():
+    """The trade chain (who gives what for what) and the finale rules."""
+    return jsonify({'trades': quest_trades.quest_map(), 'finale': veil_finale.overview()})
+
+
+@app.route('/api/player/<player_id>', methods=['DELETE'])
+def delete_player(player_id: str):
+    """Delete ONE player and all of their data (admin key required in the JSON body)."""
+    try:
+        if not game_system:
+            return jsonify({'error': GAME_SYSTEM_NOT_INITIALIZED}), 500
+        data = request.get_json(silent=True) or {}
+        if not _admin_key_ok(data.get('key')):
+            return jsonify({'error': 'Invalid key'}), 403
+        safe_id = sanitize_player_id(player_id)
+        if not safe_id:
+            return jsonify({'error': 'Invalid player_id'}), 400
+        if not game_system.db.player_exists(safe_id):
+            return jsonify({'error': 'Unknown player'}), 404
+        game_system.close_player_session(safe_id)          # drop the in-memory session first
+        counts = game_system.db.delete_player(safe_id)
+        logger.warning(f"[ADMIN] deleted player {safe_id}: {counts}")
+        return jsonify({'success': True, 'player_id': safe_id, 'deleted': counts})
+    except Exception as e:
+        logger.error(f"Error deleting player {player_id}: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/admin/backup', methods=['POST'])
+def backup_database():
+    """Write a consistent snapshot of the database into <data dir>/backups/ (admin key required)."""
+    try:
+        if not game_system:
+            return jsonify({'error': GAME_SYSTEM_NOT_INITIALIZED}), 500
+        data = request.get_json(silent=True) or {}
+        if not _admin_key_ok(data.get('key')):
+            return jsonify({'error': 'Invalid key'}), 403
+        info = game_system.db.backup_database()
+        logger.warning(f"[ADMIN] backup written: {info}")
+        return jsonify({'success': True, **info})
+    except NotImplementedError as e:
+        return jsonify({'error': str(e)}), 501
+    except Exception as e:
+        logger.error(f"Error creating backup: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
 
 @app.route('/reset', methods=['POST'])
 def reset_database():

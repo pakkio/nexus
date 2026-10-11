@@ -29,3 +29,7 @@ Lookup: teleport_crystal,mystical_map,ley_line_detector,portal_stone
 Llsettext: TELEPORT SERVICE - Quick Travel Available
 
 Teleport: 128,128,50,200,150,25,100,200,75,300,100,40
+
+Default_Greeting: *Il Teleporter traccia un cerchio di luce nell'aria.* Benvenuto, {player}. Dimmi dove vuoi andare e apro la via.
+
+Repeat_Greeting: {player}! Di nuovo in viaggio? Dimmi la destinazione.|||Bentornato, {player}. Le linee di Ley sono pronte quando vuoi.
