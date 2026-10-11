@@ -117,3 +117,30 @@ def test_plot_flags_survive_a_new_session(tmp_path):
     import game_system_api
     src = inspect.getsource(game_system_api)
     assert "plot_flags=dict(saved_state.get('plot_flags') or {})" in src
+
+
+def test_status_reports_progress_and_what_is_missing():
+    st = vf.status({vf.TURNS_KEY: {"memory": 3, "progress": 1}})
+    assert st["gate_open"] is False and st["can_choose"] is False
+    assert st["missing_leaders"] == ["Theron", "Boros"]
+    assert {f["leader"]: f["turns"] for f in st["factions"]} == {"Lyra": 3, "Theron": 1, "Boros": 0}
+    assert [f["done"] for f in st["factions"]] == [True, False, False]
+    assert st["fate"] is None
+
+
+def test_status_after_gate_and_choice():
+    flags = open_flags()
+    assert vf.status(flags)["can_choose"] is True
+    vf.record_fate(flags, "preserve")
+    st = vf.status(flags)
+    assert st["fate"] == "preserve" and st["fate_chosen_at"] and st["can_choose"] is False
+
+
+def test_overview_and_quest_map():
+    import quest_trades
+    ov = vf.overview()
+    assert ov["irreversible"] and ov["meridia"]["reward_item"] == vf.LOOM_ITEM
+    assert {f["fate"] for f in ov["factions"]} == {"preserve", "dissolve", "transform"}
+    qm = {t["npc"]: t for t in quest_trades.quest_map()}
+    assert qm["Mara"]["price_credits"] == 50 and qm["Elira"]["requires"] == "Pozione di Guarigione"
+    assert qm["Syra"]["gives"] == "Cristallo di Memoria Antica"

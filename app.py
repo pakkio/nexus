@@ -8,6 +8,9 @@ from flask import Flask, request, jsonify, Response
 from flask_cors import CORS
 import logging
 import os
+import hmac
+import veil_finale
+import quest_trades
 import random
 import re
 from typing import Dict, Any, Optional
@@ -1220,13 +1223,16 @@ def api_info():
                 'get_state': 'GET /api/player/<player_id>/state',
                 'get_profile': 'GET /api/player/<player_id>/profile',
                 'get_inventory': 'GET /api/player/<player_id>/inventory',
-                'get_history': 'GET /api/player/<player_id>/conversation'
+                'get_history': 'GET /api/player/<player_id>/conversation',
+                'get_finale': 'GET /api/player/<player_id>/finale',
+                'delete_player': 'DELETE /api/player/<player_id>  (admin key)'
             },
             'game_data': {
                 'get_areas': 'GET /api/game/areas',
                 'get_npcs': 'GET /api/game/npcs',
                 'get_storyboard': 'GET /api/game/storyboard',
-                'process_command': 'POST /api/game/command'
+                'process_command': 'POST /api/game/command',
+                'get_quests': 'GET /api/game/quests'
             },
             'interaction': {
                 'chat': 'POST /api/chat',
@@ -1237,7 +1243,8 @@ def api_info():
                 'health': 'GET /health',
                 'commands': 'GET /api/commands',
                 'reset': 'POST /reset',
-                'reload': 'POST /api/admin/reload'
+                'reload': 'POST /api/admin/reload',
+                'backup': 'POST /api/admin/backup  (admin key)'
             }
         }
     })
@@ -1290,6 +1297,7 @@ def get_available_commands():
             ],
             'interaction': [
                 '/give <item> - Give an item to current NPC',
+                '/choose <preserve|dissolve|transform> - Decide the fate of the Veil (only before Meridia, once)',
                 '/hint - Get guidance from wise guide',
                 '/endhint - End hint mode'
             ],
@@ -1840,7 +1848,7 @@ def reset_database():
         if not data or 'key' not in data:
             return jsonify({'error': 'Missing key field'}), 400
         
-        if data['key'] != '1234':
+        if not _admin_key_ok(data['key']):
             return jsonify({'error': 'Invalid key'}), 403
         
         # Reset database (delete all player data)

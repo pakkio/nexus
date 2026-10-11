@@ -20,6 +20,7 @@ import json
 import os
 import shutil
 import sqlite3
+import tarfile
 import threading
 import time
 from typing import Any, Iterator, List, Optional, Tuple
@@ -151,6 +152,15 @@ class FileDocStore:
                 continue
         return out
 
+    def backup(self, dest_path: str) -> str:
+        """Write a .tar.gz of the whole directory (previous backups excluded)."""
+        os.makedirs(os.path.dirname(os.path.abspath(dest_path)), exist_ok=True)
+        with tarfile.open(dest_path, "w:gz") as tar:
+            for name in sorted(os.listdir(self.root)):
+                if name != "backups":
+                    tar.add(os.path.join(self.root, name), arcname=name)
+        return dest_path
+
     def delete_kind(self, kind: str, prefix: str = "") -> int:
         n = 0
         for key, path in list(self._files(kind, prefix)):
@@ -213,6 +223,17 @@ class SqliteDocStore:
                           (kind, key, body, time.time() if mtime is None else mtime))
         finally:
             c.close()
+
+    def backup(self, dest_path: str) -> str:
+        """Consistent online snapshot using SQLite's backup API (safe while the server is writing)."""
+        os.makedirs(os.path.dirname(os.path.abspath(dest_path)), exist_ok=True)
+        src, dst = self._conn(), sqlite3.connect(dest_path)
+        try:
+            src.backup(dst)
+        finally:
+            dst.close()
+            src.close()
+        return dest_path
 
     def delete(self, kind: str, key: str) -> None:
         self._check_kind(kind)

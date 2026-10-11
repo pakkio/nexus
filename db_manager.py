@@ -1173,6 +1173,63 @@ class DbManager:
                 if cursor: cursor.close()
                 if conn and conn.is_connected(): conn.close()
 
+    # --- Per-player administration -------------------------------------------------------
+    def player_exists(self, player_id: str) -> bool:
+        """True when a saved PlayerState exists (does not create one, unlike load_player_state)."""
+        if not player_id:
+            return False
+        if self.use_mockup:
+            return self.store.meta("PlayerState", player_id) is not None
+        conn = None; cursor = None
+        try:
+            conn = self.connect(); cursor = conn.cursor()
+            cursor.execute("SELECT 1 FROM PlayerState WHERE player_id = %s LIMIT 1", (player_id,))
+            return cursor.fetchone() is not None
+        except Exception:
+            return False
+        finally:
+            if cursor: cursor.close()
+            if conn and conn.is_connected(): conn.close()
+
+    def delete_player(self, player_id: str) -> Dict[str, int]:
+        """Delete ONE player's state, profile, inventory, conversations and analysis."""
+        if not player_id:
+            return {}
+        if self.use_mockup:
+            counts = {"conversations": len(self.store.items("ConversationHistory", player_id + "/"))}
+            for kind in ("PlayerState", "PlayerProfiles", "Inventory", "ConversationAnalysis"):
+                counts[kind] = 1 if self.store.meta(kind, player_id) else 0
+                self.store.delete(kind, player_id)
+            self.store.delete_kind("ConversationHistory", player_id + "/")
+            return counts
+        conn = None; cursor = None
+        counts: Dict[str, int] = {}
+        try:
+            conn = self.connect(); cursor = conn.cursor()
+            # PlayerState last: the other tables reference it
+            for table in ("PlayerInventory", "ConversationHistory", "ConversationAnalysis",
+                          "PlayerProfiles", "PlayerState"):
+                cursor.execute(f"DELETE FROM {table} WHERE player_id = %s", (player_id,))
+                counts[table] = cursor.rowcount
+            conn.commit()
+            return counts
+        except Exception:
+            if conn: conn.rollback()
+            raise
+        finally:
+            if cursor: cursor.close()
+            if conn and conn.is_connected(): conn.close()
+
+    def backup_database(self) -> Dict[str, Any]:
+        """Snapshot the whole non-MySQL database into <mockup_dir>/backups/ and describe it."""
+        if not self.use_mockup:
+            raise NotImplementedError("MySQL deployments should use mysqldump")
+        ext = ".db" if self.store.backend == "sqlite" else ".tar.gz"
+        path = os.path.abspath(os.path.join(self.mockup_dir, "backups",
+                                            f"nexus-{datetime.now().strftime('%Y%m%d-%H%M%S')}{ext}"))
+        self.store.backup(path)
+        return {"path": path, "size_bytes": os.path.getsize(path), "backend": self.store.backend}
+
     # --- Database Reset Methods ---
     def reset_database(self):
         """Reset the entire database by clearing all player data."""

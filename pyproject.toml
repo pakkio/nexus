@@ -1,43 +1,27 @@
-[tool.poetry]
+[project]
 name = "nexus"
 version = "0.1.0"
-description = ""
-authors = ["Claudio Pacchiega <claudio.pacchiega@gmail.com>"]
-package-mode = false
-packages = [
-    { include = "*.py" }
+description = "AI-powered text-based RPG engine"
+requires-python = ">=3.12"
+dependencies = [
+    "requests>=2.32.3",
+    "python-dotenv>=1.0.0",
+    "mysql-connector-python>=9.3.0",
+    "flask>=3.1.1",
+    "flask-cors>=6.0.1",
+    "gradio>=5.32.0",
+    "tree-sitter>=0.24.0",
+    "tree-sitter-languages>=1.10.2",
+    "tree-sitter-python>=0.23.6",
+    "mcp>=2.1.1",
+    "uvicorn>=0.52.4",
+    "starlette>=1.6.0",
+    "asgiref>=3.12.1",
 ]
 
-
-
-[tool.poetry.dependencies]
-python = "^3.12"
-requests = "^2.32.3"
-python-dotenv = "^1.0.0"
-mysql-connector-python = "^9.3.0"
-flask = "^3.1.1"
-flask-cors = "^6.0.1"
-gradio = "^5.32.0"
-tree-sitter = "^0.24.0"
-tree-sitter-languages = "^1.10.2"
-tree-sitter-python = "^0.23.6"
-pytest = "^7.4.0"
-pytest-mock = "^3.10.0"
-black = "^23.7.0"
-mcp = "^2.1.1"
-uvicorn = "^0.52.4"
-starlette = "^1.6.0"
-asgiref = "^3.12.1"
-
-# Dipendenze di sviluppo
-[tool.poetry.group.dev.dependencies]
-pytest = "^7.4.0"
-black = "^23.7.0"
-python = "^3.12"
-dotenv = "^0.9.9"
-mysql-connector-python = "^9.3.0"
-requests = "^2.32.3"
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-mock>=3.10.0",
+    "black>=23.7.0",
+]
