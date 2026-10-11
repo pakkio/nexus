@@ -517,8 +517,9 @@ def build_system_prompt(    npc: Dict[str, Any],
         prompt_lines.append("")
 
         if default_greeting:
-            prompt_lines.append(f"🔹 SALUTO INIZIALE (usa solo al primo messaggio, poi mai più):")
+            prompt_lines.append("🔹 SALUTO: il tuo saluto al giocatore è già stato pronunciato (mostra il tono del personaggio):")
             prompt_lines.append(f'   "{personalize_npc_text(default_greeting, player_id)}"')
+            prompt_lines.append("   NON ripeterlo né riformularlo MAI, nemmeno se il giocatore scrive solo 'ciao': rispondi con parole nuove a ciò che dice.")
             prompt_lines.append("")
         # NOTE: Repeat_Greeting removed to prevent LLM from repeating it every message
         if conditional_responses:

@@ -1526,6 +1526,11 @@ def sense_player():
             logger.warning(f"Error generating SL commands in sense: {str(sl_error)}")
             sl_commands = ""
         
+        # The greeting shown to the player must also be in the NPC's history, otherwise the model
+        # thinks it has not greeted yet and repeats the greeting on the first real reply.
+        if chat_session and npc_response:
+            chat_session.add_message('assistant', normalize_text_for_lsl(npc_response, strip_sl_tags=True, player_name=display_name))
+
         return jsonify({
             'npc_response': normalize_text_for_lsl(npc_response, strip_sl_tags=True, player_name=display_name),
             'npc_name': current_npc_name,
