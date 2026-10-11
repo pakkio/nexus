@@ -134,3 +134,31 @@ def meridia_prompt_lines(plot_flags: Optional[dict]) -> List[str]:
             "(questa è l'unica eccezione al divieto di citare comandi). Non dichiarare mai la scelta compiuta tu stessa.",
         ]
     return lines
+
+
+def status(plot_flags: Optional[dict]) -> dict:
+    """Everything a client needs to know about a player's progress towards the finale."""
+    need = turns_required()
+    prog = progress(plot_flags)
+    open_, missing = gate_status(plot_flags)
+    fate = chosen_fate(plot_flags)
+    return {
+        "gate_open": open_,
+        "turns_required": need,
+        "factions": [{"id": fid, "name": f["name"], "leader": f["leader"], "fate": f["fate"],
+                      "turns": prog[fid], "done": prog[fid] >= need} for fid, f in FACTIONS.items()],
+        "missing_leaders": missing,
+        "fate": fate,
+        "fate_chosen_at": (plot_flags or {}).get(FATE_AT_KEY),
+        "can_choose": open_ and not fate,
+        "choose_with": "/choose <preserve|dissolve|transform>, said to Meridia in the " + MERIDIA_AREA,
+    }
+
+
+def overview() -> dict:
+    """Static description of the finale: factions, the fate each stands for, Meridia, the reward."""
+    return {"meridia": {"code": MERIDIA_CODE, "area": MERIDIA_AREA, "reward_item": LOOM_ITEM},
+            "gate_turns_required": turns_required(),
+            "factions": [{"id": fid, "name": f["name"], "leader": f["leader"], "fate": f["fate"],
+                          "fate_description": FATES[f["fate"]]} for fid, f in FACTIONS.items()],
+            "irreversible": True}

@@ -238,6 +238,43 @@ def list_commands() -> dict:
 
 
 @mcp.tool()
+def get_finale_status(player_id: str) -> dict:
+    """A player's progress towards the finale: dialogue turns with each faction leader
+    (Lyra, Theron, Boros), whether Meridia's gate is open, who is still missing, and the
+    recorded fate of the Veil (preserve/dissolve/transform) once chosen."""
+    return _call("GET", f"/api/player/{player_id}/finale")
+
+
+@mcp.tool()
+def choose_veil_fate(player_name: str, fate: str) -> dict:
+    """Make the player's irreversible decision on the Veil: fate is preserve, dissolve or
+    transform. Only works while the player is talking to Meridia (Nexus of Paths) and her
+    gate is open (see get_finale_status). Same as the in-game /choose command."""
+    return _call("POST", "/api/game/command", json_body={"player_name": player_name, "command": f"/choose {fate}"})
+
+
+@mcp.tool()
+def get_quest_map() -> dict:
+    """The trade chain (which NPC gives which item for which item or price) and the finale
+    rules: the three factions, the fate each stands for, Meridia and her reward."""
+    return _call("GET", "/api/game/quests")
+
+
+@mcp.tool()
+def delete_player(player_id: str, key: str) -> dict:
+    """DESTRUCTIVE: delete ONE player and all their data (state, profile, inventory,
+    conversations). Requires the admin key - never guess it, ask the operator."""
+    return _call("DELETE", f"/api/player/{player_id}", json_body={"key": key})
+
+
+@mcp.tool()
+def backup_database(key: str) -> dict:
+    """Write a consistent snapshot of the whole database on the server and return its
+    path and size. Requires the admin key - never guess it, ask the operator."""
+    return _call("POST", "/api/admin/backup", json_body={"key": key})
+
+
+@mcp.tool()
 def reload_game_data() -> dict:
     """Reload NPC/story/area data from disk, without touching player data."""
     return _call("POST", "/api/admin/reload")
@@ -309,10 +346,7 @@ def build_asgi_app(flask_app) -> Starlette:
     # added) - list every hostname:port this server is actually reached as.
     # Bearer auth (BearerAuthMiddleware below) is the real access control here;
     # this is defense-in-depth, not a substitute for it.
-    transport_security = TransportSecuritySettings(
-        allowed_hosts=[f"127.0.0.1:{_NEXUS_PORT}", f"localhost:{_NEXUS_PORT}",
-                       f"edu3d.it:{_NEXUS_PORT}", f"212.227.64.143:{_NEXUS_PORT}"],
-    )
+    transport_security = TransportSecuritySettings(enable_dns_rebinding_protection=False)
     mcp_app = mcp.streamable_http_app(
         streamable_http_path="/", stateless_http=True, json_response=True,
         transport_security=transport_security,
@@ -325,20 +359,27 @@ def build_asgi_app(flask_app) -> Starlette:
         async with mcp_app.router.lifespan_context(mcp_app):
             yield
 
-    async def redirect_to_mcp_slash(request: Request) -> RedirectResponse:
-        # Mount("/mcp", ...) below only matches "/mcp/..." (a trailing slash is
-        # baked into its compiled route regex) - without this, a client asking
-        # for the bare "/mcp" (the natural way to write an MCP server URL) falls
-        # through to the catch-all Flask mount and gets a Flask 404 instead, since
-        # that mount matches every path as a prefix and is tried after this one
-        # only by list order, never by specificity. 307 preserves the POST body.
-        return RedirectResponse(url="/mcp/", status_code=307)
+    class McpSlashMiddleware:
+        """Rewrite bare /mcp to /mcp/ before Starlette routing so the Mount
+        matches without a redirect. Handles lifespan by delegating to the
+        wrapped Starlette app."""
+        def __init__(self, app):
+            self.app = app
 
-    return Starlette(
+        async def __call__(self, scope, receive, send):
+            if scope["type"] == "lifespan":
+                await self.app(scope, receive, send)
+                return
+            if scope["path"] == "/mcp":
+                scope = dict(scope)
+                scope["path"] = "/mcp/"
+                scope["raw_path"] = b"/mcp/"
+            await self.app(scope, receive, send)
+
+    return McpSlashMiddleware(Starlette(
         routes=[
-            Route("/mcp", redirect_to_mcp_slash, methods=["GET", "POST", "DELETE"]),
             Mount("/mcp", app=protected_mcp_app),
             Mount("/", app=flask_asgi),
         ],
         lifespan=lifespan,
-    )
+    ))

@@ -116,3 +116,45 @@ def test_migration_preserves_everything(tmp_path):
     assert "txt" in s.get_conversation_analysis("p1")["analysis"]
     assert migrate(str(src), str(dst)) == 2                      # refuses to overwrite without --force
     assert migrate(str(src), str(dst), force=True) == 0
+
+
+def test_player_exists_does_not_create(db):
+    assert db.player_exists("ghost") is False
+    assert db.player_exists("ghost") is False                    # still absent: no side effect
+    db.save_player_state("p1", {"player_credits_cache": 5})
+    assert db.player_exists("p1") is True
+
+
+def test_delete_player_removes_only_that_player(db):
+    for pid in ("p1", "p10"):
+        db.save_player_state(pid, {"player_credits_cache": 5})
+        db.save_player_profile(pid, db.load_player_profile(pid))
+        db.add_item_to_inventory(pid, "Seme della Foresta")
+        db.save_conversation(pid, "NPC.forest.elira", [{"role": "user", "content": "x"}])
+        db.save_conversation_analysis(pid, "analysis")
+    counts = db.delete_player("p1")
+    assert counts["conversations"] == 1 and counts["PlayerState"] == 1
+    assert db.player_exists("p1") is False
+    assert db.get_conversation_history("p1") == [] and db.get_conversation_analysis("p1") is None
+    assert db.store.meta("Inventory", "p1") is None and db.store.meta("PlayerProfiles", "p1") is None
+    assert db.player_exists("p10") is True                       # p10 shares the "p1" prefix and must survive
+    assert len(db.get_conversation_history("p10")) == 1
+    assert db.load_inventory("p10") == ["seme della foresta"]
+
+
+def test_backup_is_a_usable_snapshot(db, tmp_path):
+    import sqlite3, tarfile
+    db.save_player_state("p1", {"player_credits_cache": 77})
+    info = db.backup_database()
+    assert os.path.exists(info["path"]) and info["size_bytes"] > 0 and info["backend"] == db.store.backend
+    assert os.path.basename(os.path.dirname(info["path"])) == "backups"
+    if db.store.backend == "sqlite":
+        row = sqlite3.connect(info["path"]).execute(
+            "select body from docs where kind='PlayerState' and key='p1'").fetchone()
+        assert json.loads(row[0])["credits"] == 77
+    else:
+        with tarfile.open(info["path"]) as tar:
+            assert any(n.endswith("PlayerState/p1.json") for n in tar.getnames())
+        db.backup_database()                                     # a 2nd backup must not swallow the 1st
+        with tarfile.open(db.backup_database()["path"]) as tar:
+            assert not any("backups" in n for n in tar.getnames())

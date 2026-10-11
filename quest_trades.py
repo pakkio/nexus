@@ -97,3 +97,10 @@ def validate_grant(npc_code: str, raw_tokens: List[str], trade_this_turn: Option
             rejected.append(f"'{tok}': credits not allowed here (price={price}, granted={own_item})")
 
     return accepted, rejected, own_item
+
+
+def quest_map() -> list:
+    """Read-only description of the trade chain (for clients / the MCP get_quest_map tool)."""
+    return [{"npc_code": code, "npc": code.split(".")[-1].title(), "gives": t["gives"],
+             "requires": t["requires"], "price_credits": t["price"]}
+            for code, t in QUEST_TRADES.items()]
