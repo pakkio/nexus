@@ -78,7 +78,7 @@ In-game commands: `/areas /describe <area> /go <area> /talk <npc> /who /whereami
 ```
  free-text.txt ──(just compile)──► lore.txt ──(just lore)──► ANTEFATTO.txt        shown to every NPC
  (the "book")      an LLM digests    the canon      │                               NPC_PREFIX.<area>.<name>.txt   one per story NPC
-                                     (one file)     └──(just lore --npcs)────────► NPC records in the store
+                                     (one file)     └──(same command)───────────► NPC records in the store
 ```
 
 Two stages with different jobs:
@@ -86,9 +86,9 @@ Two stages with different jobs:
 | Stage | Command | Script | Needs an LLM | Writes |
 |---|---|---|---|---|
 | 1. digest | `just compile free-text.txt` | `digest_lore.py` | yes (OpenRouter) | `lore.txt` (old one kept as `lore.txt.bak-<time>`) |
-| 2. derive | `just lore` | `compile_lore.py` (also `./compile-lore`) | no | `ANTEFATTO.txt`, `NPC_PREFIX.*.txt`; reports NPC drift |
-| 2b. NPC records | `just lore --npcs` | same | no | NPC fields in the document store (current records saved first) |
-| freshness test | `just lore --check` | same | no | writes nothing; exit 1 if any file or NPC field is stale |
+| 2. derive | `just lore` | `compile_lore.py` (also `./compile-lore`) | no | `ANTEFATTO.txt`, `NPC_PREFIX.*.txt`, and the NPC fields in the document store (current records saved first) |
+| 2b. report only | `just lore --no-npcs` | same | no | the two files above; for the NPC records it only lists what would change |
+| freshness test | `just lore --check` | same | no | writes nothing; exit 1 if a generated file is stale (add `--npcs` to also fail on NPC record drift) |
 
 `just` is only a convenience (`justfile`); the scripts run on their own: `python digest_lore.py SOURCE…`,
 `python compile_lore.py [lore.txt]`.
@@ -107,6 +107,9 @@ An LLM turns free text into the story-specific sections of `lore.txt`. It works 
   below). Errors go back to the model for a correction, up to `--retries` (default 2) times.
 - **`lore.txt` is only replaced if the result validates.** Otherwise the draft is left in `lore.txt.failed` and the
   old `lore.txt` stays untouched.
+- A recompile keeps identifiers stable: the previous `lore.txt` is read first, the model is told to reuse the ids/codes of
+  places and NPCs that already exist, and any it changes anyway are rewritten back by exact name (other files, like
+  `quest_trades.py`, cite NPC codes). NPC names are written without articles.
 - Options: `--out FILE`, `--title T`, `--model M` (else `$LORE_MODEL`, else the game's default model), `--retries N`.
   Several source files can be given. The run prints token usage and cost.
 - The story-independent sections `[03]` narrative rules, `[04]` voice and tags, `[10]` derived files are pasted from
@@ -114,7 +117,7 @@ An LLM turns free text into the story-specific sections of `lore.txt`. It works 
 
 ### The shape of `lore.txt`
 
-Plain ASCII (no accents), sections with stable IDs `[NN TITLE]`. The parts a script reads:
+Normal Italian text (with accents), sections with stable IDs `[NN TITLE]`. The parts a script reads:
 
 ```
 [01 MONDO]        …prose…
@@ -165,12 +168,18 @@ it needs.
   the price of its path; what cannot be reconciled; what it can and cannot know. The off-chain seller (a trade not
   linked to any other) is detected from the trade graph.
 - The prefix file is loaded by `session_utils.py` into the NPC's prompt under "CONTESTO NARRATIVO PERSONALIZZATO".
-- `--npcs` also writes `name, role, motivation, goal, treasure, playerhint, teleport` of each NPC into the document store
-  (file or SQLite, same `NEXUS_STORAGE` as the server; `--root` picks the folder). The current NPC records are saved to
-  `<root>/backups/NPCs-before-compile-lore-*.json` first. Greetings, emotes, animations, notecards and business
+- By default it also writes `name, role, motivation, goal, treasure, playerhint, teleport` of each NPC into the document
+  store (file or SQLite, same `NEXUS_STORAGE` as the server; `--root` picks the folder). The current NPC records are saved
+  to `<root>/backups/NPCs-before-compile-lore-*.json` first. Greetings, emotes, animations, notecards and business
   cards are never touched, and an NPC missing from the store is created.
-  **Without `--npcs` the run only reports the fields that would change.** `lore.txt` is a condensed digest, so on an
-  existing store `--npcs` shortens the longer original texts; run the report first.
+  Fields are compared ignoring accents, quote marks, spacing and a final full stop, and **only the fields that really
+  differ are written**: a digest that merely dropped an accent or a quote never changes the stored text.
+  Use **`--no-npcs`** to leave the store alone and only list the differences (`--npcs` is still accepted and is the
+  default). `lore.txt` is a condensed digest, so on an existing store this replaces longer original texts with the
+  digest's wording; the report-only mode and the backup are there for that.
+  The server reads the SQLite file when started with `NEXUS_STORAGE=sqlite` (as `start_nexus.sh` does), so update that
+  store with `NEXUS_STORAGE=sqlite NEXUS_SQLITE_PATH=… just lore`; a plain `just lore` updates the JSON files in `database/`.
+- `just lore` also deletes `NPC_PREFIX.*.txt` files that no NPC maps to any more (renamed or removed NPC).
 
 ### Not yet derived from the lore
 
@@ -183,8 +192,7 @@ it needs.
 
 1. Write or update the free text (`free-text.txt` holds the current one: world, places, characters, trades, finale).
 2. `just compile free-text.txt` — read `[11 PUNTI APERTI]` in the new `lore.txt` and fix the source for anything flagged.
-3. `just lore --check`, then `just lore` to write `ANTEFATTO.txt` and the prefix files; `just lore --npcs` if the NPC
-   records should follow the lore.
+3. `just lore --no-npcs` to preview, then `just lore` to write `ANTEFATTO.txt`, the prefix files and the NPC records.
 4. Restart the server (prompt parts are read when an NPC conversation starts; NPC records when the store is read).
 
 ## Game mechanics
@@ -303,7 +311,8 @@ A bare `pytest` fails during collection: the `test_*.py` files at the top level 
 - `SYSPROMPT.toml` and `NARRATIVE_FRAMEWORK.txt` still carry the old "Cyberspazio" wording ("nel server … nel
   cyberspazio", algorithms, metrics), which can leak into NPC speech. They should be generated from `lore.txt`.
 - The default `NEXUS_AUTH_TOKEN` and `NEXUS_ADMIN_KEY` are weak and public; set both outside development.
-- `lore.txt` is a digest: `just lore --npcs` on a store with fuller NPC text shortens it (it backs up first).
+- `lore.txt` is a digest: `just lore` on a store with fuller NPC text replaces it with the digest's wording (it backs up
+  first; `--no-npcs` skips the records).
 - The seven original NPC notecards come from an older version of the story and should be regenerated from the lore.
 - Sussurri vs Oblivianti, and several item ambiguities, are left open on purpose or listed in `lore.txt [11]`.
 
