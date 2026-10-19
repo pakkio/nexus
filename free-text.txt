@@ -74,8 +74,6 @@ Garin vive a Village. Ruolo: Fabbro delle Memorie, Artigiano dell'Impossibile. M
 
 Mara vive a Village. Ruolo: Erborista della Memoria, Curatrice delle Radici Perdute. Movente: Preservare la conoscenza erboristica che si sta perdendo man mano che le piante "dimenticate" dai Sussurri dell'Oblio scompaiono dalla realtà. Obiettivo: Creare un elisir che possa proteggere temporaneamente dalla perdita di memoria causata dai Sussurri dell'Oblio. Custodisce: Infuso della Persistenza - una pozione che per alcune ore rende immuni agli effetti minori dei Sussurri dell'Oblio Come trattarlo: Mara è pragmatica e orientata alla sopravvivenza. Non le interessano le grandi filosofie, ma gli strumenti concreti per proteggere le persone che ama. La sua ricompensa è estremamente utile ma temporanea. Coordinate: 265,294,22.
 
-Un personaggio di servizio: il Teleporter (area di prova, testarea), Transportation Specialist and Guide, porta i viaggiatori nei luoghi principali lungo le linee di Ley. Non fa parte della storia. Coordinate delle quattro destinazioni: 128,128,50 / 200,150,25 / 100,200,75 / 300,100,40.
-
 MISSIONI E SCAMBI
 La catena: Mara vende la Pozione di Guarigione per 50 crediti. Elira da il Seme della Foresta in cambio di una Pozione di Guarigione. Boros da il Minerale di Ferro Antico in cambio di un Seme della Foresta. Garin da i Trucioli di Ferro in cambio di un Minerale di Ferro Antico. Jorin da la Ciotola dell'Offerta Sacra in cambio di Trucioli di Ferro. Syra da il Cristallo di Memoria Antica in cambio di una Ciotola dell'Offerta Sacra, e il Cristallo serve a Lyra. Cassian, fuori dalla catena, vende la Pergamena della Saggezza per 50 crediti. L'oggetto passa solo dopo consegna o pagamento.
 
