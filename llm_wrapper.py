@@ -372,7 +372,9 @@ def llm_wrapper(messages: List[Dict[str, str]],
         model_name = "anthropic/claude-3.5-haiku"  # Fallback
 
     # DEFAULT: Use OpenRouter, or DeepSeek direct if requested
-    if model_name and "deepseek" in model_name:
+    # Bare names (deepseek-v4-flash) go direct; OpenRouter ids (deepseek/...) contain a slash and stay on OpenRouter.
+    use_deepseek_direct = bool(model_name) and "deepseek" in model_name and "/" not in model_name
+    if use_deepseek_direct:
         api_key = os.environ.get("DEEPSEEK_API_KEY")
         api_base = "https://api.deepseek.com"
         if not api_key:
@@ -450,7 +452,7 @@ def llm_wrapper(messages: List[Dict[str, str]],
         payload["max_tokens"] = 2048  # Increased from 512 to allow notecard generation
         payload["temperature"] = 0.7
         payload["top_p"] = 0.9
-        if model_name and "deepseek" in model_name.lower():
+        if use_deepseek_direct:
             payload["thinking"] = { "type": DEEPSEEK_THINKING }
             logging.info(f"DeepSeek thinking configuration set to: {DEEPSEEK_THINKING}")
 
