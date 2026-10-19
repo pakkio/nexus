@@ -1123,8 +1123,8 @@ def chat_with_npc():
                 if has_notecard:
                     logger.info(f"[NOTECARD] Using extracted notecard: '{notecard_name}' ({len(notecard_content)} chars)")
                     # Clear the notecard from game state after using it
-                    if player_system.game_state and 'notecard_extracted' in player_system.game_state:
-                        del player_system.game_state['notecard_extracted']
+                    if player_system.game_state:
+                        player_system.game_state.pop('notecard_extracted', None)
 
                 # Check if teleport is to another NPC (not current NPC)
                 teleport_target_npc_name = player_system.game_state.get('teleport_target_npc') if player_system.game_state else None
