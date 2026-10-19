@@ -9,3 +9,7 @@ compiled/
 # Ignore crush directory
 .crush/
 nohup.out
+
+# Runtime logs and local backups
+logs/
+*.bak-*
