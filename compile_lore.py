@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """compile-lore: turn lore.txt into the prompt parts that are derived from it  (`just lore`).
 
-    python compile_lore.py [lore.txt] [--out DIR] [--check] [--npcs] [--root DIR]
-    ./compile-lore [lore.txt] [--out DIR] [--check] [--npcs] [--root DIR]
+    python compile_lore.py [lore.txt] [--out DIR] [--check] [--no-npcs] [--root DIR]
+    ./compile-lore [lore.txt] [--out DIR] [--check] [--no-npcs] [--root DIR]
 
 Writes (into --out, default: next to this script):
   ANTEFATTO.txt                       world summary shown to every regular NPC (loader truncates at 800 chars)
@@ -10,8 +10,8 @@ Writes (into --out, default: next to this script):
 
 Everything comes from lore.txt ([01] world + "Antefatto:" line, [05] factions, [06] places, [07] NPCs,
 [08] mission chain, [09] knowledge); nothing is invented here and nothing is tied to one story. The script fails loudly
-if lore.txt no longer has the structure it expects. --check writes nothing and exits 1 if the files on disk (or the NPC
-records) differ from what lore.txt would produce. Pure automation: lore.txt stays the source.
+if lore.txt no longer has the structure it expects. --check writes nothing and exits 1 if the generated files on disk differ from
+what lore.txt would produce (with --npcs also if the NPC records differ). Pure automation: lore.txt stays the source.
 
 [07] blocks may carry three optional labels besides Ruolo/Movente/Obiettivo/Tesoro/Trattarlo/Posizione:
   Fazione: <TAG> / <DESTINO>   leader of a faction: <TAG> starts a bullet in [05], <DESTINO> labels its cost
@@ -20,12 +20,13 @@ records) differ from what lore.txt would produce. Pure automation: lore.txt stay
 
 NPC records (name, role, motivation, goal, treasure, playerhint, teleport) are also derived from [07]. They live in the
 document store (file or SQLite, honouring NEXUS_STORAGE / NEXUS_SQLITE_PATH, root = --root, default "database"):
-  - without --npcs the run only REPORTS which NPC fields would change;
-  - with --npcs it writes them, after saving the current NPC records to <root>/backups/NPCs-before-compile-lore-*.json.
-Only those fields are touched (greetings, emotes, animations, notecards, business cards... are kept). An NPC that
+  - by default the run WRITES them, after saving the current NPC records to <root>/backups/NPCs-before-compile-lore-*.json;
+  - with --no-npcs it only REPORTS which NPC fields would change (--npcs is accepted and means the default).
+Only the fields that really differ are written, and only those fields are touched (greetings, emotes, animations, notecards, business cards... are kept). An NPC that
 is in lore.txt but not in the store is created.
 """
 import argparse
+import glob
 import os
 import re
 import sys
@@ -115,6 +116,20 @@ def npc_records(body: str, npcs: dict) -> dict:
     return recs
 
 
+def same_text(a, b) -> bool:
+    """Equal for the purpose of NPC records: ignores accents, quote marks, spacing and a trailing full stop, so a digest
+    that only dropped an accent or a quote never counts as a change (and never degrades the stored text)."""
+    import unicodedata
+
+    def norm(t) -> str:
+        t = unicodedata.normalize("NFKD", str(t or ""))
+        t = "".join(c for c in t if not unicodedata.combining(c))
+        t = re.sub(r"[\u2018\u2019`]", "'", t)
+        t = re.sub(r"[\"\u201c\u201d]", "", t)
+        return re.sub(r"\s+", " ", t).strip().rstrip(".").strip()
+    return norm(a) == norm(b)
+
+
 def sync_npcs(recs: dict, places: dict, npcs: dict, root: str, apply: bool) -> int:
     """Compare (and with apply=True write) lore's NPC fields against the document store. Returns #changed fields."""
     import json
@@ -129,7 +144,7 @@ def sync_npcs(recs: dict, places: dict, npcs: dict, root: str, apply: bool) -> i
             plan.append((code, "(new NPC)", None, rec["name"]))
             continue
         for f, v in rec.items():
-            if (cur.get(f) or "") != v:
+            if not same_text(cur.get(f), v):
                 plan.append((code, f, cur.get(f), v))
     for code, f, old, new in plan:
         o = "-" if old is None else f"{len(str(old))} chars"
@@ -141,13 +156,18 @@ def sync_npcs(recs: dict, places: dict, npcs: dict, root: str, apply: bool) -> i
         with open(bak, "w", encoding="utf-8") as f:
             json.dump({k: v for k, v, *_ in store.items("NPCs")}, f, ensure_ascii=False, indent=1)
         print(f"  saved current NPC records to {bak}")
-        for code, rec in recs.items():
-            cur = store.get("NPCs", code) or {"area": npcs[code]["place"]}
-            cur.update(rec)
+        by_code = {}
+        for code, f, _, new in plan:
+            by_code.setdefault(code, {})[f] = new
+        for code, changed in by_code.items():          # only the fields that really differ; the rest stays as stored
+            cur = store.get("NPCs", code)
+            if cur is None:
+                cur, changed = {"area": npcs[code]["place"]}, recs[code]
+            cur.update(changed)
             store.put("NPCs", code, cur)
-        print(f"  wrote {len(recs)} NPC records")
+        print(f"  wrote {len(plan)} field(s) in {len(by_code)} NPC record(s)")
     elif plan:
-        print("  (not written: run with --npcs to apply; the current records are backed up first)")
+        print("  (not written: --no-npcs or --check was given)")
     return len(plan)
 
 
@@ -295,7 +315,8 @@ if __name__ == "__main__":
     ap.add_argument("lore", nargs="?", default=os.path.join(HERE, "lore.txt"))
     ap.add_argument("--out", default=HERE)
     ap.add_argument("--check", action="store_true")
-    ap.add_argument("--npcs", action="store_true", help="write the NPC records derived from lore.txt into the store")
+    ap.add_argument("--npcs", action="store_true", help="write the NPC records into the store (this is the default)")
+    ap.add_argument("--no-npcs", action="store_true", help="only report NPC record differences, write nothing to the store")
     ap.add_argument("--root", default=os.path.join(HERE, "database"), help="document store root (default: ./database)")
     a = ap.parse_args()
     files = build(a.lore)
@@ -311,6 +332,18 @@ if __name__ == "__main__":
             with open(path, "w", encoding="utf-8") as f:
                 f.write(content)
             print(f"wrote {fn} ({len(content)} chars)")
-    drift = sync_npcs(npc_recs, place_names, npc_blocks, a.root, apply=a.npcs and not a.check)
+    # NPC_PREFIX.* is owned by this script: a prefix no NPC maps to any more (renamed or removed NPC) is an orphan
+    orphans = sorted(os.path.basename(f) for f in glob.glob(os.path.join(a.out, "NPC_PREFIX.*.txt"))
+                     if os.path.basename(f) not in files)
+    for fn in orphans:
+        if a.check:
+            stale += 1
+            print("STALE  " + fn + "  (orphan: no NPC in lore.txt maps to it)")
+        else:
+            os.remove(os.path.join(a.out, fn))
+            print(f"removed orphan {fn}")
+    write_npcs = not a.no_npcs and not a.check
+    drift = sync_npcs(npc_recs, place_names, npc_blocks, a.root, apply=write_npcs)
     if a.check:
-        sys.exit(1 if (stale or drift) else 0)
+        # NPC text drift is normal for a digest, so --check fails on stale generated files only (add --npcs to include it)
+        sys.exit(1 if (stale or (drift and a.npcs)) else 0)

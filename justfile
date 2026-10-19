@@ -12,6 +12,6 @@ default:
 compile *files:
     {{py}} digest_lore.py "$@"
 
-# lore.txt -> ANTEFATTO.txt + NPC_PREFIX.*.txt; add --npcs to write NPC records, --check to test freshness
+# lore.txt -> ANTEFATTO.txt + NPC_PREFIX.*.txt + NPC records (backed up first); --no-npcs to skip records, --check to test freshness
 lore *args:
     {{py}} compile_lore.py "$@"
