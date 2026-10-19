@@ -74,7 +74,9 @@ GAME_SYSTEM_NOT_INITIALIZED = 'Game system not initialized'
 # Allows internal single spaces (SL/OpenSim avatar display names are almost
 # always "Firstname Lastname") but not leading/trailing ones - those are
 # stripped by sanitize_player_id below before this ever runs.
-PLAYER_ID_RE = re.compile(r'^[a-zA-Z0-9_\-\.]+( [a-zA-Z0-9_\-\.]+)*$')
+# '@' and ':' admit Hypergrid names ("First.Last @grid.example.org:8002"); '/' and '\\' stay rejected
+# below, and the file store's _check_key refuses path separators in a key.
+PLAYER_ID_RE = re.compile(r'^[a-zA-Z0-9_\-\.@:]+( [a-zA-Z0-9_\-\.@:]+)*$')
 
 def sanitize_player_id(player_id: str) -> Optional[str]:
     if not player_id or not isinstance(player_id, str):
