@@ -915,6 +915,13 @@ def build_system_prompt(    npc: Dict[str, Any],
     return final_prompt
 
 
+FIRST_MEETING_NOTE = (
+    "\n\n🔹 PRIMO INCONTRO: il giocatore non ti ha mai parlato prima. NON dire né suggerire che è tornato, "
+    "che lo rivedi o che è passato del tempo (niente 'sei tornato', 'di nuovo qui'), "
+    "nemmeno se scrive solo 'ciao'."
+)
+
+
 def load_and_prepare_conversation(
     db, player_id: str, area_name: str, npc_name: str,
     model_name: Optional[str],
@@ -974,8 +981,10 @@ def load_and_prepare_conversation(
                     # print(f"{TF_class.DIM}[DEBUG] Found BREAK marker for {npc_name}. Adding RESUME.{TF_class.RESET}") # Verbose
                     resume_marker = "[CONVERSATION_RESUMED: Player returned after a break. Acknowledge the passage of time appropriately.]"
                     chat_session.add_message("user", resume_marker)
-        # else:
-            # print(f"{TF_class.DIM}[DEBUG] No conversation history found for {npc_name}{TF_class.RESET}") # Verbose
+        else:
+            # The prompt says the greeting was "already spoken"; without this the model reads a bare
+            # "ciao" as a return visit and answers "sei tornato".
+            chat_session.set_system_prompt(system_prompt + FIRST_MEETING_NOTE)
 
         return npc_data, chat_session
     except Exception as e:
