@@ -1,609 +1,316 @@
-# **NPC AI Brain per OpenSim - Documentazione Completa**
+# Nexus
 
-Sistema completo per NPCs intelligenti in OpenSim utilizzando il motore AI Nexus/Eldoria.
+An AI-powered text RPG engine. Players talk to LLM-driven NPCs in the world of **Eldoria** ("The Weaving Veil"); the
+engine keeps conversations, inventories and a psychological profile of the player, enforces the quest rules on the
+server, and can drive the same NPCs inside OpenSim / Second Life (LSL scripts, notecards, teleports).
 
-## **Panoramica Sistema**
+The story is not hard-coded. A free-text "book" is digested into one canon file, `lore.txt`, and everything the NPCs
+say and know is derived from it (see [The lore pipeline](#the-lore-pipeline)).
 
-Il **NPC AI Brain** trasforma gli NPCs statici di OpenSim in personaggi intelligenti capaci di:
+- [Quick start](#quick-start)
+- [How it fits together](#how-it-fits-together)
+- [The lore pipeline](#the-lore-pipeline) — free text → `lore.txt` → prompt parts and NPCs
+- [Game mechanics](#game-mechanics)
+- [Running and configuring](#running-and-configuring)
+- [HTTP API and MCP](#http-api-and-mcp)
+- [Repository map](#repository-map)
+- [Testing](#testing)
+- [Known gaps](#known-gaps)
+- [More documentation](#more-documentation)
 
-- 🤖 **Conversazioni naturali** alimentate da LLM
-- 🎭 **Personalità uniche** basate su lore dettagliata
-- 📊 **Profiling psicologico** dei giocatori
-- 🎮 **Generazione comandi SL** per animazioni/emotes
-- 💾 **Memoria persistente** delle conversazioni
-- 🌍 **Integrazione mondo di gioco** completa
+## Quick start
 
-### **Flusso Funzionale**
-```
-Avatar si avvicina → Sensor rileva → API /sense → LLM genera saluto → 
-Chat continua → API /chat → Risposte AI → Avatar si allontana → API /leave
-```
-
-## **Quick Start**
-
-### **1. Setup Server Nexus**
-
-```bash
-# Clone del repository
-git clone <nexus-repo>
-cd nexus
-
-# Installazione dipendenze
-poetry install
-
-# Configurazione ambiente
-cp .env.example .env
-# Modifica .env con la tua OpenRouter API key
-
-# Avvio server
-python app.py
-```
-
-### **2. Configurazione OpenSim**
-
-Aggiungi in `OpenSim.ini`:
-
-```ini
-[Network]
-    OutboundDisallowForUserScriptsExcept = 172.25.249.74:5000|127.0.0.1:5000|localhost:5000
-
-[HttpRequestModule]
-    HttpRequestsEnabled = true
-    HttpTimeout = 45000
-    HttpRequestsAllowLocalhost = true
-    HttpRequestsAllowedDomains = localhost,127.0.0.1,172.25.249.74
-    HttpRequestsMaxResponseSize = 8192
-```
-
-### **3. Deploy Script NPC**
-
-Copia lo script `NPC_AI_Brain_Complete.lsl` in un prim OpenSim e modifica:
-
-```lsl
-string API_BASE = "http://172.25.249.74:5000";  // IP del tuo server
-string NPC_NAME = "Garin";                      // Nome NPC desiderato
-string AREA_NAME = "Village";                   // Area NPC
-```
-
-## **Architettura**
-
-```
-┌─────────────────┐    HTTP     ┌──────────────────┐    OpenRouter    ┌─────────────┐
-│   OpenSim LSL   │ ◄─────────► │   Nexus Server   │ ◄──────────────► │     LLM     │
-│   NPC Script    │             │   (Flask API)    │                  │  (Gemini/   │
-└─────────────────┘             └──────────────────┘                  │  Llama/etc) │
-                                          │                            └─────────────┘
-                                          ▼
-                                ┌──────────────────┐
-                                │    Database      │
-                                │  (File/MySQL)    │
-                                │ - NPCs           │
-                                │ - Conversazioni  │
-                                │ - Profili Player │
-                                └──────────────────┘
-```
-
-## **NPCs Disponibili**
-
-| Nome | Area | Ruolo | Specialità |
-|------|------|-------|------------|
-| **Garin** | Village | Fabbro della Memoria | Forgiatura, strumenti |
-| **Mara** | Village | Erborista della Memoria | Erbe, guarigione |
-| **Jorin** | Tavern | Custode di Sogni Perduti | Storie, leggende |
-| **Lyra** | Sanctum of Whispers | Tessitrice Suprema | Saggezza antica, guida |
-| **Elira** | Forest | Guardiana del Nodo Naturale | Natura, sussurri |
-| **Boros** | Mountain | Primo Monaco dell'Equilibrio | Meditazione, equilibrio |
-| **Theron** | City | Alto Giudice | Giustizia, politica |
-| **Cassian** | City | Burocrate Opportunista | Commercio, influenze |
-| **Irenna** | City | Marionettista della Resistenza | Arte, memoria |
-| **Syra** | Ancient Ruins | Eco Residuo | Antichità, rovine |
-| **Erasmus** | Liminal Void | Sussurro Cosciente | Filosofia, oblio |
-| **Meridia** | Nexus of Paths | Tessitrice del Destino | Destino, scelte |
-
-## **API Endpoints**
-
-| Endpoint | Metodo | Descrizione | Payload |
-|----------|--------|-------------|---------|
-| `/health` | GET | Health check server | - |
-| `/sense` | POST | Notifica arrivo avatar | `{name, npcname, area}` |
-| `/api/chat` | POST | Chat con NPC | `{player_name, message, npc_name, area}` |
-| `/leave` | POST | Notifica partenza avatar | `{name}` |
-| `/api/game/npcs` | GET | Lista NPCs disponibili | - |
-| `/api/game/areas` | GET | Lista aree disponibili | - |
-
-## **Esempio di Utilizzo**
+Requires Python 3.12+ and an OpenRouter API key.
 
 ```bash
-# Test connettività
-curl -X GET http://172.25.249.74:5000/health
-
-# Chat con NPC
-curl -X POST http://172.25.249.74:5000/api/chat \
-  -H "Content-Type: application/json" \
-  -d '{
-    "player_name": "TestPlayer",
-    "message": "Hello Garin!",
-    "npc_name": "Garin",
-    "area": "Village"
-  }'
+uv sync                      # or: poetry install   (dependencies are in pyproject.toml)
+cp .env.example .env         # put OPENROUTER_API_KEY in it; the server also reads ../.env
+python main.py --mockup      # play in the terminal, data in ./database (no MySQL needed)
 ```
 
-## **Script LSL Completo**
-
-### **NPC_AI_Brain_Complete.lsl**
-
-```lsl
-// NPC AI Brain - Complete OpenSim Script
-string API_BASE = "http://172.25.249.74:5000";  // IP del tuo server
-string NPC_NAME = "Garin";        // Nome NPC
-string AREA_NAME = "Village";     // Area NPC
-
-// State management
-key current_player = NULL_KEY;
-string current_player_name = "";
-integer listening = FALSE;
-integer listen_handle = -1;
-
-// HTTP request tracking
-key health_request = NULL_KEY;
-key sense_request = NULL_KEY;
-key chat_request = NULL_KEY;
-key leave_request = NULL_KEY;
-
-// Sensor configuration
-integer SENSOR_RANGE = 10;        // Raggio rilevamento in metri
-float SENSOR_INTERVAL = 3.0;      // Scansione ogni 3 secondi
-integer CHAT_CHANNEL = 0;         // Canale chat pubblico
-
-// Status flags
-integer system_ready = FALSE;
-integer connection_tested = FALSE;
-
-default {
-    state_entry() { 
-        llSetText("🤖 AI NPC: " + NPC_NAME + "\nArea: " + AREA_NAME + "\n🔄 Initializing...", 
-                  <1.0, 1.0, 0.0>, 1.0);
-        
-        llOwnerSay("=== NPC AI BRAIN INITIALIZING ===");
-        llOwnerSay("NPC: " + NPC_NAME + " in " + AREA_NAME);
-        llOwnerSay("API: " + API_BASE);
-        llOwnerSay("Testing connection to Nexus AI...");
-        
-        // Test connettività
-        health_request = llHTTPRequest(
-            API_BASE + "/health",
-            [HTTP_METHOD, "GET"],
-            ""
-        );
-        llSetTimerEvent(15.0);  // Timeout 15 secondi per health check
-    }
-    
-    // Avatar rilevato nelle vicinanze
-    sensor(integer detected) {
-        if (!system_ready) return;
-        
-        key avatar = llDetectedKey(0);
-        string avatar_name = llDetectedName(0);
-        float distance = llVecMag(llDetectedPos(0) - llGetPos());
-        
-        // Ingaggia solo se nessuna conversazione attiva
-        if (current_player == avatar) return;
-        if (current_player != NULL_KEY) return;
-        
-        llOwnerSay("👤 Detected: " + avatar_name + " at " + (string)((integer)distance) + "m");
-        
-        // Inizia conversazione
-        current_player = avatar;
-        current_player_name = avatar_name;
-        
-        // Inizia ascolto di questo avatar
-        if (listen_handle != -1) llListenRemove(listen_handle);
-        listen_handle = llListen(CHAT_CHANNEL, "", avatar, "");
-        listening = TRUE;
-        
-        // Notifica arrivo al server Nexus
-        string json_data = llList2Json(JSON_OBJECT, [
-            "name", avatar_name,
-            "npcname", NPC_NAME,
-            "area", AREA_NAME
-        ]);
-        
-        sense_request = llHTTPRequest(
-            API_BASE + "/sense",
-            [HTTP_METHOD, "POST", 
-             HTTP_MIMETYPE, "application/json"],
-            json_data
-        );
-        
-        llOwnerSay("🎯 Started conversation with: " + avatar_name);
-    }
-    
-    // Nessun avatar rilevato - termina conversazione
-    no_sensor() {
-        if (current_player != NULL_KEY) {
-            llOwnerSay("📡 No avatars in range - ending conversation");
-            
-            string departing_player = current_player_name;
-            
-            // Notifica partenza al server
-            string json_data = llList2Json(JSON_OBJECT, [
-                "name", current_player_name
-            ]);
-            
-            leave_request = llHTTPRequest(
-                API_BASE + "/leave", 
-                [HTTP_METHOD, "POST",
-                 HTTP_MIMETYPE, "application/json"],
-                json_data
-            );
-            
-            // Cleanup locale
-            if (listen_handle != -1) {
-                llListenRemove(listen_handle);
-                listen_handle = -1;
-            }
-            
-            listening = FALSE;
-            current_player = NULL_KEY;
-            current_player_name = "";
-            
-            llOwnerSay("👋 Ended conversation with: " + departing_player);
-        }
-    }
-    
-    // Touch per interazione manuale
-    touch_start(integer total_number) {
-        key avatar = llDetectedKey(0);
-        string avatar_name = llDetectedName(0);
-        
-        if (!system_ready) {
-            llSay(0, "AI Brain still initializing, please wait...");
-            return;
-        }
-        
-        if (current_player == NULL_KEY) {
-            llOwnerSay("👆 Manual interaction: " + avatar_name);
-            
-            current_player = avatar;
-            current_player_name = avatar_name;
-            
-            if (listen_handle != -1) llListenRemove(listen_handle);
-            listen_handle = llListen(CHAT_CHANNEL, "", avatar, "");
-            listening = TRUE;
-            
-            string json_data = llList2Json(JSON_OBJECT, [
-                "name", avatar_name,
-                "npcname", NPC_NAME,
-                "area", AREA_NAME
-            ]);
-            
-            sense_request = llHTTPRequest(
-                API_BASE + "/sense",
-                [HTTP_METHOD, "POST", 
-                 HTTP_MIMETYPE, "application/json"],
-                json_data
-            );
-            
-        } else if (current_player == avatar) {
-            llSay(0, "We're already talking, " + avatar_name + "!");
-        } else {
-            llSay(0, "I'm currently talking with " + current_player_name + ", please wait.");
-        }
-    }
-    
-    // Ascolto chat avatar
-    listen(integer channel, string name, key id, string message) {
-        if (!system_ready) return;
-        if (id != current_player) return;
-        if (llGetSubString(message, 0, 0) == "/") return; // Ignora comandi
-        
-        llOwnerSay("💬 " + name + ": " + message);
-        
-        // Invia al cervello AI
-        string json_data = llList2Json(JSON_OBJECT, [
-            "player_name", name,
-            "message", message,
-            "npc_name", NPC_NAME,
-            "area", AREA_NAME
-        ]);
-        
-        chat_request = llHTTPRequest(
-            API_BASE + "/api/chat",
-            [HTTP_METHOD, "POST",
-             HTTP_MIMETYPE, "application/json"],
-            json_data
-        );
-        
-        llOwnerSay("🧠 Processing: " + message);
-    }
-    
-    // Timer per timeout connessione
-    timer() {
-        llSetTimerEvent(0.0);
-        if (!connection_tested) {
-            llOwnerSay("⚠️ Connection timeout - starting anyway");
-            llSetText("🤖 AI NPC: " + NPC_NAME + "\n⚠️ Limited Mode\nTouch to interact", 
-                      <1.0, 0.5, 0.0>, 1.0);
-            system_ready = TRUE;
-            llSensorRepeat("", NULL_KEY, AGENT, SENSOR_RANGE, PI, SENSOR_INTERVAL);
-        }
-    }
-    
-    // Gestore risposte HTTP
-    http_response(key request_id, integer status, list metadata, string body) {
-        if (request_id == health_request) {
-            // Gestione risposta health check
-            llSetTimerEvent(0.0);
-            connection_tested = TRUE;
-            
-            if (status == 200) {
-                string service = llJsonGetValue(body, ["service"]);
-                if (service == "nexus-api") {
-                    llOwnerSay("✅ Connected to Nexus AI Engine!");
-                } else {
-                    llOwnerSay("⚠️ Unexpected service response");
-                }
-            } else {
-                llOwnerSay("❌ Connection failed (Status: " + (string)status + ")");
-                llOwnerSay("Starting in offline mode...");
-            }
-            
-            // Inizializza sistemi NPC
-            system_ready = TRUE;
-            
-            llSetText("🤖 AI NPC: " + NPC_NAME + "\n📍 " + AREA_NAME + "\n✅ Ready - Approach to Chat!", 
-                      <0.2, 0.8, 0.2>, 1.0);
-            
-            // Avvia rilevamento avatar
-            llSensorRepeat("", NULL_KEY, AGENT, SENSOR_RANGE, PI, SENSOR_INTERVAL);
-            llOwnerSay("✅ " + NPC_NAME + " AI Brain is ACTIVE and ready!");
-            llOwnerSay("Detection range: " + (string)SENSOR_RANGE + "m");
-        }
-        else if (request_id == sense_request) {
-            // Gestione risposta arrivo avatar
-            if (status == 200) {
-                string npc_message = llJsonGetValue(body, ["message"]);
-                if (npc_message != JSON_INVALID && npc_message != "") {
-                    llSay(0, npc_message);
-                    llOwnerSay("👋 Greeted: " + current_player_name);
-                }
-                
-                string sl_commands = llJsonGetValue(body, ["sl_commands"]);
-                if (sl_commands != JSON_INVALID && sl_commands != "") {
-                    llOwnerSay("🎮 SL Commands: " + sl_commands);
-                }
-            } else {
-                llOwnerSay("❌ Sense error " + (string)status + ": " + body);
-                llSay(0, "Hello, " + current_player_name + "! How can I help you?");
-            }
-        }
-        else if (request_id == chat_request) {
-            // Gestione risposta chat
-            if (status == 200) {
-                string npc_response = llJsonGetValue(body, ["npc_response"]);
-                if (npc_response != JSON_INVALID && npc_response != "") {
-                    llSay(0, npc_response);
-                    llOwnerSay("💭 Response sent to " + current_player_name);
-                }
-                
-                // Messaggi di sistema
-                list system_messages = llJson2List(llJsonGetValue(body, ["system_messages"]));
-                integer i;
-                for (i = 0; i < llGetListLength(system_messages); i++) {
-                    string sys_msg = llList2String(system_messages, i);
-                    if (sys_msg != "" && sys_msg != JSON_INVALID) {
-                        llSay(0, "[System] " + sys_msg);
-                    }
-                }
-                
-                string sl_commands = llJsonGetValue(body, ["sl_commands"]);
-                if (sl_commands != JSON_INVALID && sl_commands != "") {
-                    llOwnerSay("🎮 SL Commands: " + sl_commands);
-                }
-                
-            } else {
-                llOwnerSay("❌ Chat error " + (string)status + ": " + body);
-                llSay(0, "I'm having trouble thinking right now, can you repeat that?");
-            }
-        }
-        else if (request_id == leave_request) {
-            // Gestione risposta partenza
-            if (status == 200) {
-                string departure_msg = llJsonGetValue(body, ["message"]);
-                if (departure_msg != JSON_INVALID && departure_msg != "") {
-                    llSay(0, departure_msg);
-                }
-                llOwnerSay("✅ Departure processed");
-            } else {
-                llOwnerSay("❌ Leave error " + (string)status);
-            }
-        }
-    }
-}
-```
-
-## **Configurazione Ambiente**
-
-### **File .env necessario:**
+Start the HTTP server (REST + MCP on port 5000), with the SQLite document store, in a tmux session called `nexus`:
 
 ```bash
-# OpenRouter API Configuration
-OPENROUTER_API_KEY=sk-or-v1-your-key-here
-OPENROUTER_DEFAULT_MODEL=google/gemma-2-9b-it:free
-PROFILE_ANALYSIS_MODEL=mistralai/mistral-7b-instruct:free
-
-# Nexus Server Configuration
-NEXUS_USE_MOCKUP=true
-NEXUS_MOCKUP_DIR=database
-NEXUS_DEBUG_MODE=false
-NEXUS_PORT=5000
+./start_nexus.sh             # waits until http://localhost:5000/ answers
 ```
 
-## **Troubleshooting**
+Chat with an NPC through the API (every route except `/`, `/web`, `/game`, `/version` needs the bearer token):
 
-### **Problemi Comuni**
-
-#### **"Request disallowed by filter"**
-```ini
-# Aggiungi in OpenSim.ini:
-OutboundDisallowForUserScriptsExcept = 172.25.249.74:5000|localhost:5000
-```
-
-#### **"Could not find NPC X in area Y"**
 ```bash
-# Verifica NPCs disponibili:
-curl http://172.25.249.74:5000/api/game/npcs
-
-# Usa nomi esatti (case-sensitive)
-string NPC_NAME = "Garin";    // ✅ Corretto
-string AREA_NAME = "Village"; // ✅ Corretto
+curl -s -X POST localhost:5000/api/chat \
+  -H "Authorization: Bearer $NEXUS_AUTH_TOKEN" -H "Content-Type: application/json" \
+  -d '{"player_id":"aldo","display_name":"Aldo","message":"Buongiorno","npc_name":"Mara","area":"village"}'
 ```
 
-#### **"NPC seems to ponder..." (risposta fallback)**
+In-game commands: `/areas /describe <area> /go <area> /talk <npc> /who /whereami /npcs /hint /inventory /give <item> [to <npc>]
+/receive <item> /stats /profile /history /choose <fate> /help /exit`.
+
+## How it fits together
+
+```
+ OpenSim / SL (LSL scripts)  ─┐
+ terminal (main.py)           ├─►  Flask API (app.py) + MCP (mcp_server.py), port 5000
+ web page (/web)            ─┘            │
+                                           ▼
+                      game_system_api.py ── per-player GameSystem / GameState
+                      │      │      │
+   command_processor ◄┘      │      └► session_utils.py: builds each NPC's system prompt
+   (/commands, natural       │            ▲   reads ANTEFATTO.txt, NPC_PREFIX.*.txt, NPC fields,
+    language → command)      │            │   SYSPROMPT.toml, NARRATIVE_FRAMEWORK.txt
+                             ▼
+   chat_manager.py / llm_wrapper.py ──► OpenRouter ──► model chosen in config.ini
+   quest_trades.py, veil_finale.py: server-side rules (what an NPC may really hand over, the final choice)
+                             │
+                             ▼
+   db_manager.py ─► doc_store.py: JSON files  |  SQLite  (MySQL is optional, see below)
+```
+
+- **Dialogue** is generated by the model in `config.ini` (`[models] default`). The same model is used for profile
+  analysis, guide selection and floating text unless overridden there.
+- **The model proposes, the server decides.** NPCs signal with tags (`[GIVEN_ITEMS: …]`, `[OFFER_TELEPORT]`,
+  `[GIVE_NOTECARD]`…); the server validates and applies them. An NPC cannot hand out an item outside the quest rules
+  just by saying so.
+- **Intent routing**: free text like "dammi l'infuso" is mapped to a command by `command_processor.py` using the
+  decision providers in `typesafe_router.py` (Perplexity decider, Jev, Mercury, tried in order).
+
+## The lore pipeline
+
+```
+ free-text.txt ──(just compile)──► lore.txt ──(just lore)──► ANTEFATTO.txt        shown to every NPC
+ (the "book")      an LLM digests    the canon      │                               NPC_PREFIX.<area>.<name>.txt   one per story NPC
+                                     (one file)     └──(just lore --npcs)────────► NPC records in the store
+```
+
+Two stages with different jobs:
+
+| Stage | Command | Script | Needs an LLM | Writes |
+|---|---|---|---|---|
+| 1. digest | `just compile free-text.txt` | `digest_lore.py` | yes (OpenRouter) | `lore.txt` (old one kept as `lore.txt.bak-<time>`) |
+| 2. derive | `just lore` | `compile_lore.py` (also `./compile-lore`) | no | `ANTEFATTO.txt`, `NPC_PREFIX.*.txt`; reports NPC drift |
+| 2b. NPC records | `just lore --npcs` | same | no | NPC fields in the document store (current records saved first) |
+| freshness test | `just lore --check` | same | no | writes nothing; exit 1 if any file or NPC field is stale |
+
+`just` is only a convenience (`justfile`); the scripts run on their own: `python digest_lore.py SOURCE…`,
+`python compile_lore.py [lore.txt]`.
+
+### Stage 1: `just compile <file…>`
+
+An LLM turns free text into the story-specific sections of `lore.txt`. It works one group of sections per call
+(about six calls, roughly two minutes), each call seeing the source plus the sections already written:
+
+`[01 MONDO]`+`[02 TERMINI]` → `[05 FAZIONI E FINALE]` → `[06 LUOGHI]` → `[07 PNG]` → `[08 SCAMBI]` →
+`[09 CONOSCENZA]`+`[11 PUNTI APERTI]`.
+
+- It uses only facts present in the source; gaps and contradictions are listed in `[11 PUNTI APERTI]`, not invented.
+- The text is checked with the same parsers stage 2 uses (every NPC's place must exist, factions must match their cost
+  entries, trade lines must name real NPCs, the antefatto must fit 780 characters…) after a name-reconcile step (see
+  below). Errors go back to the model for a correction, up to `--retries` (default 2) times.
+- **`lore.txt` is only replaced if the result validates.** Otherwise the draft is left in `lore.txt.failed` and the
+  old `lore.txt` stays untouched.
+- Options: `--out FILE`, `--title T`, `--model M` (else `$LORE_MODEL`, else the game's default model), `--retries N`.
+  Several source files can be given. The run prints token usage and cost.
+- The story-independent sections `[03]` narrative rules, `[04]` voice and tags, `[10]` derived files are pasted from
+  `lore_house.txt`; edit them there, not in `lore.txt`.
+
+### The shape of `lore.txt`
+
+Plain ASCII (no accents), sections with stable IDs `[NN TITLE]`. The parts a script reads:
+
+```
+[01 MONDO]        …prose…
+                  Antefatto (per i prompt, max 780 caratteri): <one line, becomes ANTEFATTO.txt>
+[05 FAZIONI E FINALE]
+ - CUSTODI, …        one entry per faction (TAG = first word, upper case)
+Costi irreversibili delle vie:
+ - PRESERVARE: …     one entry per fate (one upper-case word)
+Incompatibilita (non vanno mai ricomposte): …
+[06 LUOGHI]
+village | Villaggio | Public | Garin, Mara
+  description, link to the world, properties, role in the story, connections
+[07 PNG]
+NPC.village.mara | Mara | Villaggio
+  Ruolo: …   Movente: …   Obiettivo: …   Tesoro: Name (what it does).   Trattarla: …
+  Fazione: TAG / DESTINO   (faction leaders only; DESTINO is one word from the cost list)
+  Finale: si               (keeper of the final choice: its prefix lists every fate's cost)
+  Servizio: si             (service NPC: no prefix file, may live outside the story's places)
+  Posizione: …  tp 265,294,22      (always last; "tp x,y,z" gives the teleport coordinates)
+[08 SCAMBI]
+  Mara   ->  Pozione di Guarigione      per 50 crediti
+  Elira  ->  Seme della Foresta         in cambio di Pozione di Guarigione
+  Nota: Il Cristallo di Memoria Antica serve a Lyra.     optional closing note, shown to the last NPC of the chain
+[09 CONOSCENZA]   what an NPC can and cannot know (first five lines are copied into every prefix)
+```
+
+Everything else in `lore.txt` (`[02]`, `[03]`, `[04]`, `[10]`, `[11]`, prose in `[01]`/`[05]`) is read by people and by the
+prompt builders as context, not parsed.
+
+Names are handled by the model, not by code. `compile_lore.py` contains no article, plural or spelling handling: it
+compares strings exactly. So before validating, the digester runs a **reconcile** step: any reference that does not match
+exactly (an item named in a trade line, an NPC name in a trade line, an NPC's place, a faction tag or fate word) is sent
+to the LLM with the list of valid values, and the model says which one it means ("un Seme della Foresta" → "Seme della
+Foresta", "il villaggio" → "Villaggio", "preservare il Velo" → "PRESERVARE"). The text is rewritten with the canonical
+value. This is one cheap call, skipped when everything already matches. A reference the model cannot place falls through
+to validation and the retry loop. A hand-edited `lore.txt` with a loose name makes `just lore` fail with a message naming
+the line; `just compile` fixes such text.
+
+### Stage 2: `just lore`
+
+Pure derivation: no model, nothing invented, nothing tied to one story. It fails loudly if `lore.txt` loses a section
+it needs.
+
+- `ANTEFATTO.txt` is the `Antefatto:` line of `[01]` (the game cuts it at 800 characters).
+- `NPC_PREFIX.<area>.<name>.txt` (one per NPC without `Servizio`; the area is the second part of the NPC code, the
+  name the lower-cased name without spaces) holds: the NPC's role, motive and goal; what it guards; how it treats the
+  Cercatore; its place; its position in the mission chain (who comes before and after, from `[08]`); its faction and
+  the price of its path; what cannot be reconciled; what it can and cannot know. The off-chain seller (a trade not
+  linked to any other) is detected from the trade graph.
+- The prefix file is loaded by `session_utils.py` into the NPC's prompt under "CONTESTO NARRATIVO PERSONALIZZATO".
+- `--npcs` also writes `name, role, motivation, goal, treasure, playerhint, teleport` of each NPC into the document store
+  (file or SQLite, same `NEXUS_STORAGE` as the server; `--root` picks the folder). The current NPC records are saved to
+  `<root>/backups/NPCs-before-compile-lore-*.json` first. Greetings, emotes, animations, notecards and business
+  cards are never touched, and an NPC missing from the store is created.
+  **Without `--npcs` the run only reports the fields that would change.** `lore.txt` is a condensed digest, so on an
+  existing store `--npcs` shortens the longer original texts; run the report first.
+
+### Not yet derived from the lore
+
+- `NPC_BUSINESS_CARDS.json` and the notecards/teleports in `NPC_EXTRAS.json` are hand-written content, loaded into the
+  store with `python seed_npc_extras.py`. Notecards and cards must be ASCII and at most ~1400 characters.
+- `SYSPROMPT.toml` and `NARRATIVE_FRAMEWORK.txt` still describe an older "Cyberspazio" world and are **not** generated
+  from `lore.txt` yet (see [Known gaps](#known-gaps)).
+
+### Adding or changing a story
+
+1. Write or update the free text (`free-text.txt` holds the current one: world, places, characters, trades, finale).
+2. `just compile free-text.txt` — read `[11 PUNTI APERTI]` in the new `lore.txt` and fix the source for anything flagged.
+3. `just lore --check`, then `just lore` to write `ANTEFATTO.txt` and the prefix files; `just lore --npcs` if the NPC
+   records should follow the lore.
+4. Restart the server (prompt parts are read when an NPC conversation starts; NPC records when the store is read).
+
+## Game mechanics
+
+- **Mission chain** (`quest_trades.py`, mirrored in `lore.txt [08]`): each NPC sells one item for credits or in
+  exchange for another NPC's item. The server rejects a `[GIVEN_ITEMS]` that breaks the chain, and a reward is
+  delivered once per player. NPCs outside the table may give lore gifts when the player clearly accepts.
+- **Finale** (`veil_finale.py`): the final NPC does not appear until the player has really talked to the three faction
+  leaders (`FACTION_GATE_TURNS`, default 3 dialogue turns each). The player then chooses with `/choose <fate>`; the
+  choice is irreversible and stored in the player's plot flags.
+- **Gift-giver**: an NPC with a treasure and no quest-chain role gives it when the player says a clear acceptance
+  word ("accetto", "ok"…); emotes in `*asterisks*` never count.
+- **Notecards, business cards and teleports**: the model only signals; the server attaches the text.
+  `[GIVE_NOTECARD]` delivers the NPC's `notecard_feature`, `[GIVE_CARD]` its `business_card` (one notecard per reply),
+  `[OFFER_TELEPORT]` / `[TELEPORT_TO:Name]` add `teleport=x,y,z`. The SL command string can carry a teleport and a
+  notecard in the same reply: `[llSetText=…;teleport=259,182,22;notecard=Elira_Note|…]`.
+- **First meeting**: a conversation with no stored history gets a note telling the NPC the player has never spoken to it.
+- **Player profiling**: after each exchange the profile (traits, motivations, decision patterns) is updated
+  asynchronously and fed back into NPC responses and hints.
+
+## Running and configuring
+
+### Processes
+
+| What | How |
+|---|---|
+| Terminal game | `python main.py [--mockup]` (`--help` lists options) |
+| API + MCP server (tmux, SQLite) | `./start_nexus.sh` |
+| API only, foreground | `python app.py` (port from `NEXUS_PORT`, default 5000) |
+| Browser page | `GET /web` on the running server |
+| Load game data | `python load.py --storyboard <file.txt> --mockup` (or `--db` for MySQL) |
+
+### Environment
+
+Read from `.env` in the repo, then `../.env`.
+
+| Variable | Meaning |
+|---|---|
+| `OPENROUTER_API_KEY` | required |
+| `NEXUS_AUTH_TOKEN` | bearer token for the API and MCP (**default `pakkio 62`; change it**) |
+| `NEXUS_ADMIN_KEY` | key for destructive admin routes (**default `1234`; change it**) |
+| `NEXUS_USE_MOCKUP`, `NEXUS_MOCKUP_DIR` | use the document store instead of MySQL; its folder (default `database`) |
+| `NEXUS_STORAGE`, `NEXUS_SQLITE_PATH` | `file` (default) or `sqlite`; path of the SQLite file |
+| `DB_HOST`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`, `DB_PORT` | optional MySQL |
+| `NEXUS_MODEL_NAME`, `OPENROUTER_DEFAULT_MODEL` | override the dialogue model from `config.ini` |
+| `LORE_MODEL` | model for `just compile` |
+| `FACTION_GATE_TURNS` | dialogue turns per faction leader before the final NPC appears (default 3) |
+| `TYPESAFE_*`, `PPLX_MODEL`, `MERCURY_MODEL` | intent-routing providers, see `.env.example` |
+| `DEBUG_SYSTEM_PROMPT`, `DEBUG_PREFIX_SEARCH`, `NEXUS_DEBUG_MODE` | diagnostics |
+
+### Models (`config.ini`)
+
+One line, `[models] default`, switches dialogue, profile analysis, guide selection and floating text together.
+Currently `deepseek/deepseek-v4.1-flash-1017` through OpenRouter. A model id with a slash goes through OpenRouter; a
+bare `deepseek-…` name goes to the DeepSeek API directly (needs `DEEPSEEK_API_KEY`). `config.ini` keeps the models
+that were tried and why they were dropped.
+
+### Storage
+
+Players, inventories, profiles, conversations and the story content are documents behind `doc_store.py`:
+JSON files under `database/` (default) or one SQLite file. `python migrate_to_sqlite.py` copies a file store into a new
+SQLite file and verifies the copy; `POST /api/admin/backup` writes a snapshot into `database/backups/`. `database/` is
+not in git. `start_nexus.sh` uses `database/nexus.db`.
+
+## HTTP API and MCP
+
+Auth: `Authorization: Bearer <NEXUS_AUTH_TOKEN>` on everything except `/`, `/web`, `/game`, `/version`.
+
+| Route | Purpose |
+|---|---|
+| `POST /api/chat` | talk to an NPC: `{player_id, display_name, message, npc_name?, area?}` → `npc_response`, `sl_commands`, `system_messages`, `llm_stats` |
+| `POST /sense`, `/leave`, `/api/leave_npc` | LSL hooks: avatar arrives (NPC greeting) / leaves |
+| `POST /api/game/command`, `GET /api/commands` | run or list `/commands` |
+| `POST/DELETE /api/player/<id>/session`, `POST …/input`, `GET …/state` | session lifecycle and raw input |
+| `GET /api/player/<id>/profile \| inventory \| conversation \| finale` | player data and finale progress |
+| `GET /api/game/areas \| npcs \| storyboard \| quests` | world data |
+| `GET /health`, `/version`, `/api` | status and route index |
+| `DELETE /api/player/<id>`, `POST /api/admin/backup`, `POST /reset` | admin (key in the JSON body) |
+
+Player ids may be Hypergrid names (`First.Last @grid.example.org:8002`); path separators and `..` are rejected.
+`mcp_server.py` serves the same endpoints as MCP tools on `/mcp` of the same port, gated by the same token.
+
+## Repository map
+
+| Path | What |
+|---|---|
+| `app.py` | Flask API, auth, SL command assembly |
+| `mcp_server.py` | MCP tools wrapping the REST routes |
+| `main.py`, `main_core.py`, `main_utils.py` | terminal front end and game loop |
+| `game_system_api.py`, `game_state.py` | per-player game logic and state; applies NPC tags |
+| `command_processor.py`, `command_interpreter.py`, `command_handlers/` | `/commands` and natural-language interpretation |
+| `session_utils.py`, `chat_manager.py`, `llm_wrapper.py` | prompt building, chat sessions, LLM calls |
+| `quest_trades.py`, `veil_finale.py` | server-side quest and finale rules |
+| `db_manager.py`, `doc_store.py`, `migrate_to_sqlite.py`, `database_schema.sql` | storage |
+| `player_profile_manager.py`, `hint_manager.py`, `wise_guide_selector.py`, `consequence_system.py` | profiling, hints, consequences |
+| `npc_parser.py`, `load.py` | read NPC/Location/Storyboard text cards and load them into the store |
+| `bvh_to_sl_converter.py` | animation conversion for SL |
+| `lore.txt`, `lore_house.txt`, `free-text.txt` | the canon, its fixed sections, the source text |
+| `digest_lore.py`, `compile_lore.py`, `compile-lore`, `justfile` | the lore pipeline |
+| `ANTEFATTO.txt`, `NPC_PREFIX.*.txt` | generated prompt parts (do not edit by hand) |
+| `NPC_BUSINESS_CARDS.json`, `NPC_EXTRAS.json`, `seed_npc_extras.py` | cards, notecards, teleports |
+| `database/` | content and player data (git-ignored); `database_gradio_context_sim/` is an older, tracked sample set |
+| `*.lsl`, `*.lua`, `mcp-bridge.js` | in-world scripts and bridge |
+
+## Testing
+
 ```bash
-# Cambia modello LLM nel .env:
-OPENROUTER_DEFAULT_MODEL=meta-llama/llama-3.2-3b-instruct:free
+pytest *_test.py     # the real suite (111 passed, 5 skipped at the last run)
 ```
 
-## **Caratteristiche Avanzate**
+A bare `pytest` fails during collection: the `test_*.py` files at the top level (`test_cache_speed.py`,
+`test_jorin_direct.py`, …) are manual scripts that run code on import. Run them directly when needed.
 
-### **Profiling Psicologico**
-- Analisi automatica tratti comportamentali
-- Adattamento risposte NPC al profilo player
-- Memoria delle preferenze e stili di gioco
+## Known gaps
 
-### **Sistema Quest Dinamico**
-- Quest generate automaticamente basate su lore
-- Tracking progresso obiettivi
-- Catene quest interconnesse tra NPCs
+- `SYSPROMPT.toml` and `NARRATIVE_FRAMEWORK.txt` still carry the old "Cyberspazio" wording ("nel server … nel
+  cyberspazio", algorithms, metrics), which can leak into NPC speech. They should be generated from `lore.txt`.
+- The default `NEXUS_AUTH_TOKEN` and `NEXUS_ADMIN_KEY` are weak and public; set both outside development.
+- `lore.txt` is a digest: `just lore --npcs` on a store with fuller NPC text shortens it (it backs up first).
+- The seven original NPC notecards come from an older version of the story and should be regenerated from the lore.
+- Sussurri vs Oblivianti, and several item ambiguities, are left open on purpose or listed in `lore.txt [11]`.
 
-### **Comandi Second Life**
-```
-[lookup=oggetto] - Riferimento oggetti in-world
-[llSetText=testo] - Aggiornamento testo floating  
-[emote=gesto] - Trigger gesture/animazioni
-[anim=animazione] - Controllo animazioni avatar
-```
+## More documentation
 
-### **Multi-Model Support**
-- Gratuiti: Google Gemma, Llama 3.2, Phi-3
-- Premium: GPT-4, Claude, Gemini Pro
-- Specializzati: Modelli per creatività, analisi, coding
-
-## **Performance**
-
-### **Response Times Tipici**
-- Health check: 50-100ms
-- Sense (greeting): 800-1500ms
-- Chat response: 1000-3000ms  
-- Leave: 200-400ms
-
-### **Scalabilità**
-- Concurrent NPCs: 50+ per server
-- Concurrent conversations: 20+ simultaneous
-- Request rate: 100+ req/min per NPC
-
-## **Esempi Scenari**
-
-### **RPG Fantasy**
-```
-Player: "I need a sword"
-Garin: "Ah, un guerriero! Per una spada degna, mi serve Minerale di Ferro Antico. 
-       Boros sulla Montagna ne ha, ma non lo cede facilmente..."
-[Quest generata automaticamente]
-```
-
-### **Educational Sim** 
-```
-Student: "Explain quantum physics"
-Lyra: "Immagina che la realtà sia come un tessuto... ogni filo rappresenta 
-       una possibilità quantistica..."
-[Spiegazione personalizzata basata su learning style]
-```
-
-### **Business Training**
-```
-Employee: "How do I handle difficult customers?"
-Theron: "Listen first, acknowledge their concerns, then guide them toward 
-        a solution. Show me how you'd respond to this scenario..."
-[Simulazione interattiva]
-```
-
-## **Sicurezza**
-
-### **Protezioni Implementate**
-- Input validation e sanitizzazione
-- Rate limiting per prevenire spam
-- IP whitelisting configurabile  
-- Nessun dato personale sensibile stored
-
-### **Privacy**
-- Conversation history opzionale
-- Player profiles anonimizzati
-- Nessuna PII (personally identifiable information)
-
-## **Contributing**
-
-### **Come Contribuire**
-1. Fork del repository
-2. Crea feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit delle modifiche (`git commit -m 'Add amazing feature'`)
-4. Push al branch (`git push origin feature/amazing-feature`)
-5. Apri Pull Request
-
-### **Bug Reports**
-- Usa GitHub Issues per segnalazioni
-- Includi log completi e steps per riprodurre
-- Specifica versione OpenSim e configurazione
-
-## **Roadmap**
-
-### **Short Term (1-3 mesi)**
-- [ ] Implementazione completa SL commands parsing
-- [ ] Web dashboard per monitoring NPCs
-- [ ] Sistema metriche performance avanzate
-- [ ] Multi-language support
-
-### **Medium Term (3-6 mesi)**
-- [ ] Visual scripting NPCs behavior
-- [ ] Advanced quest system builder
-- [ ] Integration con HUD viewer-side
-- [ ] Mobile companion app
-
-### **Long Term (6-12 mesi)**
-- [ ] Voice synthesis per NPCs
-- [ ] Machine learning behavior adaptation
-- [ ] Blockchain integration per assets
-- [ ] Cross-grid NPC migration
-
-## **Supporto**
-
-### **Risorse**
-- **Issues:** [GitHub Issues](https://github.com/your-repo/nexus/issues)
-- **Discussions:** [GitHub Discussions](https://github.com/your-repo/nexus/discussions)
-- **Wiki:** [Project Wiki](https://github.com/your-repo/nexus/wiki)
-
-### **Community**
-- Discord server per real-time support
-- Monthly community calls
-- Showcase channel per creazioni utenti
-
-## **Licenza**
-
-MIT License - Vedi [LICENSE](LICENSE) file per dettagli.
-
----
-
-## **🎉 Risultato**
-
-Hai ora un sistema NPC AI completo che trasforma OpenSim in un mondo populated con personaggi veramente intelligenti! 
-
-Gli NPCs possono:
-- ✅ Rilevare automaticamente avatar in avvicinamento
-- ✅ Condurre conversazioni naturali e contestuali
-- ✅ Ricordare interazioni precedenti
-- ✅ Adattarsi al profilo psicologico del player
-- ✅ Generare quest dinamiche
-- ✅ Controllare animazioni e comportamenti in-world
-
-**Il futuro degli NPCs intelligenti in mondi virtuali è qui! 🤖✨**
+- [`CLAUDE.md`](CLAUDE.md) — working notes for Claude Code, including the narrative generation constraints
+- [`README-NPC-AI-BRAIN.md`](README-NPC-AI-BRAIN.md) — OpenSim NPC "brain" guide with the full LSL script
+- [`README-SL-INTEGRATION.md`](README-SL-INTEGRATION.md) — Second Life / LSL integration
+- [`TESTING-SERVER.md`](TESTING-SERVER.md) — testing the running server
+- SL/OpenSim practical guides: [`NPC_SPAWN_DEBUG_GUIDE.md`](NPC_SPAWN_DEBUG_GUIDE.md), [`NPC_FACIAL_EXPRESSIONS_GUIDE.md`](NPC_FACIAL_EXPRESSIONS_GUIDE.md), [`OSSL_NPC_FUNCTIONS_REFERENCE.md`](OSSL_NPC_FUNCTIONS_REFERENCE.md), [`BVH_IMPORT_TROUBLESHOOTING_GUIDE.md`](BVH_IMPORT_TROUBLESHOOTING_GUIDE.md)

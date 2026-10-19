@@ -4,10 +4,12 @@
     "notecard_feature": "CRONACHE ANTICHE DELLE ROVINE. Qui i Tessitori alzarono il primo arco del Velo, pietra su pietra, sacrificio su sacrificio. Le rovine non sono crollate: sono state INTERROTTE, a meta di un gesto. Chi cammina tra queste pietre calpesta un respiro trattenuto da secoli. I Custodi dicono: solo chi comprende il vero costo del sacrificio potra completare cio che fu lasciato a meta. Il resto e silenzio. E il silenzio, qui, pesa."
   },
   "NPC.city.cassian": {
-    "teleport": "363,162,24"
+    "teleport": "363,162,24",
+    "notecard_feature": "LETTURA DI CASSIAN - TRE PAURE. Non vendo verita: vendo quello che ciascuno paga per sapere. Questa e la mia lettura, non un fatto, e puo essere sbagliata. Lyra teme che il Velo dimentichi perche esiste. Theron teme che il passato lo tenga prigioniero. Boros teme di non essere ascoltato da nessuno dei due. Tre paure incompatibili: chi vince ne cancella almeno due. Io restero al mio posto chiunque vinca. Non ti dico per chi scegliere, ma se scegli, scegli sapendo che qualcuno restera senza."
   },
   "NPC.city.irenna": {
-    "teleport": "385,191,23"
+    "teleport": "385,191,23",
+    "notecard_feature": "COPIONE DI IRENNA - PROLOGO, VERSIONE NON FINITA. Scena: un tavolo, tre marionette, un filo tagliato. IL GIUDICE: Libero tutti dal peso dei ricordi. IL BAMBINO: Quale ricordo, Giudice? Non ricordo piu il nome di mia madre. IL GIUDICE, dopo una pausa: Sei libero. Questo e quanto ho scritto. Non e una prova e non voglio che lo sia: e la mia versione di cio che Theron chiama liberta. Lui direbbe che esagero, e puo darsi. Ma quando un ricordo e cancellato, chi lo sapra mai? Se hai una storia vera, portamela: il finale lo scrivo con quella."
   },
   "NPC.city.theron": {
     "teleport": "390,165,24",
@@ -26,7 +28,8 @@
     "notecard_feature": "SAGGEZZA CICLICA DELLA MONTAGNA. La montagna non impone nomi ai suoi venti, eppure essi danzano. L'acqua non ha un solo percorso, eppure raggiunge il mare. Il seme deve spezzarsi per germogliare; il fiume che non scorre marcisce, quello senza sponde distrugge. Non sono venuto a conciliare preservazione e oblio: sono venuto a seminare dubbi. Portane uno con te. Annaffialo. Guarda cosa cresce. - B."
   },
   "NPC.nexusofpaths.meridia": {
-    "teleport": "300,257,24"
+    "teleport": "300,257,24",
+    "notecard_feature": "LE TRE VIE E CIO CHE COSTANO - NOTE DI MERIDIA. Non so quale sia la via giusta. Quello che so e parziale. PRESERVARE (Lyra): il Velo resta e il Sacrificio Originale va rinnovato; resta anche la sua prigione, e qualcuno dovra compiere di nuovo il sacrificio. DISSOLVERE (Theron): il Velo cade, gli Oblivianti arrivano senza barriera, e la memoria di ognuno sara solo quella che riesce a difendere da solo. TRASFORMARE (Boros): nessuno sa cosa sara il nuovo Velo; il vecchio non tornera e il nuovo puo fallire. Le tre vie sono incompatibili. La scelta e irreversibile. Chi ti ha consigliato ha visto una parte sola. Il Telaio del Nuovo Inizio attuera qualunque cosa tu scelga, anche un errore."
   },
   "NPC.sanctumofwhispers.lyra": {
     "teleport": "411,281,41",
@@ -37,12 +40,15 @@
     "notecard_feature": "DIARIO DEI SOGNI PERDUTI (estratto). Voce 473: un bambino ride tra le dune di un luogo lontano; una luce lo guarda come un fratello. Voce 474: un fiume di perle scorre al contrario, portando ricordi futuri nel passato. Voce 475: un albero di risate silenziose perde le foglie ogni volta che qualcuno dimentica un nome caro. I sogni non sono monete: sono debiti della notte col giorno. Chi li raccoglie li restituisce. - J."
   },
   "NPC.testarea.teleporter": {
-    "teleport": "128,128,50,200,150,25,100,200,75,300,100,40"
+    "teleport": "128,128,50,200,150,25,100,200,75,300,100,40",
+    "notecard_feature": "GUIDA DEL TELEPORTER - DOVE POSSO PORTARTI. Apro la via lungo le linee di Ley: dimmi la destinazione e arrivi dove sta chi cerchi. Luoghi che conosco: Villaggio, Taverna, Foresta, Montagna, Citta, Rovine Antiche, Santuario dei Sussurri. I luoghi ad accesso ristretto si aprono solo quando sei pronto, e non lo decido io. Ti porto, non ti proteggo: quello che trovi all'arrivo e affar tuo."
   },
   "NPC.village.garin": {
-    "teleport": "213,303,27"
+    "teleport": "213,303,27",
+    "notecard_feature": "REGOLE DELLA FORGIA - NOTE DI GARIN. Un oggetto ricorda tre cose: da dove viene il metallo, per cosa e stato battuto, chi lo ha impugnato. I Sussurri dell'Oblio cancellano per prima cosa quello che nessuno ricorda piu. 1. Non forgio quello in cui non credo: il ferro lo sente. 2. Ogni pezzo porta un segno inciso con la sua origine e il suo scopo; se il segno si consuma, il pezzo va rifatto. 3. Un oggetto resiste all'oblio finche qualcuno lo usa per lo scopo per cui e nato. Sto ancora cercando di forgiare qualcosa che non si dimentichi una volta finito. Non ci sono ancora riuscito."
   },
   "NPC.village.mara": {
-    "teleport": "265,294,22"
+    "teleport": "265,294,22",
+    "notecard_feature": "APPUNTI DI MARA - PIANTE CHE SVANISCONO. Una pianta toccata dai Sussurri dell'Oblio non appassisce: perde il nome. Prima diventa pallida, poi trasparente, poi nessuno ricorda piu che sia esistita. Cosa faccio, nell'ordine: 1. Scrivo il suo nome e dove cresce. 2. La secco finche e intera, se faccio in tempo. 3. La tengo all'asciutto, separata dalle altre. L'elisir che preparo protegge la mente dai Sussurri minori per alcune ore. Non cura niente e non dura: chi ti promette di piu mente. Se trovi una pianta pallida, portamela prima che svanisca."
   }
 }
