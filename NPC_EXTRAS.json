@@ -1,0 +1,48 @@
+{
+  "NPC.ancientruins.syra": {
+    "teleport": "153,78,26",
+    "notecard_feature": "CRONACHE ANTICHE DELLE ROVINE. Qui i Tessitori alzarono il primo arco del Velo, pietra su pietra, sacrificio su sacrificio. Le rovine non sono crollate: sono state INTERROTTE, a meta di un gesto. Chi cammina tra queste pietre calpesta un respiro trattenuto da secoli. I Custodi dicono: solo chi comprende il vero costo del sacrificio potra completare cio che fu lasciato a meta. Il resto e silenzio. E il silenzio, qui, pesa."
+  },
+  "NPC.city.cassian": {
+    "teleport": "363,162,24"
+  },
+  "NPC.city.irenna": {
+    "teleport": "385,191,23"
+  },
+  "NPC.city.theron": {
+    "teleport": "390,165,24",
+    "notecard_feature": "MANIFESTO DELLA LIBERTA. Il Velo non e protezione: e un tessuto di illusioni che ci lega a fantasmi. Ogni ricordo non elaborato e un peso; ogni legame non rinnovato, una catena. L'Oblio non e fine ma tabula rasa: la possibilita di riscrivere la propria essenza senza le macchie del passato. Ho perso mio fratello Darius oltre il Velo, eppure non lo piango: lo invidio. Cammina con me verso l'alba, o resta tra le ombre. La scelta e tua. - T."
+  },
+  "NPC.forest.elira": {
+    "teleport": "259,182,22",
+    "notecard_feature": "SAGGEZZA DI ELIRA, GUARDIANA DEL NODO. La foresta non parla a chi domanda: parla a chi ascolta. I Tessitori si dissolsero qui per proteggere cio che amavano, e ogni albero ne custodisce l'eco. La piaga non e malattia ma oblio che avanza. Solo la compassione sincera apre le radici: una Pozione di Mara o parole vere. Il Seme della Foresta fiorisce solo per chi da senza chiedere. La natura non svela i suoi segreti agli impazienti."
+  },
+  "NPC.liminalvoid.erasmus": {
+    "teleport": "2,3,27",
+    "notecard_feature": "GUIDA DEL VIANDANTE SMARRITO. Primo: il Velo protegge la memoria, l'Oblio la ricicla; nessuno dei due e il nemico. Secondo: ogni personaggio custodisce un frammento; ascolta tutti, non credere a nessuno del tutto. Terzo: le scelte non tornano indietro, ma aprono vie nuove. Quarto: gli oggetti si danno e si ricevono, i crediti contano, le promesse pesano di piu. Quinto: quando non sai dove andare, torna dove tutto e cominciato. - E."
+  },
+  "NPC.mountain.boros": {
+    "teleport": "437,395,60",
+    "notecard_feature": "SAGGEZZA CICLICA DELLA MONTAGNA. La montagna non impone nomi ai suoi venti, eppure essi danzano. L'acqua non ha un solo percorso, eppure raggiunge il mare. Il seme deve spezzarsi per germogliare; il fiume che non scorre marcisce, quello senza sponde distrugge. Non sono venuto a conciliare preservazione e oblio: sono venuto a seminare dubbi. Portane uno con te. Annaffialo. Guarda cosa cresce. - B."
+  },
+  "NPC.nexusofpaths.meridia": {
+    "teleport": "300,257,24"
+  },
+  "NPC.sanctumofwhispers.lyra": {
+    "teleport": "411,281,41",
+    "notecard_feature": "PERGAMENA DI PRESERVAZIONE. I Tessitori crearono il Velo per proteggere la memoria dall'Oblio, e si sacrificarono per mantenerlo. Ora il Velo perde filamenti e i Sussurri avanzano. Tre vie si aprono: PRESERVARE il Velo, TRASFORMARE il Velo, DISSOLVERE tutto nell'Oblio. Tu, viandante, sei il catalizzatore: le tue scelte tesseranno il destino di Eldoria. Impara da chi incontri. Ascolta i Sussurri ma non lasciarti dominare. Scegli con il cuore. - L."
+  },
+  "NPC.tavern.jorin": {
+    "teleport": "108,228,29",
+    "notecard_feature": "DIARIO DEI SOGNI PERDUTI (estratto). Voce 473: un bambino ride tra le dune di un luogo lontano; una luce lo guarda come un fratello. Voce 474: un fiume di perle scorre al contrario, portando ricordi futuri nel passato. Voce 475: un albero di risate silenziose perde le foglie ogni volta che qualcuno dimentica un nome caro. I sogni non sono monete: sono debiti della notte col giorno. Chi li raccoglie li restituisce. - J."
+  },
+  "NPC.testarea.teleporter": {
+    "teleport": "128,128,50,200,150,25,100,200,75,300,100,40"
+  },
+  "NPC.village.garin": {
+    "teleport": "213,303,27"
+  },
+  "NPC.village.mara": {
+    "teleport": "265,294,22"
+  }
+}
