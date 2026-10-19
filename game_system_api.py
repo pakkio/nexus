@@ -22,6 +22,8 @@ from player_profile_manager import update_player_profile, get_default_player_pro
 from main_utils import get_nlp_command_config, format_npcs_list, get_help_text
 from wise_guide_selector import get_wise_guide_npc_name
 
+_GIFT_ACCEPT_RE = re.compile(r"(?<!\w)(?:accetto|(?:lo|la|li|le) prendo|d'accordo|sì|ok|procedi|perfetto|yes)(?!\w)")
+
 # Configure logger for async profile updates
 logger = logging.getLogger(__name__)
 
@@ -493,10 +495,14 @@ class _SinglePlayerGameSystem:
                             _gv_req = _gv_npc.get('required_item')
                             _gv_credits = int(_gv_npc.get('reward_credits') or 0)
                             _gv_is_gift_npc = (_gv_treasure or _gv_credits > 0) and (not _gv_req or str(_gv_req).strip().lower() in ('none', '', 'nessuno'))
+                            # Quest-chain NPCs hand out their reward only through quest_trades, never via a bare "ok".
+                            if _gv_npc.get('code') in quest_trades.QUEST_TRADES:
+                                _gv_is_gift_npc = False
                             if _gv_is_gift_npc:
-                                _ACCEPT_KW = ('accetto', 'li prendo', "d'accordo", 'sì', ' sì', 'ok', 'procedi', 'prendo', 'perfetto', 'yes')
-                                _pi_lower = player_input.lower()
-                                if any(kw in _pi_lower for kw in _ACCEPT_KW):
+                                _pi_lower = player_input.lower().strip()
+                                # Whole words only ("ok" must not match "book"), and an emote like "*prendo un mazzetto*" is not an acceptance.
+                                _is_emote = _pi_lower.startswith('*')
+                                if not _is_emote and _GIFT_ACCEPT_RE.search(_pi_lower):
                                     _inv = self.game_state.get('player_inventory', [])
                                     _already_has = _gv_treasure and any(items_match(i, _gv_treasure) for i in _inv)
                                     if not _already_has:
