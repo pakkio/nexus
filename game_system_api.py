@@ -750,6 +750,32 @@ class _SinglePlayerGameSystem:
                 teleport_target_npc = None  # Will hold target NPC name if [TELEPORT_TO:name] is used
                 
                 if final_npc_dialogue_for_return:
+                    # [GIVE_NOTECARD]: the model only signals; the server attaches the NPC's stored text
+                    # (same pattern as [OFFER_TELEPORT]), so a notecard and a teleport can share one reply.
+                    if '[GIVE_NOTECARD]' in final_npc_dialogue_for_return:
+                        final_npc_dialogue_for_return = final_npc_dialogue_for_return.replace('[GIVE_NOTECARD]', '').strip()
+                        _gn_npc = self.game_state.get('current_npc') or {}
+                        _gn_feat = (_gn_npc.get('notecard_feature') or '').strip()
+                        if _gn_feat and not self.game_state.get('notecard_extracted'):
+                            _gn_title = _gn_npc.get('name', 'NPC')
+                            self.game_state['notecard_extracted'] = {
+                                'name': f"{_gn_title}_Note",
+                                'content': f"=== {_gn_title} ===\n{_gn_feat[:1400]}"
+                            }
+                            logger.info(f"[NOTECARD] [GIVE_NOTECARD] attached stored notecard for {_gn_title}")
+
+                    # [GIVE_CARD]: the NPC's business card; one notecard per reply, so an already attached one wins.
+                    if '[GIVE_CARD]' in final_npc_dialogue_for_return:
+                        final_npc_dialogue_for_return = final_npc_dialogue_for_return.replace('[GIVE_CARD]', '').strip()
+                        _gc_npc = self.game_state.get('current_npc') or {}
+                        _gc_text = (_gc_npc.get('business_card') or '').strip()
+                        if _gc_text and not self.game_state.get('notecard_extracted'):
+                            self.game_state['notecard_extracted'] = {
+                                'name': f"{_gc_npc.get('name', 'NPC')}_Biglietto",
+                                'content': _gc_text[:1400]
+                            }
+                            logger.info(f"[NOTECARD] [GIVE_CARD] attached business card for {_gc_npc.get('name')}")
+
                     # SAFETY: Strip any AI-generated [teleport=X,Y,Z] tags - only server should generate these
                     ai_teleport_pattern = r'\[teleport=[\d,.\s]+\]'
                     if re.search(ai_teleport_pattern, final_npc_dialogue_for_return, re.IGNORECASE):

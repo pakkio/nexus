@@ -451,8 +451,23 @@ def build_system_prompt(    npc: Dict[str, Any],
             prompt_lines.append("="*80)
             prompt_lines.append("🔹 NOTECARD FEATURE (GENERA NOTECARD QUANDO APPROPRIATO)")
             prompt_lines.append("="*80)
+            prompt_lines.append("Puoi consegnare al giocatore una notecard con questo testo:")
             prompt_lines.append(notecard_feature)
+            prompt_lines.append("")
+            prompt_lines.append("QUANDO la consegni: se il giocatore chiede una notecard, qualcosa di scritto, "
+                                "una copia della tua saggezza/del tuo diario, oppure accetta la tua offerta di dargliela.")
+            prompt_lines.append("COME: aggiungi il tag [GIVE_NOTECARD] alla FINE della risposta (puoi metterlo insieme a "
+                                "[OFFER_TELEPORT] o [TELEPORT_TO:nome] nella stessa risposta). Il sistema allega il testo: "
+                                "NON scriverlo né riassumerlo nella risposta, di' solo che gli porgi i fogli.")
+            prompt_lines.append("Non consegnarla senza richiesta o accordo del giocatore.")
             prompt_lines.append("="*80 + "\n")
+
+        if npc.get('business_card'):
+            prompt_lines.append("🔹 BIGLIETTO DA VISITA (NOTECARD)")
+            prompt_lines.append("Hai un biglietto da visita scritto che ti presenta. Se il giocatore ne chiede uno, o chiede "
+                                "come ritrovarti o chi sei per iscritto, aggiungi il tag [GIVE_CARD] alla FINE della risposta. "
+                                "Il sistema allega il testo: NON scriverlo. Non offrirlo senza richiesta. "
+                                "Una sola notecard per risposta.\n")
 
     # Add personalized narrative context (NPC PREFIX file)
     if npc_narrative_prefix:
