@@ -3,7 +3,7 @@
 Two interchangeable backends with the same API:
 
 * FileDocStore   -- the original JSON-files-in-a-directory layout (default).
-* SqliteDocStore -- one SQLite file (WAL), same documents, atomic writes.
+* SqliteDocStore -- one SQLite file (WAL), one table per kind, atomic writes.
 
 Documents are grouped by *kind* and addressed by *key*:
 
@@ -173,7 +173,11 @@ class FileDocStore:
 
 
 class SqliteDocStore:
-    """All documents in one SQLite database (WAL mode, one short connection per call)."""
+    """One SQLite database (WAL mode, one short connection per call), one table per kind.
+
+    Each table is named after its kind and has the columns key, body (JSON, or plain text
+    for ConversationAnalysis), mtime.
+    """
     backend = "sqlite"
 
     def __init__(self, path: str):
@@ -183,12 +187,22 @@ class SqliteDocStore:
         self._lock = threading.Lock()
         with self._conn() as c:
             c.execute("PRAGMA journal_mode=WAL")
-            c.execute("""CREATE TABLE IF NOT EXISTS docs (
-                           kind  TEXT NOT NULL,
-                           key   TEXT NOT NULL,
-                           body  TEXT NOT NULL,
-                           mtime REAL NOT NULL,
-                           PRIMARY KEY (kind, key)) WITHOUT ROWID""")
+            for kind in KINDS:
+                c.execute(f"""CREATE TABLE IF NOT EXISTS {kind} (
+                                key   TEXT NOT NULL PRIMARY KEY,
+                                body  TEXT NOT NULL,
+                                mtime REAL NOT NULL) WITHOUT ROWID""")
+            self._migrate_single_table(c)
+
+    @staticmethod
+    def _migrate_single_table(c: sqlite3.Connection) -> None:
+        """Older databases kept every kind in one table docs(kind, key, body, mtime): copy it over."""
+        if not c.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='docs'").fetchone():
+            return
+        for kind in KINDS:
+            c.execute(f"INSERT OR IGNORE INTO {kind}(key, body, mtime) "
+                      "SELECT key, body, mtime FROM docs WHERE kind=?", (kind,))
+        c.execute("DROP TABLE docs")
 
     def _conn(self) -> sqlite3.Connection:
         c = sqlite3.connect(self.path, timeout=15)
@@ -206,7 +220,7 @@ class SqliteDocStore:
         _check_key(key, nested=(kind == "ConversationHistory"))
         c = self._conn()
         try:
-            row = c.execute("SELECT body FROM docs WHERE kind=? AND key=?", (kind, key)).fetchone()
+            row = c.execute(f"SELECT body FROM {kind} WHERE key=?", (key,)).fetchone()
         finally:
             c.close()
         return json.loads(row[0]) if row else None
@@ -218,9 +232,9 @@ class SqliteDocStore:
         c = self._conn()
         try:
             with c:
-                c.execute("INSERT INTO docs(kind,key,body,mtime) VALUES(?,?,?,?) "
-                          "ON CONFLICT(kind,key) DO UPDATE SET body=excluded.body, mtime=excluded.mtime",
-                          (kind, key, body, time.time() if mtime is None else mtime))
+                c.execute(f"INSERT INTO {kind}(key,body,mtime) VALUES(?,?,?) "
+                          "ON CONFLICT(key) DO UPDATE SET body=excluded.body, mtime=excluded.mtime",
+                          (key, body, time.time() if mtime is None else mtime))
         finally:
             c.close()
 
@@ -240,7 +254,7 @@ class SqliteDocStore:
         c = self._conn()
         try:
             with c:
-                c.execute("DELETE FROM docs WHERE kind=? AND key=?", (kind, key))
+                c.execute(f"DELETE FROM {kind} WHERE key=?", (key,))
         finally:
             c.close()
 
@@ -248,8 +262,8 @@ class SqliteDocStore:
         self._check_kind(kind)
         c = self._conn()
         try:
-            row = c.execute("SELECT mtime, LENGTH(CAST(body AS BLOB)) FROM docs WHERE kind=? AND key=?",
-                            (kind, key)).fetchone()
+            row = c.execute(f"SELECT mtime, LENGTH(CAST(body AS BLOB)) FROM {kind} WHERE key=?",
+                            (key,)).fetchone()
         finally:
             c.close()
         return (row[0], row[1]) if row else None
@@ -260,9 +274,9 @@ class SqliteDocStore:
             prefix += "/"
         c = self._conn()
         try:
-            rows = c.execute("SELECT key, body, mtime, LENGTH(CAST(body AS BLOB)) FROM docs "
-                             "WHERE kind=? AND substr(key, 1, ?) = ? ORDER BY key",
-                             (kind, len(prefix), prefix)).fetchall()
+            rows = c.execute(f"SELECT key, body, mtime, LENGTH(CAST(body AS BLOB)) FROM {kind} "
+                             "WHERE substr(key, 1, ?) = ? ORDER BY key",
+                             (len(prefix), prefix)).fetchall()
         finally:
             c.close()
         return [(k, json.loads(b), m, s) for k, b, m, s in rows]
@@ -274,8 +288,8 @@ class SqliteDocStore:
         c = self._conn()
         try:
             with c:
-                cur = c.execute("DELETE FROM docs WHERE kind=? AND substr(key, 1, ?) = ?",
-                                (kind, len(prefix), prefix))
+                cur = c.execute(f"DELETE FROM {kind} WHERE substr(key, 1, ?) = ?",
+                                (len(prefix), prefix))
                 return cur.rowcount
         finally:
             c.close()

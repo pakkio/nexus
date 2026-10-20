@@ -15,3 +15,7 @@ compile *files:
 # lore.txt -> ANTEFATTO.txt + NPC_PREFIX.*.txt + NPC records (backed up first); --no-npcs to skip records, --check to test freshness
 lore *args:
     {{py}} compile_lore.py "$@"
+
+# browse a live SQLite db read-only in a web UI on all interfaces (port 8081); default is the nexus store, e.g. just sqlite_web .opencode/opencode.db
+sqlite_web db="database/nexus.db" *args:
+    sqlite_web -r {{db}} --host 0.0.0.0 --port 8081 "${@:2}"
