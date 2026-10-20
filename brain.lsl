@@ -8,6 +8,7 @@
 integer DEBUG = 0;  // Set to 1 to enable debug logging, 0 to disable
 
 string SERVER_URL;
+string AUTH_TOKEN;
 string NPC_NAME;
 string CURRENT_AREA;
 string appearanceNotecard;
@@ -30,6 +31,14 @@ integer TIMEOUT = 300;  // 5 minutes
 integer givingNotecard = FALSE;  // Flag to prevent reset during notecard creation
 integer initTime = 0;  // Unix time when script was initialized (for debounce)
 
+// Server URL is line 1 of the 'config' notecard in this prim's inventory (the
+// scheme may be omitted: craft.edu3d.it:5000 means http://craft.edu3d.it:5000).
+// Line 2 is the bearer token for the server's Authorization header, written
+// as is (no quotes). Without line 2 requests are sent without the header.
+string CONFIG_NOTECARD = "config";
+key reqConfigLine;
+key reqAuthLine;
+
 // HTTP Tracking
 key reqHealth;
 key reqVerify;
@@ -48,17 +57,28 @@ vector BLUE = <0.3, 0.7, 1.0>;
 // INITIALIZATION
 // ============================================
 
+// Appended to every llHTTPRequest options list with '+'. Returns [] when
+// there is no token, so a notecard without line 2 behaves as before.
+list authHeader()
+{
+    if (AUTH_TOKEN == "") return [];
+    return [HTTP_CUSTOM_HEADER, "Authorization", "Bearer " + AUTH_TOKEN];
+}
+
 init()
 {
-    // Read server URL from description
-    SERVER_URL = llStringTrim(llGetObjectDesc(), STRING_TRIM);
-    if (SERVER_URL == "" || llSubStringIndex(SERVER_URL, "http") != 0)
+    if (llGetInventoryType(CONFIG_NOTECARD) != INVENTORY_NOTECARD)
     {
-        llSetText("ERROR: URL not set\nin description", RED, 1.0);
-        llOwnerSay("ERROR: Set server URL in object description (e.g., http://212.227.64.143:5000)");
+        llSetText("ERROR: missing\nconfig notecard", RED, 1.0);
+        llOwnerSay("ERROR: Add a notecard named '" + CONFIG_NOTECARD + "' with the server URL on line 1 and the token on line 2");
         return;
     }
+    // Continues in dataserver() once both lines have been read.
+    reqConfigLine = llGetNotecardLine(CONFIG_NOTECARD, 0);
+}
 
+initAfterConfig()
+{
     // Parse object name: "NPCName.AreaName"
     string objName = llGetObjectName();
     integer dotPos = llSubStringIndex(objName, ".");
@@ -104,7 +124,7 @@ init()
 
     // Check server health
     reqHealth = llHTTPRequest(SERVER_URL + "/health",
-        [HTTP_METHOD, "GET", HTTP_BODY_MAXLENGTH, 4096, HTTP_VERIFY_CERT, FALSE], "");
+        [HTTP_METHOD, "GET", HTTP_BODY_MAXLENGTH, 4096, HTTP_VERIFY_CERT, FALSE] + authHeader(), "");
 }
 
 loadAnimations()
@@ -509,7 +529,7 @@ startConversation(key k, string name)
     reqTime = llGetTime();
     reqChat = llHTTPRequest(SERVER_URL + "/sense",
         [HTTP_METHOD, "POST", HTTP_MIMETYPE, "application/json",
-         HTTP_BODY_MAXLENGTH, 8192, HTTP_VERIFY_CERT, FALSE], senseData);
+         HTTP_BODY_MAXLENGTH, 8192, HTTP_VERIFY_CERT, FALSE] + authHeader(), senseData);
     if (DEBUG) llOwnerSay("  Request ID: " + (string)reqChat);
 }
 
@@ -524,7 +544,7 @@ endConversation(integer sayGoodbye)
 
     reqLeave = llHTTPRequest(SERVER_URL + "/api/leave_npc",
         [HTTP_METHOD, "POST", HTTP_MIMETYPE, "application/json",
-         HTTP_BODY_MAXLENGTH, 4096, HTTP_VERIFY_CERT, FALSE], leaveData);
+         HTTP_BODY_MAXLENGTH, 4096, HTTP_VERIFY_CERT, FALSE] + authHeader(), leaveData);
 
     if (listenHandle != -1)
     {
@@ -592,7 +612,7 @@ sendMessage(string msg, string name)
     reqTime = llGetTime();
     reqChat = llHTTPRequest(SERVER_URL + "/api/chat",
         [HTTP_METHOD, "POST", HTTP_MIMETYPE, "application/json",
-         HTTP_BODY_MAXLENGTH, 8192, HTTP_VERIFY_CERT, FALSE], chatData);
+         HTTP_BODY_MAXLENGTH, 8192, HTTP_VERIFY_CERT, FALSE] + authHeader(), chatData);
     if (DEBUG) llOwnerSay("  Request ID: " + (string)reqChat);
 }
 
@@ -936,6 +956,30 @@ default
         init();
     }
 
+    dataserver(key query_id, string data)
+    {
+        if (query_id == reqConfigLine)
+        {
+            SERVER_URL = llStringTrim(data, STRING_TRIM);
+            if (SERVER_URL != "" && llSubStringIndex(SERVER_URL, "http") != 0)
+                SERVER_URL = "http://" + SERVER_URL;
+            if (SERVER_URL == "" || data == EOF)
+            {
+                llSetText("ERROR: URL not set\nin config notecard", RED, 1.0);
+                llOwnerSay("ERROR: Put the server URL on line 1 of the '" + CONFIG_NOTECARD + "' notecard");
+                return;
+            }
+            reqAuthLine = llGetNotecardLine(CONFIG_NOTECARD, 1);
+            return;
+        }
+        if (query_id != reqAuthLine)
+            return;
+        // EOF: no second line, so no token.
+        if (data == EOF) AUTH_TOKEN = "";
+        else AUTH_TOKEN = llStringTrim(data, STRING_TRIM);
+        initAfterConfig();
+    }
+
     touch_start(integer n)
     {
         key k = llDetectedKey(0);
@@ -1036,7 +1080,7 @@ default
                   escapeJSON(CURRENT_AREA) + "\"}";
             reqVerify = llHTTPRequest(SERVER_URL + "/api/npc/verify",
                 [HTTP_METHOD, "POST", HTTP_MIMETYPE, "application/json",
-                 HTTP_BODY_MAXLENGTH, 4096, HTTP_VERIFY_CERT, FALSE], verifyData);
+                 HTTP_BODY_MAXLENGTH, 4096, HTTP_VERIFY_CERT, FALSE] + authHeader(), verifyData);
         }
         else if (id == reqVerify && status == 200)
         {
