@@ -150,7 +150,7 @@ def test_backup_is_a_usable_snapshot(db, tmp_path):
     assert os.path.basename(os.path.dirname(info["path"])) == "backups"
     if db.store.backend == "sqlite":
         row = sqlite3.connect(info["path"]).execute(
-            "select body from docs where kind='PlayerState' and key='p1'").fetchone()
+            "select body from PlayerState where key='p1'").fetchone()
         assert json.loads(row[0])["credits"] == 77
     else:
         with tarfile.open(info["path"]) as tar:
@@ -158,3 +158,19 @@ def test_backup_is_a_usable_snapshot(db, tmp_path):
         db.backup_database()                                     # a 2nd backup must not swallow the 1st
         with tarfile.open(db.backup_database()["path"]) as tar:
             assert not any("backups" in n for n in tar.getnames())
+
+
+def test_sqlite_one_table_per_kind_and_legacy_docs_table_is_migrated(tmp_path):
+    import sqlite3
+    path = str(tmp_path / "old.db")
+    c = sqlite3.connect(path)
+    c.execute("CREATE TABLE docs (kind TEXT NOT NULL, key TEXT NOT NULL, body TEXT NOT NULL, "
+              "mtime REAL NOT NULL, PRIMARY KEY (kind, key)) WITHOUT ROWID")
+    c.execute("INSERT INTO docs VALUES ('NPCs', 'NPC.forest.elira', '{\"name\": \"Elira\"}', 12.5)")
+    c.commit()
+    c.close()
+    store = SqliteDocStore(path)
+    assert store.get("NPCs", "NPC.forest.elira") == {"name": "Elira"}
+    assert store.meta("NPCs", "NPC.forest.elira")[0] == 12.5
+    tables = {r[0] for r in sqlite3.connect(path).execute("select name from sqlite_master where type='table'")}
+    assert "docs" not in tables and {"NPCs", "Locations", "PlayerState"} <= tables
