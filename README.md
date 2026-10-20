@@ -292,6 +292,7 @@ Player ids may be Hypergrid names (`First.Last @grid.example.org:8002`); path se
 | `bvh_to_sl_converter.py` | animation conversion for SL |
 | `lore.txt`, `lore_house.txt`, `free-text.txt` | the canon, its fixed sections, the source text |
 | `digest_lore.py`, `compile_lore.py`, `compile-lore`, `justfile` | the lore pipeline |
+| `build_docs.py`, `build_projects.py`, `projects/` | the documentation network: lore pages generated from `lore.txt`, a catalogue of the GitHub projects, hand-written pages for Nexus, craftsim, craftstorm and jev-pakkio |
 | `ANTEFATTO.txt`, `NPC_PREFIX.*.txt` | generated prompt parts (do not edit by hand) |
 | `NPC_BUSINESS_CARDS.json`, `NPC_EXTRAS.json`, `seed_npc_extras.py` | cards, notecards, teleports |
 | `database/` | content and player data (git-ignored); `database_gradio_context_sim/` is an older, tracked sample set |
@@ -318,6 +319,9 @@ A bare `pytest` fails during collection: the `test_*.py` files at the top level 
 
 ## More documentation
 
+- [`projects/README.md`](projects/README.md) — the documentation network, **in Italian**: a hub of all projects on GitHub and, for Nexus,
+  pages with diagrams from two sides: [engine and pipeline](projects/nexus/ENGINE.md) and [the lore](projects/nexus/VEIL.md)
+  (`just docs` and `just projects` regenerate the generated pages)
 - [`CLAUDE.md`](CLAUDE.md) — working notes for Claude Code, including the narrative generation constraints
 - [`README-NPC-AI-BRAIN.md`](README-NPC-AI-BRAIN.md) — OpenSim NPC "brain" guide with the full LSL script
 - [`README-SL-INTEGRATION.md`](README-SL-INTEGRATION.md) — Second Life / LSL integration
