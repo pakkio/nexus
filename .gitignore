@@ -9,3 +9,13 @@ compiled/
 # Ignore crush directory
 .crush/
 nohup.out
+
+# Runtime logs and AI coding tools local state (were tracked by mistake)
+app.log
+app_nohup.log
+app_server.log
+game_server.log
+nexus.log
+server.log
+.opencode/
+.idea/
